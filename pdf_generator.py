@@ -1,7 +1,6 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, PageBreak
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
-from pathlib import Path
 
 def generar_pdf(ruta_pdf, portada_path, grafico_path):
     styles = getSampleStyleSheet()
@@ -17,7 +16,7 @@ def generar_pdf(ruta_pdf, portada_path, grafico_path):
 
     story = []
 
-    # ===== PORTADA (AJUSTADA AL FRAME) =====
+    # ===== PORTADA (SOLO EN SU PÁGINA) =====
     story.append(
         Image(
             portada_path,
@@ -25,11 +24,10 @@ def generar_pdf(ruta_pdf, portada_path, grafico_path):
             height=doc.height
         )
     )
+    story.append(PageBreak())  # 🔴 ESTO ES LO QUE FALTABA
 
-    story.append(Spacer(1, 24))
+    # ===== CONTENIDO =====
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
-    story.append(Spacer(1, 12))
-
     story.append(
         Image(
             grafico_path,
