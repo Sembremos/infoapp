@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from io import BytesIO
+from pathlib import Path
+
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Image, Spacer, PageBreak
 )
@@ -9,9 +11,13 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import cm
 
-# ================= CONFIG =================
+# ================= CONFIG STREAMLIT =================
 st.set_page_config(page_title="Generador de Informes PDF", layout="centered")
 st.title("Generador de Informes PDF")
+
+# ================= RUTAS BASE =================
+BASE_DIR = Path(__file__).resolve().parent
+ASSETS_DIR = BASE_DIR / "assets"
 
 # ================= UTILIDADES =================
 def limpiar_series(labels, values):
@@ -43,36 +49,52 @@ def crear_grafico_pie(labels, values, titulo):
     buf.seek(0)
     return buf
 
+# ================= GENERADOR PDF =================
 def generar_pdf(ruta_pdf, data, graficos):
     doc = SimpleDocTemplate(
         ruta_pdf,
         pagesize=A4,
-        rightMargin=2*cm,
-        leftMargin=2*cm,
-        topMargin=2*cm,
-        bottomMargin=2*cm
+        rightMargin=2 * cm,
+        leftMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm
     )
 
     styles = getSampleStyleSheet()
     story = []
 
     # ===== PORTADAS =====
-    for img in [
-        "assets/portada.png",
-        "assets/intro.png"
-    ]:
-        story.append(Image(img, width=595, height=842))
+    for portada in ["portada.png", "intro.png"]:
+        story.append(
+            Image(
+                str(ASSETS_DIR / portada),
+                width=595,
+                height=842
+            )
+        )
         story.append(PageBreak())
 
     # ===== INTRODUCCIÓN =====
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Paragraph(data["introduccion"], styles["Normal"]))
     story.append(Spacer(1, 12))
-    story.append(Image("assets/conformacion.png", width=400, height=300))
+    story.append(
+        Image(
+            str(ASSETS_DIR / "conformacion.png"),
+            width=400,
+            height=300
+        )
+    )
     story.append(PageBreak())
 
     # ===== PARTICIPACIÓN =====
-    story.append(Image("assets/participacion.png", width=595, height=842))
+    story.append(
+        Image(
+            str(ASSETS_DIR / "participacion.png"),
+            width=595,
+            height=842
+        )
+    )
     story.append(PageBreak())
 
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
@@ -82,7 +104,13 @@ def generar_pdf(ruta_pdf, data, graficos):
     story.append(PageBreak())
 
     # ===== PERCEPCIÓN =====
-    story.append(Image("assets/percepcion.png", width=595, height=842))
+    story.append(
+        Image(
+            str(ASSETS_DIR / "percepcion.png"),
+            width=595,
+            height=842
+        )
+    )
     story.append(PageBreak())
 
     story.append(Paragraph("Percepción ciudadana", styles["Heading1"]))
@@ -90,7 +118,13 @@ def generar_pdf(ruta_pdf, data, graficos):
     story.append(PageBreak())
 
     # ===== FINAL =====
-    story.append(Image("assets/final.png", width=595, height=842))
+    story.append(
+        Image(
+            str(ASSETS_DIR / "final.png"),
+            width=595,
+            height=842
+        )
+    )
 
     doc.build(story)
 
@@ -114,10 +148,9 @@ if archivo:
         )
 
         # ===== GRÁFICOS =====
+
         labels, values = limpiar_series(
-            part.iloc[33, 4:7].index.map(
-                lambda i: ["Comunidad", "Comercio", "Fuerza Pública"][i - part.iloc[33, 4:7].index[0]]
-            ),
+            ["Comunidad", "Comercio", "Fuerza Pública"],
             part.iloc[33, 4:7] * 100
         )
         grafico_relacion = crear_grafico_barras(
@@ -156,7 +189,7 @@ if archivo:
         }
 
         if st.button("Generar PDF"):
-            ruta_pdf = "Informe_Territorial.pdf"
+            ruta_pdf = BASE_DIR / "Informe_Territorial.pdf"
             generar_pdf(ruta_pdf, data, graficos)
 
             with open(ruta_pdf, "rb") as f:
