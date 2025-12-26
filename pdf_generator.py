@@ -1,62 +1,41 @@
-from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Image, Spacer, PageBreak
-)
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Spacer
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import cm
+from pathlib import Path
 
-def generar_pdf(
-    ruta_pdf,
-    data,
-    graficos,
-    assets_path="assets"
-):
+def generar_pdf(ruta_pdf, portada_path, grafico_path):
+    styles = getSampleStyleSheet()
+
     doc = SimpleDocTemplate(
         ruta_pdf,
         pagesize=A4,
-        rightMargin=2*cm,
-        leftMargin=2*cm,
-        topMargin=2*cm,
-        bottomMargin=2*cm
+        leftMargin=40,
+        rightMargin=40,
+        topMargin=40,
+        bottomMargin=40
     )
 
-    styles = getSampleStyleSheet()
     story = []
 
-    # ========= PORTADA =========
-    story.append(Image(f"{assets_path}/portada.png", width=595, height=842))
-    story.append(PageBreak())
+    # ===== PORTADA (AJUSTADA AL FRAME) =====
+    story.append(
+        Image(
+            portada_path,
+            width=doc.width,
+            height=doc.height
+        )
+    )
 
-    # ========= INTRO =========
-    story.append(Image(f"{assets_path}/intro.png", width=595, height=842))
-    story.append(PageBreak())
-
-    story.append(Paragraph("Introducción", styles["Heading1"]))
-    story.append(Paragraph(data["introduccion"], styles["Normal"]))
-    story.append(Spacer(1, 12))
-
-    story.append(Image(f"{assets_path}/conformacion.png", width=400, height=300))
-    story.append(PageBreak())
-
-    # ========= PARTICIPACIÓN =========
-    story.append(Image(f"{assets_path}/participacion.png", width=595, height=842))
-    story.append(PageBreak())
-
+    story.append(Spacer(1, 24))
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
-    story.append(Image(graficos["relacion"], width=400, height=300))
     story.append(Spacer(1, 12))
-    story.append(Image(graficos["edad"], width=400, height=300))
-    story.append(PageBreak())
 
-    # ========= PERCEPCIÓN =========
-    story.append(Image(f"{assets_path}/percepcion.png", width=595, height=842))
-    story.append(PageBreak())
-
-    story.append(Paragraph("Percepción ciudadana", styles["Heading1"]))
-    story.append(Image(graficos["seguridad"], width=400, height=300))
-    story.append(PageBreak())
-
-    # ========= FINAL =========
-    story.append(Image(f"{assets_path}/final.png", width=595, height=842))
+    story.append(
+        Image(
+            grafico_path,
+            width=400,
+            height=300
+        )
+    )
 
     doc.build(story)
