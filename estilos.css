@@ -1,23 +1,17 @@
-/* ==================================================
-   RESET
-   ================================================== */
+/* ================= RESET ================= */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* ==================================================
-   FUENTE GENERAL
-   ================================================== */
+/* ================= FUENTE ================= */
 body {
   font-family: Arial, Helvetica, sans-serif;
   color: #333;
 }
 
-/* ==================================================
-   CONFIGURACIÓN DE PÁGINA PDF
-   ================================================== */
+/* ================= PÁGINA PDF ================= */
 @page {
   size: A4;
   margin: 120px 40px 100px 40px;
@@ -27,65 +21,46 @@ body {
   margin: 0;
 }
 
-/* ==================================================
-   CONCEPTO DE PÁGINA
-   ================================================== */
+/* ================= CONCEPTO DE PÁGINA ================= */
 .pagina {
   page-break-after: always;
 }
 
-/* ==================================================
-   PORTADAS (PRINCIPAL Y DE SECCIÓN)
-   ================================================== */
+/* ================= PORTADAS ================= */
 .pagina.portada {
-  page-break-before: always;
-  page-break-after: always;
-  margin: 0;
-  padding: 0;
+  margin: -120px -40px -100px -40px; /* compensación real */
 }
 
 .pagina.portada img {
   display: block;
-  width: 100%;
-  height: 297mm;   /* altura real A4 */
+  width: calc(100% + 80px);
+  height: calc(297mm + 220px);
   object-fit: cover;
 }
 
-
-/* ==================================================
-   HEADER Y FOOTER
-   ================================================== */
+/* ================= HEADER / FOOTER ================= */
 header {
   height: 90px;
-  background-image: url("header.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
+  background: url("header.png") center/cover no-repeat;
 }
 
 footer {
   height: 80px;
-  background-image: url("footer.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
+  background: url("footer.png") center/cover no-repeat;
 }
 
-/* ==================================================
-   CONTENIDO
-   ================================================== */
+/* ================= CONTENIDO ================= */
 main {
   padding-top: 20px;
-  page-break-inside: avoid;
 }
 
-/* ==================================================
-   TÍTULOS
-   ================================================== */
-h1 {
-  font-size: 22px;
+/* ================= TÍTULOS ================= */
+h3 {
+  font-size: 18px;
   color: #013051;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
 }
 
 h2 {
@@ -94,49 +69,19 @@ h2 {
   margin-bottom: 12px;
 }
 
-h3 {
-  font-size: 18px;
-  color: #014e83;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
-}
-
-/* ==================================================
-   TEXTO
-   ================================================== */
+/* ================= TEXTO ================= */
 p {
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.7;
   text-align: justify;
   margin-bottom: 15px;
 }
 
-/* ==================================================
-   IMÁGENES INTERNAS
-   ================================================== */
-.conformacion {
-  width: 100%;
-  margin: 20px 0;
-  page-break-inside: avoid;
-}
-
-.conformacion img {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  max-height: 120mm;
-  object-fit: contain;
-}
-
-/* ==================================================
-   TABLAS
-   ================================================== */
+/* ================= TABLAS ================= */
 .tabla-datos {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
-  page-break-inside: avoid;
 }
 
 .tabla-datos th,
@@ -148,14 +93,11 @@ p {
 
 .tabla-datos th {
   background-color: #013051;
-  color: #ffffff;
+  color: white;
 }
 
-/* ==================================================
-   BLOQUES DE GRÁFICOS
-   ================================================== */
+/* ================= GRÁFICOS ================= */
 .bloque-grafico {
-  width: 100%;
   margin: 25px 0;
   text-align: center;
   page-break-inside: avoid;
@@ -164,6 +106,14 @@ p {
 .bloque-grafico img {
   max-width: 95%;
   max-height: 140mm;
+}
+
+/* ================= IMÁGENES INTERNAS ================= */
+.conformacion img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 120mm;
 }
 
 
