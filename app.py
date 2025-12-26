@@ -14,6 +14,12 @@ st.set_page_config(page_title="Generador de Informes PDF", layout="centered")
 st.title("Generador de Informes PDF")
 
 # ================= UTILIDADES =================
+def limpiar_series(labels, values):
+    df = pd.DataFrame({"label": labels, "value": values})
+    df["value"] = pd.to_numeric(df["value"], errors="coerce")
+    df = df.dropna()
+    return df["label"].astype(str), df["value"]
+
 def crear_grafico_barras(labels, values, titulo):
     fig, ax = plt.subplots()
     ax.bar(labels, values)
@@ -50,14 +56,15 @@ def generar_pdf(ruta_pdf, data, graficos):
     styles = getSampleStyleSheet()
     story = []
 
-    # ===== PORTADA =====
-    story.append(Image("assets/portada.png", width=595, height=842))
-    story.append(PageBreak())
+    # ===== PORTADAS =====
+    for img in [
+        "assets/portada.png",
+        "assets/intro.png"
+    ]:
+        story.append(Image(img, width=595, height=842))
+        story.append(PageBreak())
 
-    # ===== INTRO =====
-    story.append(Image("assets/intro.png", width=595, height=842))
-    story.append(PageBreak())
-
+    # ===== INTRODUCCIÓN =====
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Paragraph(data["introduccion"], styles["Normal"]))
     story.append(Spacer(1, 12))
@@ -106,22 +113,37 @@ if archivo:
             engine="openpyxl"
         )
 
+        # ===== GRÁFICOS =====
+        labels, values = limpiar_series(
+            part.iloc[33, 4:7].index.map(
+                lambda i: ["Comunidad", "Comercio", "Fuerza Pública"][i - part.iloc[33, 4:7].index[0]]
+            ),
+            part.iloc[33, 4:7] * 100
+        )
+        grafico_relacion = crear_grafico_barras(
+            labels, values, "Relación de participación"
+        )
+
+        labels, values = limpiar_series(
+            part.iloc[1:6, 1],
+            part.iloc[1:6, 2] * 100
+        )
+        grafico_edad = crear_grafico_pie(
+            labels, values, "Participación por edad"
+        )
+
+        labels, values = limpiar_series(
+            rel.iloc[1:4, 0],
+            rel.iloc[1:4, 1]
+        )
+        grafico_seguridad = crear_grafico_pie(
+            labels, values, "¿Se siente seguro en su comunidad?"
+        )
+
         graficos = {
-            "relacion": crear_grafico_barras(
-                ["Comunidad", "Comercio", "Fuerza Pública"],
-                part.iloc[33,4:7] * 100,
-                "Relación de participación"
-            ),
-            "edad": crear_grafico_pie(
-                part.iloc[1:6,1],
-                part.iloc[1:6,2] * 100,
-                "Participación por edad"
-            ),
-            "seguridad": crear_grafico_pie(
-                rel.iloc[1:4,0],
-                rel.iloc[1:4,1],
-                "¿Se siente seguro en su comunidad?"
-            )
+            "relacion": grafico_relacion,
+            "edad": grafico_edad,
+            "seguridad": grafico_seguridad
         }
 
         data = {
