@@ -4,15 +4,11 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 from pathlib import Path
 
-from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Image, Spacer
-)
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet
+from pdf_generator import generar_pdf
 
 # ================= STREAMLIT =================
 st.set_page_config(page_title="Generador de PDF", layout="centered")
-st.title("Generador de PDF (Versión Base)")
+st.title("Generador de PDF – Versión Estable")
 
 # ================= RUTAS =================
 BASE_DIR = Path(__file__).resolve().parent
@@ -29,38 +25,13 @@ def crear_grafico(labels, values):
     fig, ax = plt.subplots()
     ax.bar(labels, values)
     ax.set_ylim(0, 100)
+    plt.xticks(rotation=20)
+
     buf = BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight", dpi=200)
     plt.close(fig)
     buf.seek(0)
     return buf
-
-def generar_pdf(ruta_pdf, grafico):
-    styles = getSampleStyleSheet()
-
-    doc = SimpleDocTemplate(
-        ruta_pdf,
-        pagesize=A4
-    )
-
-    story = []
-
-    # ===== PORTADA =====
-    story.append(
-        Image(
-            str(ASSETS_DIR / "portada.png"),
-            width=A4[0],
-            height=A4[1]
-        )
-    )
-
-    # ===== CONTENIDO =====
-    story.append(Spacer(1, 20))
-    story.append(Paragraph("Datos de participación", styles["Heading1"]))
-    story.append(Spacer(1, 12))
-    story.append(Image(grafico, width=400, height=300))
-
-    doc.build(story)
 
 # ================= APP =================
 archivo = st.file_uploader("Subir matriz Excel", type=["xlsx"])
@@ -82,14 +53,24 @@ if archivo:
         grafico = crear_grafico(labels, values)
 
         if st.button("Generar PDF"):
-            ruta_pdf = BASE_DIR / "informe_base.pdf"
-            generar_pdf(ruta_pdf, grafico)
+            pdf_path = BASE_DIR / "informe.pdf"
+            grafico_path = BASE_DIR / "grafico.png"
 
-            with open(ruta_pdf, "rb") as f:
+            # guardar gráfico temporal
+            with open(grafico_path, "wb") as f:
+                f.write(grafico.getbuffer())
+
+            generar_pdf(
+                ruta_pdf=str(pdf_path),
+                portada_path=str(ASSETS_DIR / "portada.png"),
+                grafico_path=str(grafico_path)
+            )
+
+            with open(pdf_path, "rb") as f:
                 st.download_button(
                     "⬇️ Descargar PDF",
                     f,
-                    file_name="informe_base.pdf",
+                    file_name="informe.pdf",
                     mime="application/pdf"
                 )
 
