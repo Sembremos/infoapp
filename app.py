@@ -31,7 +31,12 @@ def grafico_pie(bloque, titulo):
     if bloque.empty:
         return ""
     fig, ax = plt.subplots()
-    ax.pie(bloque["value"], labels=bloque["label"], autopct="%1.0f%%", startangle=90)
+    ax.pie(
+        bloque["value"],
+        labels=bloque["label"],
+        autopct="%1.0f%%",
+        startangle=90
+    )
     ax.axis("equal")
     ax.set_title(titulo)
     return fig_to_base64(fig)
@@ -51,6 +56,12 @@ def grafico_barras(bloque, titulo):
 html = Path("Informe.html").read_text(encoding="utf-8")
 css = Path("estilos.css").read_text(encoding="utf-8")
 
+# 🔴 QUITAR LINK CSS (SOLO PARA STREAMLIT)
+html = html.replace(
+    '<link rel="stylesheet" href="estilos.css">',
+    ''
+)
+
 # ================== IMÁGENES BASE64 ==================
 imagenes = [
     "portada.png","intro.png","conformacion.png","participacion.png",
@@ -61,7 +72,10 @@ imagenes = [
 for img in imagenes:
     p = Path(img)
     if p.exists():
-        html = html.replace(f'src="{img}"', f'src="{img_to_base64(p)}"')
+        html = html.replace(
+            f'src="{img}"',
+            f'src="{img_to_base64(p)}"'
+        )
 
 # ================== SUBIR EXCEL ==================
 archivo_excel = st.file_uploader("Subir matriz Excel", type=["xlsx"])
@@ -177,10 +191,19 @@ if archivo_excel:
     )
 
 # ================== INYECTAR CSS ==================
-html = html.replace("</head>", f"<style>{css}</style></head>")
+html = html.replace(
+    "</head>",
+    f"<style>{css}</style></head>"
+)
 
 # ================== PREVIEW ==================
-st.components.v1.html(html, height=1000, scrolling=True)
+st.components.v1.html(html, height=1200, scrolling=True)
 
 # ================== DESCARGA ==================
-st.download_button("⬇️ Descargar HTML", html, "Informe.html", "text/html")
+st.download_button(
+    "⬇️ Descargar HTML (listo para PDF)",
+    html,
+    "Informe.html",
+    "text/html"
+)
+
