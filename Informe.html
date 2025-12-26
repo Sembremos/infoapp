@@ -7,130 +7,178 @@
 
 <body>
 
-  <!-- ======================
-       PORTADA
-       ====================== -->
-  <div class="portada">
-    <img src="portada.png" alt="Portada del informe">
+<!-- ======================
+     PORTADA PRINCIPAL
+     ====================== -->
+<div class="portada">
+  <img src="portada.png" alt="Portada del informe">
+</div>
+
+<!-- ======================
+     INTRODUCCIÓN
+     ====================== -->
+<div class="seccion-portada">
+  <img src="intro.png" alt="Introducción">
+</div>
+
+<header></header>
+<main>
+
+  <h3>Introducción</h3>
+
+  <p>
+    Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional
+    el Modelo Preventivo de Gestión Policial, una iniciativa estratégica destinada a fortalecer la
+    seguridad pública a través de un enfoque proactivo y colaborativo.
+  </p>
+
+  <p>
+    El presente informe se concibe como un instrumento dinámico y orientado hacia el futuro,
+    diseñado para proporcionar información clave y un plan de trabajo estructurado.
+  </p>
+
+  <div class="conformacion">
+    <img src="conformacion.png" alt="Conformación">
   </div>
 
-  <div class="page-break"></div>
+</main>
 
-  <header></header>
+<!-- ======================
+     PARTICIPACIÓN
+     ====================== -->
+<div class="seccion-portada">
+  <img src="participacion.png" alt="Participación">
+</div>
 
-  <main>
+<header></header>
+<main>
 
-    <div class="seccion-portada">
-      <img src="intro.png" alt="Introducción">
-    </div>
+  <h3>Datos de participación</h3>
 
-    <h3>Introducción</h3>
+  <h2>Participación por distrito</h2>
+  <table class="tabla-datos">
+    <thead>
+      <tr>
+        <th>Distrito</th>
+        <th>Porcentaje</th>
+        <th>Cantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{tabla_distritos}}
+    </tbody>
+  </table>
 
-    <p>
-      Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional el Modelo Preventivo de Gestión Policial.
-    </p>
+  <div class="grafico"><img src="{{grafico_relacion}}"></div>
+  <div class="grafico"><img src="{{grafico_edad}}"></div>
+  <div class="grafico"><img src="{{grafico_escolaridad}}"></div>
+  <div class="grafico"><img src="{{grafico_genero}}"></div>
 
-    <p>
-      El presente informe se concibe como un instrumento dinámico y orientado hacia el futuro.
-    </p>
+</main>
 
-    <div class="conformacion">
-      <img src="conformacion.png" alt="Conformación">
-    </div>
+<!-- ======================
+     PROCESO METODOLÓGICO
+     ====================== -->
+<div class="seccion-portada">
+  <img src="metodologico.png" alt="Proceso Metodológico">
+</div>
 
-  </main>
+<header></header>
+<main>
 
-  <!-- ======================
-       DATOS DE PARTICIPACIÓN
-       ====================== -->
-  <div class="page-break"></div>
-  <header></header>
-  <main>
+  <h3>Proceso Metodológico</h3>
+  <h2>Triángulo de las Violencias</h2>
 
-    <div class="seccion-portada">
-      <img src="participacion.png" alt="Participación">
-    </div>
+  <p>
+    Metodología creada por Johan Galtung que permite analizar los conflictos mediante
+    la violencia directa, estructural y cultural.
+  </p>
 
-    <div class="page-break"></div>
-    <h3>Datos de participación</h3>
+</main>
 
-    <h2>Participación por distrito</h2>
-    <table class="tabla-datos">
-      <thead>
-        <tr>
-          <th>Distrito</th>
-          <th>Porcentaje</th>
-          <th>Cantidad</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{tabla_distritos}}
-      </tbody>
-    </table>
+<!-- ======================
+     INFORMACIÓN ESTADÍSTICA
+     ====================== -->
+<div class="seccion-portada">
+  <img src="estadistica.png" alt="Estadística">
+</div>
 
-    <div class="grafico"><img src="{{grafico_relacion}}"></div>
-    <div class="grafico"><img src="{{grafico_edad}}"></div>
-    <div class="grafico"><img src="{{grafico_escolaridad}}"></div>
-    <div class="grafico"><img src="{{grafico_genero}}"></div>
+<header></header>
+<main>
 
-  </main>
+  <h3>Información estadística</h3>
+  <p>Texto de información estadística…</p>
 
-  <!-- ======================
-       PERCEPCIÓN CIUDADANA
-       ====================== -->
-  <div class="page-break"></div>
-  <header></header>
-  <main>
+</main>
 
-    <div class="seccion-portada">
-      <img src="percepcion.png" alt="Percepción Ciudadana">
-    </div>
+<!-- ======================
+     LÍNEAS DE ACCIÓN
+     ====================== -->
+<div class="seccion-portada">
+  <img src="lineas.png" alt="Líneas de acción">
+</div>
 
-    <div class="page-break"></div>
-    <h3>Percepción Ciudadana</h3>
+<header></header>
+<main>
 
-    <div class="grafico"><img src="{{grafico_seguridad_comunidad}}"></div>
-    <div class="grafico"><img src="{{grafico_seguridad_barrio}}"></div>
+  <h3>Líneas de acción</h3>
+  <h2>Consolidación de resultados</h2>
 
-    <table class="tabla-datos">
-      <thead>
-        <tr>
-          <th>Condición</th>
-          <th>Porcentaje</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{tabla_seguridad}}
-      </tbody>
-    </table>
+  <p>
+    La formulación de líneas de acción se construye a partir del análisis territorial
+    y la coordinación interinstitucional.
+  </p>
 
-    <div class="grafico"><img src="{{grafico_victima_denuncia}}"></div>
-    <div class="grafico"><img src="{{grafico_no_denuncia}}"></div>
-    <div class="grafico"><img src="{{grafico_horario}}"></div>
-    <div class="grafico"><img src="{{grafico_armas}}"></div>
-    <div class="grafico"><img src="{{grafico_servicio_policial}}"></div>
-    <div class="grafico"><img src="{{grafico_calificacion}}"></div>
-    <div class="grafico"><img src="{{grafico_conoce_policias}}"></div>
-    <div class="grafico"><img src="{{grafico_conversado}}"></div>
-    <div class="grafico"><img src="{{grafico_seguridad_local}}"></div>
-    <div class="grafico"><img src="{{grafico_conoce_programa}}"></div>
-    <div class="grafico"><img src="{{grafico_inscrito_programa}}"></div>
-    <div class="grafico"><img src="{{grafico_contacto_programa}}"></div>
+</main>
 
-  </main>
+<!-- ======================
+     PERCEPCIÓN CIUDADANA
+     ====================== -->
+<div class="seccion-portada">
+  <img src="percepcion.png" alt="Percepción Ciudadana">
+</div>
 
-  <!-- ======================
-       FINAL
-       ====================== -->
-  <div class="page-break"></div>
-  <header></header>
-  <main>
-    <div class="seccion-portada">
-      <img src="final.png" alt="Final">
-    </div>
-  </main>
+<header></header>
+<main>
 
-  <footer></footer>
+  <h3>Percepción Ciudadana</h3>
+
+  <div class="grafico"><img src="{{grafico_seguridad_comunidad}}"></div>
+  <div class="grafico"><img src="{{grafico_seguridad_barrio}}"></div>
+
+  <table class="tabla-datos">
+    <thead>
+      <tr>
+        <th>Condición</th>
+        <th>Porcentaje</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{tabla_seguridad}}
+    </tbody>
+  </table>
+
+  <div class="grafico"><img src="{{grafico_victima_denuncia}}"></div>
+  <div class="grafico"><img src="{{grafico_no_denuncia}}"></div>
+  <div class="grafico"><img src="{{grafico_horario}}"></div>
+  <div class="grafico"><img src="{{grafico_armas}}"></div>
+  <div class="grafico"><img src="{{grafico_servicio_policial}}"></div>
+  <div class="grafico"><img src="{{grafico_calificacion}}"></div>
+  <div class="grafico"><img src="{{grafico_conoce_policias}}"></div>
+  <div class="grafico"><img src="{{grafico_conversado}}"></div>
+  <div class="grafico"><img src="{{grafico_seguridad_local}}"></div>
+  <div class="grafico"><img src="{{grafico_conoce_programa}}"></div>
+  <div class="grafico"><img src="{{grafico_inscrito_programa}}"></div>
+  <div class="grafico"><img src="{{grafico_contacto_programa}}"></div>
+
+</main>
+
+<!-- ======================
+     FINAL
+     ====================== -->
+<div class="seccion-portada">
+  <img src="final.png" alt="Final">
+</div>
 
 </body>
 </html>
