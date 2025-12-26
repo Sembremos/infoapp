@@ -5,17 +5,18 @@ from io import BytesIO
 from pathlib import Path
 
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Image, Spacer, PageBreak
+    BaseDocTemplate, PageTemplate, Frame,
+    Paragraph, Image, Spacer, PageBreak
 )
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import cm
 
-# ================= CONFIG STREAMLIT =================
+# ================= STREAMLIT CONFIG =================
 st.set_page_config(page_title="Generador de Informes PDF", layout="centered")
 st.title("Generador de Informes PDF")
 
-# ================= RUTAS BASE =================
+# ================= RUTAS =================
 BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
 
@@ -49,52 +50,60 @@ def crear_grafico_pie(labels, values, titulo):
     buf.seek(0)
     return buf
 
-# ================= GENERADOR PDF =================
+# ================= PDF GENERATOR =================
 def generar_pdf(ruta_pdf, data, graficos):
-    doc = SimpleDocTemplate(
+    styles = getSampleStyleSheet()
+
+    doc = BaseDocTemplate(
         ruta_pdf,
         pagesize=A4,
-        rightMargin=2 * cm,
         leftMargin=2 * cm,
+        rightMargin=2 * cm,
         topMargin=2 * cm,
         bottomMargin=2 * cm
     )
 
-    styles = getSampleStyleSheet()
+    # ---- Frame FULL PAGE (portadas) ----
+    frame_full = Frame(
+        0, 0,
+        A4[0],
+        A4[1],
+        id="full"
+    )
+
+    # ---- Frame NORMAL (contenido) ----
+    frame_normal = Frame(
+        doc.leftMargin,
+        doc.bottomMargin,
+        doc.width,
+        doc.height,
+        id="normal"
+    )
+
+    doc.addPageTemplates([
+        PageTemplate(id="Portada", frames=[frame_full]),
+        PageTemplate(id="Contenido", frames=[frame_normal]),
+    ])
+
     story = []
 
-    # ===== PORTADAS =====
-    for portada in ["portada.png", "intro.png"]:
-        story.append(
-            Image(
-                str(ASSETS_DIR / portada),
-                width=595,
-                height=842
-            )
-        )
-        story.append(PageBreak())
+    # ===== PORTADA =====
+    story.append(Image(str(ASSETS_DIR / "portada.png"), width=A4[0], height=A4[1]))
+    story.append(PageBreak())
 
-    # ===== INTRODUCCIÓN =====
+    # ===== INTRO =====
+    story.append(Image(str(ASSETS_DIR / "intro.png"), width=A4[0], height=A4[1]))
+    story.append(PageBreak())
+
+    # ===== INTRODUCCIÓN TEXTO =====
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Paragraph(data["introduccion"], styles["Normal"]))
     story.append(Spacer(1, 12))
-    story.append(
-        Image(
-            str(ASSETS_DIR / "conformacion.png"),
-            width=400,
-            height=300
-        )
-    )
+    story.append(Image(str(ASSETS_DIR / "conformacion.png"), width=400, height=300))
     story.append(PageBreak())
 
     # ===== PARTICIPACIÓN =====
-    story.append(
-        Image(
-            str(ASSETS_DIR / "participacion.png"),
-            width=595,
-            height=842
-        )
-    )
+    story.append(Image(str(ASSETS_DIR / "participacion.png"), width=A4[0], height=A4[1]))
     story.append(PageBreak())
 
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
@@ -104,13 +113,7 @@ def generar_pdf(ruta_pdf, data, graficos):
     story.append(PageBreak())
 
     # ===== PERCEPCIÓN =====
-    story.append(
-        Image(
-            str(ASSETS_DIR / "percepcion.png"),
-            width=595,
-            height=842
-        )
-    )
+    story.append(Image(str(ASSETS_DIR / "percepcion.png"), width=A4[0], height=A4[1]))
     story.append(PageBreak())
 
     story.append(Paragraph("Percepción ciudadana", styles["Heading1"]))
@@ -118,13 +121,7 @@ def generar_pdf(ruta_pdf, data, graficos):
     story.append(PageBreak())
 
     # ===== FINAL =====
-    story.append(
-        Image(
-            str(ASSETS_DIR / "final.png"),
-            width=595,
-            height=842
-        )
-    )
+    story.append(Image(str(ASSETS_DIR / "final.png"), width=A4[0], height=A4[1]))
 
     doc.build(story)
 
@@ -148,22 +145,17 @@ if archivo:
         )
 
         # ===== GRÁFICOS =====
-
         labels, values = limpiar_series(
             ["Comunidad", "Comercio", "Fuerza Pública"],
             part.iloc[33, 4:7] * 100
         )
-        grafico_relacion = crear_grafico_barras(
-            labels, values, "Relación de participación"
-        )
+        grafico_relacion = crear_grafico_barras(labels, values, "Relación de participación")
 
         labels, values = limpiar_series(
             part.iloc[1:6, 1],
             part.iloc[1:6, 2] * 100
         )
-        grafico_edad = crear_grafico_pie(
-            labels, values, "Participación por edad"
-        )
+        grafico_edad = crear_grafico_pie(labels, values, "Participación por edad")
 
         labels, values = limpiar_series(
             rel.iloc[1:4, 0],
