@@ -184,4 +184,3 @@ st.components.v1.html(html, height=1000, scrolling=True)
 
 # ================== DESCARGA ==================
 st.download_button("⬇️ Descargar HTML", html, "Informe.html", "text/html")
-
