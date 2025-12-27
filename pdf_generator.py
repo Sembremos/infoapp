@@ -16,24 +16,19 @@ def generar_pdf(ruta_pdf, portada_path, grafico_path):
 
     story = []
 
-    # PORTADA (AJUSTADA AL FRAME REAL)
-    story.append(
-        Image(
-            portada_path,
-            width=doc.width - 10,
-            height=doc.height - 10
-        )
-    )
+    # ===== PORTADA (ESCALADO SEGURO) =====
+    portada = Image(portada_path)
+    portada._restrictSize(doc.width, doc.height)  # ← CLAVE
+    story.append(portada)
     story.append(PageBreak())
 
-    # CONTENIDO
+    # ===== CONTENIDO =====
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
-    story.append(
-        Image(
-            grafico_path,
-            width=400,
-            height=300
-        )
-    )
+
+    grafico = Image(grafico_path)
+    grafico._restrictSize(400, 300)
+    story.append(grafico)
+
+    doc.build(story)
 
     doc.build(story)
