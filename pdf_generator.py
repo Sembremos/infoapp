@@ -16,17 +16,17 @@ def generar_pdf(ruta_pdf, portada_path, grafico_path):
 
     story = []
 
-    # ===== PORTADA (SOLO EN SU PÁGINA) =====
+    # PORTADA (AJUSTADA AL FRAME REAL)
     story.append(
         Image(
             portada_path,
-            width=doc.width,
-            height=doc.height
+            width=doc.width - 10,
+            height=doc.height - 10
         )
     )
-    story.append(PageBreak())  # 🔴 ESTO ES LO QUE FALTABA
+    story.append(PageBreak())
 
-    # ===== CONTENIDO =====
+    # CONTENIDO
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
     story.append(
         Image(
