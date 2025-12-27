@@ -6,9 +6,9 @@ from pathlib import Path
 
 from pdf_generator import generar_pdf
 
-# ================= STREAMLIT =================
+# ================= STREAMLIT CONFIG =================
 st.set_page_config(page_title="Generador de PDF", layout="centered")
-st.title("Generador de PDF – Versión Estable")
+st.title("Generador de PDF – Base Estable")
 
 # ================= RUTAS =================
 BASE_DIR = Path(__file__).resolve().parent
@@ -38,6 +38,7 @@ archivo = st.file_uploader("Subir matriz Excel", type=["xlsx"])
 
 if archivo:
     try:
+        # Leer Excel
         df = pd.read_excel(
             archivo,
             sheet_name="participacion",
@@ -45,34 +46,34 @@ if archivo:
             engine="openpyxl"
         )
 
+        # Extraer datos
         labels, values = limpiar_series(
             ["Comunidad", "Comercio", "Fuerza Pública"],
             df.iloc[33, 4:7] * 100
         )
 
-        grafico = crear_grafico(labels, values)
+        # Crear gráfico
+        grafico_buffer = crear_grafico(labels, values)
 
         if st.button("Generar PDF"):
-            pdf_path = BASE_DIR / "informe.pdf"
-            grafico_path = BASE_DIR / "grafico.png"
-
-            # guardar gráfico temporal
+            # Guardar gráfico temporal
+            grafico_path = BASE_DIR / "grafico_temp.png"
             with open(grafico_path, "wb") as f:
-                f.write(grafico.getbuffer())
+                f.write(grafico_buffer.getbuffer())
 
-            generar_pdf(
-                ruta_pdf=str(pdf_path),
+            # Generar PDF en memoria (BytesIO)
+            pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
                 grafico_path=str(grafico_path)
             )
 
-            with open(pdf_path, "rb") as f:
-                st.download_button(
-                    "⬇️ Descargar PDF",
-                    f,
-                    file_name="informe.pdf",
-                    mime="application/pdf"
-                )
+            # Descargar PDF válido
+            st.download_button(
+                label="⬇️ Descargar PDF",
+                data=pdf_buffer,
+                file_name="informe.pdf",
+                mime="application/pdf"
+            )
 
     except Exception as e:
         st.error(f"Error: {e}")
