@@ -1,12 +1,14 @@
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, PageBreak
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
+from io import BytesIO
 
-def generar_pdf(ruta_pdf, portada_path, grafico_path):
+def generar_pdf(portada_path, grafico_path):
+    buffer = BytesIO()
     styles = getSampleStyleSheet()
 
     doc = SimpleDocTemplate(
-        ruta_pdf,
+        buffer,
         pagesize=A4,
         leftMargin=40,
         rightMargin=40,
@@ -16,13 +18,13 @@ def generar_pdf(ruta_pdf, portada_path, grafico_path):
 
     story = []
 
-    # ===== PORTADA (ESCALADO SEGURO) =====
+    # PORTADA (escalado seguro)
     portada = Image(portada_path)
-    portada._restrictSize(doc.width, doc.height)  # ← CLAVE
+    portada._restrictSize(doc.width, doc.height)
     story.append(portada)
     story.append(PageBreak())
 
-    # ===== CONTENIDO =====
+    # CONTENIDO
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
 
     grafico = Image(grafico_path)
@@ -31,4 +33,5 @@ def generar_pdf(ruta_pdf, portada_path, grafico_path):
 
     doc.build(story)
 
-    doc.build(story)
+    buffer.seek(0)
+    return buffer
