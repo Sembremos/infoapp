@@ -6,7 +6,7 @@ from pathlib import Path
 
 from pdf_generator import generar_pdf
 
-# ================= STREAMLIT CONFIG =================
+# ================= STREAMLIT =================
 st.set_page_config(page_title="Generador de PDF", layout="centered")
 st.title("Generador de PDF – Base Estable")
 
@@ -38,7 +38,6 @@ archivo = st.file_uploader("Subir matriz Excel", type=["xlsx"])
 
 if archivo:
     try:
-        # Leer Excel
         df = pd.read_excel(
             archivo,
             sheet_name="participacion",
@@ -46,13 +45,11 @@ if archivo:
             engine="openpyxl"
         )
 
-        # Extraer datos
         labels, values = limpiar_series(
             ["Comunidad", "Comercio", "Fuerza Pública"],
             df.iloc[33, 4:7] * 100
         )
 
-        # Crear gráfico
         grafico_buffer = crear_grafico(labels, values)
 
         if st.button("Generar PDF"):
@@ -61,13 +58,12 @@ if archivo:
             with open(grafico_path, "wb") as f:
                 f.write(grafico_buffer.getbuffer())
 
-            # Generar PDF en memoria (BytesIO)
+            # Generar PDF (BytesIO)
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
                 grafico_path=str(grafico_path)
             )
 
-            # Descargar PDF válido
             st.download_button(
                 label="⬇️ Descargar PDF",
                 data=pdf_buffer,
