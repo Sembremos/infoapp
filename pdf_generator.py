@@ -34,16 +34,17 @@ def generar_pdf(portada_path, grafico_path):
 
     story = []
 
-    # ===== CONTENIDO (empieza después de la portada) =====
-    story.append(PageBreak())
+    # ===== CONTENIDO (empieza DESPUÉS de intro) =====
+    story.append(PageBreak())  # después de portada
+    story.append(PageBreak())  # después de intro
 
-    # Introducción
+    # Introducción (texto)
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Paragraph("Esto es la intro", styles["Normal"]))
 
     story.append(PageBreak())
 
-    story.append(Paragraph("HOla", styles["Heading1"]))
+    story.append(Paragraph("Hola", styles["Heading1"]))
 
     story.append(PageBreak())
 
@@ -55,10 +56,12 @@ def generar_pdf(portada_path, grafico_path):
     # ===== BUILD =====
     doc.build(
         story,
-        onFirstPage=FullImage(portada_path)
+        onFirstPage=FullImage(portada_path),
+        onLaterPages=FullImage("assets/intro.png")
     )
 
     buffer.seek(0)
     return buffer
+
 
 
