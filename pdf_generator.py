@@ -99,6 +99,10 @@ def generar_pdf(portada_path, grafico_path):
         "San Ramón",
         styles["TituloDelta"]
 ))
+    story.append(Paragraph(
+        "D-28",
+        styles["TituloD2"]
+))
 
     
 
