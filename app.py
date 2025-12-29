@@ -1,4 +1,4 @@
-import streamlit as st
+oimport streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from io import BytesIO
@@ -9,7 +9,7 @@ from pdf_generator import generar_pdf
 
 # ================= STREAMLIT =================
 st.set_page_config(page_title="Generador de PDF", layout="centered")
-st.title("Generador de PDF – Base Estable")
+st.title("Generador de Informes SS")
 
 # ================= RUTAS =================
 BASE_DIR = Path(__file__).resolve().parent
@@ -35,7 +35,7 @@ def crear_grafico(labels, values):
     return buf
 
 # ================= APP =================
-archivo = st.file_uploader("Subir matriz Excel", type=["xlsx"])
+archivo = st.file_uploader("Aquí suba o arrastre el ENGINE de la Delegación correspondiente", type=["xlsx"])
 
 if archivo:
     try:
