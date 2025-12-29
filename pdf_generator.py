@@ -49,7 +49,7 @@ def header_footer(canvas, doc):
 
 
 # ================= GENERADOR PDF =================
-def generar_pdf(portada_path, grafico_path):
+def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
@@ -97,11 +97,11 @@ def generar_pdf(portada_path, grafico_path):
 ))
 
     story.append(Paragraph(
-        "San Ramón",
+        delegacion,
         styles["TituloDelta"]
 ))
     story.append(Paragraph(
-        "D-28",
+        codigo,
         styles["TituloD2"]
 ))
 
