@@ -66,7 +66,7 @@ def generar_pdf(portada_path, grafico_path):
     leading=30,
     spaceAfter=10,
     alignment=5
-    ))
+))
     styles.add(ParagraphStyle(
     name="TituloD2",
     fontSize=60,
@@ -74,7 +74,7 @@ def generar_pdf(portada_path, grafico_path):
     leading=30,
     spaceAfter=10,
     alignment=5
-    ))
+))
 
 
     doc = SimpleDocTemplate(
