@@ -29,7 +29,7 @@ def header_footer(canvas, doc):
         0,
         page_height - 80,
         width=page_width,
-        height=80,
+        height=60,
         mask="auto"
     )
 
