@@ -19,8 +19,17 @@ def generar_pdf(portada_path, grafico_path):
 
     story = []
 
-    # CONTENIDO (empieza en página 2)
+    # Introduccion
+    story.append(Paragraph("Introducción", styles["Heading1"]))
+    story.append(Paragraph("Esto es la intro", styles["Normal"]))
+
     story.append(PageBreak())
+
+    story.append(Paragraph("HOla", styles["Heading1"]))
+
+    story.append(PageBreak())
+
+ #salto a graficos
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
 
     grafico = Image(grafico_path, width=400, height=300)
@@ -38,16 +47,6 @@ def generar_pdf(portada_path, grafico_path):
             preserveAspectRatio=True,
             mask='auto'
         )
-    story.append(PageBreak())
-
-    story.append(Paragraph("Introducción", styles["Heading1"]))
-    story.append(Paragraph("Esto es la intro", styles["Normal"]))
-
-    story.append(PageBreak())
-
-    story.append(Paragraph("HOla", styles["Heading1"]))
-
-    story.append(PageBreak())
 
     doc.build(
         story,
