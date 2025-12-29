@@ -1,9 +1,23 @@
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, PageBreak
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import PageBreak
 from io import BytesIO
 
+# ================= UTILIDAD FULL PAGE =================
+def FullImage(path):
+    def draw(canvas, doc):
+        w, h = A4
+        canvas.drawImage(
+            path,
+            0, 0,
+            width=w,
+            height=h,
+            preserveAspectRatio=True,
+            mask="auto"
+        )
+    return draw
+
+# ================= GENERADOR PDF =================
 def generar_pdf(portada_path, grafico_path):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -18,9 +32,11 @@ def generar_pdf(portada_path, grafico_path):
     )
 
     story = []
+
+    # ===== CONTENIDO (empieza después de la portada) =====
     story.append(PageBreak())
-    
-    # Introduccion
+
+    # Introducción
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Paragraph("Esto es la intro", styles["Normal"]))
 
@@ -30,29 +46,18 @@ def generar_pdf(portada_path, grafico_path):
 
     story.append(PageBreak())
 
- #salto a graficos
+    # Gráficos
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
-
     grafico = Image(grafico_path, width=400, height=300)
     story.append(grafico)
 
-    # ---------- PORTADA FULL PAGE ----------
-    def portada_full(canvas, doc):
-        width, height = A4
-        canvas.drawImage(
-            portada_path,
-            0,
-            0,
-            width=width,
-            height=height,
-            preserveAspectRatio=True,
-            mask='auto'
-        )
-
+    # ===== BUILD =====
     doc.build(
         story,
-        onFirstPage=portada_full
+        onFirstPage=FullImage(portada_path)
     )
 
     buffer.seek(0)
     return buffer
+
+
