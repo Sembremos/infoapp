@@ -89,7 +89,7 @@ def generar_pdf(portada_path, grafico_path):
 
     story.append(PageBreak())
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
-    story.append(Image(grafico_path, width=00, height=300))
+    story.append(Image(grafico_path, width=400, height=300))
 
     # ===== CONTROL DE PÁGINAS =====
     def first_page(canvas, doc):
@@ -100,17 +100,8 @@ def generar_pdf(portada_path, grafico_path):
             FullImage("assets/intro.png")(canvas, doc)
         elif doc.page == 4:
             FullImage("assets/participacion.png")(canvas, doc)
-
-    def later_pages(canvas, doc):
-    if doc.page == 2:
-        FullImage("assets/intro.png")(canvas, doc)
-
-    elif doc.page == 4:
-        FullImage("assets/participacion.png")(canvas, doc)
-
-    else:
-        header_footer(canvas, doc)
-
+        else:
+            header_footer(canvas, doc)
 
     doc.build(
         story,
