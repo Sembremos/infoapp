@@ -41,9 +41,12 @@ def generar_pdf(portada_path, grafico_path):
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Paragraph("Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional el Modelo Preventivo de Gestión Policial, una iniciativa estratégica destinada a fortalecer la seguridad pública a través de un enfoque proactivo y colaborativo. Una parte integral de este modelo es la Estrategia Integral de Prevención para la Seguridad Pública, conocida como "Sembremos Seguridad", que se centra en la contextualización de las dinámicas delincuenciales y sociales que afectan a nuestras comunidades.
 ", styles["Normal"]))
-    story.append(Paragraph("El presente informe, elaborado para el territorio que comprende la Delegación Policial de San Ramón, surge como una herramienta esencial para la toma efectiva de decisiones. Este informe se concibe como un instrumento dinámico y orientado hacia el futuro, diseñado para proporcionar información clave y un plan de trabajo estructurado que permita abordar las problemáticas prioritarias identificadas en el ámbito de la seguridad pública.
-", styles["Normal"]))
-    Story.append(paragraph("COnformación del Informe Territorial", Styles["Heading1"]))
+    story.append(Paragraph(
+        "El presente informe, elaborado para el territorio que comprende la Delegación Policial de San Ramón, surge como una herramienta esencial para la toma efectiva de decisiones. Este informe se concibe como un instrumento dinámico y orientado hacia el futuro, diseñado para proporcionar información clave y un plan de trabajo estructurado que permita abordar las problemáticas prioritarias identificadas en el ámbito de la seguridad pública.
+"
+    , styles["Normal"]
+    ))
+    Story.append(paragraph("Conformación del Informe Territorial", Styles["Heading1"]))
 
     story.append(PageBreak())
 
@@ -65,10 +68,9 @@ def generar_pdf(portada_path, grafico_path):
     def later_pages(canvas, doc):
         if doc.page == 2:
             FullImage("assets/intro.png")(canvas, doc)
+        elif doc.page == 4:
+            FullImage("assets/participacion.png")(canvas. doc)
 
-    def later_pages(canvas, doc):
-        if doc.page == 4:
-            FullImage("assets/participacion.png")(canvas, doc)
 
     doc.build(
         story,
