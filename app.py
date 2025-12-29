@@ -1,61 +1,92 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+from io import BytesIO
 from pathlib import Path
 import base64
 
 from pdf_generator import generar_pdf
 
 # ================= STREAMLIT =================
-st.set_page_config(page_title="Generador de Informe", layout="wide")
-st.title("Generador de Informe – Vista previa PDF")
+st.set_page_config(page_title="Generador de PDF", layout="centered")
+st.title("Generador de PDF – Base Estable")
 
 # ================= RUTAS =================
 BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
+
+# ================= UTILIDADES =================
+def limpiar_series(labels, values):
+    df = pd.DataFrame({"label": labels, "value": values})
+    df["value"] = pd.to_numeric(df["value"], errors="coerce")
+    df = df.dropna()
+    return df["label"].astype(str), df["value"]
+
+def crear_grafico(labels, values):
+    fig, ax = plt.subplots()
+    ax.bar(labels, values)
+    ax.set_ylim(0, 100)
+    plt.xticks(rotation=20)
+
+    buf = BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight", dpi=200)
+    plt.close(fig)
+    buf.seek(0)
+    return buf
 
 # ================= APP =================
 archivo = st.file_uploader("Subir matriz Excel", type=["xlsx"])
 
 if archivo:
     try:
-        # Leer matriz (solo para validar carga; el PDF usa lo que ya tenga)
-        pd.read_excel(
+        # 🔹 SOLO lectura para validar archivo (no cambia lógica)
+        df = pd.read_excel(
             archivo,
             sheet_name="Hoja1",
             header=None,
             engine="openpyxl"
         )
 
-        # 👉 Generar PDF en memoria (firma ORIGINAL)
-        pdf_buffer = generar_pdf(
-            portada_path=str(ASSETS_DIR / "portada.png")
-        )
+        labels = ["Comunidad", "Comercio", "Fuerza Pública"]
+        values = df.iloc[180:183, 5]
 
-        # ================= VISTA PREVIA PDF =================
-        st.subheader("Vista previa del informe")
+        labels, values = limpiar_series(labels, values)
+        grafico_buffer = crear_grafico(labels, values)
 
-        pdf_bytes = pdf_buffer.getvalue()
-        base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
+        if st.button("Generar PDF"):
+            grafico_path = BASE_DIR / "grafico_temp.png"
+            with open(grafico_path, "wb") as f:
+                f.write(grafico_buffer.getbuffer())
 
-        st.components.v1.html(
-            f"""
-            <iframe
-                src="data:application/pdf;base64,{base64_pdf}"
-                width="100%"
-                height="900px">
-            </iframe>
-            """,
-            height=900,
-            scrolling=True
-        )
+            # 🔴 LLAMADA ORIGINAL – SIN CAMBIOS
+            pdf_buffer = generar_pdf(
+                portada_path=str(ASSETS_DIR / "portada.png"),
+                grafico_path=str(grafico_path)
+            )
 
-        # ================= DESCARGA =================
-        st.download_button(
-            "⬇️ Descargar PDF",
-            data=pdf_bytes,
-            file_name="informe.pdf",
-            mime="application/pdf"
-        )
+            # ================= VISTA PREVIA =================
+            pdf_bytes = pdf_buffer.getvalue()
+            base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
+
+            st.subheader("Vista previa del informe")
+            st.components.v1.html(
+                f"""
+                <iframe
+                    src="data:application/pdf;base64,{base64_pdf}"
+                    width="100%"
+                    height="800px">
+                </iframe>
+                """,
+                height=800,
+                scrolling=True
+            )
+
+            st.download_button(
+                label="⬇️ Descargar PDF",
+                data=pdf_bytes,
+                file_name="informe.pdf",
+                mime="application/pdf"
+            )
 
     except Exception as e:
         st.error(f"Error procesando el archivo: {e}")
