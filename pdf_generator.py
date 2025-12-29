@@ -62,7 +62,7 @@ def generar_pdf(portada_path, grafico_path):
     styles.add(ParagraphStyle(
     name="TituloDelta",
     fontSize=45,
-    color="#30a907",
+    textColor=colors.HexColor("#30a907"),
     leading=30,
     spaceAfter=30,
     alignment=1
