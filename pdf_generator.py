@@ -53,17 +53,11 @@ def generar_pdf(portada_path, grafico_path):
         """El presente informe, elaborado para el territorio que comprende la Delegación Policial de San Ramón, surge como una herramienta esencial para la toma efectiva de decisiones. Este informe se concibe como un instrumento dinámico y orientado hacia el futuro, diseñado para proporcionar información clave y un plan de trabajo estructurado que permita abordar las problemáticas prioritarias identificadas en el ámbito de la seguridad pública.""",
         styles["Normal"]
     ))
-    story.append(Spacer(1,12))
-
-
-    story.append(Paragraph(
-        "Conformación del Informe Territorial",
-        styles["Heading1"]
-    ))
+    story.append(Spacer(1,20))
 
     story.append(Image(
                 "assets/conformacion.png",
-                width=500,
+                width=600,
                 height=400
     ))
 
