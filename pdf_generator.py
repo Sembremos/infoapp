@@ -55,7 +55,8 @@ def generar_pdf(portada_path, grafico_path):
     styles.add(ParagraphStyle(
     name="TituloGrande",
     fontSize=26,
-    leading=30,
+    textColor=colors.HexColor("#FFFFFF"),
+    leading=10,
     spaceAfter=10,
     alignment=4  # centrado
 ))
