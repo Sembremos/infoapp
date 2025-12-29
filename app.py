@@ -7,8 +7,8 @@ from pathlib import Path
 from pdf_generator import generar_pdf
 
 # ================= STREAMLIT =================
-st.set_page_config(page_title="Generador de PDF", layout="centered")
-st.title("Generador de PDF – Base Estable")
+st.set_page_config(page_title="Generador de Informe", layout="centered")
+st.title("Generador de Informe – Vista previa")
 
 # ================= RUTAS =================
 BASE_DIR = Path(__file__).resolve().parent
@@ -21,11 +21,15 @@ def limpiar_series(labels, values):
     df = df.dropna()
     return df["label"].astype(str), df["value"]
 
-def crear_grafico(labels, values):
+def crear_grafico(labels, values, preview=False):
     fig, ax = plt.subplots()
     ax.bar(labels, values)
     ax.set_ylim(0, 100)
+    ax.set_ylabel("Porcentaje")
     plt.xticks(rotation=20)
+
+    if preview:
+        st.pyplot(fig)
 
     buf = BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight", dpi=200)
@@ -38,7 +42,7 @@ archivo = st.file_uploader("Subir matriz Excel", type=["xlsx"])
 
 if archivo:
     try:
-        # 🔹 Leer NUEVA matriz (ya procesada)
+        # Leer matriz ya procesada
         df = pd.read_excel(
             archivo,
             sheet_name="Hoja1",
@@ -46,33 +50,38 @@ if archivo:
             engine="openpyxl"
         )
 
-        # 🔹 Tomar valores YA CALCULADOS en la matriz
-        # Ajustá SOLO estos índices si cambian
+        # ====== DATOS DE EJEMPLO (ajustables) ======
+        titulo = df.iloc[4, 1]           # B5
+        valores = df.iloc[180:183, 5]    # F181:F183
         labels = ["Comunidad", "Comercio", "Fuerza Pública"]
-        values = df.iloc[180:183, 5]  # ejemplo: F181:F183
 
-        labels, values = limpiar_series(labels, values)
+        labels, values = limpiar_series(labels, valores)
 
-        grafico_buffer = crear_grafico(labels, values)
+        # ================= VISTA PREVIA =================
+        st.subheader("Vista previa del informe")
 
+        st.markdown(f"### {titulo}")
+
+        grafico_buffer = crear_grafico(labels, values, preview=True)
+
+        # ================= PDF =================
         if st.button("Generar PDF"):
-            # Guardar gráfico temporal
             grafico_path = BASE_DIR / "grafico_temp.png"
             with open(grafico_path, "wb") as f:
                 f.write(grafico_buffer.getbuffer())
 
-            # Generar PDF
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
                 grafico_path=str(grafico_path)
             )
 
             st.download_button(
-                label="⬇️ Descargar PDF",
-                data=pdf_buffer,
-                file_name="informe.pdf",
-                mime="application/pdf"
+                "⬇️ Descargar PDF",
+                pdf_buffer,
+                "informe.pdf",
+                "application/pdf"
             )
 
     except Exception as e:
         st.error(f"Error procesando el archivo: {e}")
+
