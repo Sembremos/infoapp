@@ -66,6 +66,7 @@ def generar_pdf(portada_path, grafico_path):
 
     # Página 3 en adelante (contenido)
     story.append(PageBreak())
+    story.append(Spacer(1,40))
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Spacer(1,12))
 
