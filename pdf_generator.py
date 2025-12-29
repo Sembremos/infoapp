@@ -18,20 +18,30 @@ def generar_pdf(portada_path, grafico_path):
 
     story = []
 
-    # PORTADA (escalado seguro)
-    portada = Image(portada_path)
-    portada._restrictSize(doc.width, doc.height)
-    story.append(portada)
+    # CONTENIDO (empieza en página 2)
     story.append(PageBreak())
-
-    # CONTENIDO
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
 
-    grafico = Image(grafico_path)
-    grafico._restrictSize(400, 300)
+    grafico = Image(grafico_path, width=400, height=300)
     story.append(grafico)
 
-    doc.build(story)
+    # ---------- PORTADA FULL PAGE ----------
+    def portada_full(canvas, doc):
+        width, height = A4
+        canvas.drawImage(
+            portada_path,
+            0,
+            0,
+            width=width,
+            height=height,
+            preserveAspectRatio=True,
+            mask='auto'
+        )
+
+    doc.build(
+        story,
+        onFirstPage=portada_full
+    )
 
     buffer.seek(0)
     return buffer
