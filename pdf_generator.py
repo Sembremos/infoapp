@@ -9,7 +9,8 @@ def FullImage(path):
         w, h = A4
         canvas.drawImage(
             path,
-            0, 0,
+            0,
+            0,
             width=w,
             height=h,
             preserveAspectRatio=True,
