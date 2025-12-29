@@ -59,7 +59,7 @@ def generar_pdf(portada_path, grafico_path):
 
     story.append(Image(
                 "assets/conformacion.png",
-                widgth=400,
+                width=400,
                 height=300
     ))
 
