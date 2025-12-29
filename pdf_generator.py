@@ -1,6 +1,7 @@
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, PageBreak
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import PageBreak
 from io import BytesIO
 
 def generar_pdf(portada_path, grafico_path):
@@ -37,6 +38,16 @@ def generar_pdf(portada_path, grafico_path):
             preserveAspectRatio=True,
             mask='auto'
         )
+    story.append(PageBreak())
+
+    story.append(Paragraph("Introducción", styles["Heading1"]))
+    Story.append(Paragraph("Esto es la intro", styles["Normal"]))
+
+    story.append(PageBreak())
+
+    story.append(Paragraph("HOla", styles["Heading1"]))
+
+    story.append(PageBreak())
 
     doc.build(
         story,
