@@ -18,7 +18,8 @@ def generar_pdf(portada_path, grafico_path):
     )
 
     story = []
-
+    story.append(PageBreak())
+    
     # Introduccion
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Paragraph("Esto es la intro", styles["Normal"]))
