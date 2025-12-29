@@ -9,8 +9,7 @@ def FullImage(path):
         w, h = A4
         canvas.drawImage(
             path,
-            0,
-            0,
+            0, 0,
             width=w,
             height=h,
             preserveAspectRatio=True,
@@ -34,30 +33,33 @@ def generar_pdf(portada_path, grafico_path):
 
     story = []
 
-    # ===== CONTENIDO (empieza DESPUÉS de intro) =====
-    story.append(PageBreak())  # después de portada
-    story.append(PageBreak())  # después de intro
+    # Página 2 (intro)
+    story.append(PageBreak())
 
-    # Introducción (texto)
+    # Página 3 en adelante (contenido)
+    story.append(PageBreak())
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Paragraph("Esto es la intro", styles["Normal"]))
 
     story.append(PageBreak())
-
     story.append(Paragraph("Hola", styles["Heading1"]))
 
     story.append(PageBreak())
-
-    # Gráficos
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
-    grafico = Image(grafico_path, width=400, height=300)
-    story.append(grafico)
+    story.append(Image(grafico_path, width=400, height=300))
 
-    # ===== BUILD =====
+    # ===== CONTROL DE PÁGINAS =====
+    def first_page(canvas, doc):
+        FullImage(portada_path)(canvas, doc)
+
+    def later_pages(canvas, doc):
+        if doc.page == 2:
+            FullImage("assets/intro.png")(canvas, doc)
+
     doc.build(
         story,
-        onFirstPage=FullImage(portada_path),
-        onLaterPages=FullImage("assets/intro.png")
+        onFirstPage=first_page,
+        onLaterPages=later_pages
     )
 
     buffer.seek(0)
