@@ -21,21 +21,28 @@ def FullImage(path):
 # HF
 
 def header_footer(canvas, doc):
+    page_width, page_height = A4
+
+    # HEADER (
     canvas.drawImage(
         "assets/header.png",
-        40, A4[1] - 80,   # arriba
-        width=A4[0] - 80,
+        0,
+        page_height - 80,
+        width=page_width,
+        height=80,
+        mask="auto"
+    )
+
+    # FOOTER 
+    canvas.drawImage(
+        "assets/footer.png",
+        0,
+        0,
+        width=page_width,
         height=60,
         mask="auto"
     )
 
-    canvas.drawImage(
-        "assets/footer.png",
-        40, 20,           # abajo
-        width=A4[0] - 80,
-        height=50,
-        mask="auto"
-    )
 
 
 # ================= GENERADOR PDF =================
