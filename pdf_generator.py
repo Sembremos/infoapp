@@ -1,6 +1,7 @@
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, PageBreak
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Spacer
 from io import BytesIO
 
 # ================= UTILIDAD FULL PAGE =================
