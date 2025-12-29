@@ -18,6 +18,26 @@ def FullImage(path):
         )
     return draw
 
+# HF
+
+def header_footer(canvas, doc):
+    canvas.drawImage(
+        "assets/header.png",
+        40, A4[1] - 80,   # arriba
+        width=A4[0] - 80,
+        height=60,
+        mask="auto"
+    )
+
+    canvas.drawImage(
+        "assets/footer.png",
+        40, 20,           # abajo
+        width=A4[0] - 80,
+        height=50,
+        mask="auto"
+    )
+
+
 # ================= GENERADOR PDF =================
 def generar_pdf(portada_path, grafico_path):
     buffer = BytesIO()
@@ -80,6 +100,17 @@ def generar_pdf(portada_path, grafico_path):
             FullImage("assets/intro.png")(canvas, doc)
         elif doc.page == 4:
             FullImage("assets/participacion.png")(canvas, doc)
+
+    def later_pages(canvas, doc):
+    if doc.page == 2:
+        FullImage("assets/intro.png")(canvas, doc)
+
+    elif doc.page == 4:
+        FullImage("assets/participacion.png")(canvas, doc)
+
+    else:
+        header_footer(canvas, doc)
+
 
     doc.build(
         story,
