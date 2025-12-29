@@ -37,10 +37,6 @@ def generar_pdf(portada_path, grafico_path):
     # ===== CONTENIDO (empieza después de la portada) =====
     story.append(PageBreak())
 
-    #IMG INtro
- doc.build(story, onFirstPage=FullImage("assets/intro.png"))
-
-    story.append(PageBreak())
     # Introducción
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Paragraph("Esto es la intro", styles["Normal"]))
