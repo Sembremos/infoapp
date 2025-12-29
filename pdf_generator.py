@@ -4,6 +4,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Spacer
 from io import BytesIO
 from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib import colors
 
 
 # ================= UTILIDAD FULL PAGE =================
@@ -58,14 +59,15 @@ def generar_pdf(portada_path, grafico_path):
     spaceAfter=30,
     alignment=1  # centrado
 ))
-        styles.add(ParagraphStyle(
+    styles.add(ParagraphStyle(
     name="TituloDelta",
     fontSize=45,
-    color="#30a907"
+    color="#30a907",
     leading=30,
     spaceAfter=30,
-    alignment=1  # centrado
-))
+    alignment=1
+    ))
+
 
     doc = SimpleDocTemplate(
         buffer,
@@ -80,16 +82,17 @@ def generar_pdf(portada_path, grafico_path):
 
     # Página 2 (intro)
     story.append(PageBreak())
-        story.append(Paragraph(
-    "DELEGACIÓN POLICIAL",
-    styles["TituloGrande"]
-))
-       story.append(PageBreak())
-        story.append(Paragraph(
-    "San Ramón",
-    styles["TituloDelta"]
+    story.append(Paragraph(
+        "DELEGACIÓN POLICIAL",
+        styles["TituloGrande"]
 ))
 
+    story.append(Paragraph(
+        "San Ramón",
+        styles["TituloDelta"]
+))
+
+    
 
     # Página 3 en adelante (contenido)
     story.append(PageBreak())
