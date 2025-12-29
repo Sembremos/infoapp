@@ -38,17 +38,20 @@ archivo = st.file_uploader("Subir matriz Excel", type=["xlsx"])
 
 if archivo:
     try:
+        # 🔹 Leer NUEVA matriz (ya procesada)
         df = pd.read_excel(
             archivo,
-            sheet_name="participacion",
+            sheet_name="Hoja1",
             header=None,
             engine="openpyxl"
         )
 
-        labels, values = limpiar_series(
-            ["Comunidad", "Comercio", "Fuerza Pública"],
-            df.iloc[33, 4:7] * 100
-        )
+        # 🔹 Tomar valores YA CALCULADOS en la matriz
+        # Ajustá SOLO estos índices si cambian
+        labels = ["Comunidad", "Comercio", "Fuerza Pública"]
+        values = df.iloc[180:183, 5]  # ejemplo: F181:F183
+
+        labels, values = limpiar_series(labels, values)
 
         grafico_buffer = crear_grafico(labels, values)
 
@@ -58,7 +61,7 @@ if archivo:
             with open(grafico_path, "wb") as f:
                 f.write(grafico_buffer.getbuffer())
 
-            # Generar PDF (BytesIO)
+            # Generar PDF
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
                 grafico_path=str(grafico_path)
@@ -72,4 +75,4 @@ if archivo:
             )
 
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error(f"Error procesando el archivo: {e}")
