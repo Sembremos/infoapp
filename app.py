@@ -18,18 +18,17 @@ archivo = st.file_uploader("Subir matriz Excel", type=["xlsx"])
 
 if archivo:
     try:
-        # Leer matriz (ya procesada)
-        df = pd.read_excel(
+        # Leer matriz (solo para validar carga; el PDF usa lo que ya tenga)
+        pd.read_excel(
             archivo,
             sheet_name="Hoja1",
             header=None,
             engine="openpyxl"
         )
 
-        # 👉 Generar PDF en memoria
+        # 👉 Generar PDF en memoria (firma ORIGINAL)
         pdf_buffer = generar_pdf(
-            portada_path=str(ASSETS_DIR / "portada.png"),
-            data=df  # se pasa el dataframe completo
+            portada_path=str(ASSETS_DIR / "portada.png")
         )
 
         # ================= VISTA PREVIA PDF =================
@@ -38,16 +37,17 @@ if archivo:
         pdf_bytes = pdf_buffer.getvalue()
         base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
 
-        pdf_display = f"""
-        <iframe
-            src="data:application/pdf;base64,{base64_pdf}"
-            width="100%"
-            height="900px"
-            type="application/pdf">
-        </iframe>
-        """
-
-        st.components.v1.html(pdf_display, height=900, scrolling=True)
+        st.components.v1.html(
+            f"""
+            <iframe
+                src="data:application/pdf;base64,{base64_pdf}"
+                width="100%"
+                height="900px">
+            </iframe>
+            """,
+            height=900,
+            scrolling=True
+        )
 
         # ================= DESCARGA =================
         st.download_button(
