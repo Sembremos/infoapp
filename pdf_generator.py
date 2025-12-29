@@ -3,6 +3,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Spacer
 from io import BytesIO
+from reportlab.lib.styles import ParagraphStyle
+
 
 # ================= UTILIDAD FULL PAGE =================
 def FullImage(path):
@@ -49,6 +51,13 @@ def header_footer(canvas, doc):
 def generar_pdf(portada_path, grafico_path):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(
+    name="TituloGrande",
+    fontSize=26,
+    leading=30,
+    spaceAfter=30,
+    alignment=1  # centrado
+))
 
     doc = SimpleDocTemplate(
         buffer,
@@ -62,6 +71,11 @@ def generar_pdf(portada_path, grafico_path):
     story = []
 
     # Página 2 (intro)
+    story.append(Paragraph(
+    "INFORME TERRITORIAL – SEMBREMOS SEGURIDAD",
+    styles["TituloGrande"]
+))
+
     story.append(PageBreak())
 
     # Página 3 en adelante (contenido)
