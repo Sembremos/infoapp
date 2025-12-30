@@ -82,9 +82,15 @@ if archivo:
             for fila in tabla_df.fillna("").values.tolist()
         ]
 
-        # ================= GRÁFICO RELACIÓN =================
-        rel_labels = df.iloc[7:11, 6].astype(str)
-        rel_values = pd.to_numeric(df.iloc[7:11, 7], errors="coerce") * 100
+# === GRÁFICO BARRAS RELACIÓN (CORRECTO) ===
+        rel_labels = df.iloc[7:11, 6].astype(str)   # G8:G11
+
+        rel_values = (
+            df.iloc[7:11, 7]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .astype(float)
+        )
 
         fig, ax = plt.subplots()
         ax.bar(rel_labels, rel_values)
@@ -100,9 +106,6 @@ if archivo:
         plt.close(fig)
         buf_rel.seek(0)
 
-        grafico_rel_path = BASE_DIR / "grafico_relacion.png"
-        with open(grafico_rel_path, "wb") as f:
-            f.write(buf_rel.getbuffer())
 
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
