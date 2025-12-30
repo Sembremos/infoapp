@@ -7,11 +7,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
 from reportlab.lib.enums import TA_LEFT
-from reportlab.pdfbase.ttfonts import TTFont
 
-pdfmetrics.registerFont(
-    TTFont("Montserrat", "assets/Montserrat-Regular.ttf")
-)
 
 # ================= UTILIDAD FULL PAGE =================
 def FullImage(path):
@@ -60,16 +56,16 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
     name="TituloGrande",
-    fontName="Montserrat",
+    fontName="Helvetica",
     fontSize=26,
     textColor=colors.HexColor("#FFFFFF"),
     leading=30,
     spaceAfter=10,
-    alignment=TA_CENTER
+    alignment=TA_LEFT
 ))
     styles.add(ParagraphStyle(
     name="TituloDelta",
-    fontName="Montserrat",
+    fontName="Helvetica-Bold",
     fontSize=45,
     textColor=colors.HexColor("#30a907"),
     leading=30,
@@ -78,7 +74,7 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
 ))
     styles.add(ParagraphStyle(
     name="TituloD2",
-    fontName="Montserrat",
+    fontName="Helvetica-Bold",
     fontSize=60,
     textColor=colors.HexColor("#FFFFFF"),
     leading=30,
