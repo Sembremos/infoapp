@@ -102,7 +102,7 @@ if archivo:
             delegacion=delegacion,
             codigo=codigo,
             tabla_participacion=tabla_participacion
-        )
+            )
 
             pdf_bytes = pdf_buffer.getvalue()
             base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
