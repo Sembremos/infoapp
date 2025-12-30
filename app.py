@@ -47,6 +47,9 @@ if archivo:
             engine="openpyxl"
         )
 
+    delegacion = str(df.iloc[1, 1])  # Hoja1!B2
+    codigo = str(df.iloc[2, 1])      # Hoja1!B3    
+
         labels = ["Comunidad", "Comercio", "Fuerza Pública"]
         values = df.iloc[180:183, 5]
 
@@ -60,9 +63,12 @@ if archivo:
 
             # 🔴 LLAMADA ORIGINAL – SIN CAMBIOS
             pdf_buffer = generar_pdf(
-                portada_path=str(ASSETS_DIR / "portada.png"),
-                grafico_path=str(grafico_path)
-            )
+    portada_path=str(ASSETS_DIR / "portada.png"),
+    grafico_path=str(grafico_path),
+    delegacion=delegacion,
+    codigo=codigo
+)
+
 
             # ================= VISTA PREVIA =================
             pdf_bytes = pdf_buffer.getvalue()
