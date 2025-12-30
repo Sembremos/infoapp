@@ -59,7 +59,7 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     fontName="Helvetica",
     fontSize=26,
     textColor=colors.HexColor("#FFFFFF"),
-    leading=30,
+    leading=80,
     spaceAfter=10,
     alignment=TA_LEFT
 ))
