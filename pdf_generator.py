@@ -138,8 +138,8 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo, tabla_participac
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
     story.append(Spacer(1, 20))
-    story.append(Paragraph("Participación por distrito", styles["Heading2"]))
-    story.append(Spacer(1, 20))
+    story.append(Paragraph("Participación por Distrito", styles["Heading2"]))
+    story.append(Spacer(1, 10))
 
     tabla = Table(tabla_participacion, colWidths=[180, 180, 120])
     tabla.setStyle(TableStyle([
