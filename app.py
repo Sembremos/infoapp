@@ -110,7 +110,7 @@ if archivo:
 
         # Crear gráfico
         fig, ax = plt.subplots()
-        ax.bar(rel_labels, rel_base_values)
+        ax.bar(rel_labels, rel_base_values, color="#30a907")
         ax.set_ylabel("Cantidad")
         ax.set_title("Relación por distrito")
 
