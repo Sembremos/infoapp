@@ -95,14 +95,14 @@ if archivo:
 
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
-         pdf_buffer = generar_pdf(
-            portada_path=str(ASSETS_DIR / "portada.png"),
-            grafico_path=str(grafico_rel_path),              # si este es el gráfico principal
-            grafico_relacion_path=str(grafico_rel_path),     # ← ESTE FALTABA
-            delegacion=delegacion,
-            codigo=codigo,
-            tabla_participacion=tabla_participacion
-            )
+            pdf_buffer = generar_pdf(
+                portada_path=str(ASSETS_DIR / "portada.png"),
+                grafico_path=str(grafico_rel_path),              # si este es el gráfico principal
+                grafico_relacion_path=str(grafico_rel_path),     # ← ESTE FALTABA
+                delegacion=delegacion,
+                codigo=codigo,
+                tabla_participacion=tabla_participacion
+                )
 
             pdf_bytes = pdf_buffer.getvalue()
             base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
