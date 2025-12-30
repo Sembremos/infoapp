@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 from pathlib import Path
 import base64
+from openpyxl import load_workbook
 
 from pdf_generator import generar_pdf
 
@@ -55,14 +56,13 @@ archivo = st.file_uploader(
 
 if archivo:
     try:
-        # 🔹 LECTURA EXACTA DEL EXCEL
-        df = pd.read_excel(
-            archivo,
-            sheet_name="Hoja1",
-            header=None,
-            engine="openpyxl",
-            data_only=True
-        )
+        # =========================================================
+        # 🔴 CAMBIO CORRECTO: leer Excel con openpyxl (data_only)
+        # =========================================================
+        wb = load_workbook(archivo, data_only=True)
+        ws = wb["Hoja1"]
+        df = pd.DataFrame(ws.values)
+        # =========================================================
 
         # ================= DATOS BASE =================
         delegacion = str(df.iloc[1, 1])  # B2
@@ -87,9 +87,9 @@ if archivo:
             for fila in tabla_df.fillna("").values.tolist()
         ]
 
-        # ================= GRÁFICO RELACIÓN (🔥 CORREGIDO) =================
+        # ================= GRÁFICO RELACIÓN =================
         rel_labels = df.iloc[7:11, 6].astype(str)   # G8:G11
-        rel_values = df.iloc[7:11, 7]   
+        rel_values = df.iloc[7:11, 7]               # H8:H11
 
         rel_labels, rel_values = limpiar_series(rel_labels, rel_values)
         grafico_rel_buffer = crear_grafico(rel_labels, rel_values)
@@ -102,12 +102,12 @@ if archivo:
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
-                grafico_path=str(grafico_rel_path),              # si este es el gráfico principal
-                grafico_relacion_path=str(grafico_rel_path),     # ← ESTE FALTABA
+                grafico_path=str(grafico_rel_path),
+                grafico_relacion_path=str(grafico_rel_path),
                 delegacion=delegacion,
                 codigo=codigo,
                 tabla_participacion=tabla_participacion
-                )
+            )
 
             pdf_bytes = pdf_buffer.getvalue()
             base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
@@ -134,4 +134,3 @@ if archivo:
 
     except Exception as e:
         st.error(f"Error procesando el archivo: {e}")
-
