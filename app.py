@@ -106,14 +106,15 @@ if archivo:
             with open(grafico_rel_path, "wb") as f:
                 f.write(buf_rel.getbuffer())
 
-            pdf_buffer = generar_pdf(
-                portada_path=str(ASSETS_DIR / "portada.png"),
-                grafico_path=str(grafico_path),
-                grafico_relacion_path(grafico_rel_path),
-                delegacion=delegacion,
-                codigo=codigo,
-                tabla_participacion=tabla_participacion
-            )
+        pdf_buffer = generar_pdf(
+            portada_path=str(ASSETS_DIR / "portada.png"),
+            grafico_path=str(grafico_path),
+            grafico_relacion_path=str(grafico_rel_path),
+            delegacion=delegacion,
+            codigo=codigo,
+            tabla_participacion=tabla_participacion
+        )
+
 
             # ================= VISTA PREVIA =================
             pdf_bytes = pdf_buffer.getvalue()
