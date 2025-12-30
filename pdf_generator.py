@@ -12,7 +12,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib import colors
 from io import BytesIO
-
+from reportlab.lib.enums import TA_JUSTIFY
 
 # ================= UTILIDAD FULL PAGE =================
 def FullImage(path):
@@ -57,6 +57,12 @@ def header_footer(canvas, doc):
 def generar_pdf(portada_path, grafico_path, delegacion, codigo, tabla_participacion):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
+
+    styles.add(ParagraphStyle(
+        name="NormalJustificado",
+        parent=styles["Normal"],
+        alignment=TA_JUSTIFY
+    ))
 
     styles.add(ParagraphStyle(
         name="TituloGrande",
@@ -113,14 +119,14 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo, tabla_participac
 
     story.append(Paragraph(
         "Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional el Modelo Preventivo de Gestión Policial, una iniciativa estratégica destinada a fortalecer la seguridad pública a través de un enfoque proactivo y colaborativo. Una parte integral de este modelo es la Estrategia Integral de Prevención para la Seguridad Pública, conocida como Sembremos Seguridad, que se centra en la contextualización de las dinámicas delincuenciales y sociales que afectan a nuestras comunidades.",
-        styles["Normal"]
+        styles["NormalJustificado"]
     ))
 
     story.append(Spacer(1, 20))
 
     story.append(Paragraph(
         "El presente informe, elaborado para el territorio que comprende la Delegación Policial de San Ramón, surge como una herramienta esencial para la toma efectiva de decisiones. Este informe se concibe como un instrumento dinámico y orientado hacia el futuro, diseñado para proporcionar información clave y un plan de trabajo estructurado que permita abordar las problemáticas prioritarias identificadas en el ámbito de la seguridad pública.",
-        styles["Normal"]
+        styles["NormalJustificado"]
     ))
 
     story.append(Spacer(1, 20))
