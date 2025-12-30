@@ -114,8 +114,7 @@ if archivo:
         ax.set_ylabel("Cantidad")
         ax.set_title("Relación por distrito")
 
-        for i, porcentaje in enumerate(rel_base_values):
-            porcentaje = i * 100
+        for i, porcentaje in enumerate(rel_percent_labels):
             ax.text(
                 i,
                 rel_base_values.iloc[i],
