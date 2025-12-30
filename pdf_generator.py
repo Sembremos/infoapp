@@ -5,7 +5,12 @@ from reportlab.platypus import Spacer
 from io import BytesIO
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
+pdfmetrics.registerFont(
+    TTFont("Montserrat", "assets/Montserrat-Regular.ttf")
+)
 
 # ================= UTILIDAD FULL PAGE =================
 def FullImage(path):
@@ -54,6 +59,7 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
     name="TituloGrande",
+    fontName="Montserrat",
     fontSize=26,
     textColor=colors.HexColor("#FFFFFF"),
     leading=10,
@@ -62,6 +68,7 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
 ))
     styles.add(ParagraphStyle(
     name="TituloDelta",
+    fontName="Montserrat",
     fontSize=45,
     textColor=colors.HexColor("#30a907"),
     leading=30,
@@ -70,6 +77,7 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
 ))
     styles.add(ParagraphStyle(
     name="TituloD2",
+    fontName="Montserrat",
     fontSize=60,
     textColor=colors.HexColor("#FFFFFF"),
     leading=30,
