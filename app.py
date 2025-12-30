@@ -84,7 +84,7 @@ if archivo:
 
         # ================= GRÁFICO RELACIÓN =================
         rel_labels = df.iloc[7:11, 6].astype(str)
-        rel_values = df.iloc[7:11, 7]
+        rel_values = pd.to_numeric(df.iloc[7:11, 7], errors="coerce") * 100
 
         fig, ax = plt.subplots()
         ax.bar(rel_labels, rel_values)
