@@ -56,17 +56,25 @@ if archivo:
         labels, values = limpiar_series(labels, values)
         grafico_buffer = crear_grafico(labels, values)
 
+        # participacion por distrito
+tabla_df = df.iloc[6:23, 0:3]          # filas 7–23, columnas A–C
+tabla_df = tabla_df.dropna(how="all")  # elimina filas vacías
+
+
+tabla_participacion = tabla_df.fillna("").values.tolist()
+
         if st.button("Generar PDF"):
             grafico_path = BASE_DIR / "grafico_temp.png"
             with open(grafico_path, "wb") as f:
                 f.write(grafico_buffer.getbuffer())
 
-            # 🔴 LLAMADA ORIGINAL – SIN CAMBIOS
+            # 🔴 LLAMADA PDF QUE SIEMPRE DEBO MODIFICAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             pdf_buffer = generar_pdf(
     portada_path=str(ASSETS_DIR / "portada.png"),
     grafico_path=str(grafico_path),
     delegacion=delegacion,
     codigo=codigo
+    tabla_participacion=tabla_participacion
 )
 
 
