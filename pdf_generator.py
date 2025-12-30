@@ -52,7 +52,7 @@ def header_footer(canvas, doc):
 
 
 # ================= GENERADOR PDF =================
-def generar_pdf(portada_path, grafico_path, delegacion, codigo):
+def generar_pdf(portada_path, grafico_path, delegacion, codigo, tabla_participacion):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
@@ -140,9 +140,24 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
 
     story.append(PageBreak())
 
-    # Índices
+    # hoja participación
     story.append(PageBreak())
     story.append(Paragraph("Hola", styles["Heading1"]))
+    story.append(Spacer(1, 20))
+
+tabla = Table(tabla_participacion, colWidths=[180, 180, 120])
+
+tabla.setStyle(TableStyle([
+    ("GRID", (0,0), (-1,-1), 1, colors.black),
+    ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#013051")),
+    ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+    ("ALIGN", (1,1), (-1,-1), "CENTER"),
+    ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
+    ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+    ("BOTTOMPADDING", (0,0), (-1,0), 8),
+]))
+
+story.append(tabla)
 
     story.append(PageBreak())
     story.append(Paragraph("Datos de participación", styles["Heading1"]))
