@@ -54,6 +54,7 @@ def header_footer(canvas, doc):
 def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
+    story.append(Spacer(1, 120))
     styles.add(ParagraphStyle(
     name="TituloGrande",
     fontName="Helvetica",
