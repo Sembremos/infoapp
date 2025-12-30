@@ -112,7 +112,7 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo, tabla_participac
     story.append(Spacer(1, 12))
 
     story.append(Paragraph(
-        "Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional el Modelo Preventivo de Gestión Policial, una iniciativa estratégica destinada a fortalecer la seguridad pública a través de un enfoque proactivo y colaborativo. Una parte integral de este modelo es la Estrategia Integral de Prevención para la Seguridad Pública, conocida como "Sembremos Seguridad", que se centra en la contextualización de las dinámicas delincuenciales y sociales que afectan a nuestras comunidades.",
+        "Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional el Modelo Preventivo de Gestión Policial, una iniciativa estratégica destinada a fortalecer la seguridad pública a través de un enfoque proactivo y colaborativo. Una parte integral de este modelo es la Estrategia Integral de Prevención para la Seguridad Pública, conocida como Sembremos Seguridad, que se centra en la contextualización de las dinámicas delincuenciales y sociales que afectan a nuestras comunidades.",
         styles["Normal"]
     ))
 
