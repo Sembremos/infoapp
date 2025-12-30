@@ -114,16 +114,16 @@ if archivo:
         ax.set_ylabel("Cantidad")
         ax.set_title("Relación por distrito")
 
-        for i, v in enumerate(rel_base_values):
-            porcentaje = v * 100
+        for i, porcentaje in enumerate(rel_percent_labels):
             ax.text(
                 i,
-                v,
-                f"{porcentaje:.0f}%",
+                rel_base_values.iloc[i],
+                f"{porcentaje}%",
                 ha="center",
                 va="bottom",
                 fontsize=9
-            )
+            )    
+
 
         buf_rel = BytesIO()
         fig.savefig(buf_rel, format="png", bbox_inches="tight", dpi=200)
