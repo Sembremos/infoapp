@@ -47,8 +47,8 @@ if archivo:
             engine="openpyxl"
         )
 
-    delegacion = str(df.iloc[1, 1])  # Hoja1!B2
-    codigo = str(df.iloc[2, 1])      # Hoja1!B3    
+        delegacion = str(df.iloc[1, 1])  # Hoja1!B2
+        codigo = str(df.iloc[2, 1])      # Hoja1!B3    
 
         labels = ["Comunidad", "Comercio", "Fuerza Pública"]
         values = df.iloc[180:183, 5]
