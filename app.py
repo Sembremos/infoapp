@@ -35,11 +35,14 @@ def crear_grafico(labels, values):
     return buf
 
 # ================= APP =================
-archivo = st.file_uploader("Aquí suba o arrastre el ENGINE de la Delegación correspondiente", type=["xlsx"])
+archivo = st.file_uploader(
+    "Aquí suba o arrastre el ENGINE de la Delegación correspondiente",
+    type=["xlsx"]
+)
 
 if archivo:
     try:
-        # 🔹 SOLO lectura para validar archivo (no cambia lógica)
+        # 🔹 LECTURA DEL EXCEL
         df = pd.read_excel(
             archivo,
             sheet_name="Hoja1",
@@ -47,34 +50,35 @@ if archivo:
             engine="openpyxl"
         )
 
+        # ================= DATOS BASE =================
         delegacion = str(df.iloc[1, 1])  # Hoja1!B2
-        codigo = str(df.iloc[2, 1])      # Hoja1!B3    
+        codigo = str(df.iloc[2, 1])      # Hoja1!B3
 
+        # ================= GRÁFICO =================
         labels = ["Comunidad", "Comercio", "Fuerza Pública"]
         values = df.iloc[180:183, 5]
 
         labels, values = limpiar_series(labels, values)
         grafico_buffer = crear_grafico(labels, values)
 
-        # participacion por distrito
-        tabla_df = df.iloc[6:23, 0:3]          # filas 7–23, columnas A–C
+        # ================= TABLA PARTICIPACIÓN POR DISTRITO =================
+        tabla_df = df.iloc[6:23, 0:3]          # A7:C23
         tabla_df = tabla_df.dropna(how="all")  # elimina filas vacías
         tabla_participacion = tabla_df.fillna("").values.tolist()
-        
+
+        # ================= GENERAR PDF =================
         if st.button("Generar PDF"):
             grafico_path = BASE_DIR / "grafico_temp.png"
             with open(grafico_path, "wb") as f:
                 f.write(grafico_buffer.getbuffer())
 
-            # 🔴 LLAMADA PDF QUE SIEMPRE DEBO MODIFICAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             pdf_buffer = generar_pdf(
-    portada_path=str(ASSETS_DIR / "portada.png"),
-    grafico_path=str(grafico_path),
-    delegacion=delegacion,
-    codigo=codigo,
-    tabla_participacion=tabla_participacion
-)
-
+                portada_path=str(ASSETS_DIR / "portada.png"),
+                grafico_path=str(grafico_path),
+                delegacion=delegacion,
+                codigo=codigo,
+                tabla_participacion=tabla_participacion
+            )
 
             # ================= VISTA PREVIA =================
             pdf_bytes = pdf_buffer.getvalue()
