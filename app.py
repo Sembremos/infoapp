@@ -62,8 +62,13 @@ if archivo:
         grafico_buffer = crear_grafico(labels, values)
 
         # ================= TABLA PARTICIPACIÓN POR DISTRITO =================
-        tabla_df = df.iloc[6:23, 0:3]          # A7:C23
+        tabla_df = df.iloc[6:23, 0:3]
         tabla_df = tabla_df.dropna(how="all")
+
+        # eliminar filas donde todos los valores numéricos son 0
+        tabla_df = tabla_df[
+            ~(tabla_df.iloc[:, 1:].fillna(0) == 0).all(axis=1)
+        ]
 
         def formatear(valor):
             if isinstance(valor, (int, float)):
