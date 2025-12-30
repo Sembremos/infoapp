@@ -4,6 +4,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Spacer
 from io import BytesIO
 from reportlab.lib.styles import ParagraphStyle
+from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
 from reportlab.lib.enums import TA_LEFT
