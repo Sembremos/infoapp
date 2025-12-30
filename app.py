@@ -82,15 +82,34 @@ if archivo:
             for fila in tabla_df.fillna("").values.tolist()
         ]
 
+        #grafico barras de relacion
+        rel_labels = df.iloc[7:11, 6].astype(str)   # G8:G11
+        rel_values = df.iloc[7:11, 7]               # H8:H11
+
+        fig, ax = plt.subplots()
+        ax.bar(rel_labels, rel_values)
+        ax.set_ylim(0, 100)
+        ax.set_ylabel("%")
+        ax.set_title("Relación por distrito")
+
+        for i, v in enumerate(rel_values):
+        ax.text(i, v + 1, f"{v:.0f}%", ha="center", fontsize=9)
+
+        buf_rel = BytesIO()
+        fig.savefig(buf_rel, format="png", bbox_inches="tight", dpi=200)
+        plt.close(fig)
+        buf_rel.seek(0)
+
         # ================= GENERAR PDF =================
-        if st.button("Generar PDF"):
-            grafico_path = BASE_DIR / "grafico_temp.png"
-            with open(grafico_path, "wb") as f:
-                f.write(grafico_buffer.getbuffer())
+        if st.button("HACER INFORME TERRITORIAL"):
+            grafico_rel_path = BASE_DIR / "grafico_relacion.png"
+            with open(grafico_rel_path, "wb") as f:
+            f.write(buf_rel.getbuffer())
 
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
                 grafico_path=str(grafico_path),
+                grafico_relacion_path(grafico_rel_path),
                 delegacion=delegacion,
                 codigo=codigo,
                 tabla_participacion=tabla_participacion
