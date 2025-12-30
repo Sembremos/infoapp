@@ -6,6 +6,7 @@ from io import BytesIO
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
+from reportlab.lib.enums import TA_LEFT
 from reportlab.pdfbase.ttfonts import TTFont
 
 pdfmetrics.registerFont(
@@ -62,9 +63,9 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     fontName="Montserrat",
     fontSize=26,
     textColor=colors.HexColor("#FFFFFF"),
-    leading=10,
+    leading=30,
     spaceAfter=10,
-    alignment=4  # centrado
+    alignment=TA_CENTER
 ))
     styles.add(ParagraphStyle(
     name="TituloDelta",
@@ -73,7 +74,7 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     textColor=colors.HexColor("#30a907"),
     leading=30,
     spaceAfter=10,
-    alignment=4
+    alignment=TA_LEFT
 ))
     styles.add(ParagraphStyle(
     name="TituloD2",
@@ -82,7 +83,7 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     textColor=colors.HexColor("#FFFFFF"),
     leading=30,
     spaceAfter=10,
-    alignment=4
+    alignment=TA_LEFT
 ))
 
 
