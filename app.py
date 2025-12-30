@@ -93,7 +93,7 @@ if archivo:
         ax.set_title("Relación por distrito")
 
         for i, v in enumerate(rel_values):
-        ax.text(i, v + 1, f"{v:.0f}%", ha="center", fontsize=9)
+            ax.text(i, v + 1, f"{v:.0f}%", ha="center", fontsize=9)
 
         buf_rel = BytesIO()
         fig.savefig(buf_rel, format="png", bbox_inches="tight", dpi=200)
