@@ -60,7 +60,7 @@ if archivo:
             archivo,
             sheet_name="Hoja1",
             header=None,
-            engine="openpyxl"
+            engine="openpyxl",
             data_only=True
         )
 
