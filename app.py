@@ -108,6 +108,11 @@ if archivo:
 
 
         # ================= GENERAR PDF =================
+        #grafico relacion, datos
+        grafico_rel_path = BASE_DIR / "grafico_relacion.png"
+        with open(grafico_rel_path, "wb") as f:
+            f.write(buf_rel.getbuffer())
+
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
