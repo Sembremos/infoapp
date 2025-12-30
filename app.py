@@ -18,14 +18,18 @@ ASSETS_DIR = BASE_DIR / "assets"
 # ================= UTILIDADES =================
 def limpiar_series(labels, values):
     df = pd.DataFrame({"label": labels, "value": values})
+
     df["value"] = (
         df["value"]
         .astype(str)
         .str.replace("%", "", regex=False)
         .str.replace(",", ".", regex=False)
+        .str.strip()
     )
+
     df["value"] = pd.to_numeric(df["value"], errors="coerce")
     df = df.dropna()
+
     return df["label"].astype(str), df["value"]
 
 def crear_grafico(labels, values):
@@ -84,7 +88,7 @@ if archivo:
 
         # ================= GRÁFICO RELACIÓN (🔥 CORREGIDO) =================
         rel_labels = df.iloc[7:11, 6].astype(str)   # G8:G11
-        rel_values = df.iloc[7:11, 7]               # H8:H11
+        rel_values = df.iloc[7:11, 7]   
 
         rel_labels, rel_values = limpiar_series(rel_labels, rel_values)
         grafico_rel_buffer = crear_grafico(rel_labels, rel_values)
