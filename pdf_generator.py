@@ -54,7 +54,6 @@ def header_footer(canvas, doc):
 def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
-    story.append(Spacer(1, 120))
     styles.add(ParagraphStyle(
     name="TituloGrande",
     fontName="Helvetica",
@@ -94,6 +93,10 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo):
     )
 
     story = []
+
+        # 🔽 BAJAR el texto desde el margen superior
+    story.append(Spacer(1, 120))
+    story.append(Paragraph("DELEGACIÓN POLICIAL", styles["TituloGrande"]))
 
     # Página 2 (intro)
     story.append(PageBreak())
