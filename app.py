@@ -67,9 +67,9 @@ if archivo:
 
         # 👉 FORMATO LITERAL
         def formatear(valor):
-            if isinstance(valor, (int, float)):
+        if isinstance(valor, (int, float)):
             # si es porcentaje (0–1)
-            if 0 <= valor <= 1:
+        if 0 <= valor <= 1:
             return f"{valor*100:.0f}%"
         else:
             return f"{valor:.0f}"
