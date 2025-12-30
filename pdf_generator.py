@@ -127,9 +127,9 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo, tabla_participac
     story.append(Image("assets/conformacion.png", width=600, height=400))
 
     # ================= PARTICIPACIÓN =================
+    story.append(PageBreak()) ## esto lo HAGO PARA QUE QUEDE LA IMAGEN SOLITA 
     story.append(PageBreak())
-    story.append(PageBreak())
-     story.append(Spacer(1, 40))
+    story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
     story.append(Spacer(1, 20))
     story.append(Paragraph("Participación por distrito", styles["Heading2"]))
