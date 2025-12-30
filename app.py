@@ -63,22 +63,19 @@ if archivo:
 
         # ================= TABLA PARTICIPACIÓN POR DISTRITO =================
         tabla_df = df.iloc[6:23, 0:3]          # A7:C23
-        tabla_df = tabla_df.dropna(how="all")  # elimina filas vacías
+        tabla_df = tabla_df.dropna(how="all")
 
-# 👉 FORMATO LITERAL
-def formatear(valor):
-    if isinstance(valor, (int, float)):
-        # si es porcentaje (0–1)
-        if 0 <= valor <= 1:
-            return f"{valor*100:.0f}%"
-        else:
-            return f"{valor:.0f}"
-    return str(valor)
+        def formatear(valor):
+            if isinstance(valor, (int, float)):
+                if 0 <= valor <= 1:
+                    return f"{valor*100:.0f}%"
+                return f"{valor:.0f}"
+            return str(valor)
 
-tabla_participacion = [
-    [formatear(celda) for celda in fila]
-    for fila in tabla_df.fillna("").values.tolist()
-]
+        tabla_participacion = [
+            [formatear(celda) for celda in fila]
+            for fila in tabla_df.fillna("").values.tolist()
+        ]
 
         # ================= GENERAR PDF =================
         if st.button("Generar PDF"):
