@@ -61,6 +61,7 @@ if archivo:
             sheet_name="Hoja1",
             header=None,
             engine="openpyxl"
+            data_only=True
         )
 
         # ================= DATOS BASE =================
