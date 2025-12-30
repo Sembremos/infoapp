@@ -33,6 +33,7 @@ def limpiar_series(labels, values):
 
     return df["label"].astype(str), df["value"]
 
+
 def crear_grafico(labels, values):
     fig, ax = plt.subplots()
     ax.bar(labels, values)
@@ -48,6 +49,7 @@ def crear_grafico(labels, values):
     buf.seek(0)
     return buf
 
+
 # ================= APP =================
 archivo = st.file_uploader(
     "Aquí suba o arrastre el ENGINE de la Delegación correspondiente",
@@ -57,12 +59,11 @@ archivo = st.file_uploader(
 if archivo:
     try:
         # =========================================================
-        # 🔴 CAMBIO CORRECTO: leer Excel con openpyxl (data_only)
+        # LECTURA EXACTA DEL EXCEL (valores reales, no fórmulas)
         # =========================================================
         wb = load_workbook(archivo, data_only=True)
         ws = wb["Hoja1"]
         df = pd.DataFrame(ws.values)
-        # =========================================================
 
         # ================= DATOS BASE =================
         delegacion = str(df.iloc[1, 1])  # B2
@@ -88,15 +89,49 @@ if archivo:
         ]
 
         # ================= GRÁFICO RELACIÓN =================
-        rel_labels = df.iloc[7:11, 6].astype(str)   # G8:G11
-        rel_values = df.iloc[7:11, 7]               # H8:H11
+        # Nombres (G8:G11)
+        rel_labels = df.iloc[7:11, 6].astype(str)
 
-        rel_labels, rel_values = limpiar_series(rel_labels, rel_values)
-        grafico_rel_buffer = crear_grafico(rel_labels, rel_values)
+        # Valores reales base (I8:I11)
+        rel_base_values = pd.to_numeric(df.iloc[7:11, 8], errors="coerce")
+
+        # Porcentajes literales visibles (H8:H11)
+        rel_percent_labels = (
+            df.iloc[7:11, 7]
+            .astype(str)
+            .str.replace(",", ".", regex=False)
+        )
+
+        # Filtrar filas válidas
+        mask = rel_base_values.notna()
+        rel_labels = rel_labels[mask]
+        rel_base_values = rel_base_values[mask]
+        rel_percent_labels = rel_percent_labels[mask]
+
+        # Crear gráfico
+        fig, ax = plt.subplots()
+        ax.bar(rel_labels, rel_base_values)
+        ax.set_ylabel("Cantidad")
+        ax.set_title("Relación por distrito")
+
+        for i, txt in enumerate(rel_percent_labels):
+            ax.text(
+                i,
+                rel_base_values.iloc[i],
+                txt,
+                ha="center",
+                va="bottom",
+                fontsize=9
+            )
+
+        buf_rel = BytesIO()
+        fig.savefig(buf_rel, format="png", bbox_inches="tight", dpi=200)
+        plt.close(fig)
+        buf_rel.seek(0)
 
         grafico_rel_path = BASE_DIR / "grafico_relacion.png"
         with open(grafico_rel_path, "wb") as f:
-            f.write(grafico_rel_buffer.getbuffer())
+            f.write(buf_rel.getbuffer())
 
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
