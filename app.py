@@ -51,24 +51,24 @@ if archivo:
         )
 
         # ================= DATOS BASE =================
-        delegacion = str(df.iloc[1, 1])  # Hoja1!B2
-        codigo = str(df.iloc[2, 1])      # Hoja1!B3
+        delegacion = str(df.iloc[1, 1])  # B2
+        codigo = str(df.iloc[2, 1])      # B3
 
-        # ================= GRÁFICO =================
+        # ================= GRÁFICO GENERAL =================
         labels = ["Comunidad", "Comercio", "Fuerza Pública"]
         values = df.iloc[180:183, 5]
 
         labels, values = limpiar_series(labels, values)
         grafico_buffer = crear_grafico(labels, values)
 
-        # ================= TABLA PARTICIPACIÓN POR DISTRITO =================
+        grafico_path = BASE_DIR / "grafico_temp.png"
+        with open(grafico_path, "wb") as f:
+            f.write(grafico_buffer.getbuffer())
+
+        # ================= TABLA PARTICIPACIÓN =================
         tabla_df = df.iloc[6:23, 0:3]
         tabla_df = tabla_df.dropna(how="all")
-
-        # eliminar filas donde todos los valores numéricos son 0
-        tabla_df = tabla_df[
-            ~(tabla_df.iloc[:, 1:].fillna(0) == 0).all(axis=1)
-        ]
+        tabla_df = tabla_df[~(tabla_df.iloc[:, 1:].fillna(0) == 0).all(axis=1)]
 
         def formatear(valor):
             if isinstance(valor, (int, float)):
@@ -82,9 +82,9 @@ if archivo:
             for fila in tabla_df.fillna("").values.tolist()
         ]
 
-        #grafico barras de relacion
-        rel_labels = df.iloc[7:11, 6].astype(str)   # G8:G11
-        rel_values = df.iloc[7:11, 7]               # H8:H11
+        # ================= GRÁFICO RELACIÓN =================
+        rel_labels = df.iloc[7:11, 6].astype(str)
+        rel_values = df.iloc[7:11, 7]
 
         fig, ax = plt.subplots()
         ax.bar(rel_labels, rel_values)
@@ -100,23 +100,21 @@ if archivo:
         plt.close(fig)
         buf_rel.seek(0)
 
+        grafico_rel_path = BASE_DIR / "grafico_relacion.png"
+        with open(grafico_rel_path, "wb") as f:
+            f.write(buf_rel.getbuffer())
+
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
-            grafico_rel_path = BASE_DIR / "grafico_relacion.png"
-            with open(grafico_rel_path, "wb") as f:
-                f.write(buf_rel.getbuffer())
+            pdf_buffer = generar_pdf(
+                portada_path=str(ASSETS_DIR / "portada.png"),
+                grafico_path=str(grafico_path),
+                grafico_relacion_path=str(grafico_rel_path),
+                delegacion=delegacion,
+                codigo=codigo,
+                tabla_participacion=tabla_participacion
+            )
 
-        pdf_buffer = generar_pdf(
-            portada_path=str(ASSETS_DIR / "portada.png"),
-            grafico_path=str(grafico_path),
-            grafico_relacion_path=str(grafico_rel_path),
-            delegacion=delegacion,
-            codigo=codigo,
-            tabla_participacion=tabla_participacion
-        )
-
-
-            # ================= VISTA PREVIA =================
             pdf_bytes = pdf_buffer.getvalue()
             base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
 
