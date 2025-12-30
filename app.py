@@ -114,15 +114,17 @@ if archivo:
         ax.set_ylabel("Cantidad")
         ax.set_title("Relación por distrito")
 
-        for i, porcentaje in enumerate(rel_percent_labels.astype(float)):
+        for i in range(len(rel_percent_labels)):
+            porcentaje = float(rel_percent_labels.iloc[i]) * 100
             ax.text(
                 i,
                 rel_base_values.iloc[i],
-                f"{p * 100:.2f}%",
+                f"{porcentaje:.2f}%",
                 ha="center",
                 va="bottom",
                 fontsize=9
-            )    
+            )
+   
 
 
         buf_rel = BytesIO()
