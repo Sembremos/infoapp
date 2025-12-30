@@ -129,7 +129,10 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo, tabla_participac
     # ================= PARTICIPACIÓN =================
     story.append(PageBreak())
     story.append(PageBreak())
-    story.append(Paragraph("Hola", styles["Heading1"]))
+     story.append(Spacer(1, 40))
+    story.append(Paragraph("Datos de Participación", styles["Heading1"]))
+    story.append(Spacer(1, 20))
+    story.append(Paragraph("Participación por distrito", styles["Heading2"]))
     story.append(Spacer(1, 20))
 
     tabla = Table(tabla_participacion, colWidths=[180, 180, 120])
@@ -137,10 +140,11 @@ def generar_pdf(portada_path, grafico_path, delegacion, codigo, tabla_participac
         ("GRID", (0, 0), (-1, -1), 1, colors.black),
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
+        ("BACKGROUND", (1, 1), (-1, -1), colors.HexColor("#E2FDD9"))
     ]))
 
     story.append(tabla)
