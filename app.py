@@ -108,7 +108,7 @@ if archivo:
         rel_base_values = rel_base_values[mask]
         rel_percent_labels = rel_percent_labels[mask]
 
-        # Crear gráfico de relación
+        # Crear gráfico XXXX
         fig, ax = plt.subplots(figsize=(6, 4))
 
         ax.bar(rel_labels, rel_base_values, color="#30a907")
@@ -142,7 +142,15 @@ if archivo:
 
 
         buf_rel = BytesIO()
-        fig.savefig(buf_rel, format="png", bbox_inches="tight", dpi=200)
+        fig.savefig(
+        buf_rel,
+        format="png",
+        bbox_inches="tight",
+        pad_inches=0,
+        dpi=200,
+        transparent=True
+    )
+
         plt.close(fig)
         buf_rel.seek(0)
 
