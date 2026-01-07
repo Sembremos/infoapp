@@ -138,7 +138,7 @@ if archivo:
                 f"{porcentaje:.2f}%",
                 ha="center",
                 va="bottom",
-                fontsize=9
+                fontsize=12
             )
 
         buf_rel = BytesIO()
