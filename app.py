@@ -108,11 +108,25 @@ if archivo:
         rel_base_values = rel_base_values[mask]
         rel_percent_labels = rel_percent_labels[mask]
 
-        # Crear gráfico
-        fig, ax = plt.subplots()
+        # Crear gráfico de relación
+        fig, ax = plt.subplots(figsize=(6, 4))
+
         ax.bar(rel_labels, rel_base_values, color="#30a907")
+
         ax.set_ylabel("Cantidad")
         ax.set_title("Relación por distrito")
+
+        # Borrar marcos
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+
+        # Quitar líneas de ticks
+        ax.tick_params(left=False, bottom=False)
+
+        # Fondo transparente (clave para PDF)
+        ax.set_facecolor("none")
+        fig.patch.set_alpha(0)
+
 
         for i in range(len(rel_percent_labels)):
             porcentaje = float(rel_percent_labels.iloc[i]) * 100
