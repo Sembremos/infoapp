@@ -58,9 +58,7 @@ archivo = st.file_uploader(
 
 if archivo:
     try:
-        # =========================================================
-        # LECTURA EXACTA DEL EXCEL (valores reales, no fórmulas)
-        # =========================================================
+        # Lectura del excel
         wb = load_workbook(archivo, data_only=True)
         ws = wb["Hoja1"]
         df = pd.DataFrame(ws.values)
@@ -116,7 +114,7 @@ if archivo:
         ax.set_ylabel("Cantidad")
         ax.set_title("")
 
-        # >>> CAMBIO ÚNICO APLICADO <<<
+        # CAMBIO ÚNICO APLICADO
         ax.margins(y=0.1)
 
         # Borrar marcos
@@ -162,7 +160,6 @@ if archivo:
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
-                grafico_path=str(grafico_rel_path),
                 grafico_relacion_path=str(grafico_rel_path),
                 delegacion=delegacion,
                 codigo=codigo,
