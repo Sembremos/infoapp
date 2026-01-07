@@ -109,12 +109,12 @@ if archivo:
         rel_percent_labels = rel_percent_labels[mask]
 
         # Crear gráfico
-        fig, ax = plt.subplots(figsize=(6, 4))
+        fig, ax = plt.subplots(figsize=(9, 4))
 
         ax.bar(rel_labels, rel_base_values, color="#30a907")
 
         ax.set_ylabel("Cantidad")
-        ax.set_title("Relación por distrito")
+        ax.set_title("")
 
         # >>> CAMBIO ÚNICO APLICADO <<<
         ax.margins(y=0.1)
