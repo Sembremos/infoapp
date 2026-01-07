@@ -108,13 +108,16 @@ if archivo:
         rel_base_values = rel_base_values[mask]
         rel_percent_labels = rel_percent_labels[mask]
 
-        # Crear gráfico XXXX
+        # Crear gráfico
         fig, ax = plt.subplots(figsize=(6, 4))
 
         ax.bar(rel_labels, rel_base_values, color="#30a907")
 
         ax.set_ylabel("Cantidad")
         ax.set_title("Relación por distrito")
+
+        # >>> CAMBIO ÚNICO APLICADO <<<
+        ax.margins(y=0.1)
 
         # Borrar marcos
         for spine in ax.spines.values():
@@ -127,7 +130,6 @@ if archivo:
         ax.set_facecolor("none")
         fig.patch.set_alpha(0)
 
-
         for i in range(len(rel_percent_labels)):
             porcentaje = float(rel_percent_labels.iloc[i]) * 100
             ax.text(
@@ -138,18 +140,16 @@ if archivo:
                 va="bottom",
                 fontsize=9
             )
-   
-
 
         buf_rel = BytesIO()
         fig.savefig(
-        buf_rel,
-        format="png",
-        bbox_inches="tight",
-        pad_inches=0,
-        dpi=200,
-        transparent=True
-    )
+            buf_rel,
+            format="png",
+            bbox_inches="tight",
+            pad_inches=0,
+            dpi=200,
+            transparent=True
+        )
 
         plt.close(fig)
         buf_rel.seek(0)
@@ -194,3 +194,4 @@ if archivo:
 
     except Exception as e:
         st.error(f"Error procesando el archivo: {e}")
+
