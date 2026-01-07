@@ -161,12 +161,6 @@ def generar_pdf(portada_path, grafico_path, grafico_relacion_path, delegacion, c
     story.append(Image(grafico_relacion_path, width=400, height=250))
 
 
-    # ================= GRÁFICO =================
-    story.append(PageBreak())
-    story.append(Paragraph("Datos de participación", styles["Heading1"]))
-    story.append(Spacer(1, 20))
-    story.append(Image(grafico_path, width=400, height=300))
-
     # ================= CONSTRUCCIÓN =================
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
