@@ -54,7 +54,7 @@ def header_footer(canvas, doc):
 
 
 # ================= GENERADOR PDF =================
-def generar_pdf(portada_path, grafico_relacion_path, delegacion, codigo, tabla_participacion):
+def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegacion, codigo, tabla_participacion):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
 
@@ -159,6 +159,15 @@ def generar_pdf(portada_path, grafico_relacion_path, delegacion, codigo, tabla_p
     story.append(Paragraph("Relación por distrito", styles["Heading2"]))
     story.append(Spacer(1, 15))
     story.append(Image(grafico_relacion_path, width=400, height=250))
+
+    # ================= PARTICIPACIÓN POR EDAD =================
+    story.append(PageBreak())
+    story.append(Spacer(1, 40))
+    story.append(Paragraph("Participación por Edad", styles["Heading1"]))
+    story.append(Spacer(1, 20))
+
+    story.append(Image(grafico_edad_path, width=420, height=420))
+
 
 
     # ================= CONSTRUCCIÓN =================
