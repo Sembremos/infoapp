@@ -109,7 +109,7 @@ if archivo:
         rel_percent_labels = rel_percent_labels[mask]
 
         # Crear gráfico
-        fig, ax = plt.subplots(figsize=(9, 4))
+        fig, ax = plt.subplots(figsize=(9, 6))
 
         ax.bar(rel_labels, rel_base_values, color="#30a907")
 
