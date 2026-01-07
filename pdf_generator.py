@@ -54,7 +54,7 @@ def header_footer(canvas, doc):
 
 
 # ================= GENERADOR PDF =================
-def generar_pdf(portada_path, grafico_path, grafico_relacion_path, delegacion, codigo, tabla_participacion):
+def generar_pdf(portada_path, grafico_relacion_path, delegacion, codigo, tabla_participacion):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
 
