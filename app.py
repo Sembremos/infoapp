@@ -156,15 +156,79 @@ if archivo:
         with open(grafico_rel_path, "wb") as f:
             f.write(buf_rel.getbuffer())
 
-        # ================= GENERAR PDF =================
+        # PARTICIPACION POR EDAD GRAFICO DE BOLITA
+        # Intervalos de edad (A29:A33)
+        edad_labels = df.iloc[28:33, 0].astype(str)
+
+        # Porcentajes (B29:B33) -> vienen como %
+        edad_percent_values = (
+            df.iloc[28:33, 1]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+
+        edad_percent_values = pd.to_numeric(edad_percent_values, errors="coerce")
+
+        # Filtrar filas válidas
+        mask = edad_percent_values.notna()
+        edad_labels = edad_labels[mask]
+        edad_percent_values = edad_percent_values[mask]
+
+        fig_edad, ax_edad = plt.subplots(figsize=(7, 7))
+
+        colores = [
+            "#30a907",
+            "#013051",
+            "#6BCF9D",
+            "#A7E6C3",
+            "#0B6E4F"
+        ]
+
+        wedges, texts, autotexts = ax_edad.pie(
+            edad_percent_values,
+            labels=edad_labels,
+            autopct=lambda p: f"{p:.0f}%",
+            startangle=90,
+            colors=colores,
+            textprops={"fontsize": 11}
+        )
+
+        ax_edad.axis("equal")  # circulo perfecto
+
+        # Fondo transparente
+        ax_edad.set_facecolor("none")
+        fig_edad.patch.set_alpha(0)
+
+        buf_edad = BytesIO()
+        fig_edad.savefig(
+            buf_edad,
+            format="png",
+            bbox_inches="tight",
+            pad_inches=0,
+            dpi=200,
+            transparent=True
+        )
+
+        plt.close(fig_edad)
+        buf_edad.seek(0)
+
+        grafico_edad_path = BASE_DIR / "grafico_participacion_edad.png"
+        with open(grafico_edad_path, "wb") as f:
+            f.write(buf_edad.getbuffer())
+
+        
+# ================= GENERAR PDF =============================================================================================PDF!!!!!!!!!!!!!!!!!!!!!!!
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
                 grafico_relacion_path=str(grafico_rel_path),
+                grafico_edad_path=str(grafico_edad_path),
                 delegacion=delegacion,
                 codigo=codigo,
                 tabla_participacion=tabla_participacion
             )
+
 
             pdf_bytes = pdf_buffer.getvalue()
             base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
