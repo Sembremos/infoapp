@@ -13,6 +13,8 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib import colors
 from io import BytesIO
 from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.lib.utils import ImageReader
+
 
 # ================= UTILIDAD FULL PAGE =================
 def FullImage(path):
@@ -57,19 +59,26 @@ def header_footer(canvas, doc):
 def draw_grafico_edad(canvas, doc, grafico_edad_path):
     page_width, page_height = A4
 
-    # Tamaño del gráfico (más pequeño)
+    # Tamaño deseado (ancho)
     img_width = 220
-    img_height = 220
+
+    # Leer imagen real
+    img = ImageReader(grafico_edad_path)
+    img_w, img_h = img.getSize()
+
+    # Calcular alto proporcional
+    img_height = img_width * img_h / img_w
 
     # Posición: tercio superior izquierdo
-    x = 40  # margen izquierdo
-    y = page_height - img_height - 120  # baja un poco desde arriba
+    x = 40
+    y = page_height - img_height - 120
 
     canvas.drawImage(
         grafico_edad_path,
         x,
         y,
         width=img_width,
+        height=img_height,
         preserveAspectRatio=True,
         mask="auto"
     )
