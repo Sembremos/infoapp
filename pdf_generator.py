@@ -59,7 +59,7 @@ def draw_grafico_edad(canvas, doc, grafico_edad_path):
 
     # Tamaño del gráfico (más pequeño)
     img_width = 220
-    img_height = 200
+    img_height = 220
 
     # Posición: tercio superior izquierdo
     x = 40  # margen izquierdo
