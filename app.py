@@ -189,6 +189,8 @@ if archivo:
             edad_percent_values,
             labels=edad_labels,
             autopct=lambda p: f"{p:.0f}%",
+            pctdistance=0.6,    #porcents
+            labeldistance=1.35, #etiquetas
             startangle=90,
             colors=colores,
             textprops={"fontsize": 20}
@@ -202,7 +204,7 @@ if archivo:
 
         # Tamaño de porcentajes
         for autotext in autotexts:
-            autotext.set_fontsize(14)
+            autotext.set_fontsize(25)
 
 
         # Fondo transparente
