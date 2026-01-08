@@ -195,12 +195,12 @@ if archivo:
         )
 
         # Tamaño de etiquetas (rangos de edad)
-    for text in texts:
-        text.set_fontsize(20)
+        for text in texts:
+            text.set_fontsize(20)
 
-    # Tamaño de porcentajes
-    for autotext in autotexts:
-        autotext.set_fontsize(14)
+        # Tamaño de porcentajes
+        for autotext in autotexts:
+            autotext.set_fontsize(14)
 
 
         ax_edad.axis("equal")  # circulo perfecto
