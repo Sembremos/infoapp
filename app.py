@@ -194,6 +194,8 @@ if archivo:
             textprops={"fontsize": 20}
         )
 
+        ax_edad.axis("equal")  # circulo perfecto
+        
         # Tamaño de etiquetas (rangos de edad)
         for text in texts:
             text.set_fontsize(20)
@@ -202,8 +204,6 @@ if archivo:
         for autotext in autotexts:
             autotext.set_fontsize(14)
 
-
-        ax_edad.axis("equal")  # circulo perfecto
 
         # Fondo transparente
         ax_edad.set_facecolor("none")
