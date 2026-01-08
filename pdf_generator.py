@@ -52,6 +52,28 @@ def header_footer(canvas, doc):
         mask="auto"
     )
 
+### GRAFICO DE EDAD ##
+
+def draw_grafico_edad(canvas, doc, grafico_edad_path):
+    page_width, page_height = A4
+
+    # Tamaño del gráfico (más pequeño)
+    img_width = 220
+    img_height = 220
+
+    # Posición: tercio superior izquierdo
+    x = 40  # margen izquierdo
+    y = page_height - img_height - 120  # baja un poco desde arriba
+
+    canvas.drawImage(
+        grafico_edad_path,
+        x,
+        y,
+        width=img_width,
+        height=img_height,
+        mask="auto"
+    )
+
 
 # ================= GENERADOR PDF =================
 def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegacion, codigo, tabla_participacion):
@@ -164,21 +186,19 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegaci
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Participación por Edad", styles["Heading1"]))
-    story.append(Spacer(1, 20))
-
-    story.append(Image(grafico_edad_path, width=420, height=420))
-
-
 
     # ================= CONSTRUCCIÓN =================
-    def first_page(canvas, doc):
-        FullImage(portada_path)(canvas, doc)
-
     def later_pages(canvas, doc):
         if doc.page == 2:
             FullImage("assets/intro.png")(canvas, doc)
+
         elif doc.page == 4:
             FullImage("assets/participacion.png")(canvas, doc)
+
+        elif doc.page == 6:
+            header_footer(canvas, doc)
+            draw_grafico_edad(canvas, doc, grafico_edad_path)
+
         else:
             header_footer(canvas, doc)
 
