@@ -188,19 +188,22 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegaci
     story.append(Paragraph("Participación por Edad", styles["Heading1"]))
 
     # ================= CONSTRUCCIÓN =================
-    def later_pages(canvas, doc):
-        if doc.page == 2:
-            FullImage("assets/intro.png")(canvas, doc)
+def first_page(canvas, doc):
+    FullImage(portada_path)(canvas, doc)
+    
+def later_pages(canvas, doc):
+    if doc.page == 2:
+        FullImage("assets/intro.png")(canvas, doc)
 
-        elif doc.page == 4:
-            FullImage("assets/participacion.png")(canvas, doc)
+    elif doc.page == 4:
+        FullImage("assets/participacion.png")(canvas, doc)
 
-        elif doc.page == 6:
-            header_footer(canvas, doc)
-            draw_grafico_edad(canvas, doc, grafico_edad_path)
+    elif doc.page == 6:
+        header_footer(canvas, doc)
+        draw_grafico_edad(canvas, doc, grafico_edad_path)
 
-        else:
-            header_footer(canvas, doc)
+    else:
+        header_footer(canvas, doc)
 
     doc.build(
         story,
