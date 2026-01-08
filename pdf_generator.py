@@ -70,7 +70,7 @@ def draw_grafico_edad(canvas, doc, grafico_edad_path):
         x,
         y,
         width=img_width,
-        height=img_height,
+        preserveAspectRatio=True,
         mask="auto"
     )
 
