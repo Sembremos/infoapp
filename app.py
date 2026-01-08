@@ -191,8 +191,17 @@ if archivo:
             autopct=lambda p: f"{p:.0f}%",
             startangle=90,
             colors=colores,
-            textprops={"fontsize": 11}
+            textprops={"fontsize": 20}
         )
+
+        # Tamaño de etiquetas (rangos de edad)
+    for text in texts:
+        text.set_fontsize(20)
+
+    # Tamaño de porcentajes
+    for autotext in autotexts:
+        autotext.set_fontsize(14)
+
 
         ax_edad.axis("equal")  # circulo perfecto
 
