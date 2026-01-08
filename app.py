@@ -175,14 +175,14 @@ if archivo:
         edad_labels = edad_labels[mask]
         edad_percent_values = edad_percent_values[mask]
 
-        fig_edad, ax_edad = plt.subplots(figsize=(7, 7))
+        fig_edad, ax_edad = plt.subplots(figsize=(3, 3))
 
         colores = [
-            "#30a907",
-            "#013051",
-            "#6BCF9D",
-            "#A7E6C3",
-            "#0B6E4F"
+            "#0E2F50",
+            "#1C4D82",
+            "#95E0FF",
+            "#40A816",
+            "#9FC459"
         ]
 
         wedges, texts, autotexts = ax_edad.pie(
