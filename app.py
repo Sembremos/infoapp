@@ -175,7 +175,7 @@ if archivo:
         edad_labels = edad_labels[mask]
         edad_percent_values = edad_percent_values[mask]
 
-        fig_edad, ax_edad = plt.subplots(figsize=(3, 3))
+        fig_edad, ax_edad = plt.subplots(figsize=(7, 7))
 
         colores = [
             "#0E2F50",
