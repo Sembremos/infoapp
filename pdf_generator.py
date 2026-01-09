@@ -105,16 +105,16 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
 
     table.setStyle(TableStyle([
         ("SPAN", (0, 0), (0, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor(000000)),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
 
-        ("GRID", (0, 1), (-1, -1), 0.5, colors.black),
+        ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
         ("ALIGN", (1, 1), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
-        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#E2FDD9")),
+        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
     ]))
 
     table.wrapOn(canvas, TABLE_WIDTH, 200)
