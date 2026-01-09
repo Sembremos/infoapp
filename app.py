@@ -271,16 +271,17 @@ if archivo:
             "#D9E1F2"
         ]
 
-        wedges, texts, autotexts = ax_esco.pie(
+        wedges, texts, autotexts = ax_escolaridad.pie(
             escolaridad_percent_values,
             labels=escolaridad_labels,
             autopct=lambda p: f"{p:.0f}%",
-            pctdistance=0.65,     # ⬅️ porcentajes más centrados
-            labeldistance=1.15,  # ⬅️ etiquetas más cerca del círculo
+            pctdistance=0.65,
+            labeldistance=1.15,
             startangle=90,
-            colors=colores_escolaridad,
+            colors=colores,   # ⬅️ ESTA ES LA CLAVE
             textprops={"fontsize": 20}
         )
+
 
 
         ax_esco.axis("equal")
