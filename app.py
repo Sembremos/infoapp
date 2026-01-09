@@ -216,16 +216,12 @@ if archivo:
         fig_edad.savefig(
             buf_edad,
             format="png",
-            fig.savefig(
-                buf,
-                format="png",
-                dpi=200,
-                transparent=True
-            ),
-            pad_inches=0,
             dpi=200,
             transparent=True
         )
+
+        plt.close(fig_edad)
+        buf_edad.seek(0)
 
         plt.close(fig_edad)
         buf_edad.seek(0)
@@ -300,19 +296,12 @@ if archivo:
         fig_esco.savefig(
             buf_esco,
             format="png",
-            fig.savefig(
-                buf,
-                format="png",
-                dpi=200,
-                transparent=True
-            ),
-            pad_inches=0,
             dpi=200,
             transparent=True
-        )    
+        )
 
-        plt.close(fig_esco)
-        buf_esco.seek(0)
+        plt.close(fig_edad)
+        buf_edad.seek(0)
 
         grafico_escolaridad_path = BASE_DIR / "grafico_participacion_escolaridad.png"
         with open(grafico_escolaridad_path, "wb") as f:
