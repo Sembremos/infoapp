@@ -238,78 +238,78 @@ if archivo:
         #####________________________________BLOQUE ESCOLARIDAD___________________________________
 
         # Intervalos / niveles (A39:A46)
-escolaridad_labels = df.iloc[38:46, 0].astype(str)
+        escolaridad_labels = df.iloc[38:46, 0].astype(str)
 
 # Porcentajes (B39:B46)
-escolaridad_percent_values = (
-    df.iloc[38:46, 1]
-    .astype(str)
-    .str.replace("%", "", regex=False)
-    .str.replace(",", ".", regex=False)
-)
+        escolaridad_percent_values = (
+            df.iloc[38:46, 1]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
 
-escolaridad_percent_values = pd.to_numeric(escolaridad_percent_values, errors="coerce")
+        escolaridad_percent_values = pd.to_numeric(escolaridad_percent_values, errors="coerce")
 
-# Filtrar filas válidas
-mask = escolaridad_percent_values.notna()
-escolaridad_labels = escolaridad_labels[mask]
-escolaridad_percent_values = escolaridad_percent_values[mask]
+        # Filtrar filas válidas
+        mask = escolaridad_percent_values.notna()
+        escolaridad_labels = escolaridad_labels[mask]
+        escolaridad_percent_values = escolaridad_percent_values[mask]
 
 # -------- GRÁFICO --------
-fig_esco, ax_esco = plt.subplots(figsize=(7, 7))
+        fig_esco, ax_esco = plt.subplots(figsize=(7, 7))
 
-colores_esco = [
-    "#5B9BD5",
-    "#A5A5A5",
-    "#4472C4",
-    "#255E91",
-    "#B7B7B7",
-    "#9DC3E6",
-    "#8FAADC",
-    "#D9E1F2"
-]
+        colores_esco = [
+            "#5B9BD5",
+            "#A5A5A5",
+            "#4472C4",
+            "#255E91",
+            "#B7B7B7",
+            "#9DC3E6",
+            "#8FAADC",
+            "#D9E1F2"
+        ]
 
-wedges, texts, autotexts = ax_esco.pie(
-    escolaridad_percent_values,
-    labels=escolaridad_labels,
-    autopct=lambda p: f"{p:.0f}%",
-    pctdistance=0.6,
-    labeldistance=1.35,
-    startangle=90,
-    colors=colores_esco,
-    textprops={"fontsize": 20}
-)
+        wedges, texts, autotexts = ax_esco.pie(
+            escolaridad_percent_values,
+            labels=escolaridad_labels,
+            autopct=lambda p: f"{p:.0f}%",
+            pctdistance=0.6,
+            labeldistance=1.35,
+            startangle=90,
+            colors=colores_esco,
+            textprops={"fontsize": 20}
+        )
 
-ax_esco.axis("equal")
+        ax_esco.axis("equal")
 
-for text in texts:
-    text.set_fontsize(20)
+        for text in texts:
+            text.set_fontsize(20)
 
-for autotext in autotexts:
-    autotext.set_fontsize(25)
+        for autotext in autotexts:
+            autotext.set_fontsize(25)
 
-ax_esco.set_facecolor("none")
-fig_esco.patch.set_alpha(0)
+        ax_esco.set_facecolor("none")
+        fig_esco.patch.set_alpha(0)
+    
+        buf_esco = BytesIO()
+        fig_esco.savefig(
+            buf_esco,
+            format="png",
+            bbox_inches="tight",
+            pad_inches=0,
+            dpi=200,
+            transparent=True
+        )    
 
-buf_esco = BytesIO()
-fig_esco.savefig(
-    buf_esco,
-    format="png",
-    bbox_inches="tight",
-    pad_inches=0,
-    dpi=200,
-    transparent=True
-)
+        plt.close(fig_esco)
+        buf_esco.seek(0)
 
-plt.close(fig_esco)
-buf_esco.seek(0)
-
-grafico_escolaridad_path = BASE_DIR / "grafico_participacion_escolaridad.png"
-with open(grafico_escolaridad_path, "wb") as f:
-    f.write(buf_esco.getbuffer())
+        grafico_escolaridad_path = BASE_DIR / "grafico_participacion_escolaridad.png"
+        with open(grafico_escolaridad_path, "wb") as f:
+            f.write(buf_esco.getbuffer())
 
 # -------- TABLA --------
-tabla_escolaridad = df.iloc[38:46, 0:2].fillna("").values.tolist()
+        tabla_escolaridad = df.iloc[38:46, 0:2].fillna("").values.tolist()
 
 
 #______________________________________________________________________________________________________
