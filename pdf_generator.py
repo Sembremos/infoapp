@@ -240,7 +240,7 @@ def generar_pdf(
     # ================= PARTICIPACIÓN POR EDAD =================
     story.append(PageBreak())
     story.append(Spacer(1, 40))
-    story.append(Paragraph("Datos de PArticipación", styles["Heading1"]))
+    story.append(Paragraph("Datos de Participación", styles["Heading1"]))
 
     # ================= CONSTRUCCIÓN later pages =================
     def first_page(canvas, doc):
