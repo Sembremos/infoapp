@@ -178,11 +178,11 @@ if archivo:
         fig_edad, ax_edad = plt.subplots(figsize=(7, 7))
 
         colores = [
-            "#0E2F50",
-            "#1C4D82",
-            "#95E0FF",
-            "#40A816",
-            "#9FC459"
+            "#5B9BD5",
+            "#A5A5A5",
+            "#4472C4",
+            "#255E91",
+            "#B7B7B7"
         ]
 
         wedges, texts, autotexts = ax_edad.pie(
