@@ -14,11 +14,6 @@ from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from io import BytesIO
 
-# ================= CONSTANTES DE LAYOUT =================
-MARGEN_IZQUIERDO = 40
-MARGEN_SUPERIOR_GRAFICO = 120
-GRAFICO_EDAD_ANCHO = 220
-
 
 # ================= UTILIDAD FULL PAGE =================
 def FullImage(path):
@@ -59,22 +54,29 @@ def header_footer(canvas, doc):
     )
 
 
-# ================= GRÁFICO EDAD =================
+# ================= GRAFICO DE EDAD =================
 def draw_grafico_edad(canvas, doc, grafico_edad_path):
     page_width, page_height = A4
 
+    # Tamaño deseado (ancho)
+    img_width = 220
+
+    # Leer imagen real
     img = ImageReader(grafico_edad_path)
     img_w, img_h = img.getSize()
-    img_height = GRAFICO_EDAD_ANCHO * img_h / img_w
 
-    x = MARGEN_IZQUIERDO
-    y = page_height - img_height - MARGEN_SUPERIOR_GRAFICO
+    # Calcular alto proporcional
+    img_height = img_width * img_h / img_w
+
+    # Posición: tercio superior izquierdo
+    x = 40
+    y = page_height - img_height - 120
 
     canvas.drawImage(
         grafico_edad_path,
         x,
         y,
-        width=GRAFICO_EDAD_ANCHO,
+        width=img_width,
         height=img_height,
         preserveAspectRatio=True,
         mask="auto"
@@ -82,9 +84,14 @@ def draw_grafico_edad(canvas, doc, grafico_edad_path):
 
 
 # ================= GENERADOR PDF =================
-def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path,
-                delegacion, codigo, tabla_participacion):
-
+def generar_pdf(
+    portada_path,
+    grafico_relacion_path,
+    grafico_edad_path,
+    delegacion,
+    codigo,
+    tabla_participacion
+):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
 
@@ -100,6 +107,7 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path,
         fontSize=26,
         textColor=colors.white,
         leading=80,
+        spaceAfter=10,
         alignment=TA_LEFT
     ))
 
@@ -108,7 +116,9 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path,
         fontName="Helvetica-Bold",
         fontSize=45,
         textColor=colors.HexColor("#30a907"),
-        leading=30
+        leading=30,
+        spaceAfter=10,
+        alignment=TA_LEFT
     ))
 
     styles.add(ParagraphStyle(
@@ -116,7 +126,9 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path,
         fontName="Helvetica-Bold",
         fontSize=60,
         textColor=colors.white,
-        leading=30
+        leading=30,
+        spaceAfter=10,
+        alignment=TA_LEFT
     ))
 
     doc = SimpleDocTemplate(
@@ -136,7 +148,7 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path,
     story.append(Paragraph(delegacion, styles["TituloDelta"]))
     story.append(Paragraph(codigo, styles["TituloD2"]))
 
-    # ================= PÁGINA 3 - INTRODUCCIÓN =================
+    # ================= INTRODUCCIÓN =================
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Introducción", styles["Heading1"]))
@@ -157,14 +169,15 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path,
     story.append(Spacer(1, 20))
     story.append(Image("assets/conformacion.png", width=600, height=400))
 
-    # ================= PÁGINA 4 - SOLO IMAGEN =================
+    # ================= PARTICIPACIÓN =================
+    story.append(PageBreak())  # imagen sola
     story.append(PageBreak())
 
-    # ================= PÁGINA 5 - DATOS =================
-    story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
     story.append(Spacer(1, 20))
+    story.append(Paragraph("Participación por Distrito", styles["Heading2"]))
+    story.append(Spacer(1, 10))
 
     tabla = Table(tabla_participacion, colWidths=[180, 180, 120])
     tabla.setStyle(TableStyle([
@@ -174,32 +187,38 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path,
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
         ("BACKGROUND", (1, 1), (-1, -1), colors.HexColor("#E2FDD9"))
     ]))
 
     story.append(tabla)
+
+    # grafico de relacion
     story.append(Spacer(1, 25))
     story.append(Paragraph("Relación por distrito", styles["Heading2"]))
     story.append(Spacer(1, 15))
     story.append(Image(grafico_relacion_path, width=400, height=250))
 
-    # ================= PÁGINA 6 - EDAD =================
+    # ================= PARTICIPACIÓN POR EDAD =================
     story.append(PageBreak())
     story.append(Spacer(1, 40))
-    story.append(Paragraph("Participación por Edad", styles["Heading1"]))
+    story.append(Paragraph("Datos de PArticipación", styles["Heading1"]))
 
-    # ================= CALLBACKS =================
+    # ================= CONSTRUCCIÓN =================
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
 
     def later_pages(canvas, doc):
-        if doc.page == 3:
-            header_footer(canvas, doc)
+        if doc.page == 2:
+            FullImage("assets/intro.png")(canvas, doc)
+
         elif doc.page == 4:
             FullImage("assets/participacion.png")(canvas, doc)
+
         elif doc.page == 6:
             header_footer(canvas, doc)
             draw_grafico_edad(canvas, doc, grafico_edad_path)
+
         else:
             header_footer(canvas, doc)
 
