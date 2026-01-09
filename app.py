@@ -271,7 +271,7 @@ if archivo:
             "#D9E1F2"
         ]
 
-        wedges, texts, autotexts = ax_escolaridad.pie(
+        wedges, texts, autotexts = ax_esco.pie(
             escolaridad_percent_values,
             labels=escolaridad_labels,
             autopct=lambda p: f"{p:.0f}%",
