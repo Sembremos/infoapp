@@ -16,6 +16,14 @@ st.title("Generador de Informes SS")
 BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
 
+# ================= CONSTANTES DE GRÁFICOS =================
+FIG_RELACION_SIZE = (9, 6)
+FIG_EDAD_SIZE = (7, 7)
+
+FONT_RELACION_LABEL = 12
+FONT_EDAD_LABEL = 20
+FONT_EDAD_PERCENT = 25
+
 # ================= UTILIDADES =================
 def limpiar_series(labels, values):
     df = pd.DataFrame({"label": labels, "value": values})
@@ -58,18 +66,14 @@ archivo = st.file_uploader(
 
 if archivo:
     try:
-        # Lectura del excel
         wb = load_workbook(archivo, data_only=True)
         ws = wb["Hoja1"]
         df = pd.DataFrame(ws.values)
 
-        # ================= DATOS BASE =================
-        delegacion = str(df.iloc[1, 1])  # B2
-        codigo = str(df.iloc[2, 1])      # B3
+        delegacion = str(df.iloc[1, 1])
+        codigo = str(df.iloc[2, 1])
 
-        # ================= TABLA PARTICIPACIÓN =================
         tabla_df = df.iloc[6:23, 0:3].dropna(how="all")
-
         tabla_df = tabla_df[
             ~(tabla_df.iloc[:, 1:].fillna(0).astype(str) == "0").all(axis=1)
         ]
@@ -87,44 +91,29 @@ if archivo:
         ]
 
         # ================= GRÁFICO RELACIÓN =================
-        # Nombres (G8:G11)
         rel_labels = df.iloc[7:11, 6].astype(str)
-
-        # Valores reales base (I8:I11)
         rel_base_values = pd.to_numeric(df.iloc[7:11, 8], errors="coerce")
-
-        # Porcentajes literales visibles (H8:H11)
         rel_percent_labels = (
             df.iloc[7:11, 7]
             .astype(str)
             .str.replace(",", ".", regex=False)
         )
 
-        # Filtrar filas válidas
         mask = rel_base_values.notna()
         rel_labels = rel_labels[mask]
         rel_base_values = rel_base_values[mask]
         rel_percent_labels = rel_percent_labels[mask]
 
-        # Crear gráfico
-        fig, ax = plt.subplots(figsize=(9, 6))
-
+        fig, ax = plt.subplots(figsize=FIG_RELACION_SIZE)
         ax.bar(rel_labels, rel_base_values, color="#30a907")
-
         ax.set_ylabel("Cantidad")
         ax.set_title("")
-
-        # CAMBIO ÚNICO APLICADO
         ax.margins(y=0.1)
 
-        # Borrar marcos
         for spine in ax.spines.values():
             spine.set_visible(False)
 
-        # Quitar líneas de ticks
         ax.tick_params(left=False, bottom=False)
-
-        # Fondo transparente (clave para PDF)
         ax.set_facecolor("none")
         fig.patch.set_alpha(0)
 
@@ -136,7 +125,7 @@ if archivo:
                 f"{porcentaje:.2f}%",
                 ha="center",
                 va="bottom",
-                fontsize=12
+                fontsize=FONT_RELACION_LABEL
             )
 
         buf_rel = BytesIO()
@@ -156,11 +145,8 @@ if archivo:
         with open(grafico_rel_path, "wb") as f:
             f.write(buf_rel.getbuffer())
 
-        # PARTICIPACION POR EDAD GRAFICO DE BOLITA
-        # Intervalos de edad (A29:A33)
+        # ================= GRÁFICO EDAD =================
         edad_labels = df.iloc[28:33, 0].astype(str)
-
-        # Porcentajes (B29:B33) -> vienen como %
         edad_percent_values = (
             df.iloc[28:33, 1]
             .astype(str)
@@ -169,13 +155,11 @@ if archivo:
         )
 
         edad_percent_values = pd.to_numeric(edad_percent_values, errors="coerce")
-
-        # Filtrar filas válidas
         mask = edad_percent_values.notna()
         edad_labels = edad_labels[mask]
         edad_percent_values = edad_percent_values[mask]
 
-        fig_edad, ax_edad = plt.subplots(figsize=(7, 7))
+        fig_edad, ax_edad = plt.subplots(figsize=FIG_EDAD_SIZE)
 
         colores = [
             "#5B9BD5",
@@ -189,25 +173,21 @@ if archivo:
             edad_percent_values,
             labels=edad_labels,
             autopct=lambda p: f"{p:.0f}%",
-            pctdistance=0.6,    #porcents
-            labeldistance=1.35, #etiquetas
+            pctdistance=0.6,
+            labeldistance=1.35,
             startangle=90,
             colors=colores,
-            textprops={"fontsize": 20}
+            textprops={"fontsize": FONT_EDAD_LABEL}
         )
 
-        ax_edad.axis("equal")  # circulo perfecto
-        
-        # Tamaño de etiquetas (rangos de edad)
+        ax_edad.axis("equal")
+
         for text in texts:
-            text.set_fontsize(20)
+            text.set_fontsize(FONT_EDAD_LABEL)
 
-        # Tamaño de porcentajes
         for autotext in autotexts:
-            autotext.set_fontsize(25)
+            autotext.set_fontsize(FONT_EDAD_PERCENT)
 
-
-        # Fondo transparente
         ax_edad.set_facecolor("none")
         fig_edad.patch.set_alpha(0)
 
@@ -228,8 +208,6 @@ if archivo:
         with open(grafico_edad_path, "wb") as f:
             f.write(buf_edad.getbuffer())
 
-        
-# ================= GENERAR PDF =============================================================================================PDF!!!!!!!!!!!!!!!!!!!!!!!
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
@@ -239,7 +217,6 @@ if archivo:
                 codigo=codigo,
                 tabla_participacion=tabla_participacion
             )
-
 
             pdf_bytes = pdf_buffer.getvalue()
             base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
@@ -266,4 +243,3 @@ if archivo:
 
     except Exception as e:
         st.error(f"Error procesando el archivo: {e}")
-
