@@ -237,7 +237,7 @@ if archivo:
                 grafico_edad_path=str(grafico_edad_path),
                 delegacion=delegacion,
                 codigo=codigo,
-                tabla_participacion=tabla_participacion
+                tabla_participacion=tabla_participacion,
                 tabla_edad=df.iloc[28:33, 0:2].fillna("").values.tolist()
             )
 
