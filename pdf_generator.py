@@ -83,6 +83,43 @@ def draw_grafico_edad(canvas, doc, grafico_edad_path):
     )
 
 
+#TABLA DE EDAD================================================
+def draw_tabla_edad(canvas, doc, tabla_edad):
+    page_width, page_height = A4
+
+    # ================= CONFIGURACIÓN =================
+    TABLE_WIDTH = 220        # mismo ancho visual que el gráfico
+    FONT_SIZE_HEADER = 12    # 👈 puedes cambiar tamaño aquí
+    FONT_SIZE_BODY = 11      # 👈 y aquí
+    X = page_width / 2 + 10  # lado derecho
+    Y = page_height - 120    # alineado con gráfico
+
+    # ================= CONTENIDO =================
+    data = [["Participación por Edad", ""]]
+    data.extend(tabla_edad)
+
+    table = Table(
+        data,
+        colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
+    )
+
+    table.setStyle(TableStyle([
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
+
+        ("GRID", (0, 1), (-1, -1), 0.5, colors.black),
+        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
+        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#E2FDD9")),
+    ]))
+
+    table.wrapOn(canvas, TABLE_WIDTH, 200)
+    table.drawOn(canvas, X, Y - 200)
+
 # ================= GENERADOR PDF =================
 def generar_pdf(
     portada_path,
@@ -90,7 +127,8 @@ def generar_pdf(
     grafico_edad_path,
     delegacion,
     codigo,
-    tabla_participacion
+    tabla_participacion,
+    tabla_edad
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -204,7 +242,7 @@ def generar_pdf(
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de PArticipación", styles["Heading1"]))
 
-    # ================= CONSTRUCCIÓN =================
+    # ================= CONSTRUCCIÓN later pages =================
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
 
@@ -218,6 +256,7 @@ def generar_pdf(
         elif doc.page == 6:
             header_footer(canvas, doc)
             draw_grafico_edad(canvas, doc, grafico_edad_path)
+            draw_tabla_edad(canvas, doc, tabla_edad)
 
         else:
             header_footer(canvas, doc)
