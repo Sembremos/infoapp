@@ -320,10 +320,12 @@ if archivo:
                 portada_path=str(ASSETS_DIR / "portada.png"),
                 grafico_relacion_path=str(grafico_rel_path),
                 grafico_edad_path=str(grafico_edad_path),
+                grafico_escolaridad_path=str(grafico_escolaridad_path),  # 👈 NUEVO
                 delegacion=delegacion,
                 codigo=codigo,
                 tabla_participacion=tabla_participacion,
-                tabla_edad=tabla_edad
+                tabla_edad=tabla_edad,
+                tabla_escolaridad=tabla_escolaridad                     # 👈 NUEVO
             )
 
             pdf_bytes = pdf_buffer.getvalue()
