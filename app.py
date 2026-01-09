@@ -229,6 +229,11 @@ if archivo:
         with open(grafico_edad_path, "wb") as f:
             f.write(buf_edad.getbuffer())
 
+
+        ## TAbla EDAD==============S=S=S=S===========S=S=
+        tabla_edad = df.iloc[28:33, 0:2].fillna("").values.tolist()
+
+
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
@@ -238,7 +243,7 @@ if archivo:
                 delegacion=delegacion,
                 codigo=codigo,
                 tabla_participacion=tabla_participacion,
-                tabla_edad=df.iloc[28:33, 0:2].fillna("").values.tolist()
+                tabla_edad=tabla_edad
             )
 
             pdf_bytes = pdf_buffer.getvalue()
