@@ -175,4 +175,94 @@ if archivo:
         # Filtrar filas válidas
         mask = edad_percent_values.notna()
         edad_labels = edad_labels[mask]
-        edad_percent_values = edad_percent_val
+        edad_percent_values = edad_percent_values[mask]
+
+        fig_edad, ax_edad = plt.subplots(figsize=(7, 7))
+
+        colores = [
+            "#5B9BD5",
+            "#A5A5A5",
+            "#4472C4",
+            "#255E91",
+            "#B7B7B7"
+        ]
+
+        wedges, texts, autotexts = ax_edad.pie(
+            edad_percent_values,
+            labels=edad_labels,
+            autopct=lambda p: f"{p:.0f}%",
+            pctdistance=0.6,
+            labeldistance=1.35,
+            startangle=90,
+            colors=colores,
+            textprops={"fontsize": 20}
+        )
+
+        ax_edad.axis("equal")
+
+        # Tamaño de etiquetas
+        for text in texts:
+            text.set_fontsize(20)
+
+        # Tamaño de porcentajes
+        for autotext in autotexts:
+            autotext.set_fontsize(25)
+
+        # Fondo transparente
+        ax_edad.set_facecolor("none")
+        fig_edad.patch.set_alpha(0)
+
+        buf_edad = BytesIO()
+        fig_edad.savefig(
+            buf_edad,
+            format="png",
+            bbox_inches="tight",
+            pad_inches=0,
+            dpi=200,
+            transparent=True
+        )
+
+        plt.close(fig_edad)
+        buf_edad.seek(0)
+
+        grafico_edad_path = BASE_DIR / "grafico_participacion_edad.png"
+        with open(grafico_edad_path, "wb") as f:
+            f.write(buf_edad.getbuffer())
+
+        # ================= GENERAR PDF =================
+        if st.button("HACER INFORME TERRITORIAL"):
+            pdf_buffer = generar_pdf(
+                portada_path=str(ASSETS_DIR / "portada.png"),
+                grafico_relacion_path=str(grafico_rel_path),
+                grafico_edad_path=str(grafico_edad_path),
+                delegacion=delegacion,
+                codigo=codigo,
+                tabla_participacion=tabla_participacion
+            )
+
+            pdf_bytes = pdf_buffer.getvalue()
+            base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
+
+            st.subheader("Vista previa del informe")
+            st.components.v1.html(
+                f"""
+                <iframe
+                    src="data:application/pdf;base64,{base64_pdf}"
+                    width="100%"
+                    height="800px">
+                </iframe>
+                """,
+                height=800,
+                scrolling=True
+            )
+
+            st.download_button(
+                label="⬇️ Descargar PDF",
+                data=pdf_bytes,
+                file_name="informe.pdf",
+                mime="application/pdf"
+            )
+
+    except Exception as e:
+        st.error(f"Error procesando el archivo: {e}")
+
