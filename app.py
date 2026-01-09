@@ -216,7 +216,12 @@ if archivo:
         fig_edad.savefig(
             buf_edad,
             format="png",
-            bbox_inches="tight",
+            fig.savefig(
+                buf,
+                format="png",
+                dpi=200,
+                transparent=True
+            ),
             pad_inches=0,
             dpi=200,
             transparent=True
@@ -295,7 +300,12 @@ if archivo:
         fig_esco.savefig(
             buf_esco,
             format="png",
-            bbox_inches="tight",
+            fig.savefig(
+                buf,
+                format="png",
+                dpi=200,
+                transparent=True
+            ),
             pad_inches=0,
             dpi=200,
             transparent=True
