@@ -104,7 +104,7 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
     )
 
     table.setStyle(TableStyle([
-        ("SPAN", (0, 0), (-1, 0)),
+        ("SPAN", (0, 0), (0, 0)),
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
