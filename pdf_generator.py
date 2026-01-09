@@ -92,7 +92,7 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
     FONT_SIZE_HEADER = 12    # 👈 puedes cambiar tamaño aquí
     FONT_SIZE_BODY = 11      # 👈 y aquí
     X = page_width / 2 + 10  # lado derecho
-    Y = page_height - 120    # alineado con gráfico
+    Y = page_height - 90    # alineado con gráfico
 
     # ================= CONTENIDO =================
     data = [["Participación por Edad", ""]]
