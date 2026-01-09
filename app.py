@@ -309,7 +309,14 @@ if archivo:
             f.write(buf_esco.getbuffer())
 
 # -------- TABLA --------
-        tabla_escolaridad = df.iloc[38:46, 0:2].fillna("").values.tolist()
+        tabla_escolaridad_df = df.iloc[38:46, 0:2].copy()
+
+        tabla_escolaridad_df.iloc[:, 1] = tabla_escolaridad_df.iloc[:, 1].apply(
+            lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
+        )
+
+        tabla_escolaridad = tabla_escolaridad_df.fillna("").values.tolist()
+
 
 
 #______________________________________________________________________________________________________
