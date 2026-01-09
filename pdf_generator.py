@@ -194,7 +194,7 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegaci
     # ================= PARTICIPACIÓN POR EDAD =================
     story.append(PageBreak())
     story.append(Spacer(1, 40))
-    story.append(Paragraph("Participación por Edad", styles["Heading1"]))
+    story.append(Paragraph("Datos de PArticipación", styles["Heading1"]))
 
     # ================= CONSTRUCCIÓN =================
     def first_page(canvas, doc):
