@@ -82,6 +82,30 @@ def draw_grafico_edad(canvas, doc, grafico_edad_path):
         mask="auto"
     )
 
+#####______________________________________BLOQUE ESCOLARIDAD______________________________________________________________
+    
+    def draw_grafico_escolaridad(canvas, grafico_path):
+        page_width, page_height = A4
+
+        img_width = 220
+        img = ImageReader(grafico_path)
+        img_w, img_h = img.getSize()
+        img_height = img_width * img_h / img_w
+
+    # Abajo del gráfico de edad, lado derecho
+        x = page_width / 2 + 10
+        y = page_height - img_height - 340
+
+        canvas.drawImage(
+            grafico_path,
+            x,
+            y,
+            width=img_width,
+            height=img_height,
+            preserveAspectRatio=True,
+            mask="auto"
+        )
+
 
 #TABLA DE EDAD================================================///////////
 def draw_tabla_edad(canvas, doc, tabla_edad):
@@ -120,80 +144,43 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
     table.wrapOn(canvas, TABLE_WIDTH, 200)
     table.drawOn(canvas, X, Y - 200)
 
-#________---------___________----------__________BLOQUE DE ESCOLARIDAD**********************************
-    # Intervalos / niveles (A39:A46)
-escolaridad_labels = df.iloc[38:46, 0].astype(str)
+#####______________________________________TABLA ESCOLARIDAD______________________________________________________________
+    
+    def draw_tabla_escolaridad(canvas, tabla_escolaridad):
+    page_width, page_height = A4
 
-# Porcentajes (B39:B46)
-escolaridad_percent_values = (
-    df.iloc[38:46, 1]
-    .astype(str)
-    .str.replace("%", "", regex=False)
-    .str.replace(",", ".", regex=False)
-)
+    TABLE_WIDTH = 220
+    FONT_SIZE_HEADER = 12
+    FONT_SIZE_BODY = 11
 
-escolaridad_percent_values = pd.to_numeric(escolaridad_percent_values, errors="coerce")
+    # Debajo del gráfico de edad, lado izquierdo
+    x = 40
+    y = page_height - 340
 
-# Filtrar filas válidas
-mask = escolaridad_percent_values.notna()
-escolaridad_labels = escolaridad_labels[mask]
-escolaridad_percent_values = escolaridad_percent_values[mask]
+    data = [["Participación por Escolaridad", ""]]
+    data.extend(tabla_escolaridad)
 
-# -------- GRÁFICO --------
-fig_esco, ax_esco = plt.subplots(figsize=(7, 7))
+    table = Table(
+        data,
+        colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
+    )
 
-colores_esco = [
-    "#5B9BD5",
-    "#A5A5A5",
-    "#4472C4",
-    "#255E91",
-    "#B7B7B7",
-    "#9DC3E6",
-    "#8FAADC",
-    "#D9E1F2"
-]
+    table.setStyle(TableStyle([
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
 
-wedges, texts, autotexts = ax_esco.pie(
-    escolaridad_percent_values,
-    labels=escolaridad_labels,
-    autopct=lambda p: f"{p:.0f}%",
-    pctdistance=0.6,
-    labeldistance=1.35,
-    startangle=90,
-    colors=colores_esco,
-    textprops={"fontsize": 20}
-)
+        ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
+        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
+        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
+    ]))
 
-ax_esco.axis("equal")
-
-for text in texts:
-    text.set_fontsize(20)
-
-for autotext in autotexts:
-    autotext.set_fontsize(25)
-
-ax_esco.set_facecolor("none")
-fig_esco.patch.set_alpha(0)
-
-buf_esco = BytesIO()
-fig_esco.savefig(
-    buf_esco,
-    format="png",
-    bbox_inches="tight",
-    pad_inches=0,
-    dpi=200,
-    transparent=True
-)
-
-plt.close(fig_esco)
-buf_esco.seek(0)
-
-grafico_escolaridad_path = BASE_DIR / "grafico_participacion_escolaridad.png"
-with open(grafico_escolaridad_path, "wb") as f:
-    f.write(buf_esco.getbuffer())
-
-# -------- TABLA --------
-tabla_escolaridad = df.iloc[38:46, 0:2].fillna("").values.tolist()
+    table.wrapOn(canvas, TABLE_WIDTH, 200)
+    table.drawOn(canvas, x, y - 200)
 
 #"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 #___________________________________________________________________________________________________________________________
@@ -202,12 +189,12 @@ def generar_pdf(
     portada_path,
     grafico_relacion_path,
     grafico_edad_path,
-    grafico_escolaridad_path=str(grafico_escolaridad_path), 
+    grafico_escolaridad_path 
     delegacion,
     codigo,
     tabla_participacion,
     tabla_edad,
-    tabla_escolaridad=tabla_escolaridad 
+    tabla_escolaridad
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -334,8 +321,12 @@ def generar_pdf(
 
         elif doc.page == 6:
             header_footer(canvas, doc)
+
             draw_grafico_edad(canvas, doc, grafico_edad_path)
             draw_tabla_edad(canvas, doc, tabla_edad)
+
+            draw_grafico_escolaridad(canvas, grafico_escolaridad_path)
+            draw_tabla_escolaridad(canvas, tabla_escolaridad)
 
         else:
             header_footer(canvas, doc)
