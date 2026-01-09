@@ -271,29 +271,31 @@ if archivo:
             "#D9E1F2"
         ]
 
-        wedges, texts, autotexts = ax_escolaridad.pie(
+        wedges, texts, autotexts = ax_esco.pie(
             escolaridad_percent_values,
             labels=escolaridad_labels,
             autopct=lambda p: f"{p:.0f}%",
             pctdistance=0.65,
             labeldistance=1.15,
             startangle=90,
-            colors=colores,   # ⬅️ ESTA ES LA CLAVE
+            colors=colores_esco,
             textprops={"fontsize": 20}
         )
 
-
-
         ax_esco.axis("equal")
 
+# Tamaño de etiquetas
         for text in texts:
             text.set_fontsize(20)
 
+# Tamaño de porcentajes
         for autotext in autotexts:
             autotext.set_fontsize(25)
 
+# Fondo transparente
         ax_esco.set_facecolor("none")
         fig_esco.patch.set_alpha(0)
+
     
         buf_esco = BytesIO()
         fig_esco.savefig(
