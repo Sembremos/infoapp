@@ -191,12 +191,13 @@ if archivo:
             edad_percent_values,
             labels=edad_labels,
             autopct=lambda p: f"{p:.0f}%",
-            pctdistance=0.6,
-            labeldistance=1.35,
+            pctdistance=0.65,     # ⬅️ porcentajes más centrados
+            labeldistance=1.15,  # ⬅️ etiquetas más cerca del círculo
             startangle=90,
             colors=colores,
             textprops={"fontsize": 20}
         )
+
 
         ax_edad.axis("equal")
 
@@ -270,16 +271,17 @@ if archivo:
             "#D9E1F2"
         ]
 
-        wedges, texts, autotexts = ax_esco.pie(
+        wedges, texts, autotexts = ax_escolaridad.pie(
             escolaridad_percent_values,
             labels=escolaridad_labels,
             autopct=lambda p: f"{p:.0f}%",
-            pctdistance=0.6,
-            labeldistance=1.35,
+            pctdistance=0.65,     # ⬅️ porcentajes más centrados
+            labeldistance=1.15,  # ⬅️ etiquetas más cerca del círculo
             startangle=90,
-            colors=colores_esco,
+            colors=colores_escolaridad,
             textprops={"fontsize": 20}
         )
+
 
         ax_esco.axis("equal")
 
