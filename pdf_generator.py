@@ -9,16 +9,16 @@ from reportlab.platypus import (
 )
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_LEFT
+from reportlab.lib.enums import TA_LEFT, TA_JUSTIFY
 from reportlab.lib import colors
-from io import BytesIO
-from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.utils import ImageReader
+from io import BytesIO
 
 # ================= CONSTANTES DE LAYOUT =================
 MARGEN_IZQUIERDO = 40
 MARGEN_SUPERIOR_GRAFICO = 120
 GRAFICO_EDAD_ANCHO = 220
+
 
 # ================= UTILIDAD FULL PAGE =================
 def FullImage(path):
@@ -59,6 +59,7 @@ def header_footer(canvas, doc):
     )
 
 
+# ================= GRÁFICO EDAD =================
 def draw_grafico_edad(canvas, doc, grafico_edad_path):
     page_width, page_height = A4
 
@@ -80,7 +81,10 @@ def draw_grafico_edad(canvas, doc, grafico_edad_path):
     )
 
 
-def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegacion, codigo, tabla_participacion):
+# ================= GENERADOR PDF =================
+def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path,
+                delegacion, codigo, tabla_participacion):
+
     buffer = BytesIO()
     styles = getSampleStyleSheet()
 
@@ -96,7 +100,6 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegaci
         fontSize=26,
         textColor=colors.white,
         leading=80,
-        spaceAfter=10,
         alignment=TA_LEFT
     ))
 
@@ -105,9 +108,7 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegaci
         fontName="Helvetica-Bold",
         fontSize=45,
         textColor=colors.HexColor("#30a907"),
-        leading=30,
-        spaceAfter=10,
-        alignment=TA_LEFT
+        leading=30
     ))
 
     styles.add(ParagraphStyle(
@@ -115,9 +116,7 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegaci
         fontName="Helvetica-Bold",
         fontSize=60,
         textColor=colors.white,
-        leading=30,
-        spaceAfter=10,
-        alignment=TA_LEFT
+        leading=30
     ))
 
     doc = SimpleDocTemplate(
@@ -131,21 +130,37 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegaci
 
     story = []
 
+    # ================= PÁGINA 2 =================
     story.append(PageBreak())
     story.append(Paragraph("DELEGACIÓN POLICIAL", styles["TituloGrande"]))
     story.append(Paragraph(delegacion, styles["TituloDelta"]))
     story.append(Paragraph(codigo, styles["TituloD2"]))
 
+    # ================= PÁGINA 3 - INTRODUCCIÓN =================
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Spacer(1, 12))
 
     story.append(Paragraph(
-        "Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional el Modelo Preventivo de Gestión Policial, una iniciativa estratégica destinada a fortalecer la seguridad pública a través de un enfoque proactivo y colaborativo.",
+        "Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional el Modelo Preventivo de Gestión Policial, una iniciativa estratégica destinada a fortalecer la seguridad pública a través de un enfoque proactivo y colaborativo. Una parte integral de este modelo es la Estrategia Integral de Prevención para la Seguridad Pública, conocida como Sembremos Seguridad, que se centra en la contextualización de las dinámicas delincuenciales y sociales que afectan a nuestras comunidades.",
         styles["NormalJustificado"]
     ))
 
+    story.append(Spacer(1, 20))
+
+    story.append(Paragraph(
+        "El presente informe, elaborado para el territorio que comprende la Delegación Policial de San Ramón, surge como una herramienta esencial para la toma efectiva de decisiones. Este informe se concibe como un instrumento dinámico y orientado hacia el futuro, diseñado para proporcionar información clave y un plan de trabajo estructurado que permita abordar las problemáticas prioritarias identificadas en el ámbito de la seguridad pública.",
+        styles["NormalJustificado"]
+    ))
+
+    story.append(Spacer(1, 20))
+    story.append(Image("assets/conformacion.png", width=600, height=400))
+
+    # ================= PÁGINA 4 - SOLO IMAGEN =================
+    story.append(PageBreak())
+
+    # ================= PÁGINA 5 - DATOS =================
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
@@ -159,6 +174,7 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegaci
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("BACKGROUND", (1, 1), (-1, -1), colors.HexColor("#E2FDD9"))
     ]))
 
     story.append(tabla)
@@ -167,16 +183,18 @@ def generar_pdf(portada_path, grafico_relacion_path, grafico_edad_path, delegaci
     story.append(Spacer(1, 15))
     story.append(Image(grafico_relacion_path, width=400, height=250))
 
+    # ================= PÁGINA 6 - EDAD =================
     story.append(PageBreak())
     story.append(Spacer(1, 40))
-    story.append(Paragraph("Datos de Participación", styles["Heading1"]))
+    story.append(Paragraph("Participación por Edad", styles["Heading1"]))
 
+    # ================= CALLBACKS =================
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
 
     def later_pages(canvas, doc):
-        if doc.page == 2:
-            FullImage("assets/intro.png")(canvas, doc)
+        if doc.page == 3:
+            header_footer(canvas, doc)
         elif doc.page == 4:
             FullImage("assets/participacion.png")(canvas, doc)
         elif doc.page == 6:
