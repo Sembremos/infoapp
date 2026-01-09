@@ -154,7 +154,7 @@ def draw_tabla_escolaridad(canvas, tabla_escolaridad):
     FONT_SIZE_BODY = 11
 
     # Debajo del gráfico de edad, lado izquierdo
-    x = 40
+    x = 20
     y = page_height - 340
 
     data = [["Participación por Escolaridad", ""]]
