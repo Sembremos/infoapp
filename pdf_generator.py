@@ -147,40 +147,40 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
 #####______________________________________TABLA ESCOLARIDAD______________________________________________________________
     
     def draw_tabla_escolaridad(canvas, tabla_escolaridad):
-    page_width, page_height = A4
+        page_width, page_height = A4
 
-    TABLE_WIDTH = 220
-    FONT_SIZE_HEADER = 12
-    FONT_SIZE_BODY = 11
+        TABLE_WIDTH = 220
+        FONT_SIZE_HEADER = 12
+        FONT_SIZE_BODY = 11
 
     # Debajo del gráfico de edad, lado izquierdo
-    x = 40
-    y = page_height - 340
+        x = 40
+        y = page_height - 340
 
-    data = [["Participación por Escolaridad", ""]]
-    data.extend(tabla_escolaridad)
+        data = [["Participación por Escolaridad", ""]]
+        data.extend(tabla_escolaridad)
 
-    table = Table(
-        data,
-        colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
-    )
+        table = Table(
+            data,
+            colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
+        )
 
-    table.setStyle(TableStyle([
-        ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
+        table.setStyle(TableStyle([
+            ("SPAN", (0, 0), (-1, 0)),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
 
-        ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
-        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
-        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
-    ]))
+            ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
+            ("ALIGN", (1, 1), (-1, -1), "CENTER"),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
+            ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
+        ]))
 
-    table.wrapOn(canvas, TABLE_WIDTH, 200)
-    table.drawOn(canvas, x, y - 200)
+        table.wrapOn(canvas, TABLE_WIDTH, 200)
+        table.drawOn(canvas, x, y - 200)
 
 #"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 #___________________________________________________________________________________________________________________________
@@ -189,7 +189,7 @@ def generar_pdf(
     portada_path,
     grafico_relacion_path,
     grafico_edad_path,
-    grafico_escolaridad_path 
+    grafico_escolaridad_path, 
     delegacion,
     codigo,
     tabla_participacion,
