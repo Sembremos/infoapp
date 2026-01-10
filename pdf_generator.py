@@ -151,7 +151,7 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
         colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
     )
 
-      table.setStyle(TableStyle([
+    table.setStyle(TableStyle([
         ("SPAN", (0, 0), (0, 0)),
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor(000000)),
@@ -164,6 +164,7 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
         ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
         ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
     ]))
+
 
         colores_filas = [
             colors.HexColor("#5B9BD5"),
