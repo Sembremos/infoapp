@@ -403,7 +403,11 @@ if archivo:
                 tabla_genero=tabla_genero                        # 👈 NUEVO
             )
 
+            
             pdf_bytes = pdf_buffer.getvalue()
+
+            st.write("Tamaño del PDF:", len(pdf_bytes))
+
             base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
 
             st.subheader("Vista previa del informe")
