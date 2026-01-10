@@ -298,7 +298,7 @@ if archivo:
             transparent=True
         )
 
-        plt.close(fig_edad)
+        plt.close(fig_esco)
         buf_edad.seek(0)
 
         grafico_escolaridad_path = BASE_DIR / "grafico_participacion_escolaridad.png"
@@ -314,8 +314,8 @@ if archivo:
 
         tabla_escolaridad = tabla_escolaridad_df.fillna("").values.tolist()
 
-#-------------------------------------Bloque de participacion x genero-----------------------------------------
-       # Etiquetas (A52:A54)
+        # ------------------------------------- Bloque de participación por género -----------------------------------------
+        # Etiquetas (A52:A54)
         genero_labels = df.iloc[51:54, 0].astype(str)
 
 # Porcentajes (B52:B54)
