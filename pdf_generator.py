@@ -109,8 +109,8 @@ def draw_grafico_genero(canvas, grafico_path):
     img_w, img_h = img.getSize()
     img_height = img_width * img_h / img_w
 
-    x = 30
-    y = page_height - img_height - 520
+    x = 40
+    y = page_height - img_height - 540
 
     canvas.drawImage(
         grafico_path,
@@ -233,8 +233,8 @@ def draw_tabla_genero(canvas, tabla_genero):
     FONT_SIZE_HEADER = 12
     FONT_SIZE_BODY = 11
 
-    x = page_width / 30
-    y = page_height - 520
+    x = page_width / 2 + 10
+    y = page_height - 510
 
     data = [["Participación por Género", ""]]
     data.extend(tabla_genero)
