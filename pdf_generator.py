@@ -389,6 +389,9 @@ def generar_pdf(
             draw_grafico_escolaridad(canvas, grafico_escolaridad_path)
             draw_tabla_escolaridad(canvas, tabla_escolaridad)
 
+            draw_grafico_genero(canvas, grafico_genero_path)
+            draw_tabla_genero(canvas, tabla_genero)
+
         else:
             header_footer(canvas, doc)
 
