@@ -270,7 +270,7 @@ if archivo:
 
         wedges, texts, autotexts = ax_esco.pie(
             escolaridad_percent_values,
-            labels=none,
+            labels=None,
             autopct=lambda p: f"{p:.0f}%",
             pctdistance=0.65,
             labeldistance=1.15,
@@ -345,7 +345,7 @@ if archivo:
 
         wedges, texts, autotexts = ax_gen.pie(
             genero_percent_values,
-            labels=none,
+            labels=None,
             autopct=lambda p: f"{p:.0f}%",
             pctdistance=0.65,
             labeldistance=1.15,
