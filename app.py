@@ -239,7 +239,7 @@ if archivo:
         # Intervalos / niveles (A39:A46)
         escolaridad_labels = df.iloc[38:46, 0].astype(str)
 
-# Porcentajes (B39:B46)
+        # Porcentajes (B39:B46)
         escolaridad_percent_values = (
             df.iloc[38:46, 1]
             .astype(str)
@@ -254,7 +254,7 @@ if archivo:
         escolaridad_labels = escolaridad_labels[mask]
         escolaridad_percent_values = escolaridad_percent_values[mask]
 
-# -------- GRÁFICO --------
+        # -------- GRÁFICO --------
         fig_esco, ax_esco = plt.subplots(figsize=(7, 7))
 
         colores_esco = [
@@ -281,11 +281,11 @@ if archivo:
 
         ax_esco.axis("equal")
 
-# Tamaño de porcentajes
+        # Tamaño de porcentajes
         for autotext in autotexts:
             autotext.set_fontsize(25)
 
-# Fondo transparente
+        # Fondo transparente
         ax_esco.set_facecolor("none")
         fig_esco.patch.set_alpha(0)
 
@@ -305,7 +305,7 @@ if archivo:
         with open(grafico_escolaridad_path, "wb") as f:
             f.write(buf_esco.getbuffer())
 
-# -------- TABLA --------
+        # -------- TABLA --------
         tabla_escolaridad_df = df.iloc[38:46, 0:2].copy()
 
         tabla_escolaridad_df.iloc[:, 1] = tabla_escolaridad_df.iloc[:, 1].apply(
@@ -318,7 +318,7 @@ if archivo:
         # Etiquetas (A52:A54)
         genero_labels = df.iloc[51:54, 0].astype(str)
 
-# Porcentajes (B52:B54)
+        # Porcentajes (B52:B54)
         genero_percent_values = (
             df.iloc[51:54, 1]
             .astype(str)
@@ -328,15 +328,15 @@ if archivo:
 
         genero_percent_values = pd.to_numeric(genero_percent_values, errors="coerce")
 
-# Filtrar válidos
+        # Filtrar válidos
         mask = genero_percent_values.notna()
         genero_labels = genero_labels[mask]
         genero_percent_values = genero_percent_values[mask]
 
-# -------- GRÁFICO --------
+        # -------- GRÁFICO --------
         fig_gen, ax_gen = plt.subplots(figsize=(7, 7))
 
-# mismos colores que edad/escolaridad
+        # mismos colores que edad/escolaridad
         colores_genero = [
             "#5B9BD5",
             "#A5A5A5",
@@ -377,7 +377,7 @@ if archivo:
         with open(grafico_genero_path, "wb") as f:
             f.write(buf_gen.getbuffer())
 
-# -------- TABLA --------
+        # -------- TABLA --------
         tabla_genero_df = df.iloc[51:54, 0:2].copy()
         tabla_genero_df.iloc[:, 1] = tabla_genero_df.iloc[:, 1].apply(
             lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
@@ -385,8 +385,8 @@ if archivo:
 
         tabla_genero = tabla_genero_df.fillna("").values.tolist() 
 
-#______________________________________________________________________________________________________
-#______________________________________________________________________________________________________
+        #______________________________________________________________________________________________________
+        #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
