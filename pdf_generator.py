@@ -393,9 +393,9 @@ def generar_pdf(
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
-    story.append(Spacer(1, 250))
+    story.append(Spacer(1, 200))
     story.append(Paragraph("________________________________________________________________________________________________"))
-    story.append(Spacer(1, 250))
+    story.append(Spacer(1, 150))
     story.append(Paragraph("________________________________________________________________________________________________"))
 
     def first_page(canvas, doc):
