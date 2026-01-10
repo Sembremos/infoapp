@@ -398,6 +398,9 @@ def generar_pdf(
     story.append(Spacer(1, 210))
     story.append(Paragraph("__________________________________________________________________________________________"))
 
+    story.append(PageBreak())
+    story.append(PageBreak())
+
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
 
@@ -414,6 +417,8 @@ def generar_pdf(
             draw_tabla_escolaridad(canvas, tabla_escolaridad)
             draw_grafico_genero(canvas, grafico_genero_path)
             draw_tabla_genero(canvas, tabla_genero)
+        elif doc.page == 7:
+            FullImage("assets/metodologico.png")(canvas, doc)
         else:
             header_footer(canvas, doc)
 
