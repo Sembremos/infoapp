@@ -189,7 +189,7 @@ if archivo:
 
         wedges, texts, autotexts = ax_edad.pie(
             edad_percent_values,
-            labels=edad_labels,
+            labels=None,
             autopct=lambda p: f"{p:.0f}%",
             pctdistance=0.65,     # ⬅️ porcentajes más centrados
             labeldistance=1.15,  # ⬅️ etiquetas más cerca del círculo
