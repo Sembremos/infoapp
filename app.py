@@ -201,9 +201,6 @@ if archivo:
 
         ax_edad.axis("equal")
 
-        # Tamaño de etiquetas
-        for text in texts:
-            text.set_fontsize(20)
 
         # Tamaño de porcentajes
         for autotext in autotexts:
@@ -273,7 +270,7 @@ if archivo:
 
         wedges, texts, autotexts = ax_esco.pie(
             escolaridad_percent_values,
-            labels=escolaridad_labels,
+            labels=none,
             autopct=lambda p: f"{p:.0f}%",
             pctdistance=0.65,
             labeldistance=1.15,
@@ -283,10 +280,6 @@ if archivo:
         )
 
         ax_esco.axis("equal")
-
-# Tamaño de etiquetas
-        for text in texts:
-            text.set_fontsize(20)
 
 # Tamaño de porcentajes
         for autotext in autotexts:
@@ -352,7 +345,7 @@ if archivo:
 
         wedges, texts, autotexts = ax_gen.pie(
             genero_percent_values,
-            labels=genero_labels,
+            labels=none,
             autopct=lambda p: f"{p:.0f}%",
             pctdistance=0.65,
             labeldistance=1.15,
@@ -362,9 +355,6 @@ if archivo:
         )
 
         ax_gen.axis("equal")
-
-        for text in texts:
-            text.set_fontsize(20)
 
         for autotext in autotexts:
             autotext.set_fontsize(25)
