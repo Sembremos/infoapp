@@ -403,6 +403,7 @@ if archivo:
                 tabla_genero=tabla_genero                        # 👈 NUEVO
             )
 
+            pdf_bytes = pdf_buffer.getvalue()
             
             st.subheader("Informe generado correctamente")
 
