@@ -404,7 +404,8 @@ if archivo:
             )
 
             
-           
+            st.subheader("Informe generado correctamente")
+
             st.download_button(
                 label="⬇️ Descargar PDF",
                 data=pdf_bytes,
