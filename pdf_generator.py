@@ -106,6 +106,30 @@ def draw_grafico_escolaridad(canvas, grafico_path):
         mask="auto"
     )
 
+#####______________________________________BLOQUE GENERO______________________________________________________________
+
+def draw_grafico_genero(canvas, grafico_path):
+    page_width, page_height = A4
+
+    img_width = 220
+    img = ImageReader(grafico_path)
+    img_w, img_h = img.getSize()
+    img_height = img_width * img_h / img_w
+
+    # zona inferior izquierda
+    x = 20
+    y = page_height - img_height - 520
+
+    canvas.drawImage(
+        grafico_path,
+        x,
+        y,
+        width=img_width,
+        height=img_height,
+        preserveAspectRatio=True,
+        mask="auto"
+    )
+
 
 #TABLA DE EDAD================================================///////////
 def draw_tabla_edad(canvas, doc, tabla_edad):
@@ -159,6 +183,43 @@ def draw_tabla_escolaridad(canvas, tabla_escolaridad):
 
     data = [["Participación por Escolaridad", ""]]
     data.extend(tabla_escolaridad)
+
+    table = Table(
+        data,
+        colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
+    )
+
+    table.setStyle(TableStyle([
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
+
+        ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
+        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
+        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
+    ]))
+
+    table.wrapOn(canvas, TABLE_WIDTH, 200)
+    table.drawOn(canvas, x, y - 200)
+
+#----------------------------------------------------------------------------------------Tabla GEnero
+
+def draw_tabla_genero(canvas, tabla_genero):
+    page_width, page_height = A4
+
+    TABLE_WIDTH = 220
+    FONT_SIZE_HEADER = 12
+    FONT_SIZE_BODY = 11
+
+    x = page_width / 2 + 10
+    y = page_height - 520
+
+    data = [["Participación por Género", ""]]
+    data.extend(tabla_genero)
 
     table = Table(
         data,
