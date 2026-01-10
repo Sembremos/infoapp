@@ -58,17 +58,11 @@ def header_footer(canvas, doc):
 def draw_grafico_edad(canvas, doc, grafico_edad_path):
     page_width, page_height = A4
 
-    # Tamaño deseado (ancho)
     img_width = 220
-
-    # Leer imagen real
     img = ImageReader(grafico_edad_path)
     img_w, img_h = img.getSize()
-
-    # Calcular alto proporcional
     img_height = img_width * img_h / img_w
 
-    # Posición: tercio superior izquierdo
     x = 40
     y = page_height - img_height - 120
 
@@ -82,8 +76,8 @@ def draw_grafico_edad(canvas, doc, grafico_edad_path):
         mask="auto"
     )
 
-#####______________________________________BLOQUE ESCOLARIDAD______________________________________________________________
-    
+
+# ================= GRAFICO ESCOLARIDAD =================
 def draw_grafico_escolaridad(canvas, grafico_path):
     page_width, page_height = A4
 
@@ -92,7 +86,6 @@ def draw_grafico_escolaridad(canvas, grafico_path):
     img_w, img_h = img.getSize()
     img_height = img_width * img_h / img_w
 
-    # Abajo del gráfico de edad, lado derecho
     x = page_width / 2 + 10
     y = page_height - img_height - 340
 
@@ -106,8 +99,8 @@ def draw_grafico_escolaridad(canvas, grafico_path):
         mask="auto"
     )
 
-#####______________________________________BLOQUE GENERO______________________________________________________________
 
+# ================= GRAFICO GENERO =================
 def draw_grafico_genero(canvas, grafico_path):
     page_width, page_height = A4
 
@@ -116,7 +109,6 @@ def draw_grafico_genero(canvas, grafico_path):
     img_w, img_h = img.getSize()
     img_height = img_width * img_h / img_w
 
-    # zona inferior izquierda
     x = 20
     y = page_height - img_height - 520
 
@@ -131,18 +123,16 @@ def draw_grafico_genero(canvas, grafico_path):
     )
 
 
-#TABLA DE EDAD================================================///////////
+# ================= TABLA EDAD =================
 def draw_tabla_edad(canvas, doc, tabla_edad):
     page_width, page_height = A4
 
-    # ================= CONFIGURACIÓN =================
-    TABLE_WIDTH = 220        # mismo ancho visual que el gráfico
-    FONT_SIZE_HEADER = 12    # 👈 puedes cambiar tamaño aquí
-    FONT_SIZE_BODY = 11      # 👈 y aquí
-    X = page_width / 2 + 10  # lado derecho
-    Y = page_height - 60    # alineado con gráfico
+    TABLE_WIDTH = 220
+    FONT_SIZE_HEADER = 12
+    FONT_SIZE_BODY = 11
+    X = page_width / 2 + 10
+    Y = page_height - 60
 
-    # ================= CONTENIDO =================
     data = [["Participación por Edad", ""]]
     data.extend(tabla_edad)
 
@@ -154,10 +144,9 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
     table.setStyle(TableStyle([
         ("SPAN", (0, 0), (0, 0)),
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor(000000)),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor(0x000000)),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
-
         ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
         ("ALIGN", (1, 1), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
@@ -165,26 +154,25 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
         ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
     ]))
 
+    colores_filas = [
+        colors.HexColor("#5B9BD5"),
+        colors.HexColor("#A5A5A5"),
+        colors.HexColor("#4472C4"),
+        colors.HexColor("#255E91"),
+        colors.HexColor("#B7B7B7")
+    ]
 
-        colores_filas = [
-            colors.HexColor("#5B9BD5"),
-            colors.HexColor("#A5A5A5"),
-            colors.HexColor("#4472C4"),
-            colors.HexColor("#255E91"),
-            colors.HexColor("#B7B7B7")
-        ]
-
-        for i, color in enumerate(colores_filas, start=1):
-            table.setStyle([
-                ("BACKGROUND", (0, i), (-1, i), color),
-                ("TEXTCOLOR", (0, i), (-1, i), colors.white)
-            ])
+    for i, color in enumerate(colores_filas, start=1):
+        table.setStyle([
+            ("BACKGROUND", (0, i), (-1, i), color),
+            ("TEXTCOLOR", (0, i), (-1, i), colors.white)
+        ])
 
     table.wrapOn(canvas, TABLE_WIDTH, 200)
     table.drawOn(canvas, X, Y - 200)
 
-#####______________________________________TABLA ESCOLARIDAD______________________________________________________________
-    
+
+# ================= TABLA ESCOLARIDAD =================
 def draw_tabla_escolaridad(canvas, tabla_escolaridad):
     page_width, page_height = A4
 
@@ -192,7 +180,6 @@ def draw_tabla_escolaridad(canvas, tabla_escolaridad):
     FONT_SIZE_HEADER = 12
     FONT_SIZE_BODY = 11
 
-    # Debajo del gráfico de edad, lado izquierdo
     x = 20
     y = page_height - 340
 
@@ -210,7 +197,6 @@ def draw_tabla_escolaridad(canvas, tabla_escolaridad):
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
-
         ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
         ("ALIGN", (1, 1), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
@@ -235,12 +221,11 @@ def draw_tabla_escolaridad(canvas, tabla_escolaridad):
             ("TEXTCOLOR", (0, i), (-1, i), colors.white)
         ])
 
-    
     table.wrapOn(canvas, TABLE_WIDTH, 200)
     table.drawOn(canvas, x, y - 200)
 
-#----------------------------------------------------------------------------------------Tabla GEnero
 
+# ================= TABLA GENERO =================
 def draw_tabla_genero(canvas, tabla_genero):
     page_width, page_height = A4
 
@@ -265,7 +250,6 @@ def draw_tabla_genero(canvas, tabla_genero):
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
-
         ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
         ("ALIGN", (1, 1), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
@@ -285,18 +269,16 @@ def draw_tabla_genero(canvas, tabla_genero):
             ("TEXTCOLOR", (0, i), (-1, i), colors.white)
         ])
 
-
     table.wrapOn(canvas, TABLE_WIDTH, 200)
     table.drawOn(canvas, x, y - 200)
 
-#"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-#___________________________________________________________________________________________________________________________
-#"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""GENERADOR DE PDF""""""""""""""""""""""""""""""""""""""""""""""
+
+# ================= GENERADOR PDF =================
 def generar_pdf(
     portada_path,
     grafico_relacion_path,
     grafico_edad_path,
-    grafico_escolaridad_path, 
+    grafico_escolaridad_path,
     grafico_genero_path,
     delegacion,
     codigo,
@@ -355,13 +337,11 @@ def generar_pdf(
 
     story = []
 
-    # ================= PÁGINA 2 =================
     story.append(PageBreak())
     story.append(Paragraph("DELEGACIÓN POLICIAL", styles["TituloGrande"]))
     story.append(Paragraph(delegacion, styles["TituloDelta"]))
     story.append(Paragraph(codigo, styles["TituloD2"]))
 
-    # ================= INTRODUCCIÓN =================
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Introducción", styles["Heading1"]))
@@ -382,8 +362,7 @@ def generar_pdf(
     story.append(Spacer(1, 20))
     story.append(Image("assets/conformacion.png", width=600, height=400))
 
-    # ================= PARTICIPACIÓN =================
-    story.append(PageBreak())  # imagen sola
+    story.append(PageBreak())
     story.append(PageBreak())
 
     story.append(Spacer(1, 40))
@@ -406,40 +385,31 @@ def generar_pdf(
 
     story.append(tabla)
 
-    # grafico de relacion
     story.append(Spacer(1, 25))
     story.append(Paragraph("Relación por distrito", styles["Heading2"]))
     story.append(Spacer(1, 15))
     story.append(Image(grafico_relacion_path, width=400, height=250))
 
-    # ================= PARTICIPACIÓN POR EDAD =================
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
 
-    # ================= CONSTRUCCIÓN later pages =================
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
 
     def later_pages(canvas, doc):
         if doc.page == 2:
             FullImage("assets/intro.png")(canvas, doc)
-
         elif doc.page == 4:
             FullImage("assets/participacion.png")(canvas, doc)
-
         elif doc.page == 6:
             header_footer(canvas, doc)
-
             draw_grafico_edad(canvas, doc, grafico_edad_path)
             draw_tabla_edad(canvas, doc, tabla_edad)
-
             draw_grafico_escolaridad(canvas, grafico_escolaridad_path)
             draw_tabla_escolaridad(canvas, tabla_escolaridad)
-
             draw_grafico_genero(canvas, grafico_genero_path)
             draw_tabla_genero(canvas, tabla_genero)
-
         else:
             header_footer(canvas, doc)
 
