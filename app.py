@@ -323,77 +323,77 @@ if archivo:
 
 #-------------------------------------Bloque de participacion x genero-----------------------------------------
        # Etiquetas (A52:A54)
-    genero_labels = df.iloc[51:54, 0].astype(str)
+        genero_labels = df.iloc[51:54, 0].astype(str)
 
 # Porcentajes (B52:B54)
-    genero_percent_values = (
-        df.iloc[51:54, 1]
-        .astype(str)
-        .str.replace("%", "", regex=False)
-        .str.replace(",", ".", regex=False)
-    )
+        genero_percent_values = (
+            df.iloc[51:54, 1]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
 
-    genero_percent_values = pd.to_numeric(genero_percent_values, errors="coerce")
+        genero_percent_values = pd.to_numeric(genero_percent_values, errors="coerce")
 
 # Filtrar válidos
-    mask = genero_percent_values.notna()
-    genero_labels = genero_labels[mask]
-    genero_percent_values = genero_percent_values[mask]
+        mask = genero_percent_values.notna()
+        genero_labels = genero_labels[mask]
+        genero_percent_values = genero_percent_values[mask]
 
 # -------- GRÁFICO --------
-    fig_gen, ax_gen = plt.subplots(figsize=(7, 7))
+        fig_gen, ax_gen = plt.subplots(figsize=(7, 7))
 
 # mismos colores que edad/escolaridad
-    colores_genero = [
-        "#5B9BD5",
-        "#A5A5A5",
-        "#4472C4"
-    ]
+        colores_genero = [
+            "#5B9BD5",
+            "#A5A5A5",
+            "#4472C4"
+        ]
 
-    wedges, texts, autotexts = ax_gen.pie(
-        genero_percent_values,
-        labels=genero_labels,
-        autopct=lambda p: f"{p:.0f}%",
-        pctdistance=0.65,
-        labeldistance=1.15,
-        startangle=90,
-        colors=colores_genero,
-        textprops={"fontsize": 20}
-    )
+        wedges, texts, autotexts = ax_gen.pie(
+            genero_percent_values,
+            labels=genero_labels,
+            autopct=lambda p: f"{p:.0f}%",
+            pctdistance=0.65,
+            labeldistance=1.15,
+            startangle=90,
+            colors=colores_genero,
+            textprops={"fontsize": 20}
+        )
 
-    ax_gen.axis("equal")
+        ax_gen.axis("equal")
 
-    for text in texts:
-        text.set_fontsize(20)
+        for text in texts:
+            text.set_fontsize(20)
 
-    for autotext in autotexts:
-        autotext.set_fontsize(25)
+        for autotext in autotexts:
+            autotext.set_fontsize(25)
 
-    ax_gen.set_facecolor("none")
-    fig_gen.patch.set_alpha(0)
+        ax_gen.set_facecolor("none")
+        fig_gen.patch.set_alpha(0)
 
-    buf_gen = BytesIO()
-    fig_gen.savefig(
-        buf_gen,
-        format="png",
-        dpi=200,
-        transparent=True
-    )
+        buf_gen = BytesIO()
+        fig_gen.savefig(
+            buf_gen,
+            format="png",
+            dpi=200,
+            transparent=True
+        )
 
-    plt.close(fig_gen)
-    buf_gen.seek(0)
+        plt.close(fig_gen)
+        buf_gen.seek(0)
 
-    grafico_genero_path = BASE_DIR / "grafico_participacion_genero.png"
-    with open(grafico_genero_path, "wb") as f:
-        f.write(buf_gen.getbuffer())
+        grafico_genero_path = BASE_DIR / "grafico_participacion_genero.png"
+        with open(grafico_genero_path, "wb") as f:
+            f.write(buf_gen.getbuffer())
 
 # -------- TABLA --------
-    tabla_genero_df = df.iloc[51:54, 0:2].copy()
-    tabla_genero_df.iloc[:, 1] = tabla_genero_df.iloc[:, 1].apply(
-        lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
-    )
+        tabla_genero_df = df.iloc[51:54, 0:2].copy()
+        tabla_genero_df.iloc[:, 1] = tabla_genero_df.iloc[:, 1].apply(
+            lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
+        )
 
-    tabla_genero = tabla_genero_df.fillna("").values.tolist() 
+        tabla_genero = tabla_genero_df.fillna("").values.tolist() 
 
 #______________________________________________________________________________________________________
 #______________________________________________________________________________________________________
