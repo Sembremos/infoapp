@@ -151,7 +151,7 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
         colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
     )
 
-    table.setStyle(TableStyle([
+      table.setStyle(TableStyle([
         ("SPAN", (0, 0), (0, 0)),
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor(000000)),
@@ -164,6 +164,20 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
         ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
         ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
     ]))
+
+        colores_filas = [
+            colors.HexColor("#5B9BD5"),
+            colors.HexColor("#A5A5A5"),
+            colors.HexColor("#4472C4"),
+            colors.HexColor("#255E91"),
+            colors.HexColor("#B7B7B7")
+        ]
+
+        for i, color in enumerate(colores_filas, start=1):
+            table.setStyle([
+                ("BACKGROUND", (0, i), (-1, i), color),
+                ("TEXTCOLOR", (0, i), (-1, i), colors.white)
+            ])
 
     table.wrapOn(canvas, TABLE_WIDTH, 200)
     table.drawOn(canvas, X, Y - 200)
@@ -203,6 +217,24 @@ def draw_tabla_escolaridad(canvas, tabla_escolaridad):
         ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
     ]))
 
+    colores_filas = [
+        colors.HexColor("#5B9BD5"),
+        colors.HexColor("#A5A5A5"),
+        colors.HexColor("#4472C4"),
+        colors.HexColor("#255E91"),
+        colors.HexColor("#B7B7B7"),
+        colors.HexColor("#9DC3E6"),
+        colors.HexColor("#8FAADC"),
+        colors.HexColor("#D9E1F2")
+    ]
+
+    for i, color in enumerate(colores_filas, start=1):
+        table.setStyle([
+            ("BACKGROUND", (0, i), (-1, i), color),
+            ("TEXTCOLOR", (0, i), (-1, i), colors.white)
+        ])
+
+    
     table.wrapOn(canvas, TABLE_WIDTH, 200)
     table.drawOn(canvas, x, y - 200)
 
@@ -239,6 +271,19 @@ def draw_tabla_genero(canvas, tabla_genero):
         ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
         ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
     ]))
+
+    colores_filas = [
+        colors.HexColor("#5B9BD5"),
+        colors.HexColor("#A5A5A5"),
+        colors.HexColor("#4472C4")
+    ]
+
+    for i, color in enumerate(colores_filas, start=1):
+        table.setStyle([
+            ("BACKGROUND", (0, i), (-1, i), color),
+            ("TEXTCOLOR", (0, i), (-1, i), colors.white)
+        ])
+
 
     table.wrapOn(canvas, TABLE_WIDTH, 200)
     table.drawOn(canvas, x, y - 200)
