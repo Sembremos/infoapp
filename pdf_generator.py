@@ -251,11 +251,13 @@ def generar_pdf(
     grafico_relacion_path,
     grafico_edad_path,
     grafico_escolaridad_path, 
+    grafico_genero_path,
     delegacion,
     codigo,
     tabla_participacion,
     tabla_edad,
-    tabla_escolaridad
+    tabla_escolaridad,
+    tabla_genero
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
