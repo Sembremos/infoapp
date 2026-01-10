@@ -393,10 +393,10 @@ def generar_pdf(
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
-    story.append(Spacer(1, 320))
-    story.append(Paragraph("_____________________________________________________________________________"))
-    story.append(Spacer(1, 510))
-    story.append(Paragraph("_____________________________________________________________________________"))
+    story.append(Spacer(1, 250))
+    story.append(Paragraph("________________________________________________________________________________________________"))
+    story.append(Spacer(1, 250))
+    story.append(Paragraph("________________________________________________________________________________________________"))
 
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
