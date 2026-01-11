@@ -287,6 +287,7 @@ def draw_tabla_simple(
     font_size_header=12,
     font_size_body=11
 ):
+
     TABLE_WIDTH = sum(col_widths)
 
     table_data = [[titulo] + [""] * (len(data[0]) - 1)]
@@ -446,7 +447,11 @@ def generar_pdf(
 
     story.append(Spacer(1, 40))
     story.append(Paragraph("Proceso Metodológico", styles["Heading1"]))
-    story.append(Paragraph("Informacion demográfica según zona asignada a la Delegación Policial", styles["Normal"])
+    story.append(Paragraph(
+    "Información demográfica según zona asignada a la Delegación Policial",
+    styles["Normal"]
+    ))
+
     
 
     ##----------------------------------Bloque de funciones 
