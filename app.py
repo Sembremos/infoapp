@@ -409,7 +409,9 @@ if archivo:
                 tabla_participacion=tabla_participacion,
                 tabla_edad=tabla_edad,
                 tabla_escolaridad=tabla_escolaridad,
-                tabla_genero=tabla_genero                        # 👈 NUEVO
+                tabla_genero=tabla_genero
+                tabla_encuesta_comunidad=tabla_encuesta_comunidad,
+                tabla_otras_encuestas=tabla_otras_encuestas 
             )
 
             pdf_bytes = pdf_buffer.getvalue()
