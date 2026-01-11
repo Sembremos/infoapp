@@ -385,6 +385,15 @@ if archivo:
 
         tabla_genero = tabla_genero_df.fillna("").values.tolist() 
 
+        #__________________-----------------------_______________TAblas de encuestas
+        #ENCUESTAS COMUNIDAD
+        tabla_encuesta_comunidad_df = df.iloc[58:60, 0:4].copy()
+        tabla_encuesta_comunidad = tabla_encuesta_comunidad_df.fillna("").values.tolist()
+
+        #OTRAS ENCUESTAS
+        tabla_otras_encuestas_df = df.iloc[62:65, 6:10].copy()
+        tabla_otras_encuestas = tabla_otras_encuestas_df.fillna("").values.tolist()
+
         #______________________________________________________________________________________________________
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
