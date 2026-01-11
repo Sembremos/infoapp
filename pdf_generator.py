@@ -273,6 +273,47 @@ def draw_tabla_genero(canvas, tabla_genero):
     table.drawOn(canvas, x, y - 200)
 
 
+#-------------*-*-*-*-*-*-*-*-*-*-Tablas de encuestas
+def draw_tabla_simple(
+    page_width, page_height = A4
+    canvas,
+    data,
+    titulo,
+    x,
+    y,
+    col_widths,
+    header_color=colors.HexColor("#4471C4"),
+    body_color=colors.white,
+    border_color=colors.black,
+    font_size_header=12,
+    font_size_body=11
+):
+    TABLE_WIDTH = sum(col_widths)
+
+    table_data = [[titulo] + [""] * (len(data[0]) - 1)]
+    table_data.extend(data)
+
+    table = Table(table_data, colWidths=col_widths)
+
+    style = [
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), header_color),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), font_size_header),
+        ("GRID", (0, 0), (-1, -1), 1, border_color),
+        ("BACKGROUND", (0, 1), (-1, -1), body_color),
+        ("FONTSIZE", (0, 1), (-1, -1), font_size_body),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+    ]
+
+    table.setStyle(TableStyle(style))
+    table.wrapOn(canvas, TABLE_WIDTH, 200)
+    table.drawOn(canvas, x, y)
+
+
+
 # ================= GENERADOR PDF =================
 def generar_pdf(
     portada_path,
@@ -286,6 +327,8 @@ def generar_pdf(
     tabla_edad,
     tabla_escolaridad,
     tabla_genero
+    tabla_encuesta_comunidad, 
+    tabla_otras_encuestas        
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -338,6 +381,7 @@ def generar_pdf(
     story = []
 
     story.append(PageBreak())
+    story.append(Spacer(1, 40))
     story.append(Paragraph("DELEGACIÓN POLICIAL", styles["TituloGrande"]))
     story.append(Paragraph(delegacion, styles["TituloDelta"]))
     story.append(Paragraph(codigo, styles["TituloD2"]))
@@ -401,6 +445,13 @@ def generar_pdf(
     story.append(PageBreak())
     story.append(PageBreak())
 
+    story.append(Spacer(1, 40))
+    story.append(Paragraph("Proceso Metodológico"), styles["Heading1"]))
+    story.append(Paragraph("Informacion demográfica según zona asignada a la Delegación Policial", styles)
+    
+
+    
+    ##----------------------------------Bloque de funciones 
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
 
@@ -419,6 +470,30 @@ def generar_pdf(
             draw_tabla_genero(canvas, tabla_genero)
         elif doc.page == 7:
             FullImage("assets/metodologico.png")(canvas, doc)
+        elif doc.page == 8:
+            header_footer(canvas, doc)
+
+            # ================= TABLA 1 =================
+            draw_tabla_simple(
+                canvas=canvas,
+                data=tabla_encuesta_comunidad,
+                titulo="Encuesta a Comunidad",
+                x=60,                  # 👈 posición horizontal (editable)
+                y=page_height - 180,   # 👈 posición vertical (editable)
+                col_widths=[100, 100, 100, 100],  # 👈 ancho columnas
+                header_color=colors.HexColor("#4471C4")
+            )
+
+            # ================= TABLA 2 =================
+            draw_tabla_simple(
+                canvas=canvas,
+                data=tabla_otras_encuestas,
+                titulo="Otras encuestas",
+                x=60,                  # 👈 centrada respecto a la tabla 1
+                y=page_height - 380,   # 👈 distancia estética hacia abajo
+                col_widths=[100, 100, 100, 100],
+                header_color=colors.HexColor("#4471C4")
+            )
         else:
             header_footer(canvas, doc)
 
