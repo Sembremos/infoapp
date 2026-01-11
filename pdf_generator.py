@@ -275,7 +275,6 @@ def draw_tabla_genero(canvas, tabla_genero):
 
 #-------------*-*-*-*-*-*-*-*-*-*-Tablas de encuestas
 def draw_tabla_simple(
-    page_width, page_height = A4
     canvas,
     data,
     titulo,
@@ -326,7 +325,7 @@ def generar_pdf(
     tabla_participacion,
     tabla_edad,
     tabla_escolaridad,
-    tabla_genero
+    tabla_genero,
     tabla_encuesta_comunidad, 
     tabla_otras_encuestas        
 ):
@@ -446,12 +445,12 @@ def generar_pdf(
     story.append(PageBreak())
 
     story.append(Spacer(1, 40))
-    story.append(Paragraph("Proceso Metodológico"), styles["Heading1"]))
-    story.append(Paragraph("Informacion demográfica según zona asignada a la Delegación Policial", styles)
+    story.append(Paragraph("Proceso Metodológico", styles["Heading1"]))
+    story.append(Paragraph("Informacion demográfica según zona asignada a la Delegación Policial", styles["Normal"])
     
 
-    
     ##----------------------------------Bloque de funciones 
+                 
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
 
@@ -472,6 +471,9 @@ def generar_pdf(
             FullImage("assets/metodologico.png")(canvas, doc)
         elif doc.page == 8:
             header_footer(canvas, doc)
+            
+            page_width, page_height = A4
+
 
             # ================= TABLA 1 =================
             draw_tabla_simple(
