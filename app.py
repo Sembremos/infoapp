@@ -487,6 +487,7 @@ if archivo:
                 grafico_edad_path=str(grafico_edad_path),
                 grafico_escolaridad_path=str(grafico_escolaridad_path),
                 grafico_genero_path=str(grafico_genero_path),   # 👈 NUEVO
+                infografia_datos_path=str(infografia_datos_path),
                 delegacion=delegacion,
                 codigo=codigo,
                 tabla_participacion=tabla_participacion,
