@@ -321,7 +321,6 @@ def generar_pdf(
     grafico_edad_path,
     grafico_escolaridad_path,
     grafico_genero_path,
-    infografia_datos_path,
     delegacion,
     codigo,
     tabla_participacion,
@@ -505,16 +504,6 @@ def generar_pdf(
                 y=page_height - 300,   # 👈 distancia estética hacia abajo
                 col_widths=[100, 100, 100, 100],
                 header_color=colors.HexColor("#4471C4")
-            )
-
-            #===============infografia datos========================
-            canvas.drawImage(
-                str(infografia_datos_path),
-                50,                   
-                80,   # ⬅️ FIX ÚNICO: antes page_height - 550
-                width=500,
-                height=280,
-                mask="auto"
             )
 
         else:
