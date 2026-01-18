@@ -506,11 +506,12 @@ def generar_pdf(
                 col_widths=[100, 100, 100, 100],
                 header_color=colors.HexColor("#4471C4")
             )
+
             #===============infografia datos========================
             canvas.drawImage(
                 str(infografia_datos_path),
-                50,                    # margen izquierdo
-                page_height - 550,     # mitad inferior
+                50,                   
+                80,   # ⬅️ FIX ÚNICO: antes page_height - 550
                 width=500,
                 height=280,
                 mask="auto"
