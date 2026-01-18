@@ -398,7 +398,7 @@ if archivo:
             "encuesta_comunidad": int(df.iloc[82, 1]),   # B83
             "encuesta_policial": int(df.iloc[83, 1]),    # B84
             "encuesta_comercio": int(df.iloc[84, 1]),    # B85
-            "estadistica": int(df.iloc[85, 2]),           # C86
+            "estadistica": int(df.iloc[86, 2]),           # C86
             "total_datos": int(df.iloc[87, 1])            # B88
         }
 
