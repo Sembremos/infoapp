@@ -329,6 +329,7 @@ def generar_pdf(
     grafico_edad_path,
     grafico_escolaridad_path,
     grafico_genero_path,
+    infografia_datos_path,
     delegacion,
     codigo,
     tabla_participacion,
