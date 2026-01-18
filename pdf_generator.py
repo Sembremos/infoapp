@@ -313,6 +313,15 @@ def draw_tabla_simple(
     table.drawOn(canvas, x, y)
 
 
+#infografia de datos
+infografia_datos_path = BASE_DIR / "infografia_datos.png"
+
+generar_infografia_datos(
+    template_path=str(ASSETS_DIR / "datos.png"),
+    output_path=str(infografia_datos_path),
+    datos=datos_fuentes,
+    config=config_infografia
+)
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
@@ -505,6 +514,16 @@ def generar_pdf(
                 col_widths=[100, 100, 100, 100],
                 header_color=colors.HexColor("#4471C4")
             )
+            #===============infografia datos========================
+            canvas.drawImage(
+                str(infografia_datos_path),
+                50,                    # margen izquierdo
+                page_height - 550,     # mitad inferior
+                width=500,
+                height=280,
+                mask="auto"
+            )
+
         else:
             header_footer(canvas, doc)
 
