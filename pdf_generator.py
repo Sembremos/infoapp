@@ -506,6 +506,23 @@ def generar_pdf(
                 header_color=colors.HexColor("#4471C4")
             )
 
+            # ================= IMAGEN DATOS =================
+            img_x = 50            # posición horizontal (izquierda → derecha)
+            img_y = 180           # posición vertical (abajo → arriba)
+            img_width = 500       # ancho de la imagen
+            img_height = 260      # alto de la imagen
+
+            canvas.drawImage(
+                "assets/datos.png",
+                img_x,
+                img_y,
+                width=img_width,
+                height=img_height,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+
+
         else:
             header_footer(canvas, doc)
 
