@@ -456,7 +456,7 @@ def generar_pdf(
     story.append(Spacer(1, 190))    
     story.append(Image("assets/netquest.png", width=600, height=175))
 
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 1))
     story.append(Paragraph("__________________________________________________________________________________________"))
     
 
@@ -509,9 +509,9 @@ def generar_pdf(
 
             # ================= IMAGEN DATOS =================
             img_x = 50            # posición horizontal (izquierda → derecha)
-            img_y = 180           # posición vertical (abajo → arriba)
-            img_width = 500       # ancho de la imagen
-            img_height = 260      # alto de la imagen
+            img_y = 200           # posición vertical (abajo → arriba)
+            img_width = 600       # ancho de la imagen
+            img_height = 400     # alto de la imagen
 
             canvas.drawImage(
                 "assets/datos.png",
