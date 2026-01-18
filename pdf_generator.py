@@ -508,8 +508,8 @@ def generar_pdf(
             )
 
             # ================= IMAGEN DATOS =================
-            img_x = 50            # posición horizontal (izquierda → derecha)
-            img_y = 100           # posición vertical (abajo → arriba)
+            img_x = 0            # posición horizontal (izquierda → derecha)
+            img_y = 10           # posición vertical (abajo → arriba)
             img_width = 600       # ancho de la imagen
             img_height = 400     # alto de la imagen
 
