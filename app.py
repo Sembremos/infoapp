@@ -442,7 +442,7 @@ if archivo:
             "total_datos": int(df.iloc[87, 1])           # B88
         }
 
-        infografia_datos_path = BASE_DIR / "datos.png"
+        infografia_datos_path = BASE_DIR / "datos_render.png"
         ## ORDEN DE INFOGRACIA DE DATOS
         config_infografia = {
             "encuesta_comunidad": {
