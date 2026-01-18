@@ -314,7 +314,6 @@ def draw_tabla_simple(
 
 
 #infografia de datos
-infografia_datos_path = BASE_DIR / "infografia_datos.png"
 
 generar_infografia_datos(
     template_path=str(ASSETS_DIR / "datos.png"),
