@@ -476,6 +476,17 @@ if archivo:
             }
         }
 
+       # ================= GENERAR INFOGRAFÍA DE DATOS =================
+
+        infografia_datos_path = BASE_DIR / "infografia_datos.png"
+
+        generar_infografia_datos(
+            template_path=str(ASSETS_DIR / "datos.png"),
+            output_path=str(infografia_datos_path),
+            datos=datos_fuentes,
+            config=config_infografia
+        ) 
+        
         
         #______________________________________________________________________________________________________
         #______________________________________________________________________________________________________
