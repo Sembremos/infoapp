@@ -441,7 +441,8 @@ if archivo:
             "estadistica_registrada": int(df.iloc[86, 2]),  # C87
             "total_datos": int(df.iloc[87, 1])           # B88
         }
-        
+
+        infografia_datos_path = BASE_DIR / "datos.png"
         ## ORDEN DE INFOGRACIA DE DATOS
         config_infografia = {
             "encuesta_comunidad": {
@@ -478,6 +479,7 @@ if archivo:
 
        # ================= GENERAR INFOGRAFÍA DE DATOS =================
 
+       # RUTA INFOGRAFÍA (OBLIGATORIA)
         generar_infografia_datos(
             template_path=str(ASSETS_DIR / "datos.png"),
             output_path=str(infografia_datos_path),
