@@ -53,6 +53,42 @@ def crear_grafico(labels, values):
     return buf
 
 
+def generar_infografia_datos(
+    template_path,
+    output_path,
+    datos,
+    config
+):
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.axis("off")
+
+    # Cargar imagen base
+    img = plt.imread(template_path)
+    ax.imshow(img)
+
+    # Escribir cada dato según configuración
+    for key, cfg in config.items():
+        ax.text(
+            cfg["x"],
+            cfg["y"],
+            f"{datos[key]:,}",
+            transform=ax.transAxes,
+            fontsize=cfg["fontsize"],
+            color=cfg["color"],
+            ha=cfg.get("ha", "center"),
+            va=cfg.get("va", "center"),
+            weight=cfg.get("weight", "bold")
+        )
+
+    fig.savefig(
+        output_path,
+        dpi=200,
+        bbox_inches="tight",
+        transparent=True
+    )
+    plt.close(fig)
+
+
 # ================= APP =================
 archivo = st.file_uploader(
     "Aquí suba o arrastre el ENGINE de la Delegación correspondiente",
@@ -394,6 +430,53 @@ if archivo:
         tabla_otras_encuestas_df = df.iloc[62:65, 6:10].copy()
         tabla_otras_encuestas = tabla_otras_encuestas_df.fillna("").values.tolist()
 
+
+        # infografia de datos con imagen********************************************************
+
+        # Lectura directa desde Excel (Hoja1)
+        datos_fuentes = {
+            "encuesta_comunidad": int(df.iloc[82, 1]),   # B83
+            "encuesta_policial": int(df.iloc[83, 1]),    # B84
+            "encuesta_comercio": int(df.iloc[84, 1]),    # B85
+            "estadistica_registrada": int(df.iloc[86, 2]),  # C87
+            "total_datos": int(df.iloc[87, 1])           # B88
+        }
+        
+        ## ORDEN DE INFOGRACIA DE DATOS
+        config_infografia = {
+            "encuesta_comunidad": {
+                "x": 0.27,
+                "y": 0.62,
+                "fontsize": 20,
+                "color": "white"
+            },
+            "encuesta_policial": {
+                "x": 0.73,
+                "y": 0.62,
+                "fontsize": 20,
+                "color": "white"
+            },
+            "encuesta_comercio": {
+                "x": 0.27,
+                "y": 0.35,
+                "fontsize": 20,
+                "color": "white"
+            },
+            "estadistica_registrada": {
+                "x": 0.73,
+                "y": 0.35,
+                "fontsize": 20,
+                "color": "white"
+            },
+            "total_datos": {
+                "x": 0.5,
+                "y": 0.48,
+                "fontsize": 26,
+                "color": "#333333"
+            }
+        }
+
+        
         #______________________________________________________________________________________________________
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
