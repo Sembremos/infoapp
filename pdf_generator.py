@@ -455,6 +455,8 @@ def generar_pdf(
     story.append(Spacer(1, 190))
     story.append(Image("assets/netquest.png", width=600, height=175))
 
+    story.append(Spacer(1, 250))
+    story.append(Paragraph("__________________________________________________________________________________________"))
     
 
     ##----------------------------------Bloque de funciones 
