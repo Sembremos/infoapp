@@ -393,6 +393,14 @@ if archivo:
         tabla_otras_encuestas_df = df.iloc[62:65, 6:10].copy()
         tabla_otras_encuestas = tabla_otras_encuestas_df.fillna("").values.tolist()
 
+        ## imagen datos
+        datos_pagina_8 = {
+            "encuesta_comunidad": int(df.iloc[82, 1]),   # B83
+            "encuesta_policial": int(df.iloc[83, 1]),    # B84
+            "encuesta_comercio": int(df.iloc[84, 1]),    # B85
+            "estadistica": int(df.iloc[85, 2]),           # C86
+            "total_datos": int(df.iloc[87, 1])            # B88
+        }
 
              
         #______________________________________________________________________________________________________
@@ -412,7 +420,8 @@ if archivo:
                 tabla_escolaridad=tabla_escolaridad,
                 tabla_genero=tabla_genero,
                 tabla_encuesta_comunidad=tabla_encuesta_comunidad,
-                tabla_otras_encuestas=tabla_otras_encuestas 
+                tabla_otras_encuestas=tabla_otras_encuestas,
+                datos_pagina_8=datos_pagina_8
             )
 
             pdf_bytes = pdf_buffer.getvalue()
