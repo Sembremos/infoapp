@@ -62,11 +62,9 @@ def generar_infografia_datos(
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.axis("off")
 
-    # Cargar imagen base
     img = plt.imread(template_path)
     ax.imshow(img)
 
-    # Escribir cada dato según configuración
     for key, cfg in config.items():
         ax.text(
             cfg["x"],
@@ -97,18 +95,14 @@ archivo = st.file_uploader(
 
 if archivo:
     try:
-        # Lectura del excel
         wb = load_workbook(archivo, data_only=True)
         ws = wb["Hoja1"]
         df = pd.DataFrame(ws.values)
 
-        # ================= DATOS BASE =================
-        delegacion = str(df.iloc[1, 1])  # B2
-        codigo = str(df.iloc[2, 1])      # B3
+        delegacion = str(df.iloc[1, 1])
+        codigo = str(df.iloc[2, 1])
 
-        # ================= TABLA PARTICIPACIÓN =================
         tabla_df = df.iloc[6:23, 0:3].dropna(how="all")
-
         tabla_df = tabla_df[
             ~(tabla_df.iloc[:, 1:].fillna(0).astype(str) == "0").all(axis=1)
         ]
@@ -125,68 +119,34 @@ if archivo:
             for fila in tabla_df.fillna("").values.tolist()
         ]
 
-        # ================= GRÁFICO RELACIÓN =================
-        # Nombres (G8:G11)
         rel_labels = df.iloc[7:11, 6].astype(str)
-
-        # Valores reales base (I8:I11)
         rel_base_values = pd.to_numeric(df.iloc[7:11, 8], errors="coerce")
-
-        # Porcentajes literales visibles (H8:H11)
         rel_percent_labels = (
-            df.iloc[7:11, 7]
-            .astype(str)
-            .str.replace(",", ".", regex=False)
+            df.iloc[7:11, 7].astype(str).str.replace(",", ".", regex=False)
         )
 
-        # Filtrar filas válidas
         mask = rel_base_values.notna()
         rel_labels = rel_labels[mask]
         rel_base_values = rel_base_values[mask]
         rel_percent_labels = rel_percent_labels[mask]
 
-        # Crear gráfico
         fig, ax = plt.subplots(figsize=(9, 6))
-
         ax.bar(rel_labels, rel_base_values, color="#30a907")
-        ax.set_ylabel("Cantidad")
-        ax.set_title("")
-
-        # CAMBIO ÚNICO APLICADO
         ax.margins(y=0.1)
 
-        # Borrar marcos
         for spine in ax.spines.values():
             spine.set_visible(False)
 
-        # Quitar líneas de ticks
         ax.tick_params(left=False, bottom=False)
-
-        # Fondo transparente (clave para PDF)
         ax.set_facecolor("none")
         fig.patch.set_alpha(0)
 
         for i in range(len(rel_percent_labels)):
             porcentaje = float(rel_percent_labels.iloc[i]) * 100
-            ax.text(
-                i,
-                rel_base_values.iloc[i],
-                f"{porcentaje:.2f}%",
-                ha="center",
-                va="bottom",
-                fontsize=12
-            )
+            ax.text(i, rel_base_values.iloc[i], f"{porcentaje:.2f}%", ha="center")
 
         buf_rel = BytesIO()
-        fig.savefig(
-            buf_rel,
-            format="png",
-            bbox_inches="tight",
-            pad_inches=0,
-            dpi=200,
-            transparent=True
-        )
-
+        fig.savefig(buf_rel, dpi=200, transparent=True)
         plt.close(fig)
         buf_rel.seek(0)
 
@@ -194,290 +154,21 @@ if archivo:
         with open(grafico_rel_path, "wb") as f:
             f.write(buf_rel.getbuffer())
 
-        # ================= PARTICIPACIÓN POR EDAD =================
-        # Intervalos de edad (A29:A33)
-        edad_labels = df.iloc[28:33, 0].astype(str)
-
-        # Porcentajes (B29:B33)
-        edad_percent_values = (
-            df.iloc[28:33, 1]
-            .astype(str)
-            .str.replace("%", "", regex=False)
-            .str.replace(",", ".", regex=False)
-        )
-
-        edad_percent_values = pd.to_numeric(edad_percent_values, errors="coerce")
-
-        # Filtrar filas válidas
-        mask = edad_percent_values.notna()
-        edad_labels = edad_labels[mask]
-        edad_percent_values = edad_percent_values[mask]
-
-        fig_edad, ax_edad = plt.subplots(figsize=(7, 7))
-
-        colores = [
-            "#5B9BD5",
-            "#A5A5A5",
-            "#4472C4",
-            "#255E91",
-            "#B7B7B7"
-        ]
-
-        wedges, texts, autotexts = ax_edad.pie(
-            edad_percent_values,
-            labels=None,
-            autopct=lambda p: f"{p:.0f}%",
-            pctdistance=0.65,     # ⬅️ porcentajes más centrados
-            labeldistance=1.15,  # ⬅️ etiquetas más cerca del círculo
-            startangle=90,
-            colors=colores,
-            textprops={"fontsize": 20}
-        )
-
-
-        ax_edad.axis("equal")
-
-
-        # Tamaño de porcentajes
-        for autotext in autotexts:
-            autotext.set_fontsize(25)
-
-        # Fondo transparente
-        ax_edad.set_facecolor("none")
-        fig_edad.patch.set_alpha(0)
-
-        buf_edad = BytesIO()
-        fig_edad.savefig(
-            buf_edad,
-            format="png",
-            dpi=200,
-            transparent=True
-        )
-
-        plt.close(fig_edad)
-        buf_edad.seek(0)
-
-        plt.close(fig_edad)
-        buf_edad.seek(0)
-
-        grafico_edad_path = BASE_DIR / "grafico_participacion_edad.png"
-        with open(grafico_edad_path, "wb") as f:
-            f.write(buf_edad.getbuffer())
-
-
-        ## TAbla EDAD==============S=S=S=S===========S=S=
-        tabla_edad_df = df.iloc[28:33, 0:2].copy()
-        tabla_edad_df.iloc[:, 1] = tabla_edad_df.iloc[:, 1].apply(lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x)
-        tabla_edad = tabla_edad_df.fillna("").values.tolist()
-
-        #####________________________________BLOQUE ESCOLARIDAD___________________________________
-
-        # Intervalos / niveles (A39:A46)
-        escolaridad_labels = df.iloc[38:46, 0].astype(str)
-
-        # Porcentajes (B39:B46)
-        escolaridad_percent_values = (
-            df.iloc[38:46, 1]
-            .astype(str)
-            .str.replace("%", "", regex=False)
-            .str.replace(",", ".", regex=False)
-        )
-
-        escolaridad_percent_values = pd.to_numeric(escolaridad_percent_values, errors="coerce")
-
-        # Filtrar filas válidas
-        mask = escolaridad_percent_values.notna()
-        escolaridad_labels = escolaridad_labels[mask]
-        escolaridad_percent_values = escolaridad_percent_values[mask]
-
-        # -------- GRÁFICO --------
-        fig_esco, ax_esco = plt.subplots(figsize=(7, 7))
-
-        colores_esco = [
-            "#5B9BD5",
-            "#A5A5A5",
-            "#4472C4",
-            "#255E91",
-            "#B7B7B7",
-            "#9DC3E6",
-            "#8FAADC",
-            "#D9E1F2"
-        ]
-
-        wedges, texts, autotexts = ax_esco.pie(
-            escolaridad_percent_values,
-            labels=None,
-            autopct=lambda p: f"{p:.0f}%",
-            pctdistance=0.65,
-            labeldistance=1.15,
-            startangle=90,
-            colors=colores_esco,
-            textprops={"fontsize": 20}
-        )
-
-        ax_esco.axis("equal")
-
-        # Tamaño de porcentajes
-        for autotext in autotexts:
-            autotext.set_fontsize(25)
-
-        # Fondo transparente
-        ax_esco.set_facecolor("none")
-        fig_esco.patch.set_alpha(0)
-
-    
-        buf_esco = BytesIO()
-        fig_esco.savefig(
-            buf_esco,
-            format="png",
-            dpi=200,
-            transparent=True
-        )
-
-        plt.close(fig_esco)
-        buf_edad.seek(0)
-
-        grafico_escolaridad_path = BASE_DIR / "grafico_participacion_escolaridad.png"
-        with open(grafico_escolaridad_path, "wb") as f:
-            f.write(buf_esco.getbuffer())
-
-        # -------- TABLA --------
-        tabla_escolaridad_df = df.iloc[38:46, 0:2].copy()
-
-        tabla_escolaridad_df.iloc[:, 1] = tabla_escolaridad_df.iloc[:, 1].apply(
-            lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
-        )
-
-        tabla_escolaridad = tabla_escolaridad_df.fillna("").values.tolist()
-
-        # ------------------------------------- Bloque de participación por género -----------------------------------------
-        # Etiquetas (A52:A54)
-        genero_labels = df.iloc[51:54, 0].astype(str)
-
-        # Porcentajes (B52:B54)
-        genero_percent_values = (
-            df.iloc[51:54, 1]
-            .astype(str)
-            .str.replace("%", "", regex=False)
-            .str.replace(",", ".", regex=False)
-        )
-
-        genero_percent_values = pd.to_numeric(genero_percent_values, errors="coerce")
-
-        # Filtrar válidos
-        mask = genero_percent_values.notna()
-        genero_labels = genero_labels[mask]
-        genero_percent_values = genero_percent_values[mask]
-
-        # -------- GRÁFICO --------
-        fig_gen, ax_gen = plt.subplots(figsize=(7, 7))
-
-        # mismos colores que edad/escolaridad
-        colores_genero = [
-            "#5B9BD5",
-            "#A5A5A5",
-            "#4472C4"
-        ]
-
-        wedges, texts, autotexts = ax_gen.pie(
-            genero_percent_values,
-            labels=None,
-            autopct=lambda p: f"{p:.0f}%",
-            pctdistance=0.65,
-            labeldistance=1.15,
-            startangle=90,
-            colors=colores_genero,
-            textprops={"fontsize": 20}
-        )
-
-        ax_gen.axis("equal")
-
-        for autotext in autotexts:
-            autotext.set_fontsize(25)
-
-        ax_gen.set_facecolor("none")
-        fig_gen.patch.set_alpha(0)
-
-        buf_gen = BytesIO()
-        fig_gen.savefig(
-            buf_gen,
-            format="png",
-            dpi=200,
-            transparent=True
-        )
-
-        plt.close(fig_gen)
-        buf_gen.seek(0)
-
-        grafico_genero_path = BASE_DIR / "grafico_participacion_genero.png"
-        with open(grafico_genero_path, "wb") as f:
-            f.write(buf_gen.getbuffer())
-
-        # -------- TABLA --------
-        tabla_genero_df = df.iloc[51:54, 0:2].copy()
-        tabla_genero_df.iloc[:, 1] = tabla_genero_df.iloc[:, 1].apply(
-            lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
-        )
-
-        tabla_genero = tabla_genero_df.fillna("").values.tolist() 
-
-        #__________________-----------------------_______________TAblas de encuestas
-        #ENCUESTAS COMUNIDAD
-        tabla_encuesta_comunidad_df = df.iloc[58:60, 0:4].copy()
-        tabla_encuesta_comunidad = tabla_encuesta_comunidad_df.fillna("").values.tolist()
-
-        #OTRAS ENCUESTAS
-        tabla_otras_encuestas_df = df.iloc[62:65, 6:10].copy()
-        tabla_otras_encuestas = tabla_otras_encuestas_df.fillna("").values.tolist()
-
-
-        # infografia de datos con imagen********************************************************
-
-        # Lectura directa desde Excel (Hoja1)
         datos_fuentes = {
-            "encuesta_comunidad": int(df.iloc[82, 1]),   # B83
-            "encuesta_policial": int(df.iloc[83, 1]),    # B84
-            "encuesta_comercio": int(df.iloc[84, 1]),    # B85
-            "estadistica_registrada": int(df.iloc[86, 2]),  # C87
-            "total_datos": int(df.iloc[87, 1])           # B88
+            "encuesta_comunidad": int(df.iloc[82, 1]),
+            "encuesta_policial": int(df.iloc[83, 1]),
+            "encuesta_comercio": int(df.iloc[84, 1]),
+            "estadistica_registrada": int(df.iloc[86, 2]),
+            "total_datos": int(df.iloc[87, 1])
         }
 
-      
-        ## ORDEN DE INFOGRACIA DE DATOS
         config_infografia = {
-            "encuesta_comunidad": {
-                "x": 0.27,
-                "y": 0.62,
-                "fontsize": 20,
-                "color": "white"
-            },
-            "encuesta_policial": {
-                "x": 0.73,
-                "y": 0.62,
-                "fontsize": 20,
-                "color": "white"
-            },
-            "encuesta_comercio": {
-                "x": 0.27,
-                "y": 0.35,
-                "fontsize": 20,
-                "color": "white"
-            },
-            "estadistica_registrada": {
-                "x": 0.73,
-                "y": 0.35,
-                "fontsize": 20,
-                "color": "white"
-            },
-            "total_datos": {
-                "x": 0.5,
-                "y": 0.48,
-                "fontsize": 26,
-                "color": "#333333"
-            }
+            "encuesta_comunidad": {"x": 0.27, "y": 0.62, "fontsize": 20, "color": "white"},
+            "encuesta_policial": {"x": 0.73, "y": 0.62, "fontsize": 20, "color": "white"},
+            "encuesta_comercio": {"x": 0.27, "y": 0.35, "fontsize": 20, "color": "white"},
+            "estadistica_registrada": {"x": 0.73, "y": 0.35, "fontsize": 20, "color": "white"},
+            "total_datos": {"x": 0.5, "y": 0.48, "fontsize": 26, "color": "#333333"}
         }
-
-        # ================= GENERAR INFOGRAFÍA DE DATOS =================
 
         infografia_datos_path = BASE_DIR / "datos_render.png"
 
@@ -491,39 +182,30 @@ if archivo:
         if not infografia_datos_path.exists():
             raise RuntimeError("NO SE GENERÓ datos_render.png")
 
-        
-        #______________________________________________________________________________________________________
-        #______________________________________________________________________________________________________
-        # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
                 portada_path=str(ASSETS_DIR / "portada.png"),
                 grafico_relacion_path=str(grafico_rel_path),
-                grafico_edad_path=str(grafico_edad_path),
-                grafico_escolaridad_path=str(grafico_escolaridad_path),
-                grafico_genero_path=str(grafico_genero_path),   # 👈 NUEVO
+                grafico_edad_path="",
+                grafico_escolaridad_path="",
+                grafico_genero_path="",
                 infografia_datos_path=str(infografia_datos_path),
                 delegacion=delegacion,
                 codigo=codigo,
                 tabla_participacion=tabla_participacion,
-                tabla_edad=tabla_edad,
-                tabla_escolaridad=tabla_escolaridad,
-                tabla_genero=tabla_genero,
-                tabla_encuesta_comunidad=tabla_encuesta_comunidad,
-                tabla_otras_encuestas=tabla_otras_encuestas 
+                tabla_edad=[],
+                tabla_escolaridad=[],
+                tabla_genero=[],
+                tabla_encuesta_comunidad=[],
+                tabla_otras_encuestas=[]
             )
 
-            pdf_bytes = pdf_buffer.getvalue()
-            
-            st.subheader("Informe generado correctamente")
-
             st.download_button(
-                label="⬇️ Descargar PDF",
-                data=pdf_bytes,
+                "⬇️ Descargar PDF",
+                data=pdf_buffer.getvalue(),
                 file_name="informe.pdf",
                 mime="application/pdf"
             )
 
     except Exception as e:
         st.error(f"Error procesando el archivo: {e}")
-
