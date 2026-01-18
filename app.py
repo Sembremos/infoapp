@@ -477,11 +477,10 @@ if archivo:
             }
         }
 
+        # ================= GENERAR INFOGRAFÍA DE DATOS =================
+
         infografia_datos_path = BASE_DIR / "datos_render.png"
 
-       # ================= GENERAR INFOGRAFÍA DE DATOS =================
-
-       # RUTA INFOGRAFÍA (OBLIGATORIA)
         generar_infografia_datos(
             template_path=str(ASSETS_DIR / "datos.png"),
             output_path=str(infografia_datos_path),
