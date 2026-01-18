@@ -482,14 +482,13 @@ def generar_pdf(
             
             page_width, page_height = A4
 
-
             # ================= TABLA 1 =================
             draw_tabla_simple(
                 canvas=canvas,
                 data=tabla_encuesta_comunidad,
                 titulo="Encuesta a Comunidad",
-                x=60,                  # 👈 posición horizontal (editable)
-                y=page_height - 180,   # 👈 posición vertical (editable)
+                x=50,                  # 👈 posición horizontal (editable)
+                y=page_height - 190,   # 👈 posición vertical (editable)
                 col_widths=[100, 100, 100, 100],  # 👈 ancho columnas
                 header_color=colors.HexColor("#4471C4")
             )
@@ -499,8 +498,8 @@ def generar_pdf(
                 canvas=canvas,
                 data=tabla_otras_encuestas,
                 titulo="Otras encuestas",
-                x=60,                  # 👈 centrada respecto a la tabla 1
-                y=page_height - 380,   # 👈 distancia estética hacia abajo
+                x=50,                  # 👈 centrada respecto a la tabla 1
+                y=page_height - 250,   # 👈 distancia estética hacia abajo
                 col_widths=[100, 100, 100, 100],
                 header_color=colors.HexColor("#4471C4")
             )
