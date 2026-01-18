@@ -454,7 +454,7 @@ def generar_pdf(
     ))
 
     story.append(Spacer(1, 190))    
-    story.append(Image("assets/netquest.png", width=600, height=150))
+    story.append(Image("assets/netquest.png", width=550, height=125))
 
     story.append(Spacer(1, 1))
     story.append(Paragraph("__________________________________________________________________________________________"))
@@ -528,16 +528,16 @@ def generar_pdf(
             canvas.setFillColor(colors.white)
 
             # ENCUESTA COMUNIDAD
-            canvas.drawString(140, 360, str(datos_pagina_8["encuesta_comunidad"]))
+            canvas.drawString(120, 360, str(datos_pagina_8["encuesta_comunidad"]))
             
             # ENCUESTA POLICIAL
-            canvas.drawString(380, 360, str(datos_pagina_8["encuesta_policial"]))
+            canvas.drawString(120, 360, str(datos_pagina_8["encuesta_policial"]))
             
             # ENCUESTA COMERCIO
-            canvas.drawString(140, 290, str(datos_pagina_8["encuesta_comercio"]))
+            canvas.drawString(80, 290, str(datos_pagina_8["encuesta_comercio"]))
             
             # ESTADÍSTICA REGISTRADA
-            canvas.drawString(380, 290, str(datos_pagina_8["estadistica"]))
+            canvas.drawString(80, 290, str(datos_pagina_8["estadistica"]))
             
             # TOTAL DE DATOS (más grande)
             canvas.setFont("Helvetica-Bold", 28)
