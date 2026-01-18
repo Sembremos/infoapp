@@ -442,7 +442,7 @@ if archivo:
             "total_datos": int(df.iloc[87, 1])           # B88
         }
 
-        infografia_datos_path = BASE_DIR / "datos_render.png"
+      
         ## ORDEN DE INFOGRACIA DE DATOS
         config_infografia = {
             "encuesta_comunidad": {
@@ -477,6 +477,8 @@ if archivo:
             }
         }
 
+        infografia_datos_path = BASE_DIR / "datos_render.png"
+
        # ================= GENERAR INFOGRAFÍA DE DATOS =================
 
        # RUTA INFOGRAFÍA (OBLIGATORIA)
@@ -487,12 +489,9 @@ if archivo:
             config=config_infografia
         )
 
-        # 🔎 verificación real
         if not infografia_datos_path.exists():
-            st.error("No se generó la imagen de datos (infografia_datos.png)")
-        else:
-            st.success("Infografía de datos generada correctamente")
-        
+            raise RuntimeError("NO SE GENERÓ datos_render.png")
+
         
         #______________________________________________________________________________________________________
         #______________________________________________________________________________________________________
