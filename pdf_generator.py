@@ -328,7 +328,8 @@ def generar_pdf(
     tabla_escolaridad,
     tabla_genero,
     tabla_encuesta_comunidad, 
-    tabla_otras_encuestas        
+    tabla_otras_encuestas,
+    datos_pagina_8
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -521,6 +522,27 @@ def generar_pdf(
                 preserveAspectRatio=True,
                 mask="auto"
             )
+
+            # ================= DATOS SOBRE LA IMAGEN =================
+            canvas.setFont("Helvetica-Bold", 22)
+            canvas.setFillColor(colors.white)
+
+            # ENCUESTA COMUNIDAD
+            canvas.drawString(140, 360, str(datos_pagina_8["encuesta_comunidad"]))
+            
+            # ENCUESTA POLICIAL
+            canvas.drawString(380, 360, str(datos_pagina_8["encuesta_policial"]))
+            
+            # ENCUESTA COMERCIO
+            canvas.drawString(140, 290, str(datos_pagina_8["encuesta_comercio"]))
+            
+            # ESTADÍSTICA REGISTRADA
+            canvas.drawString(380, 290, str(datos_pagina_8["estadistica"]))
+            
+            # TOTAL DE DATOS (más grande)
+            canvas.setFont("Helvetica-Bold", 28)
+            canvas.setFillColor(colors.HexColor("#333333"))
+            canvas.drawString(260, 325, str(datos_pagina_8["total_datos"]))
 
 
         else:
