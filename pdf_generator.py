@@ -554,7 +554,7 @@ def generar_pdf(
             
         elif doc.page == 9:
             header_footer(canvas, doc)
-            img_width = 600     # ancho de la imagen
+            img_width = 550     # ancho de la imagen
             img_height = 300    # alto de la imagen
 
             img_x = (A4[0] - img_width) / 2   # centrado horizontal
@@ -575,20 +575,20 @@ def generar_pdf(
             canvas.setFillColor(colors.black)
 
             canvas.drawString(
-                img_x + 30,              # x (izquierda)
-                img_y + img_height - 40, # y (parte superior)
+                img_x + 60,              # x (izquierda)
+                img_y + img_height - 80, # y (parte superior)
                 datos_pagina_9["lado_izquierdo"]
             )
 
             canvas.drawString(
                 img_x + img_width - 160, # x (derecha)
-                img_y + img_height - 40, # y (superior)
+                img_y + img_height - 20, # y (superior)
                 datos_pagina_9["derecha_superior"]
             )
 
             canvas.drawString(
                 img_x + img_width - 160, # x (derecha)
-                img_y + 40,              # y (inferior)
+                img_y + 20,              # y (inferior)
                 datos_pagina_9["derecha_inferior"]
             )
 
