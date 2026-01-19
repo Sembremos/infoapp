@@ -409,8 +409,6 @@ if archivo:
             "derecha_inferior": str(df.iloc[92, 2])  # C93
         }     
         #______________________________________________________________________________________________________
-       if archivo:
-    try:
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
