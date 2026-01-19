@@ -554,11 +554,11 @@ def generar_pdf(
             
         elif doc.page == 9:
             header_footer(canvas, doc)
-            img_width = 420     # ancho de la imagen
-            img_height = 260    # alto de la imagen
+            img_width = 600     # ancho de la imagen
+            img_height = 300    # alto de la imagen
 
             img_x = (A4[0] - img_width) / 2   # centrado horizontal
-            img_y = A4[1] - img_height - 140  # debajo del header
+            img_y = A4[1] - img_height - 100  # debajo del header
 
             canvas.drawImage(
                 "assets/pareto.png",
