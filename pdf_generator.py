@@ -558,7 +558,7 @@ def generar_pdf(
             img_height = 300    # alto de la imagen
 
             img_x = (A4[0] - img_width) / 2   # centrado horizontal
-            img_y = A4[1] - img_height - 50  # debajo del header
+            img_y = A4[1] - img_height - 70  # debajo del header
 
             canvas.drawImage(
                 "assets/pareto.png",
@@ -575,7 +575,7 @@ def generar_pdf(
             canvas.setFillColor(colors.black)
 
             canvas.drawString(
-                img_x + 155,              # x (izquierda)
+                img_x + 175,              # x (izquierda)
                 img_y + img_height - 120, # y (parte superior)
                 datos_pagina_9["lado_izquierdo"]
             )
