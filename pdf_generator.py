@@ -572,7 +572,7 @@ def generar_pdf(
 
             #___datos pareto______
             canvas.setFont("Helvetica-Bold", 18)
-            canvas.setFillColor(colors.black)
+            canvas.setFillColor(colors.white)
 
             canvas.drawString(
                 img_x + 155,              # x (izquierda)
@@ -588,7 +588,7 @@ def generar_pdf(
 
             canvas.drawString(
                 img_x + img_width - 100, # x (derecha)
-                img_y + 110,              # y (inferior)
+                img_y + 115,              # y (inferior)
                 datos_pagina_9["derecha_inferior"]
             )
 
