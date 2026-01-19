@@ -1,4 +1,4 @@
-from reportlab.platypus import (
+    from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
     Image,
@@ -329,7 +329,8 @@ def generar_pdf(
     tabla_genero,
     tabla_encuesta_comunidad, 
     tabla_otras_encuestas,
-    datos_pagina_8
+    datos_pagina_8,
+    datos_pagina_9
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -543,7 +544,46 @@ def generar_pdf(
             canvas.setFont("Helvetica-Bold", 28)
             canvas.setFillColor(colors.HexColor("#FFFFFF"))
             canvas.drawString(260, 150, str(datos_pagina_8["total_datos"]))
+            
+        elif doc.page == 9:
+            header_footer(canvas, doc)
+            img_width = 420     # ancho de la imagen
+            img_height = 260    # alto de la imagen
 
+            img_x = (A4[0] - img_width) / 2   # centrado horizontal
+            img_y = A4[1] - img_height - 140  # debajo del header
+
+            canvas.drawImage(
+                "assets/pareto.png",
+                img_x,
+                img_y,
+                width=img_width,
+                height=img_height,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+
+            #___datos pareto______
+            canvas.setFont("Helvetica-Bold", 18)
+            canvas.setFillColor(colors.white)
+
+            canvas.drawString(
+                img_x + 30,              # x (izquierda)
+                img_y + img_height - 40, # y (parte superior)
+                datos_pagina_9["lado_izquierdo"]
+            )
+
+            canvas.drawString(
+                img_x + img_width - 160, # x (derecha)
+                img_y + img_height - 40, # y (superior)
+                datos_pagina_9["derecha_superior"]
+            )
+
+            canvas.drawString(
+                img_x + img_width - 160, # x (derecha)
+                img_y + 40,              # y (inferior)
+                datos_pagina_9["derecha_inferior"]
+            )
 
         else:
             header_footer(canvas, doc)
