@@ -298,7 +298,7 @@ if archivo:
         )
 
         plt.close(fig_esco)
-        buf_edad.seek(0)
+        buf_esco.seek(0)
 
         grafico_escolaridad_path = BASE_DIR / "grafico_participacion_escolaridad.png"
         with open(grafico_escolaridad_path, "wb") as f:
@@ -439,7 +439,7 @@ if archivo:
                 file_name="informe.pdf",
                 mime="application/pdf"
             )
-
+    
     except Exception as e:
         st.error(f"Error procesando el archivo: {e}")
 
