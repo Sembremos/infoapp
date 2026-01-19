@@ -220,9 +220,6 @@ if archivo:
         plt.close(fig_edad)
         buf_edad.seek(0)
 
-        plt.close(fig_edad)
-        buf_edad.seek(0)
-
         grafico_edad_path = BASE_DIR / "grafico_participacion_edad.png"
         with open(grafico_edad_path, "wb") as f:
             f.write(buf_edad.getbuffer())
@@ -230,7 +227,9 @@ if archivo:
 
         ## TAbla EDAD==============S=S=S=S===========S=S=
         tabla_edad_df = df.iloc[28:33, 0:2].copy()
-        tabla_edad_df.iloc[:, 1] = tabla_edad_df.iloc[:, 1].apply(lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x)
+        tabla_edad_df.iloc[:, 1] = tabla_edad_df.iloc[:, 1].apply
+            (lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
+        )
         tabla_edad = tabla_edad_df.fillna("").values.tolist()
 
         #####________________________________BLOQUE ESCOLARIDAD___________________________________
