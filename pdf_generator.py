@@ -525,23 +525,23 @@ def generar_pdf(
 
             # ================= DATOS SOBRE LA IMAGEN =================
             canvas.setFont("Helvetica-Bold", 22)
-            canvas.setFillColor(colors.black)
+            canvas.setFillColor(colors.white)
 
             # ENCUESTA COMUNIDAD
-            canvas.drawString(130, 280, str(datos_pagina_8["encuesta_comunidad"]))
+            canvas.drawString(110, 270, str(datos_pagina_8["encuesta_comunidad"]))
             
             # ENCUESTA comercio
-            canvas.drawString(120,140, str(datos_pagina_8["encuesta_policial"]))
+            canvas.drawString(90,140, str(datos_pagina_8["encuesta_policial"]))
             
             # ENCUESTA policial
-            canvas.drawString(390, 280, str(datos_pagina_8["encuesta_comercio"]))
+            canvas.drawString(400, 270, str(datos_pagina_8["encuesta_comercio"]))
             
             # ESTADÍSTICA REGISTRADA
-            canvas.drawString(400, 140, str(datos_pagina_8["estadistica"]))
+            canvas.drawString(430, 140, str(datos_pagina_8["estadistica"]))
             
             # TOTAL DE DATOS (más grande)
             canvas.setFont("Helvetica-Bold", 28)
-            canvas.setFillColor(colors.HexColor("#333333"))
+            canvas.setFillColor(colors.HexColor("#FFFFFF"))
             canvas.drawString(260, 140, str(datos_pagina_8["total_datos"]))
 
 
