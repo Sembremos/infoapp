@@ -575,20 +575,20 @@ def generar_pdf(
             canvas.setFillColor(colors.black)
 
             canvas.drawString(
-                img_x + 150,              # x (izquierda)
+                img_x + 160,              # x (izquierda)
                 img_y + img_height - 150, # y (parte superior)
                 datos_pagina_9["lado_izquierdo"]
             )
 
             canvas.drawString(
-                img_x + img_width - 180, # x (derecha)
-                img_y + img_height - 80, # y (superior)
+                img_x + img_width - 100, # x (derecha)
+                img_y + img_height - 100, # y (superior)
                 datos_pagina_9["derecha_superior"]
             )
 
             canvas.drawString(
-                img_x + img_width - 180, # x (derecha)
-                img_y + 80,              # y (inferior)
+                img_x + img_width - 100, # x (derecha)
+                img_y + 100,              # y (inferior)
                 datos_pagina_9["derecha_inferior"]
             )
 
