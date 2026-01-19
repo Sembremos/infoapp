@@ -1,4 +1,4 @@
-    from reportlab.platypus import (
+from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
     Image,
