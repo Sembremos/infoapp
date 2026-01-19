@@ -402,7 +402,12 @@ if archivo:
             "total_datos": int(df.iloc[87, 1])            # B88
         }
 
-             
+        ##==============================PARETO===================================
+        datos_pagina_9 = {
+            "lado_izquierdo": str(df.iloc[92, 0]),   # A93
+            "derecha_superior": str(df.iloc[92, 1]), # B93
+            "derecha_inferior": str(df.iloc[92, 2])  # C93
+        }     
         #______________________________________________________________________________________________________
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
@@ -421,7 +426,8 @@ if archivo:
                 tabla_genero=tabla_genero,
                 tabla_encuesta_comunidad=tabla_encuesta_comunidad,
                 tabla_otras_encuestas=tabla_otras_encuestas,
-                datos_pagina_8=datos_pagina_8
+                datos_pagina_8=datos_pagina_8,
+                datos_pagina_9=datos_pagina_9
             )
 
             pdf_bytes = pdf_buffer.getvalue()
