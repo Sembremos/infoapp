@@ -409,7 +409,8 @@ if archivo:
             "derecha_inferior": str(df.iloc[92, 2])  # C93
         }     
         #______________________________________________________________________________________________________
-        #______________________________________________________________________________________________________
+       if archivo:
+    try:
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
@@ -417,7 +418,7 @@ if archivo:
                 grafico_relacion_path=str(grafico_rel_path),
                 grafico_edad_path=str(grafico_edad_path),
                 grafico_escolaridad_path=str(grafico_escolaridad_path),
-                grafico_genero_path=str(grafico_genero_path),   # 👈 NUEVO
+                grafico_genero_path=str(grafico_genero_path),
                 delegacion=delegacion,
                 codigo=codigo,
                 tabla_participacion=tabla_participacion,
@@ -431,7 +432,7 @@ if archivo:
             )
 
             pdf_bytes = pdf_buffer.getvalue()
-            
+
             st.subheader("Informe generado correctamente")
 
             st.download_button(
@@ -440,6 +441,6 @@ if archivo:
                 file_name="informe.pdf",
                 mime="application/pdf"
             )
-    
+
     except Exception as e:
         st.error(f"Error procesando el archivo: {e}")
