@@ -528,13 +528,13 @@ def generar_pdf(
             canvas.setFillColor(colors.white)
 
             # ENCUESTA COMUNIDAD
-            canvas.drawString(110, 255, str(datos_pagina_8["encuesta_comunidad"]))
+            canvas.drawString(110, 265, str(datos_pagina_8["encuesta_comunidad"]))
             
             # ENCUESTA comercio
             canvas.drawString(90,140, str(datos_pagina_8["encuesta_policial"]))
             
             # ENCUESTA policial
-            canvas.drawString(400, 255, str(datos_pagina_8["encuesta_comercio"]))
+            canvas.drawString(400, 265, str(datos_pagina_8["encuesta_comercio"]))
             
             # ESTADÍSTICA REGISTRADA
             canvas.drawString(430, 140, str(datos_pagina_8["estadistica"]))
