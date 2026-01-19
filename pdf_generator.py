@@ -576,13 +576,13 @@ def generar_pdf(
 
             canvas.drawString(
                 img_x + 155,              # x (izquierda)
-                img_y + img_height - 150, # y (parte superior)
+                img_y + img_height - 155, # y (parte superior)
                 datos_pagina_9["lado_izquierdo"]
             )
 
             canvas.drawString(
                 img_x + img_width - 100, # x (derecha)
-                img_y + img_height - 110, # y (superior)arriba abajo
+                img_y + img_height - 120, # y (superior)arriba abajo
                 datos_pagina_9["derecha_superior"]
             )
 
