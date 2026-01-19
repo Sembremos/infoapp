@@ -525,7 +525,7 @@ def generar_pdf(
 
             # ================= DATOS SOBRE LA IMAGEN =================
             canvas.setFont("Helvetica-Bold", 22)
-            canvas.setFillColor(colors.white)
+            canvas.setFillColor(colors.black)
 
             # ENCUESTA COMUNIDAD
             canvas.drawString(120, 360, str(datos_pagina_8["encuesta_comunidad"]))
