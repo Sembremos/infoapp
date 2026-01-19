@@ -440,5 +440,6 @@ if archivo:
                 mime="application/pdf"
             )
 
-    except Exception as e:
-        st.error(f"Error procesando el archivo: {e}")
+                except Exception as e:
+                    st.error(f"Error procesando el archivo: {e}")
+
