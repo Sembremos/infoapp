@@ -571,7 +571,7 @@ def generar_pdf(
             )
 
             #___datos pareto______
-            canvas.setFont("Helvetica-Bold", 18)
+            canvas.setFont("Helvetica-Bold", 22)
             canvas.setFillColor(colors.white)
 
             canvas.drawString(
