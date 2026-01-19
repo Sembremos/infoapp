@@ -460,7 +460,14 @@ def generar_pdf(
     story.append(Spacer(1, 1))
     story.append(Paragraph("__________________________________________________________________________________________"))
     
+    story.append(PageBreak())
 
+    story.append(Spacer(1, 40))
+    story.append(Paragraph("Diagrama de Pareto", styles["Heading1"]))
+    story.append(Paragraph(
+    "(Aplicando el principio de 80/20 donde el 80% es lo trivial y el 20% es lo vital)",
+    styles["Normal"]
+    ))
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
