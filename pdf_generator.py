@@ -531,10 +531,10 @@ def generar_pdf(
             canvas.drawString(140, 300, str(datos_pagina_8["encuesta_comunidad"]))
             
             # ENCUESTA POLICIAL
-            canvas.drawString(380, 300, str(datos_pagina_8["encuesta_policial"]))
+            canvas.drawString(140,150, str(datos_pagina_8["encuesta_policial"]))
             
             # ENCUESTA COMERCIO
-            canvas.drawString(140, 150, str(datos_pagina_8["encuesta_comercio"]))
+            canvas.drawString(380, 300, str(datos_pagina_8["encuesta_comercio"]))
             
             # ESTADÍSTICA REGISTRADA
             canvas.drawString(380, 150, str(datos_pagina_8["estadistica"]))
