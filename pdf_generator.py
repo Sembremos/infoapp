@@ -488,7 +488,11 @@ def generar_pdf(
     porcentaje_delitos,
     porcentaje_riesgos,
     cantidad_delitos,
-    cantidad_riesgos
+    cantidad_riesgos,
+    micmac_poder,
+    micmac_conflicto,
+    micmac_autonomas,
+    micmac_resultados
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
