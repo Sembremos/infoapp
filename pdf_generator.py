@@ -714,7 +714,7 @@ def generar_pdf(
                 y_base + 45
             )
             
-            color_titulo_riesgos = colors.HexColor("#4471C4")
+            color_titulo_riesgos = colors.HexColor("#FFFFFF")
             fondo_titulo_riesgos = colors.HexColor("#30a907")
             fondo_filas_riesgos  = colors.HexColor("#F2F2F2")
             
@@ -744,7 +744,7 @@ def generar_pdf(
                 y_base + 45
             )
             
-            color_titulo_riesgos = colors.HexColor("#4471C4")
+            color_titulo_riesgos = colors.HexColor("#FFFFFF")
             fondo_titulo_riesgos = colors.HexColor("#30a907")
             fondo_filas_riesgos  = colors.HexColor("#F2F2F2")
             
