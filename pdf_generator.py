@@ -573,7 +573,7 @@ def generar_pdf(
     "(Aplicando el principio de 80/20 donde el 80% es lo trivial y el 20% es lo vital)",
     styles["Normal"]
     ))    
-    story.append(Spacer(1, 200))
+    story.append(Spacer(1, 170))
     story.append(Paragraph("__________________________________________________________________________________________"))
     ##----------------------------------Bloque de funciones 
                  
@@ -711,7 +711,7 @@ def generar_pdf(
                 canvas,
                 porcentaje_delitos,
                 x_izq + 90,
-                y_base + 150
+                y_base + 200
             )
             
             color_titulo_riesgos = colors.HexColor("#4471C4")
@@ -741,7 +741,7 @@ def generar_pdf(
                 canvas,
                 porcentaje_riesgos,
                 x_der + 90,
-                y_base + 80
+                y_base + 200
             )
             
             color_titulo_riesgos = colors.HexColor("#4471C4")
