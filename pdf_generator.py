@@ -411,6 +411,59 @@ def draw_cantidad(
     canvas.setFillColor(color)
     canvas.drawCentredString(x, y, texto)
 
+##=============MIC-MAC_________________________
+
+def draw_micmac_lista(
+    canvas,
+    data,
+    x,
+    y,
+    width=200,
+    max_height=180,
+    font_size=10
+):
+    style = ParagraphStyle(
+        name="MicmacCell",
+        fontName="Helvetica",
+        fontSize=font_size,
+        leading=12,
+        alignment=TA_LEFT,
+        wordWrap="CJK"
+    )
+
+    # Convertir a Paragraph y dividir en 2 columnas
+    paragraphs = [Paragraph(item[0], style) for item in data]
+
+    cols = [[], []]
+    for i, p in enumerate(paragraphs):
+        cols[i % 2].append(p)
+
+    max_rows = max(len(cols[0]), len(cols[1]))
+    table_data = []
+
+    for i in range(max_rows):
+        row = [
+            cols[0][i] if i < len(cols[0]) else "",
+            cols[1][i] if i < len(cols[1]) else ""
+        ]
+        table_data.append(row)
+
+    table = Table(
+        table_data,
+        colWidths=[width / 2, width / 2],
+        rowHeights=None
+    )
+
+    table.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 2),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+    ]))
+
+    table.wrapOn(canvas, width, max_height)
+    table.drawOn(canvas, x, y - table._height)
 
 
 # ================= GENERADOR PDF =================
@@ -774,6 +827,50 @@ def generar_pdf(
                 x_der + 90,
                 y_base - 365
             )
+
+        elif doc.page == 10:
+            header_footer(canvas, doc)
+        
+            page_width, page_height = A4
+        
+            # ===== IMAGEN MICMAC =====
+            img_width = 520
+            img_height = 320
+            img_x = (page_width - img_width) / 2
+            img_y = page_height - img_height - 90
+        
+            canvas.drawImage(
+                "assets/micmac.png",
+                img_x,
+                img_y,
+                width=img_width,
+                height=img_height,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+
+            # ===== COORDENADAS DE CUADRANTES =====
+            quad_w = img_width / 2 - 30
+            quad_h = img_height / 2 - 40
+        
+            x_left  = img_x + 20
+            x_right = img_x + img_width / 2 + 10
+        
+            y_top    = img_y + img_height - 60
+            y_bottom = img_y + img_height / 2 - 20
+        
+            # ===== PODER =====
+            draw_micmac_lista(canvas, micmac_poder, x_left, y_top, quad_w)
+        
+            # ===== CONFLICTO =====
+            draw_micmac_lista(canvas, micmac_conflicto, x_right, y_top, quad_w)
+        
+            # ===== AUTÓNOMAS =====
+            draw_micmac_lista(canvas, micmac_autonomas, x_left, y_bottom, quad_w)
+        
+            # ===== RESULTADOS =====
+            draw_micmac_lista(canvas, micmac_resultados, x_right, y_bottom, quad_w)
+
 
         else:
             header_footer(canvas, doc)
