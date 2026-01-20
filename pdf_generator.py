@@ -426,7 +426,7 @@ def draw_micmac_lista(
         name="MicmacCell",
         fontName="Helvetica",
         fontSize=font_size,
-        leading=12,
+        leading=10,
         alignment=TA_LEFT,
         wordWrap="CJK"
     )
