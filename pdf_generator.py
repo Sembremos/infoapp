@@ -704,14 +704,14 @@ def generar_pdf(
 
             x_izq = 60
             x_der = page_width / 2 + 20
-            y_base = page_height - 350
+            y_base = page_height - 380
 
                        #=======DELITOS===
             draw_porcentaje(
                 canvas,
                 porcentaje_delitos,
                 x_izq + 90,
-                y_base + 200
+                y_base + 60
             )
             
             color_titulo_riesgos = colors.HexColor("#4471C4")
@@ -733,7 +733,7 @@ def generar_pdf(
                 canvas,
                 f"Total: {cantidad_delitos}",
                 x_izq + 90,
-                y_base - 350
+                y_base - 365
             )
             
             #=======Riesgos============
@@ -741,7 +741,7 @@ def generar_pdf(
                 canvas,
                 porcentaje_riesgos,
                 x_der + 90,
-                y_base + 200
+                y_base + 60
             )
             
             color_titulo_riesgos = colors.HexColor("#4471C4")
@@ -763,7 +763,7 @@ def generar_pdf(
                 canvas,
                 f"Total: {cantidad_riesgos}",
                 x_der + 90,
-                y_base - 80
+                y_base - 365
             )
 
         else:
