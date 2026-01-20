@@ -724,7 +724,7 @@ def generar_pdf(
 
             color_titulo_riesgos = colors.HexColor("#4471C4")   # color del texto del título
             fondo_titulo_riesgos = colors.HexColor("#D9E1F2")   # fondo del título
-            fondo_filas_riesgos  = colors.white                 # fondo de las filas
+            fondo_filas_riesgos  = colors.black                 # fondo de las filas
             
             draw_tabla_pareto(
                 canvas,
