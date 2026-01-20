@@ -14,8 +14,17 @@ from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from io import BytesIO
 from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_LEFT
 
 
+    pareto_cell_style = ParagraphStyle(
+        name="ParetoCell",
+        fontName="Helvetica",
+        fontSize=11,
+        leading=13,
+        alignment=TA_LEFT,
+        wordWrap="CJK"  # 👈 fuerza salto de línea
+    )
 # ================= UTILIDAD FULL PAGE =================
 def FullImage(path):
     def draw(canvas, doc):
@@ -457,15 +466,6 @@ def generar_pdf(
         rightMargin=40,
         topMargin=40,
         bottomMargin=40
-    )
-
-    pareto_cell_style = ParagraphStyle(
-        name="ParetoCell",
-        fontName="Helvetica",
-        fontSize=11,
-        leading=13,
-        alignment=TA_LEFT,
-        wordWrap="CJK"  # 👈 fuerza salto de línea
     )
 
     story = []
