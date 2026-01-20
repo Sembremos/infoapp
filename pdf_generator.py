@@ -401,7 +401,7 @@ def generar_pdf(
     tabla_riesgos,
     porcentaje_delitos,
     porcentaje_riesgos,
-    cantidad_delitos
+    cantidad_delitos,
     cantidad_riesgos
 ):
     buffer = BytesIO()
