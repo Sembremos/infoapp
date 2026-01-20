@@ -711,11 +711,11 @@ def generar_pdf(
                 canvas,
                 porcentaje_delitos,
                 x_izq + 90,
-                y_base + 60
+                y_base + 45
             )
             
             color_titulo_riesgos = colors.HexColor("#4471C4")
-            fondo_titulo_riesgos = colors.HexColor("#D9E1F2")
+            fondo_titulo_riesgos = colors.HexColor("#30a907")
             fondo_filas_riesgos  = colors.HexColor("#F2F2F2")
             
             draw_tabla_pareto(
@@ -741,11 +741,11 @@ def generar_pdf(
                 canvas,
                 porcentaje_riesgos,
                 x_der + 90,
-                y_base + 60
+                y_base + 45
             )
             
             color_titulo_riesgos = colors.HexColor("#4471C4")
-            fondo_titulo_riesgos = colors.HexColor("#D9E1F2")
+            fondo_titulo_riesgos = colors.HexColor("#30a907")
             fondo_filas_riesgos  = colors.HexColor("#F2F2F2")
             
             draw_tabla_pareto(
