@@ -13,6 +13,7 @@ from reportlab.lib.enums import TA_LEFT, TA_JUSTIFY
 from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from io import BytesIO
+from reportlab.lib.styles import ParagraphStyle
 
 
 # ================= UTILIDAD FULL PAGE =================
@@ -322,35 +323,41 @@ def draw_tabla_pareto(
     y,
     table_width=180,
     font_title="Helvetica-Bold",
-    font_body="Helvetica",
     font_size_title=14,
-    font_size_body=11,
     header_color=colors.HexColor("#4471C4"),
     body_color=colors.white,
     text_color=colors.black
 ):
-    # TÍTULO
+    # -------- TÍTULO --------
     canvas.setFont(font_title, font_size_title)
     canvas.setFillColor(text_color)
     canvas.drawCentredString(x + table_width / 2, y + 20, titulo)
 
-    # TABLA
+    # -------- PREPARAR DATOS CON PARAGRAPH --------
+    wrapped_data = [
+        [Paragraph(str(row[0]), pareto_cell_style)]
+        for row in data
+    ]
+
     table = Table(
-        data,
-        colWidths=[table_width]
+        wrapped_data,
+        colWidths=[table_width],
+        rowHeights=None  # 👈 auto height
     )
 
     table.setStyle(TableStyle([
         ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
         ("BACKGROUND", (0, 0), (-1, -1), body_color),
-        ("FONTNAME", (0, 0), (-1, -1), font_body),
-        ("FONTSIZE", (0, 0), (-1, -1), font_size_body),
-        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
     ]))
 
     table.wrapOn(canvas, table_width, 400)
-    table.drawOn(canvas, x, y - (len(data) * 18))
+    table.drawOn(canvas, x, y - table._height)
+
 
 def draw_porcentaje(
     canvas,
@@ -450,6 +457,15 @@ def generar_pdf(
         rightMargin=40,
         topMargin=40,
         bottomMargin=40
+    )
+
+    pareto_cell_style = ParagraphStyle(
+        name="ParetoCell",
+        fontName="Helvetica",
+        fontSize=11,
+        leading=13,
+        alignment=TA_LEFT,
+        wordWrap="CJK"  # 👈 fuerza salto de línea
     )
 
     story = []
