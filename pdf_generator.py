@@ -338,10 +338,26 @@ def draw_tabla_pareto(
     body_color=colors.white,
     text_color=colors.black
 ):
-    # -------- TÍTULO --------
+    # -------- FONDO DEL TÍTULO --------
+    canvas.setFillColor(header_color)
+    canvas.rect(
+        x,
+        y + 8,
+        table_width,
+        24,
+        stroke=0,
+        fill=1
+    )
+    
+    # -------- TEXTO DEL TÍTULO --------
     canvas.setFont(font_title, font_size_title)
     canvas.setFillColor(text_color)
-    canvas.drawCentredString(x + table_width / 2, y + 20, titulo)
+    canvas.drawCentredString(
+        x + table_width / 2,
+        y + 14,
+        titulo
+    )
+    
 
     # -------- PREPARAR DATOS CON PARAGRAPH --------
     wrapped_data = [
