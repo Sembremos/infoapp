@@ -430,6 +430,8 @@ if archivo:
 
         # ================= CANTIDAD DELITOS =================
         cantidad_delitos = int(df.iloc[117, 1])  # B118
+        #==================cantidad riesgos=======
+        cantidad_riesgos = int(df.iloc[117, 2])
 
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
@@ -454,7 +456,8 @@ if archivo:
                 tabla_riesgos=tabla_riesgos,
                 porcentaje_delitos=porcentaje_delitos,
                 porcentaje_riesgos=porcentaje_riesgos,
-                cantidad_delitos=cantidad_delitos
+                cantidad_delitos=cantidad_delitos,
+                cantidad_riesgos=cantidad_riesgos
             )
 
             pdf_bytes = pdf_buffer.getvalue()
