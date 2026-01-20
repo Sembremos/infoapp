@@ -402,6 +402,7 @@ def generar_pdf(
     porcentaje_delitos,
     porcentaje_riesgos,
     cantidad_delitos
+    cantidad_riesgos
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -710,7 +711,12 @@ def generar_pdf(
                 x_der,
                 y_base
             )
-
+            draw_cantidad(
+                canvas,
+                f"Total: {cantidad_riesgos}",
+                x_izq + 90,
+                y_base - 80
+            )
 
         else:
             header_footer(canvas, doc)
