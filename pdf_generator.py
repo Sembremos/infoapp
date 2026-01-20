@@ -710,7 +710,7 @@ def generar_pdf(
             draw_porcentaje(
                 canvas,
                 porcentaje_delitos,
-                x_izq + 90,
+                x_izq + 60,
                 y_base + 150
             )
             
