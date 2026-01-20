@@ -575,6 +575,15 @@ def generar_pdf(
     ))    
     story.append(Spacer(1, 170))
     story.append(Paragraph("__________________________________________________________________________________________"))
+
+    story.append(PageBreak())
+
+    story.append(Spacer(1, 40))
+    story.append(Paragraph("MICMAC", styles["Heading1"]))
+    story.append(Paragraph(
+    "((Matriz de Impactos Cruzado – Multiplicación Aplicada a un Clasificación))",
+    styles["Normal"]
+    ))    
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
