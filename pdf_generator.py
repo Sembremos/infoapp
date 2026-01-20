@@ -396,7 +396,12 @@ def generar_pdf(
     tabla_encuesta_comunidad, 
     tabla_otras_encuestas,
     datos_pagina_8,
-    datos_pagina_9
+    datos_pagina_9,
+    tabla_delitos,
+    tabla_riesgos,
+    porcentaje_delitos,
+    porcentaje_riesgos,
+    cantidad_delitos
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
