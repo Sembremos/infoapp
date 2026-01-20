@@ -744,14 +744,13 @@ def generar_pdf(
             
             draw_tabla_pareto(
                 canvas,
-                "Riesgos Sociales",
-                tabla_riesgos,
-                x_der,
+                "Delitos",
+                tabla_delitos,
+                x_izq,
                 y_base,
-                text_color=color_titulo_riesgos,
-                header_color=fondo_titulo_riesgos,
-                body_color=fondo_filas_riesgos
+                text_color=colors.HexColor("#C00000")
             )
+
             
             draw_cantidad(
                 canvas,
