@@ -444,13 +444,13 @@ if archivo:
             ]
         
         # Poder
-        micmac_poder = limpiar_lista(df.iloc[123:125, 1])      # B124:B125
+        micmac_poder = limpiar_lista(df.iloc[124:140, 1])      # B124:B125
         # Conflicto
-        micmac_conflicto = limpiar_lista(df.iloc[123:125, 2])  # C124:C125
+        micmac_conflicto = limpiar_lista(df.iloc[124:140, 2])  # C124:C125
         # Autónomas
-        micmac_autonomas = limpiar_lista(df.iloc[123:125, 3])  # D124:D125
+        micmac_autonomas = limpiar_lista(df.iloc[124:140, 3])  # D124:D125
         # Resultados
-        micmac_resultados = limpiar_lista(df.iloc[123:125, 4]) # E124:E125
+        micmac_resultados = limpiar_lista(df.iloc[124:140, 4]) # E124:E125
  
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
