@@ -404,7 +404,33 @@ if archivo:
             "lado_izquierdo": str(df.iloc[92, 0]),   # A93
             "derecha_superior": str(df.iloc[92, 1]), # B93
             "derecha_inferior": str(df.iloc[92, 2])  # C93
-        }     
+        }
+        #=========================LISTAS PERETO================================
+        # ================= DELITOS =================
+        tabla_delitos_raw = df.iloc[96:117, 1]  # B97:B117
+
+        tabla_delitos = [
+            [str(v)]
+            for v in tabla_delitos_raw
+            if pd.notna(v) and str(v) != "0"
+        ]
+
+        # =================RIESGOS SOCIALES =================
+        tabla_riesgos_raw = df.iloc[96:117, 2]  # C97:C117
+
+        tabla_riesgos = [
+            [str(v)]
+            for v in tabla_riesgos_raw
+            if pd.notna(v) and str(v) != "0"
+        ]
+
+        # ================= PORCENTAJES PARETO =================
+        porcentaje_delitos = str(df.iloc[118, 1])   # B119
+        porcentaje_riesgos = str(df.iloc[118, 2])   # C119
+
+        # ================= CANTIDAD DELITOS =================
+        cantidad_delitos = int(df.iloc[117, 1])  # B118
+
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -423,7 +449,12 @@ if archivo:
                 tabla_encuesta_comunidad=tabla_encuesta_comunidad,
                 tabla_otras_encuestas=tabla_otras_encuestas,
                 datos_pagina_8=datos_pagina_8,
-                datos_pagina_9=datos_pagina_9
+                datos_pagina_9=datos_pagina_9,
+                tabla_delitos=tabla_delitos,
+                tabla_riesgos=tabla_riesgos,
+                porcentaje_delitos=porcentaje_delitos,
+                porcentaje_riesgos=porcentaje_riesgos,
+                cantidad_delitos=cantidad_delitos
             )
 
             pdf_bytes = pdf_buffer.getvalue()
