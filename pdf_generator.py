@@ -686,7 +686,7 @@ def generar_pdf(
             #===========listas paretos
             page_width, page_height = A4
 
-            x_izq = 60
+            x_izq = 40
             x_der = page_width / 2 + 20
             y_base = page_height - 420
 
@@ -695,7 +695,7 @@ def generar_pdf(
                 canvas,
                 porcentaje_delitos,
                 x_izq + 90,
-                y_base + 80
+                y_base + 100
             )
 
             draw_tabla_pareto(
@@ -710,7 +710,7 @@ def generar_pdf(
                 canvas,
                 f"Total: {cantidad_delitos}",
                 x_izq + 90,
-                y_base - 220
+                y_base - 300
             )    
 
             #=======Riesgos============
