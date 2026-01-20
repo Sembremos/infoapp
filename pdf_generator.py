@@ -16,15 +16,16 @@ from io import BytesIO
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT
 
+# ===== ESTILO GLOBAL PARA TABLAS PARETO =====
+pareto_cell_style = ParagraphStyle(
+    name="ParetoCell",
+    fontName="Helvetica",
+    fontSize=11,
+    leading=13,
+    alignment=TA_LEFT,
+    wordWrap="CJK"
+)
 
-    pareto_cell_style = ParagraphStyle(
-        name="ParetoCell",
-        fontName="Helvetica",
-        fontSize=11,
-        leading=13,
-        alignment=TA_LEFT,
-        wordWrap="CJK"  # 👈 fuerza salto de línea
-    )
 # ================= UTILIDAD FULL PAGE =================
 def FullImage(path):
     def draw(canvas, doc):
