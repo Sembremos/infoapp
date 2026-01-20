@@ -312,6 +312,72 @@ def draw_tabla_simple(
     table.wrapOn(canvas, TABLE_WIDTH, 200)
     table.drawOn(canvas, x, y)
 
+#=========================================Tabla Pareto==================
+
+def draw_tabla_pareto(
+    canvas,
+    titulo,
+    data,
+    x,
+    y,
+    table_width=180,
+    font_title="Helvetica-Bold",
+    font_body="Helvetica",
+    font_size_title=14,
+    font_size_body=11,
+    header_color=colors.HexColor("#4471C4"),
+    body_color=colors.white,
+    text_color=colors.black
+):
+    # TÍTULO
+    canvas.setFont(font_title, font_size_title)
+    canvas.setFillColor(text_color)
+    canvas.drawCentredString(x + table_width / 2, y + 20, titulo)
+
+    # TABLA
+    table = Table(
+        data,
+        colWidths=[table_width]
+    )
+
+    table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+        ("BACKGROUND", (0, 0), (-1, -1), body_color),
+        ("FONTNAME", (0, 0), (-1, -1), font_body),
+        ("FONTSIZE", (0, 0), (-1, -1), font_size_body),
+        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+    ]))
+
+    table.wrapOn(canvas, table_width, 400)
+    table.drawOn(canvas, x, y - (len(data) * 18))
+
+def draw_porcentaje(
+    canvas,
+    texto,
+    x,
+    y,
+    font="Helvetica-Bold",
+    size=18,
+    color=colors.black
+):
+    canvas.setFont(font, size)
+    canvas.setFillColor(color)
+    canvas.drawCentredString(x, y, texto)
+
+def draw_cantidad(
+    canvas,
+    texto,
+    x,
+    y,
+    font="Helvetica-Bold",
+    size=14,
+    color=colors.black
+):
+    canvas.setFont(font, size)
+    canvas.setFillColor(color)
+    canvas.drawCentredString(x, y, texto)
+
 
 
 # ================= GENERADOR PDF =================
@@ -593,6 +659,53 @@ def generar_pdf(
                 img_y + 105,              # y (inferior)
                 datos_pagina_9["derecha_inferior"]
             )
+
+            #===========listas paretos
+            page_width, page_height = A4
+
+            x_izq = 60
+            x_der = page_width / 2 + 20
+            y_base = page_height - 420
+
+            #=======DELITOS===
+            draw_porcentaje(
+                canvas,
+                porcentaje_delitos,
+                x_izq + 90,
+                y_base + 80
+            )
+
+            draw_tabla_pareto(
+                canvas,
+                "Delitos",
+                tabla_delitos,
+                x_izq,
+                y_base
+            )
+
+            draw_cantidad(
+                canvas,
+                f"Total: {cantidad_delitos}",
+                x_izq + 90,
+                y_base - 220
+            )    
+
+            #=======Riesgos============
+            draw_porcentaje(
+                canvas,
+                porcentaje_riesgos,
+                x_der + 90,
+                y_base + 80
+            )
+
+            draw_tabla_pareto(
+                canvas,
+                "Riesgos Sociales",
+                tabla_riesgos,
+                x_der,
+                y_base
+            )
+
 
         else:
             header_footer(canvas, doc)
