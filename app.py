@@ -425,8 +425,9 @@ if archivo:
         ]
 
         # ================= PORCENTAJES PARETO =================
-        porcentaje_delitos = str(df.iloc[118, 1])   # B119
-        porcentaje_riesgos = str(df.iloc[118, 2])   # C119
+        porcentaje_delitos = f"{float(df.iloc[118, 1]) * 100:.2f}%"
+        porcentaje_riesgos = f"{float(df.iloc[118, 2]) * 100:.2f}%"
+
 
         # ================= CANTIDAD DELITOS =================
         cantidad_delitos = int(df.iloc[117, 1])  # B118
