@@ -467,7 +467,9 @@ def generar_pdf(
     story.append(Paragraph(
     "(Aplicando el principio de 80/20 donde el 80% es lo trivial y el 20% es lo vital)",
     styles["Normal"]
-    ))
+    ))    
+    story.append(Spacer(1, 200))
+    story.append(Paragraph("__________________________________________________________________________________________"))
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
