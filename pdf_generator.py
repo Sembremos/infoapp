@@ -900,7 +900,7 @@ def generar_pdf(
             img_width = 650
             img_height = 470
             img_x = (page_width - img_width) / 2
-            img_y = page_height - img_height - 120
+            img_y = page_height - img_height - 140
         
             canvas.drawImage(
                 "assets/micmac.png",
@@ -944,7 +944,7 @@ def generar_pdf(
             img_width = 520
             img_height = 260
             img_x = (page_width - img_width) / 2
-            img_y = 60   # respeta footer
+            img_y = 50   # respeta footer
 
             canvas.drawImage(
                 "assets/micmac2.png",
