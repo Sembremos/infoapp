@@ -860,8 +860,8 @@ def generar_pdf(
             x_left  = img_x + 60
             x_right = img_x + img_width / 2 + 5
         
-            y_top    = img_y + img_height - 80
-            y_bottom = img_y + img_height / 2 - 30
+            y_top    = img_y + img_height - 70
+            y_bottom = img_y + img_height / 2 - 20
         
             # ===== PODER =====
             draw_micmac_lista(canvas, micmac_poder, x_left, y_top, quad_w)
