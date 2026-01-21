@@ -640,7 +640,9 @@ def generar_pdf(
     story.append(Paragraph(
     "((Matriz de Impactos Cruzado – Multiplicación Aplicada a un Clasificación))",
     styles["Normal"]
-    ))    
+    ))   
+    story.append(Spacer(1, 370))
+    story.append(Paragraph("__________________________________________________________________________________________"))
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
@@ -854,13 +856,13 @@ def generar_pdf(
             )
 
             # ===== COORDENADAS DE CUADRANTES =====
-            quad_w = img_width / 2 - 80
+            quad_w = img_width / 2 - 80 #-- aqui puedo mover a la derecha los datos micmac
             quad_h = img_height / 2 - 20
         
-            x_left  = img_x + 60
+            x_left  = img_x + 60 #---- aqui los hago para el centro
             x_right = img_x + img_width / 2 + 5
         
-            y_top    = img_y + img_height - 70
+            y_top    = img_y + img_height - 70 #----- aqui para abajo entre mas grnade mas abajo
             y_bottom = img_y + img_height / 2 - 20
         
             # ===== PODER =====
