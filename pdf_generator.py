@@ -960,8 +960,8 @@ def generar_pdf(
             tabla_width = 130
             tabla_font = 8
 
-            x_tabla_riesgos = img_x + img_width * 0.40 - tabla_width / 2
-            x_tabla_delitos = img_x + img_width * 0.95 - tabla_width / 2
+            x_tabla_riesgos = img_x + img_width * 0.50 - tabla_width / 2
+            x_tabla_delitos = img_x + img_width * 0.80 - tabla_width / 2
             y_tablas = img_y + img_height - 80
 
             draw_tabla_overlay(
@@ -992,7 +992,7 @@ def generar_pdf(
                 canvas,
                 cantidad_problematicas,
                 x_centro - 30 ,
-                y_centro - 20,
+                y_centro - 25,
                 size=24,
                 color=colors.white
             )
@@ -1001,7 +1001,7 @@ def generar_pdf(
             draw_texto_overlay(
                 canvas,
                 riesgos_total,
-                x_centro + 150,
+                x_centro + 155,
                 y_centro + 80,
                 size=18,
                 color=colors.HexColor("#30a907")
@@ -1011,7 +1011,7 @@ def generar_pdf(
             draw_texto_overlay(
                 canvas,
                 delitos_total,
-                x_centro + 200,
+                x_centro + 260,
                 y_centro + 80,
                 size=18,
                 color=colors.HexColor("#C00000")
