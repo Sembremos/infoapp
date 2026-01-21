@@ -900,7 +900,7 @@ def generar_pdf(
             img_width = 650
             img_height = 470
             img_x = (page_width - img_width) / 2
-            img_y = page_height - img_height - 190
+            img_y = page_height - img_height - 120
         
             canvas.drawImage(
                 "assets/micmac.png",
