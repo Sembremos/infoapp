@@ -698,7 +698,7 @@ def generar_pdf(
     "((Matriz de Impactos Cruzado – Multiplicación Aplicada a un Clasificación))",
     styles["Normal"]
     ))   
-    story.append(Spacer(1, 420))
+    story.append(Spacer(1, 390))
     story.append(Paragraph("__________________________________________________________________________________________"))
     ##----------------------------------Bloque de funciones 
                  
@@ -960,8 +960,8 @@ def generar_pdf(
             tabla_width = 130
             tabla_font = 8
 
-            x_tabla_riesgos = img_x + img_width * 0.25 - tabla_width / 2
-            x_tabla_delitos = img_x + img_width * 0.75 - tabla_width / 2
+            x_tabla_riesgos = img_x + img_width * 0.60 - tabla_width / 2
+            x_tabla_delitos = img_x + img_width * 0.90 - tabla_width / 2
             y_tablas = img_y + img_height - 40
 
             draw_tabla_overlay(
@@ -986,29 +986,33 @@ def generar_pdf(
             x_centro = img_x + img_width / 4
             y_centro = img_y + img_height / 2
 
+            #____________P.Priorizadas
+            
             draw_texto_overlay(
                 canvas,
                 cantidad_problematicas,
-                x_centro,
+                x_centro - 20 ,
                 y_centro + 30,
                 size=24,
-                color=colors.white
+                color=colors.black
             )
 
+            #--------------R.sociales
             draw_texto_overlay(
                 canvas,
                 riesgos_total,
-                x_centro,
-                y_centro,
+                x_centro +30,
+                y_centro +30,
                 size=18,
                 color=colors.HexColor("#30a907")
             )
 
+            #---------------delitos
             draw_texto_overlay(
                 canvas,
                 delitos_total,
-                x_centro,
-                y_centro - 30,
+                x_centro + 60,
+                y_centro + 30,
                 size=18,
                 color=colors.HexColor("#C00000")
             )
