@@ -936,83 +936,82 @@ def generar_pdf(
 
             #--------------------------micmac2-----------------------------------------
 
-                header_footer(canvas, doc)
+            header_footer(canvas, doc)
 
-                    page_width, page_height = A4
-                
-                    # ===== IMAGEN MICMAC2 =====
-                    img_width = 520
-                    img_height = 260
-                    img_x = (page_width - img_width) / 2
-                    img_y = 80   # respeta footer
-                
-                    canvas.drawImage(
-                        "assets/micmac2.png",
-                        img_x,
-                        img_y,
-                        width=img_width,
-                        height=img_height,
-                        preserveAspectRatio=True,
-                        mask="auto"
-                    )
-                
-                    # ===== VARIABLES DE POSICIÓN (NO dependientes de imagen) =====
-                    # TABLAS
-                    tabla_width = 130
-                    tabla_font = 8
-                
-                    x_tabla_riesgos = img_x + img_width * 0.25 - tabla_width / 2
-                    x_tabla_delitos = img_x + img_width * 0.75 - tabla_width / 2
-                    y_tablas = img_y + img_height - 40
-                
-                    draw_tabla_overlay(
-                        canvas,
-                        tabla_riesgos_micmac2,
-                        x_tabla_riesgos,
-                        y_tablas,
-                        width=tabla_width,
-                        font_size=tabla_font
-                    )
-                
-                    draw_tabla_overlay(
-                        canvas,
-                        tabla_delitos_micmac2,
-                        x_tabla_delitos,
-                        y_tablas,
-                        width=tabla_width,
-                        font_size=tabla_font
-                    )
-                
-                    # ===== DATOS SUELTOS =====
-                    x_centro = img_x + img_width / 4
-                    y_centro = img_y + img_height / 2
-                
-                    draw_texto_overlay(
-                        canvas,
-                        cantidad_problematicas,
-                        x_centro,
-                        y_centro + 30,
-                        size=24,
-                        color=colors.white
-                    )
-                
-                    draw_texto_overlay(
-                        canvas,
-                        riesgos_total,
-                        x_centro,
-                        y_centro,
-                        size=18,
-                        color=colors.HexColor("#30a907")
-                    )
-                
-                    draw_texto_overlay(
-                        canvas,
-                        delitos_total,
-                        x_centro,
-                        y_centro - 30,
-                        size=18,
-                        color=colors.HexColor("#C00000")
-                    )
+            page_width, page_height = A4
+
+            # ===== IMAGEN MICMAC2 =====
+            img_width = 520
+            img_height = 260
+            img_x = (page_width - img_width) / 2
+            img_y = 80   # respeta footer
+
+            canvas.drawImage(
+                "assets/micmac2.png",
+                img_x,
+                img_y,
+                width=img_width,
+                height=img_height,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+
+            # ===== VARIABLES DE POSICIÓN =====
+            tabla_width = 130
+            tabla_font = 8
+
+            x_tabla_riesgos = img_x + img_width * 0.25 - tabla_width / 2
+            x_tabla_delitos = img_x + img_width * 0.75 - tabla_width / 2
+            y_tablas = img_y + img_height - 40
+
+            draw_tabla_overlay(
+                canvas,
+                tabla_riesgos_micmac2,
+                x_tabla_riesgos,
+                y_tablas,
+                width=tabla_width,
+                font_size=tabla_font
+            )
+
+            draw_tabla_overlay(
+                canvas,
+                tabla_delitos_micmac2,
+                x_tabla_delitos,
+                y_tablas,
+                width=tabla_width,
+                font_size=tabla_font
+            )
+
+            # ===== DATOS SUELTOS =====
+            x_centro = img_x + img_width / 4
+            y_centro = img_y + img_height / 2
+
+            draw_texto_overlay(
+                canvas,
+                cantidad_problematicas,
+                x_centro,
+                y_centro + 30,
+                size=24,
+                color=colors.white
+            )
+
+            draw_texto_overlay(
+                canvas,
+                riesgos_total,
+                x_centro,
+                y_centro,
+                size=18,
+                color=colors.HexColor("#30a907")
+            )
+
+            draw_texto_overlay(
+                canvas,
+                delitos_total,
+                x_centro,
+                y_centro - 30,
+                size=18,
+                color=colors.HexColor("#C00000")
+            )
         else:
             header_footer(canvas, doc)
 
