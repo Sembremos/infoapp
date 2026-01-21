@@ -420,13 +420,13 @@ def draw_micmac_lista(
     y,
     width=200,
     max_height=180,
-    font_size=10
+    font_size=8
 ):
     style = ParagraphStyle(
         name="MicmacCell",
         fontName="Helvetica",
         fontSize=font_size,
-        leading=10,
+        leading=8,
         alignment=TA_LEFT,
         wordWrap="CJK"
     )
@@ -860,8 +860,8 @@ def generar_pdf(
             x_left  = img_x + 20
             x_right = img_x + img_width / 2 + 10
         
-            y_top    = img_y + img_height - 60
-            y_bottom = img_y + img_height / 2 - 20
+            y_top    = img_y + img_height - 40
+            y_bottom = img_y + img_height / 2 - 10
         
             # ===== PODER =====
             draw_micmac_lista(canvas, micmac_poder, x_left, y_top, quad_w)
