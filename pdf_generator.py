@@ -854,13 +854,13 @@ def generar_pdf(
             )
 
             # ===== COORDENADAS DE CUADRANTES =====
-            quad_w = img_width / 2 - 15
+            quad_w = img_width / 2 - 10
             quad_h = img_height / 2 - 20
         
             x_left  = img_x + 20
-            x_right = img_x + img_width / 2 + 10
+            x_right = img_x + img_width / 2 + 30
         
-            y_top    = img_y + img_height - 40
+            y_top    = img_y + img_height - 60
             y_bottom = img_y + img_height / 2 - 10
         
             # ===== PODER =====
