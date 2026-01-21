@@ -451,7 +451,24 @@ if archivo:
         micmac_autonomas = limpiar_lista(df.iloc[123:140, 3])  # D124:D125
         # Resultados
         micmac_resultados = limpiar_lista(df.iloc[123:140, 4]) # E124:E125
- 
+
+        #_________________________micmac2_______________________________
+        def limpiar_lista_simple(col):
+            return [
+                [str(v)]
+                for v in col
+                if pd.notna(v) and str(v).strip() != ""
+            ]
+        
+        # ===== TABLAS MICMAC 2 =====
+        tabla_riesgos_micmac2 = limpiar_lista_simple(df.iloc[123:140, 10])  # K124:K140
+        tabla_delitos_micmac2 = limpiar_lista_simple(df.iloc[123:140, 11])  # L124:L140
+        
+        # ===== DATOS SUELTOS =====
+        cantidad_problematicas = int(df.iloc[140, 12])  # M141
+        riesgos_total = int(df.iloc[140, 10])           # K141
+        delitos_total = int(df.iloc[140, 11])           # L141
+
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -480,7 +497,12 @@ if archivo:
                 micmac_poder=micmac_poder,
                 micmac_conflicto=micmac_conflicto,
                 micmac_autonomas=micmac_autonomas,
-                micmac_resultados=micmac_resultados
+                micmac_resultados=micmac_resultados,
+                tabla_riesgos_micmac2=tabla_riesgos_micmac2,
+                tabla_delitos_micmac2=tabla_delitos_micmac2,
+                cantidad_problematicas=cantidad_problematicas,
+                riesgos_total=riesgos_total,
+                delitos_total=delitos_total
             )
 
             pdf_bytes = pdf_buffer.getvalue()
