@@ -1011,7 +1011,7 @@ def generar_pdf(
             draw_texto_overlay(
                 canvas,
                 delitos_total,
-                x_centro + 280,
+                x_centro + 290,
                 y_centro + 80,
                 size=18,
                 color=colors.white
