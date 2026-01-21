@@ -854,8 +854,8 @@ def generar_pdf(
             )
 
             # ===== COORDENADAS DE CUADRANTES =====
-            quad_w = img_width / 2 - 30
-            quad_h = img_height / 2 - 40
+            quad_w = img_width / 2 - 15
+            quad_h = img_height / 2 - 20
         
             x_left  = img_x + 20
             x_right = img_x + img_width / 2 + 10
