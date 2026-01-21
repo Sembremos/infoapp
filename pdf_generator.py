@@ -858,7 +858,7 @@ def generar_pdf(
             quad_h = img_height / 2 - 20
         
             x_left  = img_x + 50
-            x_right = img_x + img_width / 2 + 5
+            x_right = img_x + img_width / 2 + 1
         
             y_top    = img_y + img_height - 80
             y_bottom = img_y + img_height / 2 - 30
