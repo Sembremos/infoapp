@@ -453,6 +453,7 @@ if archivo:
         micmac_resultados = limpiar_lista(df.iloc[123:140, 4]) # E124:E125
 
         #_________________________micmac2_______________________________
+        
         def limpiar_lista_simple(col):
             return [
                 [str(v)]
