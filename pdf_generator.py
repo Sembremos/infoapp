@@ -916,7 +916,7 @@ def generar_pdf(
             quad_w = img_width / 2 - 80 #-- aqui puedo mover a la derecha los datos micmac
             quad_h = img_height / 2 - 20
         
-            x_left  = img_x + 60 #---- aqui los hago para el centro
+            x_left  = img_x + 90 #---- aqui los hago para el centro
             x_right = img_x + img_width / 2 + 5
         
             y_top    = img_y + img_height - 70 #----- aqui para abajo entre mas grnade mas abajo
