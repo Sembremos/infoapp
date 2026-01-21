@@ -898,7 +898,7 @@ def generar_pdf(
         
             # ===== IMAGEN MICMAC =====
             img_width = 650
-            img_height = 470
+            img_height = 420
             img_x = (page_width - img_width) / 2
             img_y = page_height - img_height - 100
         
