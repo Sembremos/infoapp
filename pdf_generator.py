@@ -641,7 +641,7 @@ def generar_pdf(
     "((Matriz de Impactos Cruzado – Multiplicación Aplicada a un Clasificación))",
     styles["Normal"]
     ))   
-    story.append(Spacer(1, 370))
+    story.append(Spacer(1, 420))
     story.append(Paragraph("__________________________________________________________________________________________"))
     ##----------------------------------Bloque de funciones 
                  
