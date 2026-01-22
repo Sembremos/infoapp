@@ -292,7 +292,7 @@ def draw_tabla_simple(
     x,
     y,
     col_widths,
-    header_color=colors.HexColor("#4471C4"),
+    header_color=colors.HexColor("#013051"),
     body_color=colors.white,
     border_color=colors.black,
     font_size_header=12,
