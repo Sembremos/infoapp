@@ -470,6 +470,15 @@ if archivo:
         riesgos_total = int(df.iloc[140, 10])           # K141
         delitos_total = int(df.iloc[140, 11])           # L141
 
+        #_________________________Triangulo de violes______________________
+        
+        causas_identificadas = int(df.iloc[117, 3])   # D118
+        factores_micmac = int(df.iloc[140, 12])       # M141
+        
+        triangulo_directa = int(df.iloc[146, 0])      # A147
+        triangulo_sociocultural = int(df.iloc[146, 1])# B147
+        triangulo_estructural = int(df.iloc[146, 2])  # C147
+
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -503,7 +512,12 @@ if archivo:
                 tabla_delitos_micmac2=tabla_delitos_micmac2,
                 cantidad_problematicas=cantidad_problematicas,
                 riesgos_total=riesgos_total,
-                delitos_total=delitos_total
+                delitos_total=delitos_total,
+                causas_identificadas=causas_identificadas,
+                factores_micmac=factores_micmac,
+                triangulo_directa=triangulo_directa,
+                triangulo_sociocultural=triangulo_sociocultural,
+                triangulo_estructural=triangulo_estructural
             )
 
             pdf_bytes = pdf_buffer.getvalue()
