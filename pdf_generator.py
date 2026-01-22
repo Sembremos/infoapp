@@ -308,7 +308,7 @@ def draw_tabla_simple(
 
     style = [
         ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), header_color),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("FONTSIZE", (0, 0), (-1, 0), font_size_header),
