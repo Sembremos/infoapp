@@ -1073,8 +1073,8 @@ def generar_pdf(
             # ===== TEXTO IZQUIERDA =====
             draw_texto_mixto(
                 canvas,
-                x=50,                                # ← mueve derecha/izquierda
-                y=page_height - 220,                # ← sube/baja
+                x=45,                                # ← mueve derecha/izquierda
+                y=page_height - 230,                # ← sube/baja
                 texto_antes="Frente a lo anterior, esta metodología permitió la identificación de",
                 valor_1=causas_identificadas,
                 texto_medio="causas, directamente relacionadas con los",
@@ -1086,10 +1086,10 @@ def generar_pdf(
             )
         
             # ===== IMAGEN TRIÁNGULO =====
-            img_width = 220
-            img_height = 220
+            img_width = 280
+            img_height = 280
         
-            img_x = page_width / 2 + 40          # mueve derecha/izquierda
+            img_x = page_width / 2 + 30          # mueve derecha/izquierda
             img_y = page_height - img_height - 140  # mueve arriba/abajo
         
             canvas.drawImage(
@@ -1103,7 +1103,7 @@ def generar_pdf(
             )
         
             canvas.setFont("Helvetica-Bold", 18)
-            canvas.setFillColor(colors.white)
+            canvas.setFillColor(colors.black)
         
             # DIRECTA (arriba)
             canvas.drawCentredString(
