@@ -747,7 +747,7 @@ def generar_pdf(
     story.append(Paragraph("Triangulo de las Violencias", styles["Heading1"]))
     story.append(Spacer(1, 10))  
     story.append(Paragraph(("Es una metodología también llamada “teoría de los conflictos” creada por el sociólogo y matemático Johan Galtung, que permite estudiar y transformar los conflictos mediante la identificación de variantes de la violencia, (Directa, cultural y estructural), visualizando las causas generadoras de las problemáticas. "),
-    styles["Normal"]
+    styles["NormalJustificado"]
     ))    
     ##----------------------------------Bloque de funciones 
                  
@@ -1074,7 +1074,7 @@ def generar_pdf(
             draw_texto_mixto(
                 canvas,
                 x=45,                                # ← mueve derecha/izquierda
-                y=page_height - 245,                # ← sube/baja
+                y=page_height - 210,                # ← sube/baja
                 texto_antes="Frente a lo anterior, esta metodología permitió la identificación de",
                 valor_1=causas_identificadas,
                 texto_medio="causas, directamente relacionadas con los",
