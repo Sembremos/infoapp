@@ -1058,63 +1058,65 @@ def generar_pdf(
             )
 
         elif doc.page == 11:
-             header_footer(canvas, doc)
-                page_width, page_height = A4
-            
-                # ===== TEXTO IZQUIERDA =====
-                draw_texto_mixto(
-                    canvas,
-                    x=40,                                # ← mueve derecha/izquierda
-                    y=page_height - 220,                # ← sube/baja
-                    texto_antes="Frente a lo anterior, esta metodología permitió la identificación de",
-                    valor_1=causas_identificadas,
-                    texto_medio="causas, directamente relacionadas con los",
-                    valor_2=factores_micmac,
-                    texto_despues="factores priorizados en la Mic-Mac.",
-                    width=260,
-                    font_size=11,
-                    valor_size=16
-                )
-            
-                # ===== IMAGEN TRIÁNGULO =====
-                    img_width = 220
-                    img_height = 220
-                    
-                    img_x = page_width / 2 + 40   # mueve derecha/izquierda
-                    img_y = page_height - img_height - 140  # mueve arriba/abajo
+            header_footer(canvas, doc)
+            page_width, page_height = A4
+        
+            # ===== TEXTO IZQUIERDA =====
+            draw_texto_mixto(
+                canvas,
+                x=40,                                # ← mueve derecha/izquierda
+                y=page_height - 220,                # ← sube/baja
+                texto_antes="Frente a lo anterior, esta metodología permitió la identificación de",
+                valor_1=causas_identificadas,
+                texto_medio="causas, directamente relacionadas con los",
+                valor_2=factores_micmac,
+                texto_despues="factores priorizados en la Mic-Mac.",
+                width=260,
+                font_size=11,
+                valor_size=16
+            )
+        
+            # ===== IMAGEN TRIÁNGULO =====
+            img_width = 220
+            img_height = 220
+        
+            img_x = page_width / 2 + 40          # mueve derecha/izquierda
+            img_y = page_height - img_height - 140  # mueve arriba/abajo
+        
+            canvas.drawImage(
+                "assets/triangulo.png",
+                img_x,
+                img_y,
+                width=img_width,
+                height=img_height,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+        
+            canvas.setFont("Helvetica-Bold", 18)
+            canvas.setFillColor(colors.white)
+        
+            # DIRECTA (arriba)
+            canvas.drawCentredString(
+                img_x + img_width / 2,
+                img_y + img_height - 35,
+                str(triangulo_directa)
+            )
+        
+            # SOCIOCULTURAL (abajo izquierda)
+            canvas.drawCentredString(
+                img_x + 45,
+                img_y + 40,
+                str(triangulo_sociocultural)
+            )
+        
+            # ESTRUCTURAL (abajo derecha)
+            canvas.drawCentredString(
+                img_x + img_width - 45,
+                img_y + 40,
+                str(triangulo_estructural)
+            )
 
-                canvas.drawImage(
-                    "assets/triangulo.png",
-                    img_x,
-                    img_y,
-                    width=img_width,
-                    height=img_height,
-                    preserveAspectRatio=True,
-                    mask="auto"
-                )
-                canvas.setFont("Helvetica-Bold", 18)
-                canvas.setFillColor(colors.white)
-                
-                # DIRECTA (arriba)
-                canvas.drawCentredString(
-                    img_x + img_width / 2,
-                    img_y + img_height - 35,
-                    str(triangulo_directa)
-                )
-                
-                # SOCIOCULTURAL (abajo izquierda)
-                canvas.drawCentredString(
-                    img_x + 45,
-                    img_y + 40,
-                    str(triangulo_sociocultural)
-                )
-                
-                # ESTRUCTURAL (abajo derecha)
-                canvas.drawCentredString(
-                    img_x + img_width - 45,
-                    img_y + 40,
-                    str(triangulo_estructural)
-                )
 
         else:
             header_footer(canvas, doc)
