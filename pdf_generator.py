@@ -1114,8 +1114,8 @@ def generar_pdf(
         
             # SOCIOCULTURAL (abajo izquierda)
             canvas.drawCentredString(
-                img_x + 50,
-                img_y + 40,
+                img_x + 40,
+                img_y + 45,
                 str(triangulo_sociocultural)
             )
         
