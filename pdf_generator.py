@@ -1089,7 +1089,7 @@ def generar_pdf(
             img_width = 280
             img_height = 280
         
-            img_x = page_width / 2 + 30          # mueve derecha/izquierda
+            img_x = page_width / 2 + 50          # mueve derecha/izquierda
             img_y = page_height - img_height - 140  # mueve arriba/abajo
         
             canvas.drawImage(
@@ -1108,21 +1108,21 @@ def generar_pdf(
             # DIRECTA (arriba)
             canvas.drawCentredString(
                 img_x + img_width / 2,
-                img_y + img_height - 35,
+                img_y + img_height - 25,
                 str(triangulo_directa)
             )
         
             # SOCIOCULTURAL (abajo izquierda)
             canvas.drawCentredString(
                 img_x + 45,
-                img_y + 40,
+                img_y + 45,
                 str(triangulo_sociocultural)
             )
         
             # ESTRUCTURAL (abajo derecha)
             canvas.drawCentredString(
                 img_x + img_width - 45,
-                img_y + 40,
+                img_y + 45,
                 str(triangulo_estructural)
             )
 
