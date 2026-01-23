@@ -745,7 +745,7 @@ def generar_pdf(
 
     story.append(Spacer(1, 40))
     story.append(Paragraph("Triangulo de las Violencias", styles["Heading1"]))
-    story.append(Spacer(1, 20))  
+    story.append(Spacer(1, 10))  
     story.append(Paragraph(("Es una metodología también llamada “teoría de los conflictos” creada por el sociólogo y matemático Johan Galtung, que permite estudiar y transformar los conflictos mediante la identificación de variantes de la violencia, (Directa, cultural y estructural), visualizando las causas generadoras de las problemáticas. "),
     styles["Normal"]
     ))    
@@ -1073,7 +1073,7 @@ def generar_pdf(
             # ===== TEXTO IZQUIERDA =====
             draw_texto_mixto(
                 canvas,
-                x=40,                                # ← mueve derecha/izquierda
+                x=50,                                # ← mueve derecha/izquierda
                 y=page_height - 220,                # ← sube/baja
                 texto_antes="Frente a lo anterior, esta metodología permitió la identificación de",
                 valor_1=causas_identificadas,
@@ -1081,7 +1081,7 @@ def generar_pdf(
                 valor_2=factores_micmac,
                 texto_despues="factores priorizados en la Mic-Mac.",
                 width=260,
-                font_size=11,
+                font_size=10,
                 valor_size=16
             )
         
