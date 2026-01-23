@@ -1089,8 +1089,8 @@ def generar_pdf(
             img_width = 260
             img_height = 260
         
-            img_x = page_width / 2 + 1          # mueve derecha/izquierda
-            img_y = page_height - img_height - 160  # mueve arriba/abajo
+            img_x = page_width / 2 + 5          # mueve derecha/izquierda
+            img_y = page_height - img_height - 130  # mueve arriba/abajo
         
             canvas.drawImage(
                 "assets/triangulo.png",
