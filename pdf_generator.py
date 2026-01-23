@@ -1058,7 +1058,7 @@ def generar_pdf(
             )
 
         elif doc.page == 11:
-                header_footer(canvas, doc)
+             header_footer(canvas, doc)
                 page_width, page_height = A4
             
                 # ===== TEXTO IZQUIERDA =====
