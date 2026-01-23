@@ -1074,7 +1074,7 @@ def generar_pdf(
             draw_texto_mixto(
                 canvas,
                 x=45,                                # ← mueve derecha/izquierda
-                y=page_height - 230,                # ← sube/baja
+                y=page_height - 245,                # ← sube/baja
                 texto_antes="Frente a lo anterior, esta metodología permitió la identificación de",
                 valor_1=causas_identificadas,
                 texto_medio="causas, directamente relacionadas con los",
@@ -1089,7 +1089,7 @@ def generar_pdf(
             img_width = 280
             img_height = 280
         
-            img_x = page_width / 2 + 10          # mueve derecha/izquierda
+            img_x = page_width / 2 + 1          # mueve derecha/izquierda
             img_y = page_height - img_height - 140  # mueve arriba/abajo
         
             canvas.drawImage(
