@@ -558,7 +558,7 @@ def draw_texto_mixto(
 def draw_tabla_instituciones(
     canvas,
     data,
-    titulo="Lista de instituciones",
+    titulo="Lista de Instituciones",
     x=60,
     y=250,
     table_width=480,
