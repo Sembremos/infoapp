@@ -1221,7 +1221,7 @@ def generar_pdf(
             # ================== GRÁFICO CIRCULAR ==================
             canvas.drawImage(
                 grafico_denuncias_path,
-                x=(page_width - 150) / 2,
+                x=(page_width - 550) / 2,
                 y=page_height - 400,
                 width=300,
                 height=300,
@@ -1234,7 +1234,7 @@ def generar_pdf(
                 canvas=canvas,
                 data=tabla_denuncias,
                 titulo="Detalle de denuncias",
-                x=300,
+                x=150,
                 y=page_height - 550,
                 col_widths=[150],
                 header_color=colors.HexColor("#4472C4")
