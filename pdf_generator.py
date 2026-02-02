@@ -636,7 +636,10 @@ def generar_pdf(
     triangulo_directa,
     triangulo_sociocultural,
     triangulo_estructural,
-    tabla_instituciones
+    tabla_instituciones,
+    grafico_denuncias_path,
+    tabla_denuncias,
+    total_denuncias
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -1202,6 +1205,66 @@ def generar_pdf(
         elif doc.page == 12:
             FullImage("assets/estadistica.png")(canvas, doc)
 
+        elif doc.page == 13:
+            header_footer(canvas, doc)
+            page_width, page_height = A4
+        
+            # ================== TÍTULO ==================
+            canvas.setFont("Helvetica-Bold", 20)
+            canvas.setFillColor(colors.black)
+            canvas.drawCentredString(
+                page_width / 2,
+                page_height - 90,
+                "Denuncias registradas"
+            )
+        
+            # ================== GRÁFICO CIRCULAR ==================
+            canvas.drawImage(
+                grafico_denuncias_path,
+                x=(page_width - 300) / 2,
+                y=page_height - 420,
+                width=300,
+                height=300,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+        
+            # ================== TABLA ==================
+            draw_tabla_simple(
+                canvas=canvas,
+                data=tabla_denuncias,
+                titulo="Detalle de denuncias",
+                x=120,
+                y=page_height - 460,
+                col_widths=[300],
+                header_color=colors.HexColor("#4472C4")
+            )
+        
+            # ================== CUADRO TOTAL ==================
+            canvas.setFillColor(colors.HexColor("#013051"))
+            canvas.rect(
+                page_width / 2 - 140,
+                110,
+                280,
+                70,
+                fill=1,
+                stroke=0
+            )
+        
+            canvas.setFillColor(colors.white)
+            canvas.setFont("Helvetica-Bold", 16)
+            canvas.drawCentredString(
+                page_width / 2,
+                165,
+                "Total de denuncias"
+            )
+        
+            canvas.setFont("Helvetica-Bold", 26)
+            canvas.drawCentredString(
+                page_width / 2,
+                135,
+                str(total_denuncias)
+            )
 
         else:
             header_footer(canvas, doc)
