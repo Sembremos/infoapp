@@ -9,6 +9,7 @@ from openpyxl import load_workbook
 from pdf_generator import generar_pdf
 
 
+
 # ================= STREAMLIT =================
 st.set_page_config(page_title="Generador de PDF", layout="centered")
 st.title("Generador de Informes SS")
@@ -51,6 +52,7 @@ def crear_grafico(labels, values):
     plt.close(fig)
     buf.seek(0)
     return buf
+
 
 # ================= APP =================
 archivo = st.file_uploader(
@@ -494,6 +496,61 @@ if archivo:
             if col1 or col2:  # al menos una columna con contenido
                 tabla_instituciones.append([col1, col2])
         
+        
+        #_______________________________PAGINA ESTADISTICA_______________________________
+        df_denuncias = pd.read_excel(
+            "datos.xlsx",
+            sheet_name="Hoja1",
+            usecols="A,C",
+            skiprows=165,
+            nrows=11
+        )
+        
+        df_denuncias.columns = ["categoria", "porcentaje"]
+        
+        tabla_denuncias = [[row["categoria"]] for _, row in df_denuncias.iterrows()]
+
+        #_____Tabla$$$$$$$$$$$$$$$$$$$$$$$
+        total_denuncias = pd.read_excel(
+            "datos.xlsx",
+            sheet_name="Hoja1",
+            usecols="B",
+            skiprows=176,
+            nrows=1
+        ).iloc[0, 0]
+
+        # ================== PROCESAMIENTO DENUNCIAS ==================
+
+        # Tabla para el PDF 
+        tabla_denuncias = [[row["categoria"]] for _, row in df_denuncias.iterrows()]
+        
+        # ================== GRÁFICO CIRCULAR DENUNCIAS ==================
+        
+        def generar_grafico_denuncias(df):
+            colores = [
+                "#4472C4", "#5B9BD5", "#A5A5A5", "#70AD47",
+                "#255E91", "#9DC3E6", "#264478", "#B7B7B7",
+                "#30A907", "#8FAADC", "#D9E1F2"
+            ]
+        
+            fig, ax = plt.subplots(figsize=(6, 6))
+        
+            ax.pie(
+                df["porcentaje"],
+                labels=df["categoria"],
+                autopct="%1.0f%%",
+                startangle=90,
+                colors=colores[:len(df)]
+            )
+        
+            ax.axis("equal")
+            plt.tight_layout()
+            plt.savefig("assets/grafico_denuncias.png", dpi=300)
+            plt.close()
+        
+        
+        # execute
+        generar_grafico_denuncias(df_denuncias)
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -533,7 +590,10 @@ if archivo:
                 triangulo_directa=triangulo_directa,
                 triangulo_sociocultural=triangulo_sociocultural,
                 triangulo_estructural=triangulo_estructural,
-                tabla_instituciones=tabla_instituciones
+                tabla_instituciones=tabla_instituciones,
+                grafico_denuncias_path="assets/grafico_denuncias.png",
+                tabla_denuncias=tabla_denuncias,
+                total_denuncias=total_denuncias
             )
 
             pdf_bytes = pdf_buffer.getvalue()
