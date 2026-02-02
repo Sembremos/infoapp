@@ -1183,7 +1183,7 @@ def generar_pdf(
                 canvas,
                 tabla_instituciones,
                 x=60,        # izquierda / derecha
-                y=50,       # mitad inferior de la página
+                y=300,       # mitad inferior de la página
                 table_width=480,
                 header_bg=colors.HexColor("#30a907"),
                 body_bg=colors.HexColor("#F2F2F2"),
