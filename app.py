@@ -558,7 +558,7 @@ if archivo:
         
         
         # execute
-        generar_grafico_denuncias(df_denuncias)
+        generar_grafico_denuncias(df_grafico_denuncias)
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
