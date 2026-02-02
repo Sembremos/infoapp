@@ -801,6 +801,14 @@ def generar_pdf(
     story.append(Spacer(1, 20))
     story.append(Paragraph("Proceso Metodológico", styles["Heading1"]))
     story.append(Paragraph("Lista de Instituciones participantes en calificacion de procesos: MIC-MAC y Triangulo de las Violencias", styles["Heading2"]))
+
+    story.append(PageBreak())
+    story.append(PageBreak())
+
+    story.append(Spacer(1, 40))
+    story.append(Paragraph("Denuncias por distrito", styles["Heading2"]))
+
+    
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
@@ -1190,7 +1198,9 @@ def generar_pdf(
                 font_header=13,
                 font_body=10
             )
-        
+
+        elif doc.page == 12:
+            FullImage("assets/estadistica.png")(canvas, doc)
 
 
         else:
