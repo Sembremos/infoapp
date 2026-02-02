@@ -554,47 +554,47 @@ def draw_texto_mixto(
 
 #_________________________________TABLA DE INSTIS_____________________________________
 
-    def draw_tabla_instituciones(
-        canvas,
-        data,
-        titulo="Lista de instituciones",
-        x=60,
-        y=250,
-        table_width=480,
-        header_bg=colors.HexColor("#013051"),
-        header_text_color=colors.white,
-        body_bg=colors.whitesmoke,
-        border_color=colors.black,
-        font_header=12,
-        font_body=10
-    ):
-        if not data:
-            return
+ def draw_tabla_instituciones(
+    canvas,
+    data,
+    titulo="Lista de instituciones",
+    x=60,
+    y=250,
+    table_width=480,
+    header_bg=colors.HexColor("#013051"),
+    header_text_color=colors.white,
+    body_bg=colors.whitesmoke,
+    border_color=colors.black,
+    font_header=12,
+    font_body=10
+):
+    if not data:
+        return
     
-        # Construir encabezado
-        table_data = [[titulo, ""]]
-        table_data.extend(data)
+    # Construir encabezado
+    table_data = [[titulo, ""]]
+    table_data.extend(data)
     
-        col_widths = [table_width * 0.6, table_width * 0.4]
+    col_widths = [table_width * 0.6, table_width * 0.4]
     
-        table = Table(table_data, colWidths=col_widths)
+    table = Table(table_data, colWidths=col_widths)
     
-        table.setStyle(TableStyle([
-            ("SPAN", (0, 0), (-1, 0)),
-            ("BACKGROUND", (0, 0), (-1, 0), header_bg),
-            ("TEXTCOLOR", (0, 0), (-1, 0), header_text_color),
-            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-            ("FONTSIZE", (0, 0), (-1, 0), font_header),
+    table.setStyle(TableStyle([
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), header_bg),
+        ("TEXTCOLOR", (0, 0), (-1, 0), header_text_color),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), font_header),
     
-            ("GRID", (0, 1), (-1, -1), 0.5, border_color),
-            ("BACKGROUND", (0, 1), (-1, -1), body_bg),
-            ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
-            ("FONTSIZE", (0, 1), (-1, -1), font_body),
-            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ]))
+        ("GRID", (0, 1), (-1, -1), 0.5, border_color),
+        ("BACKGROUND", (0, 1), (-1, -1), body_bg),
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE", (0, 1), (-1, -1), font_body),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+    ]))
     
-        table.wrapOn(canvas, table_width, 300)
-        table.drawOn(canvas, x, y - table._height)
+    table.wrapOn(canvas, table_width, 300)
+    table.drawOn(canvas, x, y - table._height)
     
 
 
