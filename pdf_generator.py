@@ -751,6 +751,7 @@ def generar_pdf(
     ))  
     story.append(Spacer(1, 200))
     story.append(Paragraph("__________________________________________________________________________________________"))
+    story.append(Spacer(1, 20))
     story.append(Paragraph("Proceso Metodológico", styles["Heading1"]))
     story.append(Paragraph("Lista de Instituciones participantes en calificacion de procesos: MIC-MAC y Triangulo de las Violencias", styles["Heading2"]))
     ##----------------------------------Bloque de funciones 
