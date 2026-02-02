@@ -479,6 +479,22 @@ if archivo:
         triangulo_sociocultural = int(df.iloc[146, 1])# B147
         triangulo_estructural = int(df.iloc[146, 2])  # C147
 
+        #______________________LISTA DE INSTIS_____-------_-------___-
+
+        tabla_instituciones_df = df.iloc[149:160, 1:3].copy()  # B150:C160
+
+        # Eliminar filas completamente vacías
+        tabla_instituciones_df = tabla_instituciones_df.dropna(how="all")
+        
+        # Convertir a lista y limpiar valores nulos
+        tabla_instituciones = [
+            [str(c) for c in fila if pd.notna(c) and str(c).strip() != ""]
+            for fila in tabla_instituciones_df.values.tolist()
+        ]
+        
+        # Eliminar filas que quedaron vacías
+        tabla_instituciones = [fila for fila in tabla_instituciones if fila]
+        
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -517,7 +533,8 @@ if archivo:
                 factores_micmac=factores_micmac,
                 triangulo_directa=triangulo_directa,
                 triangulo_sociocultural=triangulo_sociocultural,
-                triangulo_estructural=triangulo_estructural
+                triangulo_estructural=triangulo_estructural,
+                tabla_instituciones=tabla_instituciones
             )
 
             pdf_bytes = pdf_buffer.getvalue()
