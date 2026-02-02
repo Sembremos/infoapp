@@ -554,7 +554,8 @@ def draw_texto_mixto(
 
 #_________________________________TABLA DE INSTIS_____________________________________
 
- def draw_tabla_instituciones(
+
+def draw_tabla_instituciones(
     canvas,
     data,
     titulo="Lista de instituciones",
