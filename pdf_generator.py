@@ -1207,17 +1207,8 @@ def generar_pdf(
 
         elif doc.page == 13:
             header_footer(canvas, doc)
-            page_width, page_height = A4
-        
-            # ================== TÍTULO ==================
-            canvas.setFont("Helvetica-Bold", 20)
-            canvas.setFillColor(colors.black)
-            canvas.drawCentredString(
-                page_width / 2,
-                page_height - 90,
-                "Denuncias registradas"
-            )
-        
+            page_width, page_height = A4        
+       
             # ================== GRÁFICO CIRCULAR ==================
             canvas.drawImage(
                 grafico_denuncias_path,
@@ -1255,14 +1246,14 @@ def generar_pdf(
             canvas.setFont("Helvetica-Bold", 16)
             canvas.drawCentredString(
                 page_width / 2,
-                165,
+                615,
                 "Total de denuncias"
             )
         
             canvas.setFont("Helvetica-Bold", 26)
             canvas.drawCentredString(
                 page_width / 2,
-                135,
+                630,
                 str(total_denuncias)
             )
 
