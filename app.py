@@ -498,33 +498,35 @@ if archivo:
         
         
         #_______________________________PAGINA ESTADISTICA_______________________________
-        df_denuncias = pd.read_excel(
-            "datos.xlsx",
-            sheet_name="Hoja1",
-            usecols="A,C",
-            skiprows=165,
-            nrows=11
-        )
-        
+       #FDSGFDGDSGSDGDSGDFSGDSGSDGSDGDSG-
+       #_______________________________PAGINA ESTADISTICA_______________________________
+
+        # Categorías A166:A176 y porcentajes C166:C176
+        df_denuncias = df.iloc[165:176, [0, 2]].copy()
         df_denuncias.columns = ["categoria", "porcentaje"]
         
-        tabla_denuncias = [[row["categoria"]] for _, row in df_denuncias.iterrows()]
-
-        #_____Tabla$$$$$$$$$$$$$$$$$$$$$$$
-        total_denuncias = pd.read_excel(
-            "datos.xlsx",
-            sheet_name="Hoja1",
-            usecols="B",
-            skiprows=176,
-            nrows=1
-        ).iloc[0, 0]
-
-        # ================== PROCESAMIENTO DENUNCIAS ==================
-
-        # Tabla para el PDF 
-        tabla_denuncias = [[row["categoria"]] for _, row in df_denuncias.iterrows()]
+        # Limpiar porcentajes (mantener formato %)
+        df_denuncias["porcentaje"] = (
+            df_denuncias["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
         
-        # ================== GRÁFICO CIRCULAR DENUNCIAS ==================
+        df_denuncias["porcentaje"] = pd.to_numeric(
+            df_denuncias["porcentaje"],
+            errors="coerce"
+        )
+        
+        df_denuncias = df_denuncias.dropna()
+        
+        # Tabla para PDF (solo categorías)
+        tabla_denuncias = [[str(v)] for v in df_denuncias["categoria"]]
+        
+        # Total denuncias B177
+        total_denuncias = int(df.iloc[176, 1])
+       
+# ================== GRÁFICO CIRCULAR DENUNCIAS ==================
         
         def generar_grafico_denuncias(df):
             colores = [
@@ -545,7 +547,7 @@ if archivo:
         
             ax.axis("equal")
             plt.tight_layout()
-            plt.savefig("assets/grafico_denuncias.png", dpi=300)
+            plt.savefig(ASSETS_DIR / "grafico_denuncias.png", dpi=300)
             plt.close()
         
         
