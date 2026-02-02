@@ -480,20 +480,19 @@ if archivo:
         triangulo_estructural = int(df.iloc[146, 2])  # C147
 
         #______________________LISTA DE INSTIS_____-------_-------___-
-
+        
         tabla_instituciones_df = df.iloc[149:160, 1:3].copy()  # B150:C160
-
+        
         # Eliminar filas completamente vacías
         tabla_instituciones_df = tabla_instituciones_df.dropna(how="all")
         
-        # Convertir a lista y limpiar valores nulos
-        tabla_instituciones = [
-            [str(c) for c in fila if pd.notna(c) and str(c).strip() != ""]
-            for fila in tabla_instituciones_df.values.tolist()
-        ]
+        tabla_instituciones = []
+        for _, row in tabla_instituciones_df.iterrows():
+            col1 = str(row.iloc[0]).strip() if pd.notna(row.iloc[0]) else ""
+            col2 = str(row.iloc[1]).strip() if pd.notna(row.iloc[1]) else ""
         
-        # Eliminar filas que quedaron vacías
-        tabla_instituciones = [fila for fila in tabla_instituciones if fila]
+            if col1 or col2:  # al menos una columna con contenido
+                tabla_instituciones.append([col1, col2])
         
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
