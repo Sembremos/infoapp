@@ -481,7 +481,7 @@ if archivo:
 
         #______________________LISTA DE INSTIS_____-------_-------___-
         
-        tabla_instituciones_df = df.iloc[149:160, 1:3].copy()  # B150:C160
+        tabla_instituciones_df = df.iloc[149:159, 1:3].copy()  # B150:C160
         
         # Eliminar filas completamente vacías
         tabla_instituciones_df = tabla_instituciones_df.dropna(how="all")
