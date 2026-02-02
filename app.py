@@ -498,33 +498,39 @@ if archivo:
         
         
         #_______________________________PAGINA ESTADISTICA_______________________________
-       #FDSGFDGDSGSDGDSGDFSGDSGSDGSDGDSG-
-       #_______________________________PAGINA ESTADISTICA_______________________________
-
-        # Categorías A166:A176 y porcentajes C166:C176
-        df_denuncias = df.iloc[165:176, [0, 2]].copy()
-        df_denuncias.columns = ["categoria", "porcentaje"]
         
-        # Limpiar porcentajes (mantener formato %)
-        df_denuncias["porcentaje"] = (
-            df_denuncias["porcentaje"]
+        df_grafico_denuncias = df.iloc[165:176, [0, 2]].copy()
+        df_grafico_denuncias.columns = ["categoria", "porcentaje"]
+        
+        df_grafico_denuncias["porcentaje"] = (
+            df_grafico_denuncias["porcentaje"]
             .astype(str)
             .str.replace("%", "", regex=False)
             .str.replace(",", ".", regex=False)
         )
         
-        df_denuncias["porcentaje"] = pd.to_numeric(
-            df_denuncias["porcentaje"],
+        df_grafico_denuncias["porcentaje"] = pd.to_numeric(
+            df_grafico_denuncias["porcentaje"],
             errors="coerce"
         )
         
-        df_denuncias = df_denuncias.dropna()
+        df_grafico_denuncias = df_grafico_denuncias.dropna()
         
-        # Tabla para PDF (solo categorías)
-        tabla_denuncias = [[str(v)] for v in df_denuncias["categoria"]]
+        # ----- DATOS PARA TABLA (A y B) -----
+        df_tabla_denuncias = df.iloc[165:176, [0, 1]].copy()
+        df_tabla_denuncias.columns = ["categoria", "cantidad"]
         
-        # Total denuncias B177
+        df_tabla_denuncias = df_tabla_denuncias.dropna(how="all")
+        
+        tabla_denuncias = [
+            [str(row["categoria"]), str(int(row["cantidad"]))]
+            for _, row in df_tabla_denuncias.iterrows()
+            if pd.notna(row["categoria"]) and pd.notna(row["cantidad"])
+        ]
+        
+        # ----- TOTAL DENUNCIAS (B177) -----
         total_denuncias = int(df.iloc[176, 1])
+
        
 # ================== GRÁFICO CIRCULAR DENUNCIAS ==================
         
