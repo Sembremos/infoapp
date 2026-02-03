@@ -1245,15 +1245,15 @@ def generar_pdf(
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
             canvas.drawCentredString(
-                page_width / 2 + 100,
-                650,
+                page_width / 2 + 130,
+                655,
                 "Total de denuncias"
             )
         
             canvas.setFont("Helvetica-Bold", 22)
             canvas.drawCentredString(
-                page_width / 2 + 100,
-                665,
+                page_width / 2 + 130,
+                670,
                 str(total_denuncias)
             )
 
