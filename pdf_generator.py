@@ -1235,7 +1235,7 @@ def generar_pdf(
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
                 page_width / 2 + 100,
-                635,
+                650,
                 150,
                 50,
                 fill=1,
