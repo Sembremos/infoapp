@@ -1234,7 +1234,7 @@ def generar_pdf(
             # ================== CUADRO TOTAL ==================
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
-                page_width / 2 + 80,
+                page_width / 2 + 100,
                 635,
                 150,
                 50,
