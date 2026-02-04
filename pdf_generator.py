@@ -639,7 +639,12 @@ def generar_pdf(
     tabla_instituciones,
     grafico_denuncias_path,
     tabla_denuncias,
-    total_denuncias
+    total_denuncias,
+    grafico_horario_path,
+    tabla_horario,
+    total_am,
+    total_pm,
+    tabla_horario_distrito
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
