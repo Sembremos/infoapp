@@ -1266,8 +1266,8 @@ def generar_pdf(
             # ===== GRAFICO HORARIO =====
             canvas.drawImage(
                 grafico_horario_path,
-                x=60,
-                y=page_height - 720,
+                x=40,
+                y=page_height - 620,
                 width=250,
                 height=250,
                 preserveAspectRatio=True,
@@ -1314,7 +1314,7 @@ def generar_pdf(
                 data=tabla_horario_distrito,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=260,
+                y=560,
                 col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
                 header_color=colors.HexColor("#30a907")
             )
