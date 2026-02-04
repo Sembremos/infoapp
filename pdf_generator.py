@@ -1212,7 +1212,7 @@ def generar_pdf(
             # ================== GRÁFICO CIRCULAR ==================
             canvas.drawImage(
                 grafico_denuncias_path,
-                x=(page_width - 550) / 2,
+                x=80,
                 y=page_height - 400,
                 width=300,
                 height=300,
@@ -1225,7 +1225,7 @@ def generar_pdf(
                 canvas=canvas,
                 data=tabla_denuncias,
                 titulo="Detalle de denuncias por distrito",
-                x=347,
+                x=360,
                 y=page_height - 420,
                 col_widths=[100],
                 header_color=colors.HexColor("#4472C4")
@@ -1235,7 +1235,7 @@ def generar_pdf(
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
                 page_width / 2 + 100,
-                650,
+                600,
                 150,
                 50,
                 fill=1,
@@ -1246,14 +1246,14 @@ def generar_pdf(
             canvas.setFont("Helvetica-Bold", 12)
             canvas.drawCentredString(
                 page_width / 2 + 175,
-                660,
+                610,
                 "Total de denuncias"
             )
         
             canvas.setFont("Helvetica-Bold", 22)
             canvas.drawCentredString(
                 page_width / 2 + 175,
-                675,
+                625,
                 str(total_denuncias)
             )
 
