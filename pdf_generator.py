@@ -1233,7 +1233,7 @@ def generar_pdf(
                 x=347,
                 y=page_height - 350,
                 col_widths=[100],
-                header_color=colors.HexColor("#4472C4")
+                header_color=colors.HexColor("#4472C4"),
                 font_size_header=12,
                 font_size_body=11
             )
@@ -1284,7 +1284,7 @@ def generar_pdf(
                 x=350,
                 y=page_height - 600,
                 col_widths=[90, 40],
-                header_color=colors.HexColor("#4472C4")
+                header_color=colors.HexColor("#4472C4"),
                 font_size_header=12,
                 font_size_body=11
             ) 
@@ -1320,7 +1320,7 @@ def generar_pdf(
                 x=40,
                 y=100,
                 col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
-                header_color=colors.HexColor("#30a907")
+                header_color=colors.HexColor("#30a907"),
                 font_size_header=12,
                 font_size_body=11
             )
