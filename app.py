@@ -592,8 +592,16 @@ if archivo:
         ]
 
         # ----- CUADROS AM / PM -----
-        total_am = int(df.iloc[179, 3])  # D180
-        total_pm = int(df.iloc[179, 4])  # E180
+        total_am = df.iloc[179, 3]  # D180
+        total_pm = df.iloc[179, 4]  # E180
+        
+        def formatear_porcentaje(valor):
+            if isinstance(valor, (int, float)):
+                return f"{valor * 100:.2f}%"
+            return str(valor)
+        
+        total_am = formatear_porcentaje(total_am)
+        total_pm = formatear_porcentaje(total_pm)
 
         # ----- TABLA GRANDE POR DISTRITO -----
         tabla_horario_distrito_df = df.iloc[178:188, 0:17].copy()  # A179:Q188
