@@ -1291,14 +1291,14 @@ def generar_pdf(
 
             # ===== CUADRO AM =====
             canvas.setFillColor(colors.HexColor("#013051"))
-            canvas.rect(60, 360, 100, 40, fill=1, stroke=0)
+            canvas.rect(80, 360, 100, 40, fill=1, stroke=0)
             
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
-            canvas.drawCentredString(50, 390, "AM")
+            canvas.drawCentredString(80, 390, "AM")
             
             canvas.setFont("Helvetica-Bold", 18)
-            canvas.drawCentredString(50, 370, str(total_am))
+            canvas.drawCentredString(80, 370, str(total_am))
             
             
             # ===== CUADRO PM =====
