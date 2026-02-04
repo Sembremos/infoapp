@@ -1295,7 +1295,7 @@ def generar_pdf(
             
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
-            canvas.drawCentredString(320, 358, "AM")
+            canvas.drawCentredString(320, 360, "AM")
             
             canvas.setFont("Helvetica-Bold", 18)
             canvas.drawCentredString(320, 355, str(total_am))
