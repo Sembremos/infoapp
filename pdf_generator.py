@@ -1213,7 +1213,7 @@ def generar_pdf(
             canvas.drawImage(
                 grafico_denuncias_path,
                 x=(page_width - 550) / 2,
-                y=page_height - 450,
+                y=page_height - 400,
                 width=300,
                 height=300,
                 preserveAspectRatio=True,
