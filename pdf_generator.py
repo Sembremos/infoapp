@@ -1235,13 +1235,13 @@ def generar_pdf(
                 col_widths=[100],
                 header_color=colors.HexColor("#4472C4"),
                 font_size_header=12,
-                font_size_body=11
+                font_size_body=10
             )
         
             # ================== CUADRO TOTAL ==================
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
-                page_width / 2 - 250,
+                page_width / 2 - 260,
                 670,
                 150,
                 50,
@@ -1286,7 +1286,7 @@ def generar_pdf(
                 col_widths=[90, 40],
                 header_color=colors.HexColor("#4472C4"),
                 font_size_header=12,
-                font_size_body=11
+                font_size_body=10
             ) 
 
             # ===== CUADRO AM =====
@@ -1322,7 +1322,7 @@ def generar_pdf(
                 col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
                 header_color=colors.HexColor("#30a907"),
                 font_size_header=12,
-                font_size_body=11
+                font_size_body=10
             )
 
         else:
