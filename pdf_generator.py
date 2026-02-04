@@ -1239,7 +1239,7 @@ def generar_pdf(
             # ================== CUADRO TOTAL ==================
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
-                page_width / 2 - 200,
+                page_width / 2 - 300,
                 670,
                 150,
                 50,
@@ -1314,7 +1314,7 @@ def generar_pdf(
                 data=tabla_horario_distrito,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=300,
+                y=100,
                 col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
                 header_color=colors.HexColor("#30a907")
             )
