@@ -1295,10 +1295,10 @@ def generar_pdf(
             
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
-            canvas.drawCentredString(330, 380, "AM")
+            canvas.drawCentredString(330, 385, "AM")
             
             canvas.setFont("Helvetica-Bold", 18)
-            canvas.drawCentredString(330, 365, str(total_am))
+            canvas.drawCentredString(330, 370, str(total_am))
             
             
             # ===== CUADRO PM =====
@@ -1307,10 +1307,10 @@ def generar_pdf(
             
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
-            canvas.drawCentredString(330, 340, "PM")
+            canvas.drawCentredString(330, 310, "PM")
             
             canvas.setFont("Helvetica-Bold", 18)
-            canvas.drawCentredString(330, 320, str(total_pm))
+            canvas.drawCentredString(330, 290, str(total_pm))
 
             ##tabla grande
             draw_tabla_simple(
@@ -1318,7 +1318,7 @@ def generar_pdf(
                 data=tabla_horario_distrito,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=100,
+                y=50,
                 col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
                 header_color=colors.HexColor("#30a907"),
                 font_size_header=12,
