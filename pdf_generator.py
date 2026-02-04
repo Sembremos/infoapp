@@ -1231,7 +1231,7 @@ def generar_pdf(
                 data=tabla_denuncias,
                 titulo="Detalle de denuncias por distrito",
                 x=347,
-                y=page_height - 350,
+                y=page_height - 360,
                 col_widths=[100],
                 header_color=colors.HexColor("#4472C4"),
                 font_size_header=12,
@@ -1241,7 +1241,7 @@ def generar_pdf(
             # ================== CUADRO TOTAL ==================
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
-                page_width / 2 - 260,
+                page_width / 2 - 255,
                 670,
                 150,
                 50,
@@ -1281,7 +1281,7 @@ def generar_pdf(
                 canvas=canvas,
                 data=tabla_horario,
                 titulo="Denuncias por horario",
-                x=350,
+                x=380,
                 y=page_height - 600,
                 col_widths=[90, 40],
                 header_color=colors.HexColor("#4472C4"),
