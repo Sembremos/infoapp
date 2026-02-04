@@ -1234,12 +1234,14 @@ def generar_pdf(
                 y=page_height - 350,
                 col_widths=[100],
                 header_color=colors.HexColor("#4472C4")
+                font_size_header=12,
+                font_size_body=11
             )
         
             # ================== CUADRO TOTAL ==================
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
-                page_width / 2 - 300,
+                page_width / 2 - 250,
                 670,
                 150,
                 50,
@@ -1278,11 +1280,13 @@ def generar_pdf(
             draw_tabla_simple(
                 canvas=canvas,
                 data=tabla_horario,
-                titulo="Denuncias contra la propiedad por horario",
-                x=330,
+                titulo="Denuncias por horario",
+                x=350,
                 y=page_height - 600,
                 col_widths=[90, 40],
                 header_color=colors.HexColor("#4472C4")
+                font_size_header=12,
+                font_size_body=11
             ) 
 
             # ===== CUADRO AM =====
@@ -1317,6 +1321,8 @@ def generar_pdf(
                 y=100,
                 col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
                 header_color=colors.HexColor("#30a907")
+                font_size_header=12,
+                font_size_body=11
             )
 
         else:
