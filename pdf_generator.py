@@ -1280,7 +1280,7 @@ def generar_pdf(
                 data=tabla_horario,
                 titulo="Denuncias contra la propiedad por horario",
                 x=330,
-                y=page_height - 700,
+                y=page_height - 600,
                 col_widths=[90, 40],
                 header_color=colors.HexColor("#4472C4")
             ) 
@@ -1314,7 +1314,7 @@ def generar_pdf(
                 data=tabla_horario_distrito,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=560,
+                y=900,
                 col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
                 header_color=colors.HexColor("#30a907")
             )
