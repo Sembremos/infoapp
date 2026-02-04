@@ -1214,8 +1214,8 @@ def generar_pdf(
                 grafico_denuncias_path,
                 x=(page_width - 550) / 2,
                 y=page_height - 380,
-                width=300,
-                height=300,
+                width=250,
+                height=250,
                 preserveAspectRatio=True,
                 mask="auto"
             )
@@ -1224,10 +1224,10 @@ def generar_pdf(
             draw_tabla_simple(
                 canvas=canvas,
                 data=tabla_denuncias,
-                titulo="Detalle de denuncias",
+                titulo="Detalle de denuncias por distrito",
                 x=150,
                 y=page_height - 550,
-                col_widths=[150],
+                col_widths=[100],
                 header_color=colors.HexColor("#4472C4")
             )
         
