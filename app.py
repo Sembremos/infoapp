@@ -559,6 +559,74 @@ if archivo:
         
         # execute
         generar_grafico_denuncias(df_grafico_denuncias)
+
+
+        #====================================HORARIOS DE DELITOS=============================================
+
+        # ----- GRAFICO PASTEL (A y C) -----
+        df_grafico_horario = df.iloc[179:188, [0, 2]].copy()
+        df_grafico_horario.columns = ["horario", "porcentaje"]
+        
+        df_grafico_horario["porcentaje"] = (
+            df_grafico_horario["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        
+        df_grafico_horario["porcentaje"] = pd.to_numeric(
+            df_grafico_horario["porcentaje"],
+            errors="coerce"
+        )
+        
+        df_grafico_horario = df_grafico_horario.dropna()
+
+        # ----- TABLA GRAFICO (A y B) -----
+        df_tabla_horario = df.iloc[179:188, [0, 1]].copy()
+        df_tabla_horario.columns = ["horario", "cantidad"]
+        
+        tabla_horario = [
+            [str(row["horario"]), str(row["cantidad"])]
+            for _, row in df_tabla_horario.iterrows()
+            if pd.notna(row["horario"])
+        ]
+
+        # ----- CUADROS AM / PM -----
+        total_am = int(df.iloc[179, 3])  # D180
+        total_pm = int(df.iloc[179, 4])  # E180
+
+        # ----- TABLA GRANDE POR DISTRITO -----
+        tabla_horario_distrito_df = df.iloc[178:188, 0:17].copy()  # A179:Q188
+        
+        # eliminar columnas completamente vacías
+        tabla_horario_distrito_df = tabla_horario_distrito_df.dropna(axis=1, how="all")
+        
+        tabla_horario_distrito = tabla_horario_distrito_df.fillna("").values.tolist()
+
+        #-----------------------------GRAFICO-------------
+        def generar_grafico_horario(df):
+            colores = [
+                "#4472C4", "#5B9BD5", "#A5A5A5", "#70AD47",
+                "#255E91", "#9DC3E6", "#264478", "#B7B7B7",
+                "#30A907"
+            ]
+        
+            fig, ax = plt.subplots(figsize=(6, 6))
+        
+            ax.pie(
+                df["porcentaje"],
+                labels=df["horario"],
+                autopct="%1.0f%%",
+                startangle=90,
+                colors=colores[:len(df)]
+            )
+        
+            ax.axis("equal")
+            plt.tight_layout()
+            plt.savefig(ASSETS_DIR / "grafico_horario.png", dpi=300, transparent=True)
+            plt.close()
+
+        generar_grafico_horario(df_grafico_horario)
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -601,7 +669,12 @@ if archivo:
                 tabla_instituciones=tabla_instituciones,
                 grafico_denuncias_path="assets/grafico_denuncias.png",
                 tabla_denuncias=tabla_denuncias,
-                total_denuncias=total_denuncias
+                total_denuncias=total_denuncias,
+                grafico_horario_path=str(ASSETS_DIR / "grafico_horario.png"),
+                tabla_horario=tabla_horario,
+                total_am=total_am,
+                total_pm=total_pm,
+                tabla_horario_distrito=tabla_horario_distrito
             )
 
             pdf_bytes = pdf_buffer.getvalue()
