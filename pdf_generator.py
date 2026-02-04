@@ -1219,8 +1219,8 @@ def generar_pdf(
                 grafico_denuncias_path,
                 x=(page_width - 550)/ 2,
                 y=page_height - 400,
-                width=300,
-                height=300,
+                width=250,
+                height=250,
                 preserveAspectRatio=True,
                 mask="auto"
             )
@@ -1314,7 +1314,7 @@ def generar_pdf(
                 data=tabla_horario_distrito,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=900,
+                y=600,
                 col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
                 header_color=colors.HexColor("#30a907")
             )
