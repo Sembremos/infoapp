@@ -5,3 +5,9 @@ adrian del futuro quedaste en el grafico de relacion, debes de:
 xlx funcionando bien, el code esta clean, chatgpt no ayuda en anda, mejor sigalo solo como hasta ahora
 
 la logica es seguir con en funcionamiento de las funciones anteriores para replicar el comportamiento siguiente,,,,,,,
+
+
+update, 
+actualizar orden de pagina 143, terminar stats y empezar con LA
+
+bitacora, sigo sin confiar en CGPT
