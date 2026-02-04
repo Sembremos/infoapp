@@ -1239,8 +1239,8 @@ def generar_pdf(
             # ================== CUADRO TOTAL ==================
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
-                page_width / 2 - 80,
-                630,
+                page_width / 2 - 180,
+                670,
                 150,
                 50,
                 fill=1,
@@ -1250,15 +1250,15 @@ def generar_pdf(
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
             canvas.drawCentredString(
-                page_width / 2 - 60,
-                645,
+                page_width / 2 - 180,
+                685,
                 "Total de denuncias"
             )
         
             canvas.setFont("Helvetica-Bold", 22)
             canvas.drawCentredString(
                 page_width / 2 - 60,
-                660,
+                700,
                 str(total_denuncias)
             )
 
