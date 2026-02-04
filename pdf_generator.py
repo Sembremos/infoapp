@@ -1295,10 +1295,10 @@ def generar_pdf(
             
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
-            canvas.drawCentredString(340, 380, "AM")
+            canvas.drawCentredString(330, 380, "AM")
             
             canvas.setFont("Helvetica-Bold", 18)
-            canvas.drawCentredString(340, 370, str(total_am))
+            canvas.drawCentredString(330, 365, str(total_am))
             
             
             # ===== CUADRO PM =====
@@ -1307,10 +1307,10 @@ def generar_pdf(
             
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
-            canvas.drawCentredString(340, 300, "PM")
+            canvas.drawCentredString(330, 340, "PM")
             
             canvas.setFont("Helvetica-Bold", 18)
-            canvas.drawCentredString(340, 300, str(total_pm))
+            canvas.drawCentredString(330, 320, str(total_pm))
 
             ##tabla grande
             draw_tabla_simple(
