@@ -1214,8 +1214,8 @@ def generar_pdf(
                 grafico_denuncias_path,
                 x=(page_width - 550) / 2,
                 y=page_height - 350,
-                width=250,
-                height=250,
+                width=300,
+                height=300,
                 preserveAspectRatio=True,
                 mask="auto"
             )
