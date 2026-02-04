@@ -1257,6 +1257,63 @@ def generar_pdf(
                 str(total_denuncias)
             )
 
+        ##______________________________GRAFICO CON HORARIOS Y TABLA_______________
+            # ===== GRAFICO HORARIO =====
+            canvas.drawImage(
+                grafico_horario_path,
+                x=60,
+                y=page_height - 720,
+                width=250,
+                height=250,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+
+           #tabla
+            draw_tabla_simple(
+                canvas=canvas,
+                data=tabla_horario,
+                titulo="Denuncias contra la propiedad por horario",
+                x=330,
+                y=page_height - 700,
+                col_widths=[90, 40],
+                header_color=colors.HexColor("#4472C4")
+            ) 
+
+            # ===== CUADRO AM =====
+            canvas.setFillColor(colors.HexColor("#013051"))
+            canvas.rect(80, 360, 100, 40, fill=1, stroke=0)
+            
+            canvas.setFillColor(colors.white)
+            canvas.setFont("Helvetica-Bold", 12)
+            canvas.drawCentredString(130, 390, "AM")
+            
+            canvas.setFont("Helvetica-Bold", 18)
+            canvas.drawCentredString(130, 370, str(total_am))
+            
+            
+            # ===== CUADRO PM =====
+            canvas.setFillColor(colors.HexColor("#013051"))
+            canvas.rect(200, 360, 100, 40, fill=1, stroke=0)
+            
+            canvas.setFillColor(colors.white)
+            canvas.setFont("Helvetica-Bold", 12)
+            canvas.drawCentredString(250, 390, "PM")
+            
+            canvas.setFont("Helvetica-Bold", 18)
+            canvas.drawCentredString(250, 370, str(total_pm))
+
+            ##tabla grande
+            draw_tabla_simple(
+                canvas=canvas,
+                data=tabla_horario_distrito,
+                titulo="DCLP según horario, por distrito",
+                x=40,
+                y=260,
+                col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
+                header_color=colors.HexColor("#30a907")
+            )
+
         else:
             header_footer(canvas, doc)
 
