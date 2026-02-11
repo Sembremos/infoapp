@@ -915,9 +915,9 @@ def generar_pdf(
 
     story.append(Spacer(1, 30))
     story.append(Paragraph("Denuncias por distrito", styles["Heading2"]))
-    story.append(Spacer(1, 230))
+    story.append(Spacer(1, 220))
     story.append(Paragraph("__________________________________________________________________________________________"))
-    story.append(Paragraph("Denuncias por delitos contra la propiedad por rango horario", styles["Heading2"]))
+    story.append(Paragraph("Denuncias por rango horario", styles["Heading2"]))
     
     ##----------------------------------Bloque de funciones 
                  
@@ -1320,7 +1320,7 @@ def generar_pdf(
             canvas.drawImage(
                 grafico_denuncias_path,
                 x=(page_width - 550)/ 2,
-                y=page_height - 320, #altura, a - mas altura
+                y=page_height - 325, #altura, a - mas altura
                 width=250,
                 height=250,
                 preserveAspectRatio=True,
@@ -1343,7 +1343,7 @@ def generar_pdf(
             # ================== CUADRO TOTAL ==================
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
-                page_width / 2 - 80,
+                page_width / 2 - 70,
                 531,  #Altura + es mas
                 110,
                 50,
