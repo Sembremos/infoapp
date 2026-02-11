@@ -735,6 +735,41 @@ if archivo:
         # Ejecutar
         generar_grafico_p14(df_grafico_p14)
 
+        
+        # =========================================
+        # TABLA PAGINA 14 (MODALIDADES POR DISTRITO)
+        # =========================================
+        
+        # Encabezados (Fila 207 → índice 206)
+        encabezados_p14 = df.iloc[206, 0:9].copy()
+        
+        # Datos (A208:I219 → índices 207:219)
+        tabla_p14_raw = df.iloc[207:219, 0:9].copy()
+        
+        # Eliminar filas completamente vacías
+        tabla_p14_raw = tabla_p14_raw.dropna(how="all")
+        
+        # Mantener celdas vacías individuales
+        tabla_p14 = []
+        
+        # Agregar encabezados primero
+        tabla_p14.append(encabezados_p14.fillna("").astype(str).tolist())
+        
+        # Agregar filas válidas
+        for _, row in tabla_p14_raw.iterrows():
+            # Ignorar fila si TODAS las frecuencias están vacías
+            if row.iloc[1:].isna().all():
+                continue
+        
+            fila = []
+            for cell in row:
+                if pd.isna(cell):
+                    fila.append("")
+                else:
+                    fila.append(str(int(cell)) if isinstance(cell, (int, float)) else str(cell))
+        
+            tabla_p14.append(fila)
+
 
         
         #______________________________________________________________________________________________________
@@ -786,6 +821,7 @@ if archivo:
                 total_pm=total_pm,
                 tabla_horario_distrito=tabla_horario_distrito,
                 grafico_p14_path=str(ASSETS_DIR / "grafico_p14.png"),
+                tabla_p14=tabla_p14,
             )
 
             pdf_bytes = pdf_buffer.getvalue()
