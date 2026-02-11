@@ -1314,17 +1314,27 @@ def generar_pdf(
             canvas.drawCentredString(330, 308, str(total_pm))
 
             ##tabla grande
+            # ===== TABLA GRANDE REORDENADA =====
+            tabla_data = tabla_horario_distrito[1:]  # datos sin encabezado
+            encabezado_tabla = tabla_horario_distrito[0]
+            
+            # Ajuste dinámico de ancho
+            total_columnas = len(encabezado_tabla)
+            ancho_total = page_width - 80
+            ancho_columna = ancho_total / total_columnas
+            
             draw_tabla_simple(
                 canvas=canvas,
-                data=tabla_horario_distrito,
+                data=[encabezado_tabla] + tabla_data,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=50,
-                col_widths=[80] + [40] * (len(tabla_horario_distrito[0]) - 1),
+                y=230,   # 👈 esto la coloca justo debajo del segundo gráfico
+                col_widths=[ancho_columna] * total_columnas,
                 header_color=colors.HexColor("#30a907"),
-                font_size_header=12,
-                font_size_body=10
+                font_size_header=10,
+                font_size_body=8
             )
+
 
         else:
             header_footer(canvas, doc)
