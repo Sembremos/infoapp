@@ -813,7 +813,7 @@ def generar_pdf(
     story.append(PageBreak())
     story.append(PageBreak())
 
-    story.append(Spacer(1, 40))
+    story.append(Spacer(1, 30))
     story.append(Paragraph("Denuncias por distrito", styles["Heading2"]))
 
     
@@ -1218,7 +1218,7 @@ def generar_pdf(
             canvas.drawImage(
                 grafico_denuncias_path,
                 x=(page_width - 550)/ 2,
-                y=page_height - 400,
+                y=page_height - 350, #altura, a - mas altura
                 width=250,
                 height=250,
                 preserveAspectRatio=True,
@@ -1242,7 +1242,7 @@ def generar_pdf(
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
                 page_width / 2 - 255,
-                670,
+                700,  #Altura + es mas
                 150,
                 50,
                 fill=1,
@@ -1253,14 +1253,14 @@ def generar_pdf(
             canvas.setFont("Helvetica-Bold", 12)
             canvas.drawCentredString(
                 page_width / 2 - 180,
-                685,
+                715,
                 "Total de denuncias"
             )
         
             canvas.setFont("Helvetica-Bold", 22)
             canvas.drawCentredString(
                 page_width / 2 - 180,
-                700,
+                730,
                 str(total_denuncias)
             )
 
@@ -1269,7 +1269,7 @@ def generar_pdf(
             canvas.drawImage(
                 grafico_horario_path,
                 x=(page_width - 550)/ 2,
-                y=page_height - 620,
+                y=page_height - 650, # altura a - mas
                 width=250,
                 height=250,
                 preserveAspectRatio=True,
@@ -1282,7 +1282,7 @@ def generar_pdf(
                 data=tabla_horario,
                 titulo="Denuncias por horario",
                 x=400,
-                y=page_height - 600,
+                y=page_height - 550,
                 col_widths=[90, 40],
                 header_color=colors.HexColor("#4472C4"),
                 font_size_header=12,
