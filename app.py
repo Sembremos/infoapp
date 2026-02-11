@@ -603,13 +603,39 @@ if archivo:
         total_am = formatear_porcentaje(total_am)
         total_pm = formatear_porcentaje(total_pm)
 
-        # ----- TABLA GRANDE POR DISTRITO -----
-        tabla_horario_distrito_df = df.iloc[178:188, 0:17].copy()  # A179:Q188
+        # ----- TABLA GRANDE POR DISTRITO (FORMATEADA CORRECTAMENTE) -----
+
+        # 1️⃣ Tomar encabezados (fila 179)
+        encabezados = df.iloc[178, 0:17].copy()
         
-        # eliminar columnas completamente vacías
-        tabla_horario_distrito_df = tabla_horario_distrito_df.dropna(axis=1, how="all")
+        # 2️⃣ Tomar datos (A180 a Q188)
+        tabla_datos = df.iloc[179:188, 0:17].copy()
         
-        tabla_horario_distrito = tabla_horario_distrito_df.fillna("").values.tolist()
+        # 3️⃣ Eliminar columnas D y E (índices 3 y 4)
+        columnas_a_eliminar = [3, 4]
+        encabezados = encabezados.drop(encabezados.index[columnas_a_eliminar])
+        tabla_datos = tabla_datos.drop(tabla_datos.columns[columnas_a_eliminar], axis=1)
+        
+        # 4️⃣ Formatear porcentajes columna C (ahora índice 2)
+        def formatear_porcentaje(valor):
+            if pd.notna(valor):
+                try:
+                    return f"{float(valor) * 100:.2f}%"
+                except:
+                    return valor
+            return ""
+        
+        tabla_datos.iloc[:, 2] = tabla_datos.iloc[:, 2].apply(formatear_porcentaje)
+        
+        # 5️⃣ Respetar celdas vacías pero eliminar columnas completamente vacías
+        tabla_datos = tabla_datos.loc[:, ~(tabla_datos.isna().all())]
+        
+        # 6️⃣ Unir encabezados + datos
+        tabla_horario_distrito = [
+            encabezados.loc[tabla_datos.columns].fillna("").astype(str).tolist()
+        ]
+        
+        tabla_horario_distrito += tabla_datos.fillna("").astype(str).values.tolist()
 
         #-----------------------------GRAFICO-------------
         def generar_grafico_horario(df):
