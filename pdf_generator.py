@@ -621,7 +621,83 @@ def draw_tabla_instituciones(
     table.wrapOn(canvas, table_width, 300)
     table.drawOn(canvas, x, y - table._height)
 
+#====================TABLA DE HORARIOS PAGINA 13===================
 
+def draw_tabla_horario_distrito(
+    canvas,
+    data,
+    titulo,
+    x,
+    y,
+    col_widths
+):
+
+    from reportlab.platypus import Paragraph
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER
+
+    TABLE_WIDTH = sum(col_widths)
+
+    header_style = ParagraphStyle(
+        name="HorarioHeader",
+        fontName="Helvetica-Bold",
+        fontSize=9,
+        alignment=TA_CENTER,
+        leading=11
+    )
+
+    cell_style = ParagraphStyle(
+        name="HorarioCell",
+        fontName="Helvetica",
+        fontSize=8,
+        alignment=TA_CENTER,
+        leading=10,
+        wordWrap="CJK"
+    )
+
+    table_data = []
+
+    # Título
+    table_data.append(
+        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
+    )
+
+    # Encabezados + datos
+    for row in data:
+        nueva_fila = []
+        for cell in row:
+            nueva_fila.append(Paragraph(str(cell), cell_style))
+        table_data.append(nueva_fila)
+
+    table = Table(table_data, colWidths=col_widths)
+
+    style = [
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#30a907")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+
+        # Encabezado real
+        ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#E2F0D9")),
+        ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold"),
+
+        # Bordes
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+
+        # Centrado
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+
+        # Compactar altura
+        ("TOPPADDING", (0, 0), (-1, -1), 3),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+        ("LEFTPADDING", (0, 0), (-1, -1), 2),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 2),
+    ]
+
+    table.setStyle(TableStyle(style))
+
+    table.wrapOn(canvas, TABLE_WIDTH, 2000)
+    table.drawOn(canvas, x, y - table._height)
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
@@ -1347,17 +1423,15 @@ def generar_pdf(
             ancho_total = page_width - 80
             ancho_columna = ancho_total / total_columnas
             
-            draw_tabla_simple(
+            draw_tabla_horario_distrito(
                 canvas=canvas,
-                data=[encabezado_tabla] + tabla_data,
+                data=tabla_horario_distrito,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=100,   # 👈 esto la coloca justo debajo del segundo gráfico
-                col_widths=[ancho_columna] * total_columnas,
-                header_color=colors.HexColor("#30a907"),
-                font_size_header=10,
-                font_size_body=8
+                y=230,
+                col_widths=[ancho_columna] * total_columnas
             )
+    
 
 
         else:
