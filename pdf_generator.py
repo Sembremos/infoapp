@@ -1328,7 +1328,7 @@ def generar_pdf(
                 data=[encabezado_tabla] + tabla_data,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=150,   # 👈 esto la coloca justo debajo del segundo gráfico
+                y=100,   # 👈 esto la coloca justo debajo del segundo gráfico
                 col_widths=[ancho_columna] * total_columnas,
                 header_color=colors.HexColor("#30a907"),
                 font_size_header=10,
