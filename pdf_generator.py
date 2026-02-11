@@ -9,7 +9,7 @@ from reportlab.platypus import (
 )
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_LEFT, TA_JUSTIFY
+from reportlab.lib.enums import TA_LEFT, TA_JUSTIFY, TA_CENTER
 from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from io import BytesIO
