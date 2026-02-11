@@ -1345,7 +1345,7 @@ def generar_pdf(
             canvas.rect(
                 page_width / 2 - 75,
                 531,  #Altura + es mas
-                110,
+                115,
                 50,
                 fill=1,
                 stroke=0
@@ -1362,7 +1362,7 @@ def generar_pdf(
             canvas.setFont("Helvetica-Bold", 22)
             canvas.drawCentredString(
                 page_width / 2 - 20,
-                550, #todos estos los aumente de 675
+                555, #todos estos los aumente de 675
                 str(total_denuncias)
             )
 
