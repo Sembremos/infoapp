@@ -295,8 +295,8 @@ def draw_tabla_simple(
     header_color=colors.HexColor("#013051"),
     body_color=colors.white,
     border_color=colors.black,
-    font_size_header=10,
-    font_size_body=8
+    font_size_header=12,
+    font_size_body=11
 ):
 
     from reportlab.platypus import Paragraph
@@ -304,77 +304,48 @@ def draw_tabla_simple(
 
     TABLE_WIDTH = sum(col_widths)
 
-    # ===== ESTILOS =====
-    header_style = ParagraphStyle(
-        name="HeaderStyle",
-        fontName="Helvetica-Bold",
-        fontSize=font_size_header,
-        alignment=TA_CENTER,
-        leading=font_size_header + 2
-    )
-
+    # ===== ESTILO CELDAS =====
     cell_style = ParagraphStyle(
         name="CellStyle",
         fontName="Helvetica",
         fontSize=font_size_body,
-        alignment=TA_CENTER,
-        leading=font_size_body + 1,
+        leading=font_size_body + 2,
+        alignment=TA_LEFT,
         wordWrap="CJK"
     )
 
-    # ===== CONSTRUIR TABLA =====
-    table_data = []
-
-    # Fila del título
-    table_data.append(
-        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
+    header_style = ParagraphStyle(
+        name="HeaderStyle",
+        fontName="Helvetica-Bold",
+        fontSize=font_size_header,
+        alignment=TA_LEFT
     )
 
-    # Filas reales
+    # ===== CONSTRUIR TABLA =====
+    table_data = [
+        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
+    ]
+
     for row in data:
         nueva_fila = []
         for cell in row:
             nueva_fila.append(Paragraph(str(cell), cell_style))
         table_data.append(nueva_fila)
 
-    table = Table(
-        table_data,
-        colWidths=col_widths,
-        repeatRows=2  # mantiene encabezado si la tabla crece
-    )
+    table = Table(table_data, colWidths=col_widths)
 
     style = [
-        # TÍTULO
         ("SPAN", (0, 0), (-1, 0)),
         ("BACKGROUND", (0, 0), (-1, 0), header_color),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-
-        # ENCABEZADOS (fila 1)
-        ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#E2F0D9")),
-        ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold"),
-
-        # CUERPO
-        ("BACKGROUND", (0, 2), (-1, -1), body_color),
-
-        # BORDES
-        ("GRID", (0, 0), (-1, -1), 0.5, border_color),
-
-        # CENTRAR TODO
-        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("GRID", (0, 0), (-1, -1), 1, border_color),
+        ("BACKGROUND", (0, 1), (-1, -1), body_color),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-
-        # PADDING CONTROLADO (reduce altura fea)
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-        ("LEFTPADDING", (0, 0), (-1, -1), 3),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 3),
     ]
 
     table.setStyle(TableStyle(style))
-
-    table.wrapOn(canvas, TABLE_WIDTH, 2000)
-    table.drawOn(canvas, x, y - table._height)
-
+    table.wrapOn(canvas, TABLE_WIDTH, 400)
+    table.drawOn(canvas, x, y)
 
 #=========================================Tabla Pareto==================
 
