@@ -651,7 +651,7 @@ def draw_tabla_horario_distrito(
         fontName="Helvetica",
         fontSize=8,
         alignment=TA_CENTER,
-        leading=10,
+        leading=9,
         wordWrap="CJK"
     )
 
@@ -688,8 +688,8 @@ def draw_tabla_horario_distrito(
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
 
         # Compactar altura
-        ("TOPPADDING", (0, 0), (-1, -1), 3),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+        ("TOPPADDING", (0, 0), (-1, -1), 1),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
         ("LEFTPADDING", (0, 0), (-1, -1), 2),
         ("RIGHTPADDING", (0, 0), (-1, -1), 2),
     ]
@@ -1428,7 +1428,7 @@ def generar_pdf(
                 data=tabla_horario_distrito,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=230,
+                y=250,
                 col_widths=[ancho_columna] * total_columnas
             )
     
