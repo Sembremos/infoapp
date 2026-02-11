@@ -1231,7 +1231,7 @@ def generar_pdf(
                 data=tabla_denuncias,
                 titulo="Detalle de denuncias por distrito",
                 x=347,
-                y=page_height - 30,
+                y=page_height - 300,
                 col_widths=[100],
                 header_color=colors.HexColor("#4472C4"),
                 font_size_header=12,
@@ -1269,7 +1269,7 @@ def generar_pdf(
             canvas.drawImage(
                 grafico_horario_path,
                 x=(page_width - 550)/ 2,
-                y=page_height - 610, # altura a - mas
+                y=page_height - 600, # altura a - mas
                 width=250,
                 height=250,
                 preserveAspectRatio=True,
