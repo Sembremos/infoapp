@@ -1281,7 +1281,7 @@ def generar_pdf(
                 canvas=canvas,
                 data=tabla_horario,
                 titulo="Denuncias por horario",
-                x=400,
+                x=420,
                 y=page_height - 550,
                 col_widths=[90, 40],
                 header_color=colors.HexColor("#4472C4"),
