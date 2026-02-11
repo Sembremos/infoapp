@@ -344,7 +344,7 @@ def draw_tabla_simple(
     ]
 
     table.setStyle(TableStyle(style))
-    table.wrapOn(canvas, TABLE_WIDTH, 1000)
+    table.wrapOn(canvas, TABLE_WIDTH, 400)
     table.drawOn(canvas, x, y)
 
 
