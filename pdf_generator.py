@@ -299,29 +299,54 @@ def draw_tabla_simple(
     font_size_body=11
 ):
 
+    from reportlab.platypus import Paragraph
+    from reportlab.lib.styles import ParagraphStyle
+
     TABLE_WIDTH = sum(col_widths)
 
-    table_data = [[titulo] + [""] * (len(data[0]) - 1)]
-    table_data.extend(data)
+    # ===== ESTILO CELDAS =====
+    cell_style = ParagraphStyle(
+        name="CellStyle",
+        fontName="Helvetica",
+        fontSize=font_size_body,
+        leading=font_size_body + 2,
+        alignment=TA_LEFT,
+        wordWrap="CJK"
+    )
+
+    header_style = ParagraphStyle(
+        name="HeaderStyle",
+        fontName="Helvetica-Bold",
+        fontSize=font_size_header,
+        alignment=TA_LEFT
+    )
+
+    # ===== CONSTRUIR TABLA =====
+    table_data = [
+        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
+    ]
+
+    for row in data:
+        nueva_fila = []
+        for cell in row:
+            nueva_fila.append(Paragraph(str(cell), cell_style))
+        table_data.append(nueva_fila)
 
     table = Table(table_data, colWidths=col_widths)
 
     style = [
         ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
+        ("BACKGROUND", (0, 0), (-1, 0), header_color),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, 0), font_size_header),
         ("GRID", (0, 0), (-1, -1), 1, border_color),
         ("BACKGROUND", (0, 1), (-1, -1), body_color),
-        ("FONTSIZE", (0, 1), (-1, -1), font_size_body),
-        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
     ]
 
     table.setStyle(TableStyle(style))
-    table.wrapOn(canvas, TABLE_WIDTH, 200)
+    table.wrapOn(canvas, TABLE_WIDTH, 1000)
     table.drawOn(canvas, x, y)
+
 
 #=========================================Tabla Pareto==================
 
