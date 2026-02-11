@@ -690,8 +690,8 @@ def draw_tabla_horario_distrito(
         # Compactar altura
         ("TOPPADDING", (0, 0), (-1, -1), 1),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
-        ("LEFTPADDING", (0, 0), (-1, -1), 2),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 2),
+        ("LEFTPADDING", (0, 0), (-1, -1), 3),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 3),
     ]
 
     table.setStyle(TableStyle(style))
@@ -1428,7 +1428,7 @@ def generar_pdf(
                 data=tabla_horario_distrito,
                 titulo="DCLP según horario, por distrito",
                 x=40,
-                y=250,
+                y=275,
                 col_widths=[ancho_columna] * total_columnas
             )
     
