@@ -1320,7 +1320,7 @@ def generar_pdf(
             canvas.drawImage(
                 grafico_denuncias_path,
                 x=(page_width - 550)/ 2,
-                y=page_height - 350, #altura, a - mas altura
+                y=page_height - 320, #altura, a - mas altura
                 width=250,
                 height=250,
                 preserveAspectRatio=True,
@@ -1343,7 +1343,7 @@ def generar_pdf(
             # ================== CUADRO TOTAL ==================
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
-                page_width / 2 - 255,
+                page_width / 2 - 180,
                 500,  #Altura + es mas
                 150,
                 50,
@@ -1354,15 +1354,15 @@ def generar_pdf(
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
             canvas.drawCentredString(
-                page_width / 2 - 180,
-                520,
+                page_width / 2 - 80,
+                540,
                 "Total de denuncias"
             )
         
             canvas.setFont("Helvetica-Bold", 22)
             canvas.drawCentredString(
-                page_width / 2 - 180,
-                540, #todos estos los aumente de 675
+                page_width / 2 - 80,
+                550, #todos estos los aumente de 675
                 str(total_denuncias)
             )
 
