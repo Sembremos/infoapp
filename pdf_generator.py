@@ -918,7 +918,12 @@ def generar_pdf(
     story.append(Spacer(1, 220))
     story.append(Paragraph("__________________________________________________________________________________________"))
     story.append(Paragraph("Denuncias por rango horario", styles["Heading2"]))
+
+    story.append(PageBreak())
+    story.append(PageBreak())
     
+    story.append(Spacer(1, 30))
+    story.append(Paragraph("Denuncias por Modalidad", styles["Heading2"]))
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
