@@ -815,7 +815,7 @@ def generar_pdf(
 
     story.append(Spacer(1, 30))
     story.append(Paragraph("Denuncias por distrito", styles["Heading2"]))
-    story.append(Spacer(1, 215))
+    story.append(Spacer(1, 225))
     story.append(Paragraph("__________________________________________________________________________________________"))
     
     ##----------------------------------Bloque de funciones 
