@@ -1344,7 +1344,7 @@ def generar_pdf(
             canvas.setFillColor(colors.HexColor("#013051"))
             canvas.rect(
                 page_width / 2 - 75,
-                540,  #Altura + es mas
+                520,  #Altura + es mas
                 120,
                 50,
                 fill=1,
@@ -1354,14 +1354,14 @@ def generar_pdf(
             canvas.setFillColor(colors.white)
             canvas.setFont("Helvetica-Bold", 12)
             canvas.drawCentredString(
-                page_width / 2 - 10,
+                page_width / 2 - 20,
                 540,
                 "Total de denuncias"
             )
         
             canvas.setFont("Helvetica-Bold", 22)
             canvas.drawCentredString(
-                page_width / 2 - 1,
+                page_width / 2 - 20,
                 550, #todos estos los aumente de 675
                 str(total_denuncias)
             )
