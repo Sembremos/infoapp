@@ -661,6 +661,82 @@ if archivo:
             plt.close()
 
         generar_grafico_horario(df_grafico_horario)
+
+        # =========================================
+        # GRAFICO BARRAS PAGINA 14
+        # =========================================
+        
+        # Datos desde A196:B204
+        df_grafico_p14 = df.iloc[195:204, [0, 1]].copy()
+        df_grafico_p14.columns = ["categoria", "valor"]
+        
+        df_grafico_p14 = df_grafico_p14.dropna()
+        
+        df_grafico_p14["valor"] = pd.to_numeric(
+            df_grafico_p14["valor"],
+            errors="coerce"
+        )
+        
+        df_grafico_p14 = df_grafico_p14.dropna()
+        
+        def generar_grafico_p14(df):
+        
+            # ===== VARIABLES CONFIGURABLES =====
+            COLOR_BARRAS = "#30A907"      # Verde institucional
+            COLOR_TEXTO = "#013051"       # Azul institucional
+            FIG_WIDTH = 8
+            FIG_HEIGHT = 5
+            DPI = 300
+            # ===================================
+        
+            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
+        
+            barras = ax.bar(
+                df["categoria"],
+                df["valor"],
+                color=COLOR_BARRAS
+            )
+        
+            ax.set_ylabel("")
+            ax.set_xlabel("")
+            ax.set_title("")
+        
+            ax.tick_params(axis="x", rotation=45)
+        
+            # Quitar marcos
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+        
+            ax.tick_params(left=False, bottom=False)
+        
+            # Etiquetas encima de barras
+            for bar in barras:
+                height = bar.get_height()
+                ax.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    height,
+                    f"{int(height)}",
+                    ha="center",
+                    va="bottom",
+                    fontsize=10,
+                    color=COLOR_TEXTO
+                )
+        
+            plt.tight_layout()
+        
+            plt.savefig(
+                ASSETS_DIR / "grafico_p14.png",
+                dpi=DPI,
+                transparent=True
+            )
+        
+            plt.close()
+        
+        # Ejecutar
+        generar_grafico_p14(df_grafico_p14)
+
+
+        
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -708,7 +784,8 @@ if archivo:
                 tabla_horario=tabla_horario,
                 total_am=total_am,
                 total_pm=total_pm,
-                tabla_horario_distrito=tabla_horario_distrito
+                tabla_horario_distrito=tabla_horario_distrito,
+                grafico_p14_path=str(ASSETS_DIR / "grafico_p14.png"),
             )
 
             pdf_bytes = pdf_buffer.getvalue()
