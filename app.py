@@ -803,99 +803,99 @@ if archivo:
         
         df_grafico_p15 = df_grafico_p15.dropna()
         
-    def generar_grafico_p15(df):
-    
-        # ===== VARIABLES CONFIGURABLES =====
-        COLOR_LINEA = "#013051"
-        COLOR_PUNTOS = "#30A907"
-        COLOR_RELLENO = "#30A907"
-        COLOR_TEXTO = "#013051"
-        COLOR_GRILLA = "#E0E0E0"
-    
-        FIG_WIDTH = 8
-        FIG_HEIGHT = 5
-        DPI = 300
-        # ===================================
-    
-        fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
-    
-        # Convertir eje X a numérico para mayor control
-        x = range(len(df))
-    
-        # Línea principal
-        ax.plot(
-            x,
-            df["frecuencia"],
-            marker="o",
-            linewidth=3,
-            markersize=8,
-            color=COLOR_LINEA
-        )
-    
-        # Relleno inferior
-        ax.fill_between(
-            x,
-            df["frecuencia"],
-            color=COLOR_RELLENO,
-            alpha=0.15
-        )
-    
-        # Grilla horizontal
-        ax.grid(axis="y", linestyle="--", alpha=0.4, color=COLOR_GRILLA)
-    
-        # Etiquetas frecuencia
-        for i, row in enumerate(df.itertuples()):
-            ax.text(
-                i,
-                row.frecuencia,
-                f"{int(row.frecuencia)}",
-                ha="center",
-                va="bottom",
-                fontsize=10,
-                fontweight="bold",
-                color=COLOR_TEXTO
+        def generar_grafico_p15(df):
+        
+            # ===== VARIABLES CONFIGURABLES =====
+            COLOR_LINEA = "#013051"
+            COLOR_PUNTOS = "#30A907"
+            COLOR_RELLENO = "#30A907"
+            COLOR_TEXTO = "#013051"
+            COLOR_GRILLA = "#E0E0E0"
+        
+            FIG_WIDTH = 8
+            FIG_HEIGHT = 5
+            DPI = 300
+            # ===================================
+        
+            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
+        
+            # Convertir eje X a numérico para mayor control
+            x = range(len(df))
+        
+            # Línea principal
+            ax.plot(
+                x,
+                df["frecuencia"],
+                marker="o",
+                linewidth=3,
+                markersize=8,
+                color=COLOR_LINEA
             )
-    
-        # Ajuste eje Y
-        ax.set_ylim(0, df["frecuencia"].max() * 1.25)
-    
-        # Porcentajes debajo del punto
-        offset = df["frecuencia"].max() * 0.08
-    
-        for i, row in enumerate(df.itertuples()):
-            ax.text(
-                i,
-                row.frecuencia - offset,
-                f"{row.porcentaje * 100:.2f}%",
-                ha="center",
-                va="top",
-                fontsize=9,
-                color=COLOR_TEXTO
+        
+            # Relleno inferior
+            ax.fill_between(
+                x,
+                df["frecuencia"],
+                color=COLOR_RELLENO,
+                alpha=0.15
             )
-    
-        # Etiquetas del eje X (días)
-        ax.set_xticks(x)
-        ax.set_xticklabels(df["dia"])
-    
-        # Quitar bordes
-        for spine in ax.spines.values():
-            spine.set_visible(False)
-    
-        ax.tick_params(left=False, bottom=False)
-    
-        ax.set_ylabel("")
-        ax.set_xlabel("")
-        ax.set_title("")
-    
-        plt.tight_layout()
-    
-        plt.savefig(
-            ASSETS_DIR / "grafico_p15.png",
-            dpi=DPI,
-            transparent=True
-        )
-    
-        plt.close()
+        
+            # Grilla horizontal
+            ax.grid(axis="y", linestyle="--", alpha=0.4, color=COLOR_GRILLA)
+        
+            # Etiquetas frecuencia
+            for i, row in enumerate(df.itertuples()):
+                ax.text(
+                    i,
+                    row.frecuencia,
+                    f"{int(row.frecuencia)}",
+                    ha="center",
+                    va="bottom",
+                    fontsize=10,
+                    fontweight="bold",
+                    color=COLOR_TEXTO
+                )
+        
+            # Ajuste eje Y
+            ax.set_ylim(0, df["frecuencia"].max() * 1.25)
+        
+            # Porcentajes debajo del punto
+            offset = df["frecuencia"].max() * 0.08
+        
+            for i, row in enumerate(df.itertuples()):
+                ax.text(
+                    i,
+                    row.frecuencia - offset,
+                    f"{row.porcentaje * 100:.2f}%",
+                    ha="center",
+                    va="top",
+                    fontsize=9,
+                    color=COLOR_TEXTO
+                )
+        
+            # Etiquetas del eje X (días)
+            ax.set_xticks(x)
+            ax.set_xticklabels(df["dia"])
+        
+            # Quitar bordes
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+        
+            ax.tick_params(left=False, bottom=False)
+        
+            ax.set_ylabel("")
+            ax.set_xlabel("")
+            ax.set_title("")
+        
+            plt.tight_layout()
+        
+            plt.savefig(
+                ASSETS_DIR / "grafico_p15.png",
+                dpi=DPI,
+                transparent=True
+            )
+        
+            plt.close()
 
 
        #========tabla p15
