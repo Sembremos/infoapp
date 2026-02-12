@@ -843,11 +843,17 @@ if archivo:
                     color=COLOR_TEXTO
                 )
         
-            # Etiquetas porcentaje debajo del eje
+            # Ajustar margen inferior para que quepan porcentajes
+            min_y = df["frecuencia"].min()
+            offset = min_y * 0.15
+            
+            ax.set_ylim(0, df["frecuencia"].max() * 1.15)
+            
+            # Etiquetas porcentaje debajo de cada punto
             for i, row in df.iterrows():
                 ax.text(
                     row["dia"],
-                    0,
+                    row["frecuencia"] - offset,
                     f"{row['porcentaje']:.2f}%",
                     ha="center",
                     va="top",
