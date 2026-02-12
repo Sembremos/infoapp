@@ -832,7 +832,7 @@ def draw_tabla_dias_distritos_p15(
 
     # ===== VARIABLES EDITABLES =====
     COLOR_TITULO = colors.HexColor("#30a907")
-    COLOR_HEADER = colors.HexColor("#013051")
+    COLOR_HEADER = colors.HexColor("#E2Fdd9")
     COLOR_BODY = colors.white
     COLOR_BORDER = colors.black
 
