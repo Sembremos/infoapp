@@ -1604,7 +1604,7 @@ def generar_pdf(
             page_width, page_height = A4
         
             # ===== VARIABLES CONFIGURABLES =====
-            IMG_WIDTH = 500
+            IMG_WIDTH = 450
             IMG_HEIGHT = 300
         
             POS_X = (page_width - IMG_WIDTH) / 2
