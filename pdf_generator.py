@@ -980,7 +980,7 @@ def generar_pdf(
     grafico_p14_path,
     tabla_p14,
     grafico_p15_path,
-    tabla_p15=tabla_p15,
+    tabla_p15,
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
