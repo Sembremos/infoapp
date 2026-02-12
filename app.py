@@ -771,6 +771,114 @@ if archivo:
             tabla_p14.append(fila)
 
 
+        #==================================PAGINA 15============================================================
+        # =========================================
+        # GRAFICO LINEAL PAGINA 15 (DIAS SEMANA)
+        # RANGO: A223:C229
+        # =========================================
+        
+        df_grafico_p15 = df.iloc[222:229, 0:3].copy()
+        df_grafico_p15.columns = ["dia", "frecuencia", "porcentaje"]
+        
+        df_grafico_p15 = df_grafico_p15.dropna(how="all")
+        
+        # Formatear frecuencia
+        df_grafico_p15["frecuencia"] = pd.to_numeric(
+            df_grafico_p15["frecuencia"],
+            errors="coerce"
+        )
+        
+        # Formatear porcentaje
+        df_grafico_p15["porcentaje"] = (
+            df_grafico_p15["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        
+        df_grafico_p15["porcentaje"] = pd.to_numeric(
+            df_grafico_p15["porcentaje"],
+            errors="coerce"
+        )
+        
+        df_grafico_p15 = df_grafico_p15.dropna()
+        
+        def generar_grafico_p15(df):
+        
+            # ===== VARIABLES CONFIGURABLES =====
+            COLOR_LINEA = "#013051"
+            COLOR_PUNTOS = "#30A907"
+            COLOR_TEXTO = "#013051"
+        
+            FIG_WIDTH = 8
+            FIG_HEIGHT = 5
+            DPI = 300
+            # ===================================
+        
+            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
+        
+            ax.plot(
+                df["dia"],
+                df["frecuencia"],
+                marker="o",
+                color=COLOR_LINEA
+            )
+        
+            ax.scatter(
+                df["dia"],
+                df["frecuencia"],
+                color=COLOR_PUNTOS,
+                zorder=3
+            )
+        
+            # Etiquetas frecuencia encima del punto
+            for i, row in df.iterrows():
+                ax.text(
+                    row["dia"],
+                    row["frecuencia"],
+                    f"{int(row['frecuencia'])}",
+                    ha="center",
+                    va="bottom",
+                    fontsize=10,
+                    color=COLOR_TEXTO
+                )
+        
+            # Etiquetas porcentaje debajo del eje
+            for i, row in df.iterrows():
+                ax.text(
+                    row["dia"],
+                    0,
+                    f"{row['porcentaje']:.2f}%",
+                    ha="center",
+                    va="top",
+                    fontsize=9,
+                    color=COLOR_TEXTO
+                )
+        
+            # Quitar marcos
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+        
+            ax.tick_params(left=False, bottom=False)
+        
+            ax.set_ylabel("")
+            ax.set_xlabel("")
+            ax.set_title("")
+        
+            plt.tight_layout()
+        
+            plt.savefig(
+                ASSETS_DIR / "grafico_p15.png",
+                dpi=DPI,
+                transparent=True
+            )
+        
+            plt.close()
+        
+        # Ejecutar
+        generar_grafico_p15(df_grafico_p15)
+
+        
         
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
@@ -822,6 +930,7 @@ if archivo:
                 tabla_horario_distrito=tabla_horario_distrito,
                 grafico_p14_path=str(ASSETS_DIR / "grafico_p14.png"),
                 tabla_p14=tabla_p14,
+                grafico_p15_path=str(ASSETS_DIR / "grafico_p15.png"),
             )
 
             pdf_bytes = pdf_buffer.getvalue()
