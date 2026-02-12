@@ -854,7 +854,7 @@ if archivo:
                 ax.text(
                     row["dia"],
                     row["frecuencia"] - offset,
-                    f"{row['porcentaje']:.2f}%",
+                    f"{row['porcentaje'] * 100:.2f}%",
                     ha="center",
                     va="top",
                     fontsize=9,
