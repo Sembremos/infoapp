@@ -1158,13 +1158,13 @@ def generar_pdf(
     story.append(PageBreak())   
     story.append(Spacer(1, 30))
     story.append(Paragraph("Denuncias por Modalidad en el Cantón", styles["Heading2"]))
-    story.append(Spacer(1, 220))
+    story.append(Spacer(1, 260))
     story.append(Paragraph("__________________________________________________________________________________________"))
 
     story.append(PageBreak())   
     story.append(Spacer(1, 30))
     story.append(Paragraph("Denuncias por dias de la semana en el Cantón", styles["Heading2"]))
-    story.append(Spacer(1, 220))
+    story.append(Spacer(1, 260))
     story.append(Paragraph("__________________________________________________________________________________________"))
     ##----------------------------------Bloque de funciones 
                  
