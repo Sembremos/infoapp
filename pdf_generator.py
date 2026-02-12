@@ -862,6 +862,7 @@ def generar_pdf(
     tabla_horario_distrito,
     grafico_p14_path,
     tabla_p14,
+    grafico_p15_path,
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -1595,10 +1596,32 @@ def generar_pdf(
                     y=POS_Y - 40,   # 👈 Ajustable para subir/bajar
                     col_widths=[ANCHO_COLUMNA] * TOTAL_COLUMNAS
                 )
- 
-        
-    
 
+        elif doc.page == 15:
+
+            header_footer(canvas, doc)
+        
+            page_width, page_height = A4
+        
+            # ===== VARIABLES CONFIGURABLES =====
+            IMG_WIDTH = 500
+            IMG_HEIGHT = 300
+        
+            POS_X = (page_width - IMG_WIDTH) / 2
+            POS_Y = page_height - IMG_HEIGHT - 100
+            # ===================================
+        
+            canvas.drawImage(
+                grafico_p15_path,
+                POS_X,
+                POS_Y,
+                width=IMG_WIDTH,
+                height=IMG_HEIGHT,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+
+          
 
         else:
             header_footer(canvas, doc)
