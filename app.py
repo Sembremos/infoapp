@@ -884,7 +884,45 @@ if archivo:
         # Ejecutar
         generar_grafico_p15(df_grafico_p15)
 
+       #========tabla p15
+        # =========================================
+        # TABLA PAGINA 15 (FRECUENCIA POR DISTRITO Y DIA)
+        # RANGO: A222:O229
+        # IGNORAR COLUMNAS B y C
+        # =========================================
         
+        # Encabezados (Dias) → Columna A (A223:A229)
+        dias_p15 = df.iloc[222:229, 0].copy().astype(str).tolist()
+        
+        # Distritos → Fila 222 (D222:O222)
+        distritos_p15 = df.iloc[221, 3:15].copy().astype(str).tolist()
+        
+        # Frecuencias → D223:O229
+        valores_p15_raw = df.iloc[222:229, 3:15].copy()
+        
+        tabla_p15 = []
+        
+        # Primera fila → encabezados (vacío + días)
+        tabla_p15.append(["Distrito"] + dias_p15)
+        
+        # Construir filas
+        for i, distrito in enumerate(distritos_p15):
+        
+            fila = [distrito]
+        
+            for valor in valores_p15_raw.iloc[:, i]:
+        
+                if pd.isna(valor):
+                    fila.append("")
+                else:
+                    fila.append(str(int(valor)) if isinstance(valor, (int, float)) else str(valor))
+        
+            # Ignorar fila si completamente vacía (excepto nombre distrito)
+            if all(v == "" for v in fila[1:]):
+                continue
+        
+            tabla_p15.append(fila)
+
         
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
@@ -937,6 +975,7 @@ if archivo:
                 grafico_p14_path=str(ASSETS_DIR / "grafico_p14.png"),
                 tabla_p14=tabla_p14,
                 grafico_p15_path=str(ASSETS_DIR / "grafico_p15.png"),
+                tabla_p15=tabla_p15,
             )
 
             pdf_bytes = pdf_buffer.getvalue()
