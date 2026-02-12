@@ -897,6 +897,7 @@ if archivo:
         
             plt.close()
 
+        generar_grafico_p15(df_grafico_p15)
 
        #========tabla p15
         # =========================================
