@@ -1039,6 +1039,10 @@ def generar_pdf(
     story.append(PageBreak())   
     story.append(Spacer(1, 30))
     story.append(Paragraph("Denuncias por Modalidad en el Cantón", styles["Heading2"]))
+
+    story.append(PageBreak())   
+    story.append(Spacer(1, 30))
+    story.append(Paragraph("Denuncias por dias de la semana en el Cantón", styles["Heading2"]))
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
@@ -1563,7 +1567,7 @@ def generar_pdf(
                 IMG_HEIGHT = 300
             
                 POS_X = (page_width - IMG_WIDTH) / 2
-                POS_Y = page_height - IMG_HEIGHT - 100
+                POS_Y = page_height - IMG_HEIGHT - 110
                 # ================================
             
                 canvas.drawImage(
