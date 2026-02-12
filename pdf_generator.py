@@ -813,6 +813,123 @@ def draw_tabla_modalidades_p14(
     table.wrapOn(canvas, TABLE_WIDTH, 2000)
     table.drawOn(canvas, x, y - table._height)
 
+#======================TABLA P15...................
+
+def draw_tabla_dias_distritos_p15(
+    canvas,
+    data,
+    titulo,
+    x,
+    y,
+    col_widths
+):
+
+    from reportlab.platypus import Paragraph
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT
+
+    TABLE_WIDTH = sum(col_widths)
+
+    # ===== VARIABLES EDITABLES =====
+    COLOR_TITULO = colors.HexColor("#30a907")
+    COLOR_HEADER = colors.HexColor("#013051")
+    COLOR_BODY = colors.white
+    COLOR_BORDER = colors.black
+
+    FONT_HEADER = 8
+    FONT_BODY = 7
+    # =================================
+
+    header_style = ParagraphStyle(
+        name="HeaderStyleP15",
+        fontName="Helvetica-Bold",
+        fontSize=FONT_HEADER,
+        alignment=TA_CENTER,
+        leading=10
+    )
+
+    distrito_style = ParagraphStyle(
+        name="DistritoStyleP15",
+        fontName="Helvetica-Bold",
+        fontSize=FONT_BODY,
+        alignment=TA_LEFT,
+        leading=9
+    )
+
+    cell_style = ParagraphStyle(
+        name="CellStyleP15",
+        fontName="Helvetica",
+        fontSize=FONT_BODY,
+        alignment=TA_CENTER,
+        leading=9,
+        wordWrap="CJK"
+    )
+
+    table_data = []
+
+    # Título
+    table_data.append(
+        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
+    )
+
+    # Encabezado (dias)
+    header_row = []
+    for cell in data[0]:
+        header_row.append(Paragraph(str(cell), header_style))
+    table_data.append(header_row)
+
+    # Datos
+    for row in data[1:]:
+
+        nueva_fila = []
+
+        for i, cell in enumerate(row):
+
+            if i == 0:
+                nueva_fila.append(Paragraph(str(cell), distrito_style))
+            else:
+                nueva_fila.append(Paragraph(str(cell), cell_style))
+
+        table_data.append(nueva_fila)
+
+    table = Table(table_data, colWidths=col_widths)
+
+    style = [
+
+        # Título
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), COLOR_TITULO),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+
+        # Encabezado dias
+        ("BACKGROUND", (0, 1), (-1, 1), COLOR_HEADER),
+        ("TEXTCOLOR", (0, 1), (-1, 1), colors.white),
+
+        # Columna distrito
+        ("BACKGROUND", (0, 2), (0, -1), COLOR_HEADER),
+        ("TEXTCOLOR", (0, 2), (0, -1), colors.white),
+
+        # Cuerpo
+        ("BACKGROUND", (1, 2), (-1, -1), COLOR_BODY),
+
+        # Bordes
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDER),
+
+        # Centrado
+        ("ALIGN", (1, 2), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+
+        # Compacto
+        ("TOPPADDING", (0, 0), (-1, -1), 3),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+        ("LEFTPADDING", (0, 0), (-1, -1), 3),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 3),
+    ]
+
+    table.setStyle(TableStyle(style))
+
+    table.wrapOn(canvas, TABLE_WIDTH, 2000)
+    table.drawOn(canvas, x, y - table._height)
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
@@ -863,6 +980,7 @@ def generar_pdf(
     grafico_p14_path,
     tabla_p14,
     grafico_p15_path,
+    tabla_p15=tabla_p15,
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -1620,6 +1738,24 @@ def generar_pdf(
                 preserveAspectRatio=True,
                 mask="auto"
             )
+
+            #tabla
+        # ===== TABLA DIAS VS DISTRITOS =====
+
+            TOTAL_COLUMNAS = len(tabla_p15[0])
+            
+            ANCHO_TOTAL = page_width - 60
+            ANCHO_COLUMNA = ANCHO_TOTAL / TOTAL_COLUMNAS
+            
+            draw_tabla_dias_distritos_p15(
+                canvas=canvas,
+                data=tabla_p15,
+                titulo="Frecuencia por distrito según día",
+                x=30,
+                y=POS_Y - 60,  # 👈 Ajustable
+                col_widths=[ANCHO_COLUMNA] * TOTAL_COLUMNAS
+            )
+            
 
           
 
