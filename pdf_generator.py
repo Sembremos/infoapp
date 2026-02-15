@@ -988,7 +988,6 @@ def generar_pdf(
     logo_muni_path,
 ):
 
-):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
 
