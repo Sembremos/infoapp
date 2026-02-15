@@ -1819,18 +1819,21 @@ def generar_pdf(
             # Logo municipalidad
             LOGO_WIDTH = 130
             LOGO_HEIGHT = 130
-            LOGO_X = IMG_X + IMG_WIDTH - 160
-            LOGO_Y = IMG_Y + 100
+            LOGO_X = IMG_X + IMG_WIDTH - 80
+            LOGO_Y = IMG_Y + 120
         
             # Texto lineas municipales
             TEXT_FONT = "Helvetica-Bold"
             TEXT_SIZE = 26
-            TEXT_COLOR = colors.white
+            
+            COLOR_MUNICIPAL = colors.HexColor("#30A907")  # Verde
+            COLOR_FP = colors.white                       # Blanco
+            COLOR_MIXTAS = colors.HexColor("#013051")     # Azul oscuro
         
-            MUNICIPAL_X = LOGO_X - 150
+            MUNICIPAL_X = LOGO_X - 200
             MUNICIPAL_Y = LOGO_Y + 70
         
-            FP_X = MUNICIPAL_X
+            FP_X = MUNICIPAL_X - 140
             FP_Y = MUNICIPAL_Y - 45
         
             MIXTAS_X = MUNICIPAL_X
