@@ -1819,8 +1819,8 @@ def generar_pdf(
             # Logo municipalidad
             LOGO_WIDTH = 120
             LOGO_HEIGHT = 120
-            LOGO_X = 400
-            LOGO_Y = 170
+            LOGO_X = 450
+            LOGO_Y = 220
         
             # Texto lineas municipales
             TEXT_FONT = "Helvetica-Bold"
