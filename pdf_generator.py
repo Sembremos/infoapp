@@ -1854,7 +1854,6 @@ def generar_pdf(
         
             # ===== TOTAL LINEAS =====
             canvas.setFont(TOTAL_FONT, TOTAL_SIZE)
-            canvas.setFillColor(TOTAL_COLOR)
             canvas.drawCentredString(
                 TOTAL_X,
                 TOTAL_Y,
@@ -1874,8 +1873,8 @@ def generar_pdf(
         
             # ===== LINEAS MUNICIPALIDAD =====
             canvas.setFont(TEXT_FONT, TEXT_SIZE)
-            canvas.setFillColor(TEXT_COLOR)
-        
+            canvas.setFillColor(COLOR_MUNICIPAL)
+            
             canvas.drawString(
                 MUNICIPAL_X,
                 MUNICIPAL_Y,
@@ -1891,6 +1890,7 @@ def generar_pdf(
         
             # ===== LINEAS MIXTAS (CONDICIONAL) =====
             if lineas_mixtas is not None:
+                canvas.setFillColor(COLOR_MIXTAS)
                 canvas.drawString(
                     MIXTAS_X,
                     MIXTAS_Y,
