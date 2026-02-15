@@ -1854,6 +1854,7 @@ def generar_pdf(
         
             # ===== TOTAL LINEAS =====
             canvas.setFont(TOTAL_FONT, TOTAL_SIZE)
+            canvas.setFillColor(colors.white)
             canvas.drawCentredString(
                 TOTAL_X,
                 TOTAL_Y,
