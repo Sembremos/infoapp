@@ -952,17 +952,22 @@ if archivo:
         numero_delegacion = int(delegacion_codigo.replace("D-", "").strip())
         
         # Totales líneas
-        lineas_municipalidad = int(df.iloc[238, 0])  # A239
-        lineas_fp = int(df.iloc[238, 1])             # B239
-        lineas_mixtas = df.iloc[238, 2]              # C239
-        total_lineas = int(df.iloc[238, 3])          # D239
+        # ================= SAFE INT =================
+        def safe_int(value):
+            if pd.isna(value) or value == "":
+                return 0
+            return int(value)
         
-        # Validar mixtas
-        if pd.isna(lineas_mixtas) or int(lineas_mixtas) == 0:
+        # Totales líneas
+        lineas_municipalidad = safe_int(df.iloc[238, 0])  # A239
+        lineas_fp = safe_int(df.iloc[238, 1])             # B239
+        lineas_mixtas = safe_int(df.iloc[238, 2])         # C239
+        total_lineas = safe_int(df.iloc[238, 3])          # D239
+        
+        # Si mixtas es 0 no se muestra
+        if lineas_mixtas == 0:
             lineas_mixtas = None
-        else:
-            lineas_mixtas = int(lineas_mixtas)
-        
+                
         # Construcción automática del path del logo municipal
         logo_muni_path = (
             ASSETS_DIR /
