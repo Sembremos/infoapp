@@ -1171,7 +1171,7 @@ def generar_pdf(
     story.append(PageBreak())
 
     story.append(Spacer(1, 40))
-    story.append(Paragraph("Introducción", styles["Heading1"]))
+    story.append(Paragraph("Líneas de Acción", styles["Heading1"]))
     story.append(Spacer(1, 12))
 
     story.append(Paragraph(
