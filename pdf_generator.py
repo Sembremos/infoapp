@@ -1830,14 +1830,14 @@ def generar_pdf(
             COLOR_FP = colors.white                       # Blanco
             COLOR_MIXTAS = colors.white     # blanco
         
-            MUNICIPAL_X = LOGO_X - 200
-            MUNICIPAL_Y = LOGO_Y + 70
-        
-            FP_X = MUNICIPAL_X - 140
-            FP_Y = MUNICIPAL_Y - 45
-        
-            MIXTAS_X = MUNICIPAL_X
-            MIXTAS_Y = FP_Y - 45
+            MUNICIPAL_X = 250
+            MUNICIPAL_Y = 300
+            
+            FP_X = 250
+            FP_Y = 260
+            
+            MIXTAS_X = 250
+            MIXTAS_Y = 220
         
             # ===========================================================
         
