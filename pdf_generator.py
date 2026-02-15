@@ -1813,14 +1813,14 @@ def generar_pdf(
             TOTAL_FONT = "Helvetica-Bold"
             TOTAL_SIZE = 60
             TOTAL_COLOR = colors.white
-            TOTAL_X = 130
-            TOTAL_Y = 190
+            TOTAL_X = 130 #bien
+            TOTAL_Y = 180
         
             # Logo municipalidad
             LOGO_WIDTH = 200
             LOGO_HEIGHT = 200
             LOGO_X = 415
-            LOGO_Y = 355
+            LOGO_Y = 330 #355
         
             # Texto lineas municipales
             TEXT_FONT = "Helvetica-Bold"
@@ -1830,14 +1830,14 @@ def generar_pdf(
             COLOR_FP = colors.white                       # Blanco
             COLOR_MIXTAS = colors.white     # blanco
         
-            MUNICIPAL_X = 380 #380
+            MUNICIPAL_X = 370 #380
             MUNICIPAL_Y = 370
             
-            FP_X = 380
+            FP_X = 370
             FP_Y = 170 # bien
             
-            MIXTAS_X = 380
-            MIXTAS_Y = 290
+            MIXTAS_X = 370
+            MIXTAS_Y = 270 #280
         
             # ===========================================================
         
