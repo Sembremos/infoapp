@@ -1715,41 +1715,40 @@ def generar_pdf(
         elif doc.page == 14:
             header_footer(canvas, doc)
             
-                page_width, page_height = A4
+            page_width, page_height = A4
             
-                # ===== VARIABLES DE POSICION =====
-                IMG_WIDTH = 500
-                IMG_HEIGHT = 300
+            # ===== VARIABLES DE POSICION =====
+            IMG_WIDTH = 500
+            IMG_HEIGHT = 300
             
-                POS_X = (page_width - IMG_WIDTH) / 2
-                POS_Y = page_height - IMG_HEIGHT - 110
-                # ================================
+            POS_X = (page_width - IMG_WIDTH) / 2
+            POS_Y = page_height - IMG_HEIGHT - 110
+            # ================================
             
-                canvas.drawImage(
-                    grafico_p14_path,
-                    POS_X,
-                    POS_Y,
-                    width=IMG_WIDTH,
-                    height=IMG_HEIGHT,
-                    preserveAspectRatio=True,
-                    mask="auto"
-                )
+            canvas.drawImage(
+                grafico_p14_path,
+                POS_X,
+                POS_Y,
+                width=IMG_WIDTH,
+                height=IMG_HEIGHT,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
 
-           # ===== TABLA MODALIDADES =====
-
-                TOTAL_COLUMNAS = len(tabla_p14[0])
+       # ===== TABLA MODALIDADES =====
+            TOTAL_COLUMNAS = len(tabla_p14[0])
                 
-                ANCHO_TOTAL = page_width - 60
-                ANCHO_COLUMNA = ANCHO_TOTAL / TOTAL_COLUMNAS
+            ANCHO_TOTAL = page_width - 60
+            ANCHO_COLUMNA = ANCHO_TOTAL / TOTAL_COLUMNAS
                 
-                draw_tabla_modalidades_p14(
-                    canvas=canvas,
-                    data=tabla_p14,
-                    titulo="Frecuencia de modalidades por distrito",
-                    x=30,
-                    y=POS_Y - 40,   # 👈 Ajustable para subir/bajar
-                    col_widths=[ANCHO_COLUMNA] * TOTAL_COLUMNAS
-                )
+            draw_tabla_modalidades_p14(
+                canvas=canvas,
+                data=tabla_p14,
+                titulo="Frecuencia de modalidades por distrito",
+                x=30,
+                y=POS_Y - 40,   # 👈 Ajustable para subir/bajar
+                col_widths=[ANCHO_COLUMNA] * TOTAL_COLUMNAS
+            )
 
         elif doc.page == 15:
 
