@@ -1713,7 +1713,7 @@ def generar_pdf(
             )
 
         elif doc.page == 14:
-                header_footer(canvas, doc)
+            header_footer(canvas, doc)
             
                 page_width, page_height = A4
             
