@@ -1786,7 +1786,8 @@ def generar_pdf(
             )
             
 
-          
+        elif doc.page == 16:
+            FullImage("assets/lineas.png")(canvas, doc)  
 
         else:
             header_footer(canvas, doc)
