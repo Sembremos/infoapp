@@ -1175,22 +1175,19 @@ def generar_pdf(
     story.append(Spacer(1, 12))
 
     story.append(Paragraph(
-        "El procedimiento de construcción de líneas de acción en la estrategia "Sembremos Seguridad" es esencial en el ámbito local. Este proceso comienza con la recolección y análisis de datos específicos del territorio, utilizando herramientas metodológicas científicas para identificar y contextualizar las problemáticas locales. Posteriormente, un grupo de expertos de diversas instituciones evalúa las causas subyacentes y propone soluciones viables. Estos pasos se consolidan en el siguiente apartado con la finalidad de plasmar de manera transparente cuáles serán las acciones específicas para la atención de las problemáticas priorizadas.
-    ",
+        "El procedimiento de construcción de líneas de acción en la estrategia SEMBREMOS SEGURIDAD es esencial en el ámbito local. Este proceso comienza con la recolección y análisis de datos específicos del territorio, utilizando herramientas metodológicas científicas para identificar y contextualizar las problemáticas locales. Posteriormente, un grupo de expertos de diversas instituciones evalúa las causas subyacentes y propone soluciones viables. Estos pasos se consolidan en el siguiente apartado con la finalidad de plasmar de manera transparente cuáles serán las acciones específicas para la atención de las problemáticas priorizadas.",
         styles["NormalJustificado"]
     ))
 
     story.append(Spacer(1, 20))
     story.append(Paragraph(
-        "Los coordinadores estratégicos que desempeñan un papel fundamental en este procedimiento, son el Gobierno Local por su rol de autoridad local y Fuerza Pública como ente competente para la prevención del delito. Estos son responsables de garantizar la trazabilidad y el cumplimiento de los indicadores previamente consensuados por los actores sociales. 
-    ",
+        "Los coordinadores estratégicos que desempeñan un papel fundamental en este procedimiento, son el Gobierno Local por su rol de autoridad local y Fuerza Pública como ente competente para la prevención del delito. Estos son responsables de garantizar la trazabilidad y el cumplimiento de los indicadores previamente consensuados por los actores sociales.",
         styles["NormalJustificado"]
     ))
 
     story.append(Spacer(1, 20))
     story.append(Paragraph(
-    "Estos líderes estratégicos aseguran que cada etapa del plan se lleve a cabo de manera efectiva y que las intervenciones estén alineadas con los objetivos planteados. Su liderazgo y supervisión continua son cruciales para el éxito de la estrategia "Sembremos Seguridad".
-    ",
+    "Estos líderes estratégicos aseguran que cada etapa del plan se lleve a cabo de manera efectiva y que las intervenciones estén alineadas con los objetivos planteados. Su liderazgo y supervisión continua son cruciales para el éxito de la estrategia SEMBREMOS SEGURIDAD.",
     styles["NormalJustificado"]
     ))
     
