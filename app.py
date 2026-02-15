@@ -53,6 +53,15 @@ def crear_grafico(labels, values):
     buf.seek(0)
     return buf
 
+#####=============valores vacios
+
+def seguro_int(valor, default=0):
+    if pd.isna(valor):
+        return default
+    try:
+        return int(float(valor))
+    except:
+        return default
 
 # ================= APP =================
 archivo = st.file_uploader(
@@ -394,11 +403,11 @@ if archivo:
 
         ## imagen datos
         datos_pagina_8 = {
-            "encuesta_comunidad": int(df.iloc[82, 1]),   # B83
-            "encuesta_policial": int(df.iloc[83, 1]),    # B84
-            "encuesta_comercio": int(df.iloc[84, 1]),    # B85
-            "estadistica": int(df.iloc[86, 2]),           # C86
-            "total_datos": int(df.iloc[87, 1])            # B88
+            "encuesta_comunidad": seguro_int(df.iloc[82, 1]),   # B83
+            "encuesta_policial": seguro_int(df.iloc[83, 1]),    # B84
+            "encuesta_comercio": seguro_int(df.iloc[84, 1]),    # B85
+            "estadistica": seguro_int(df.iloc[86, 2]),          # C86
+            "total_datos": seguro_int(df.iloc[87, 1])           # B88
         }
 
         ##==============================PARETO===================================
@@ -943,7 +952,7 @@ if archivo:
         # =========================================
         
         # Región (D2)
-        region_numero = int(df.iloc[1, 3])  # D2
+        region_numero = seguro_int(df.iloc[1, 3])  # D2
         
         # Delegación (B3) → formato "D-28"
         delegacion_codigo = str(df.iloc[2, 1])  # B3
@@ -959,10 +968,10 @@ if archivo:
             return int(value)
         
         # Totales líneas
-        lineas_municipalidad = safe_int(df.iloc[238, 0])  # A239
-        lineas_fp = safe_int(df.iloc[238, 1])             # B239
+        lineas_municipalidad = seguro_int(df.iloc[238, 0])  # A239
+        lineas_fp = seguro_int(df.iloc[238, 1])             # B239
         lineas_mixtas = safe_int(df.iloc[238, 2])         # C239
-        total_lineas = safe_int(df.iloc[238, 3])          # D239
+        total_lineas = seguro_int(df.iloc[238, 3])          # D239
         
         # Si mixtas es 0 no se muestra
         if lineas_mixtas == 0:
