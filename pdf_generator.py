@@ -981,6 +981,13 @@ def generar_pdf(
     tabla_p14,
     grafico_p15_path,
     tabla_p15,
+    total_lineas,
+    lineas_municipalidad,
+    lineas_fp,
+    lineas_mixtas,
+    logo_muni_path,
+):
+
 ):
     buffer = BytesIO()
     styles = getSampleStyleSheet()
@@ -1788,6 +1795,106 @@ def generar_pdf(
 
         elif doc.page == 16:
             FullImage("assets/lineas.png")(canvas, doc)  
+
+        elif doc.page == 17:
+
+            header_footer(canvas, doc)
+        
+            page_width, page_height = A4
+        
+            # ================= VARIABLES CONFIGURABLES =================
+        
+            # Imagen base
+            IMG_PATH = "assets/lins.png"
+            IMG_WIDTH = 500
+            IMG_HEIGHT = 300
+            IMG_X = (page_width - IMG_WIDTH) / 2
+            IMG_Y = 100
+        
+            # TOTAL LINEAS
+            TOTAL_FONT = "Helvetica-Bold"
+            TOTAL_SIZE = 60
+            TOTAL_COLOR = colors.white
+            TOTAL_X = page_width / 2
+            TOTAL_Y = IMG_Y + IMG_HEIGHT - 80
+        
+            # Logo municipalidad
+            LOGO_WIDTH = 130
+            LOGO_HEIGHT = 130
+            LOGO_X = IMG_X + IMG_WIDTH - 160
+            LOGO_Y = IMG_Y + 80
+        
+            # Texto lineas municipales
+            TEXT_FONT = "Helvetica-Bold"
+            TEXT_SIZE = 26
+            TEXT_COLOR = colors.white
+        
+            MUNICIPAL_X = LOGO_X - 150
+            MUNICIPAL_Y = LOGO_Y + 70
+        
+            FP_X = MUNICIPAL_X
+            FP_Y = MUNICIPAL_Y - 45
+        
+            MIXTAS_X = MUNICIPAL_X
+            MIXTAS_Y = FP_Y - 45
+        
+            # ===========================================================
+        
+            # ===== DIBUJAR IMAGEN BASE =====
+            canvas.drawImage(
+                IMG_PATH,
+                IMG_X,
+                IMG_Y,
+                width=IMG_WIDTH,
+                height=IMG_HEIGHT,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+        
+            # ===== TOTAL LINEAS =====
+            canvas.setFont(TOTAL_FONT, TOTAL_SIZE)
+            canvas.setFillColor(TOTAL_COLOR)
+            canvas.drawCentredString(
+                TOTAL_X,
+                TOTAL_Y,
+                str(total_lineas)
+            )
+        
+            # ===== LOGO MUNICIPALIDAD =====
+            canvas.drawImage(
+                logo_muni_path,
+                LOGO_X,
+                LOGO_Y,
+                width=LOGO_WIDTH,
+                height=LOGO_HEIGHT,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+        
+            # ===== LINEAS MUNICIPALIDAD =====
+            canvas.setFont(TEXT_FONT, TEXT_SIZE)
+            canvas.setFillColor(TEXT_COLOR)
+        
+            canvas.drawString(
+                MUNICIPAL_X,
+                MUNICIPAL_Y,
+                f"{lineas_municipalidad} Líneas"
+            )
+        
+            # ===== LINEAS FP =====
+            canvas.drawString(
+                FP_X,
+                FP_Y,
+                f"{lineas_fp} Líneas"
+            )
+        
+            # ===== LINEAS MIXTAS (CONDICIONAL) =====
+            if lineas_mixtas is not None:
+                canvas.drawString(
+                    MIXTAS_X,
+                    MIXTAS_Y,
+                    f"Mixtas: {lineas_mixtas}"
+                )
 
         else:
             header_footer(canvas, doc)
