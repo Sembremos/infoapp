@@ -1820,24 +1820,24 @@ def generar_pdf(
             LOGO_WIDTH = 150
             LOGO_HEIGHT = 150
             LOGO_X = 430
-            LOGO_Y = 250
+            LOGO_Y = 360
         
             # Texto lineas municipales
             TEXT_FONT = "Helvetica-Bold"
-            TEXT_SIZE = 50
+            TEXT_SIZE = 40
             
             COLOR_MUNICIPAL = colors.HexColor("#30A907")  # Verde
             COLOR_FP = colors.white                       # Blanco
             COLOR_MIXTAS = colors.white     # blanco
         
-            MUNICIPAL_X = 300 #cualquier cosa bajo este
-            MUNICIPAL_Y = 360
+            MUNICIPAL_X = 350 #cualquier cosa bajo este
+            MUNICIPAL_Y = 370
             
-            FP_X = 300
-            FP_Y = 170
+            FP_X = 350
+            FP_Y = 170 # bien
             
-            MIXTAS_X = 300
-            MIXTAS_Y = 290
+            MIXTAS_X = 350
+            MIXTAS_Y = 280
         
             # ===========================================================
         
