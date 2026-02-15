@@ -938,6 +938,41 @@ if archivo:
         
             tabla_p15.append(fila)
 
+        # =========================================
+        # DATOS LINEAS DE ACCION (PAGINA 17)
+        # =========================================
+        
+        # Región (D2)
+        region_numero = int(df.iloc[1, 3])  # D2
+        
+        # Delegación (B3) → formato "D-28"
+        delegacion_codigo = str(df.iloc[2, 1])  # B3
+        
+        # Extraer número 28 de "D-28"
+        numero_delegacion = int(delegacion_codigo.replace("D-", "").strip())
+        
+        # Totales líneas
+        lineas_municipalidad = int(df.iloc[238, 0])  # A239
+        lineas_fp = int(df.iloc[238, 1])             # B239
+        lineas_mixtas = df.iloc[238, 2]              # C239
+        total_lineas = int(df.iloc[238, 3])          # D239
+        
+        # Validar mixtas
+        if pd.isna(lineas_mixtas) or int(lineas_mixtas) == 0:
+            lineas_mixtas = None
+        else:
+            lineas_mixtas = int(lineas_mixtas)
+        
+        # Construcción automática del path del logo municipal
+        logo_muni_path = (
+            ASSETS_DIR /
+            "Municipalidades" /
+            str(region_numero) /
+            f"{numero_delegacion}.png"
+        )
+
+
+        
         
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
@@ -991,6 +1026,12 @@ if archivo:
                 tabla_p14=tabla_p14,
                 grafico_p15_path=str(ASSETS_DIR / "grafico_p15.png"),
                 tabla_p15=tabla_p15,
+                total_lineas=total_lineas,
+                lineas_municipalidad=lineas_municipalidad,
+                lineas_fp=lineas_fp,
+                lineas_mixtas=lineas_mixtas,
+                logo_muni_path=str(logo_muni_path),
+
             )
 
             pdf_bytes = pdf_buffer.getvalue()
