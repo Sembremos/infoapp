@@ -1804,8 +1804,8 @@ def generar_pdf(
         
             # Imagen base
             IMG_PATH = "assets/lins.png"
-            IMG_WIDTH = 500
-            IMG_HEIGHT = 300
+            IMG_WIDTH = 700
+            IMG_HEIGHT = 400
             IMG_X = (page_width - IMG_WIDTH) / 2
             IMG_Y = 100
         
@@ -1820,7 +1820,7 @@ def generar_pdf(
             LOGO_WIDTH = 130
             LOGO_HEIGHT = 130
             LOGO_X = IMG_X + IMG_WIDTH - 160
-            LOGO_Y = IMG_Y + 80
+            LOGO_Y = IMG_Y + 100
         
             # Texto lineas municipales
             TEXT_FONT = "Helvetica-Bold"
@@ -1876,14 +1876,14 @@ def generar_pdf(
             canvas.drawString(
                 MUNICIPAL_X,
                 MUNICIPAL_Y,
-                f"{lineas_municipalidad} Líneas"
+                f"{lineas_municipalidad}"
             )
         
             # ===== LINEAS FP =====
             canvas.drawString(
                 FP_X,
                 FP_Y,
-                f"{lineas_fp} Líneas"
+                f"{lineas_fp}"
             )
         
             # ===== LINEAS MIXTAS (CONDICIONAL) =====
