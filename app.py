@@ -985,8 +985,61 @@ if archivo:
             f"{numero_delegacion}.png"
         )
 
-
+        # =========================================
+        # LINEAS DE ACCION DINAMICAS PORTADAS
+        # =========================================
         
+        import string
+        
+        # Columnas donde están los corresponsables
+        columnas_corresponsables = [
+            9,   # J246
+            15,  # P246
+            21,  # V246
+            27,  # AB246
+            33,  # AH246
+            39,  # AN246
+            45,  # AT246
+            51,  # AZ246
+            57,  # BF246
+            63,  # BL246
+            69,  # BR246
+            75   # BX246
+        ]
+        
+        lineas_accion_data = []
+        
+        for i in range(int(total_lineas)):
+        
+            # ===== CORRESPONSABLE =====
+            col_corresp = columnas_corresponsables[i]
+            corresponsable = df.iloc[245, col_corresp]
+        
+            # ===== PROBLEMATICAS (B242-D253) =====
+            fila_problematicas = 241 + i  # B242 empieza en índice 241
+        
+            problematica_1 = df.iloc[fila_problematicas, 1]
+            problematica_2 = df.iloc[fila_problematicas, 2]
+            problematica_3 = df.iloc[fila_problematicas, 3]
+        
+            problematicas = []
+        
+            if pd.notna(problematica_1):
+                problematicas.append(str(problematica_1))
+        
+            if pd.notna(problematica_2):
+                problematicas.append(str(problematica_2))
+        
+            if pd.notna(problematica_3):
+                problematicas.append(str(problematica_3))
+        
+            lineas_accion_data.append({
+                "numero": i + 1,
+                "corresponsable": str(corresponsable).strip() if pd.notna(corresponsable) else "",
+                "problematicas": problematicas
+            })
+        
+                
         
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
@@ -1045,7 +1098,7 @@ if archivo:
                 lineas_fp=lineas_fp,
                 lineas_mixtas=lineas_mixtas,
                 logo_muni_path=str(logo_muni_path),
-
+                lineas_accion_data=lineas_accion_data,
             )
 
             pdf_bytes = pdf_buffer.getvalue()
