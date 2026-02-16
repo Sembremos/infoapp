@@ -1920,25 +1920,25 @@ def generar_pdf(
             PORTADA_PATH = "assets/la.png"
 
             # Logos
-            LOGO_WIDTH = 120
-            LOGO_HEIGHT = 120
+            LOGO_WIDTH = 200 #120
+            LOGO_HEIGHT = 200
             LOGO_Y = page_height - 600 #200
             LOGO_X_FP = page_width - 160
             LOGO_X_MUNI = page_width - 300
 
             # Titulo
             TITULO_FONT = "Helvetica-Bold"
-            TITULO_SIZE = 28
+            TITULO_SIZE = 20
             TITULO_COLOR = colors.black
             TITULO_X = 80
-            TITULO_Y = page_height - 600 #300
+            TITULO_Y = page_height - 750 #600
             TITULO_WIDTH = page_width - 160
 
             # Numero linea
             NUMERO_FONT = "Helvetica-Bold"
-            NUMERO_SIZE = 50
+            NUMERO_SIZE = 70
             NUMERO_COLOR = colors.white
-            NUMERO_X = 150 #100
+            NUMERO_X = 250 #100
             NUMERO_Y = page_height - 200
 
             # ===================================
@@ -1960,7 +1960,7 @@ def generar_pdf(
             canvas.drawString(
                 NUMERO_X,
                 NUMERO_Y,
-                f"Línea {linea['numero']}"
+                f"{linea['numero']}"
             )
 
             # ===== TITULO PROBLEMATICAS =====
