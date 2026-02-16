@@ -1967,13 +1967,15 @@ def generar_pdf(
             from reportlab.platypus import Paragraph
             from reportlab.lib.styles import ParagraphStyle
 
+            from reportlab.lib.enums import TA_CENTER
+            
             titulo_style = ParagraphStyle(
                 name="TituloLinea",
                 fontName=TITULO_FONT,
                 fontSize=TITULO_SIZE,
                 textColor=TITULO_COLOR,
-                leading=32
-            )
+                leading=32,
+                alignment=TA_CENTER
 
             texto_titulo = "<br/>".join(linea["problematicas"])
 
