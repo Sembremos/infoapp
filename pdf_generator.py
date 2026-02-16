@@ -1900,10 +1900,6 @@ def generar_pdf(
                     f"Mixtas: {lineas_mixtas}"
                 )
 
-         # =========================================
-        # PORTADAS DINAMICAS LINEAS DE ACCION
-        # =========================================
-
         elif doc.page > 17 and doc.page <= 17 + len(lineas_accion_data):
 
             index_linea = doc.page - 18  # Ajuste de índice
@@ -2020,6 +2016,8 @@ def generar_pdf(
                     height=LOGO_HEIGHT,
                     mask="auto"
                 )
+
+
 
         else:
             header_footer(canvas, doc)
