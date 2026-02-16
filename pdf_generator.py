@@ -1934,7 +1934,7 @@ def generar_pdf(
             TITULO_WIDTH = page_width * 0.7
             TITULO_X = (page_width - TITULO_WIDTH) / 2
             
-            TITULO_Y = page_height - 790
+            TITULO_Y = page_height - 765
 
             # Numero linea
             NUMERO_FONT = "Helvetica-Bold"
