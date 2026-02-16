@@ -1981,7 +1981,7 @@ def generar_pdf(
             texto_titulo = "<br/>".join(linea["problematicas"])
 
             p = Paragraph(texto_titulo, titulo_style)
-            p.wrapOn(canvas, TITULO_WIDTH, 200)
+            w, h = p.wrap(TITULO_WIDTH, 200)
             p.drawOn(canvas, TITULO_X, TITULO_Y)
 
             # ===== LOGOS SEGUN CORRESPONSABLE =====
