@@ -986,7 +986,6 @@ def generar_pdf(
     lineas_fp,
     lineas_mixtas,
     logo_muni_path,
-    logo_muni_path,
     lineas_accion_data,    
 ):
 
