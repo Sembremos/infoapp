@@ -1906,7 +1906,7 @@ def generar_pdf(
                     f"Mixtas: {lineas_mixtas}"
                 )
 
-        elif doc.page >= 18 and doc.page < 18 + len(lineas_accion_data)::
+        elif doc.page >= 18 and doc.page < 18 + len(lineas_accion_data):
 
             index_linea = doc.page - 18  # Ajuste de índice
 
