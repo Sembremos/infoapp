@@ -1920,11 +1920,11 @@ def generar_pdf(
             PORTADA_PATH = "assets/la.png"
 
             # Logos
-            LOGO_WIDTH = 200 #120
-            LOGO_HEIGHT = 200
-            LOGO_Y = page_height - 550 #200
-            LOGO_X_FP = page_width - 160
-            LOGO_X_MUNI = page_width - 300
+            LOGO_WIDTH = 150 #120
+            LOGO_HEIGHT = 150
+            LOGO_Y = page_height - 600 #200
+            LOGO_X_FP = 380
+            LOGO_X_MUNI = 200
 
             # Titulo
             TITULO_FONT = "Helvetica-Bold"
