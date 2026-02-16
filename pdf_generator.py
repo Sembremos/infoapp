@@ -1202,10 +1202,9 @@ def generar_pdf(
     # CREAR PAGINAS DINAMICAS DE PORTADAS
     # =========================================
     
-    for _ in lineas_accion_data:
-        story.append(PageBreak()) 
-
-    story.append(Paragraph("TEST FINAL", styles["Normal"]))
+    for i in range(len(lineas_accion_data)):
+        story.append(PageBreak())
+        story.append(Spacer(1, 1))  # Fuerza contenido mínimo
         
     ##----------------------------------Bloque de funciones 
                  
