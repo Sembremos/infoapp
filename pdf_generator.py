@@ -1976,6 +1976,7 @@ def generar_pdf(
                 textColor=TITULO_COLOR,
                 leading=32,
                 alignment=TA_CENTER
+            )
 
             texto_titulo = "<br/>".join(linea["problematicas"])
 
