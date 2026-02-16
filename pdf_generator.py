@@ -1930,9 +1930,11 @@ def generar_pdf(
             TITULO_FONT = "Helvetica-Bold"
             TITULO_SIZE = 18
             TITULO_COLOR = colors.white
-            TITULO_X = (page_width - TITULO_WIDTH) / 2 #80
-            TITULO_Y = page_height - 790 #600
+            
             TITULO_WIDTH = page_width * 0.7
+            TITULO_X = (page_width - TITULO_WIDTH) / 2
+            
+            TITULO_Y = page_height - 790
 
             # Numero linea
             NUMERO_FONT = "Helvetica-Bold"
