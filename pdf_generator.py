@@ -1983,8 +1983,18 @@ def generar_pdf(
             texto_titulo = "<br/>".join(linea["problematicas"])
 
             p = Paragraph(texto_titulo, titulo_style)
-            w, h = p.wrap(TITULO_WIDTH, 200)
-            p.drawOn(canvas, TITULO_X, TITULO_Y)
+            
+            # Calcular tamaño real que ocupará
+            w, h = p.wrap(TITULO_WIDTH, 500)
+            
+            # Ajuste vertical automático (centrado dentro del botón)
+            AJUSTE_VERTICAL = 25  # podés subir o bajar todo el bloque aquí
+            
+            p.drawOn(
+                canvas,
+                TITULO_X,
+                TITULO_Y - (h / 2) + AJUSTE_VERTICAL
+            )
 
             # ===== LOGOS SEGUN CORRESPONSABLE =====
             if linea["corresponsable"] == "Fuerza Publica":
