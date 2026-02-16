@@ -1976,7 +1976,7 @@ def generar_pdf(
                 fontName=TITULO_FONT,
                 fontSize=TITULO_SIZE,
                 textColor=TITULO_COLOR,
-                leading=32,
+                leading=22,
                 alignment=TA_CENTER
             )
 
@@ -1988,7 +1988,7 @@ def generar_pdf(
             w, h = p.wrap(TITULO_WIDTH, 500)
             
             # Ajuste vertical automático (centrado dentro del botón)
-            AJUSTE_VERTICAL = 25  # podés subir o bajar todo el bloque aquí
+            AJUSTE_VERTICAL = 20  # podés subir o bajar todo el bloque aquí
             
             p.drawOn(
                 canvas,
