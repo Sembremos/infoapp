@@ -1040,6 +1040,7 @@ if archivo:
             })
         
                 
+        st.write("Cantidad de lineas detectadas:", len(lineas_accion_data)) ###debugging
         
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
