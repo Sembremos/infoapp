@@ -1197,7 +1197,14 @@ def generar_pdf(
     "Estos líderes estratégicos aseguran que cada etapa del plan se lleve a cabo de manera efectiva y que las intervenciones estén alineadas con los objetivos planteados. Su liderazgo y supervisión continua son cruciales para el éxito de la estrategia SEMBREMOS SEGURIDAD.",
     styles["NormalJustificado"]
     ))
+
+   # =========================================
+    # CREAR PAGINAS DINAMICAS DE PORTADAS
+    # =========================================
     
+    for _ in lineas_accion_data:
+        story.append(PageBreak()) 
+        
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
