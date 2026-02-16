@@ -986,6 +986,8 @@ def generar_pdf(
     lineas_fp,
     lineas_mixtas,
     logo_muni_path,
+    logo_muni_path,
+    lineas_accion_data,    
 ):
 
     buffer = BytesIO()
@@ -1896,6 +1898,127 @@ def generar_pdf(
                     MIXTAS_X,
                     MIXTAS_Y,
                     f"Mixtas: {lineas_mixtas}"
+                )
+
+         # =========================================
+        # PORTADAS DINAMICAS LINEAS DE ACCION
+        # =========================================
+
+        elif doc.page > 17 and doc.page <= 17 + len(lineas_accion_data):
+
+            index_linea = doc.page - 18  # Ajuste de índice
+
+            linea = lineas_accion_data[index_linea]
+
+            page_width, page_height = A4
+
+            # ===== VARIABLES CONFIGURABLES =====
+
+            PORTADA_PATH = "assets/la.png"
+
+            # Logos
+            LOGO_WIDTH = 120
+            LOGO_HEIGHT = 120
+            LOGO_Y = page_height - 200
+            LOGO_X_FP = page_width - 160
+            LOGO_X_MUNI = page_width - 300
+
+            # Titulo
+            TITULO_FONT = "Helvetica-Bold"
+            TITULO_SIZE = 28
+            TITULO_COLOR = colors.white
+            TITULO_X = 80
+            TITULO_Y = page_height - 300
+            TITULO_WIDTH = page_width - 160
+
+            # Numero linea
+            NUMERO_FONT = "Helvetica-Bold"
+            NUMERO_SIZE = 50
+            NUMERO_COLOR = colors.white
+            NUMERO_X = 100
+            NUMERO_Y = page_height - 200
+
+            # ===================================
+
+            # ===== DIBUJAR PORTADA FULL =====
+            canvas.drawImage(
+                PORTADA_PATH,
+                0,
+                0,
+                width=page_width,
+                height=page_height,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+
+            # ===== NUMERO LINEA =====
+            canvas.setFont(NUMERO_FONT, NUMERO_SIZE)
+            canvas.setFillColor(NUMERO_COLOR)
+            canvas.drawString(
+                NUMERO_X,
+                NUMERO_Y,
+                f"Línea {linea['numero']}"
+            )
+
+            # ===== TITULO PROBLEMATICAS =====
+            from reportlab.platypus import Paragraph
+            from reportlab.lib.styles import ParagraphStyle
+
+            titulo_style = ParagraphStyle(
+                name="TituloLinea",
+                fontName=TITULO_FONT,
+                fontSize=TITULO_SIZE,
+                textColor=TITULO_COLOR,
+                leading=32
+            )
+
+            texto_titulo = "<br/>".join(linea["problematicas"])
+
+            p = Paragraph(texto_titulo, titulo_style)
+            p.wrapOn(canvas, TITULO_WIDTH, 200)
+            p.drawOn(canvas, TITULO_X, TITULO_Y)
+
+            # ===== LOGOS SEGUN CORRESPONSABLE =====
+            if linea["corresponsable"] == "Fuerza Publica":
+
+                canvas.drawImage(
+                    "assets/fp.png",
+                    LOGO_X_FP,
+                    LOGO_Y,
+                    width=LOGO_WIDTH,
+                    height=LOGO_HEIGHT,
+                    mask="auto"
+                )
+
+            elif linea["corresponsable"] == "Municipalidad":
+
+                canvas.drawImage(
+                    logo_muni_path,
+                    LOGO_X_FP,
+                    LOGO_Y,
+                    width=LOGO_WIDTH,
+                    height=LOGO_HEIGHT,
+                    mask="auto"
+                )
+
+            elif linea["corresponsable"] == "Mixta":
+
+                canvas.drawImage(
+                    "assets/fp.png",
+                    LOGO_X_FP,
+                    LOGO_Y,
+                    width=LOGO_WIDTH,
+                    height=LOGO_HEIGHT,
+                    mask="auto"
+                )
+
+                canvas.drawImage(
+                    logo_muni_path,
+                    LOGO_X_MUNI,
+                    LOGO_Y,
+                    width=LOGO_WIDTH,
+                    height=LOGO_HEIGHT,
+                    mask="auto"
                 )
 
         else:
