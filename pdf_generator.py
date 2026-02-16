@@ -1922,7 +1922,7 @@ def generar_pdf(
             # Logos
             LOGO_WIDTH = 200 #120
             LOGO_HEIGHT = 200
-            LOGO_Y = page_height - 600 #200
+            LOGO_Y = page_height - 550 #200
             LOGO_X_FP = page_width - 160
             LOGO_X_MUNI = page_width - 300
 
@@ -1930,15 +1930,15 @@ def generar_pdf(
             TITULO_FONT = "Helvetica-Bold"
             TITULO_SIZE = 20
             TITULO_COLOR = colors.black
-            TITULO_X = 80
-            TITULO_Y = page_height - 750 #600
+            TITULO_X = 100 #80
+            TITULO_Y = page_height - 770 #600
             TITULO_WIDTH = page_width - 160
 
             # Numero linea
             NUMERO_FONT = "Helvetica-Bold"
-            NUMERO_SIZE = 70
+            NUMERO_SIZE = 150
             NUMERO_COLOR = colors.white
-            NUMERO_X = 250 #100
+            NUMERO_X = 400 #200
             NUMERO_Y = page_height - 200
 
             # ===================================
