@@ -964,7 +964,7 @@ def draw_pagina_linea_accion(
     SUBTITULO_SIZE = 14
     SUBTITULO_COLOR = colors.HexColor("#013051")
     SUBTITULO_X = 80
-    SUBTITULO_Y = page_height - 60
+    SUBTITULO_Y = page_height - 70
 
     TITULO_FONT = "Helvetica-Bold"
     TITULO_SIZE = 18
@@ -1009,7 +1009,7 @@ def draw_pagina_linea_accion(
     texto_titulo = "<br/>".join(linea["problematicas"])
     p = Paragraph(texto_titulo, titulo_style)
     w, h = p.wrap(TITULO_WIDTH, 200)
-    p.drawOn(canvas, TITULO_X, TITULO_Y)
+    p.drawOn(canvas, TITULO_X, TITULO_Y - h)
 
     # ===== VECTORES =====
     total_vectores = len(linea["problematicas"])
