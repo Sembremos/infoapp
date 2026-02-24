@@ -964,22 +964,22 @@ def draw_pagina_linea_accion(
     SUBTITULO_SIZE = 14
     SUBTITULO_COLOR = colors.HexColor("#013051")
     SUBTITULO_X = 40
-    SUBTITULO_Y = page_height - 60
+    SUBTITULO_Y = page_height - 110
 
     TITULO_FONT = "Helvetica-Bold"
     TITULO_SIZE = 18
-    TITULO_COLOR = colors.black
+    TITULO_COLOR = colors.HexColor("#013051")
     TITULO_WIDTH = page_width * 0.8
     TITULO_X = (page_width - TITULO_WIDTH) / 2
-    TITULO_Y = page_height - 100
+    TITULO_Y = page_height - 120
 
-    VECTOR_WIDTH = 90
-    VECTOR_HEIGHT = 90
+    VECTOR_WIDTH = 120
+    VECTOR_HEIGHT = 120
     VECTOR_Y = page_height - 200
     VECTOR_SPACING = 30
 
     TABLA_C_X = 40
-    TABLA_C_Y = page_height - 350
+    TABLA_C_Y = page_height - 250
     TABLA_C_WIDTH = page_width * 0.45
 
     TABLA_P_X = page_width / 2 + 10
