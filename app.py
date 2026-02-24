@@ -1042,7 +1042,7 @@ if archivo:
             for fila in range(246, 276):
                 valor = df.iloc[fila, col_problema]
                 if pd.notna(valor) and str(valor).strip() != "":
-                    problemas.append([str(valor).strip(), ""])
+                    problemas.append([str(valor).strip()])
         
             lineas_accion_data.append({
                 "numero": i + 1,
