@@ -2041,9 +2041,9 @@ def generar_pdf(
                     f"Mixtas: {lineas_mixtas}"
                 )
 
-        elif doc.page >= 18:
+        elif doc.page >= 19:
 
-            index = (doc.page - 18) // 2
+            index = (doc.page - 19) // 2
         
             if index < len(lineas_accion_data):
                             
@@ -2053,7 +2053,7 @@ def generar_pdf(
                 # =====================================
                 # PAGINA PAR → PORTADA
                 # =====================================
-                if (doc.page - 18) % 2 == 0:
+                if (doc.page - 19) % 2 == 0:
         
                     canvas.drawImage(
                         "assets/la.png",
