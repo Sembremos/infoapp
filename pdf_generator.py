@@ -964,14 +964,14 @@ def draw_pagina_linea_accion(
     SUBTITULO_SIZE = 14
     SUBTITULO_COLOR = colors.HexColor("#013051")
     SUBTITULO_X = 65
-    SUBTITULO_Y = page_height - 70
+    SUBTITULO_Y = page_height - 80
 
     TITULO_FONT = "Helvetica-Bold"
     TITULO_SIZE = 18
     TITULO_COLOR = colors.HexColor("#013051")
     TITULO_WIDTH = page_width * 0.8
     TITULO_X = (page_width - TITULO_WIDTH) / 2
-    TITULO_Y = page_height - 15
+    TITULO_Y = page_height - 105
 
     VECTOR_WIDTH = 150
     VECTOR_HEIGHT = 150
