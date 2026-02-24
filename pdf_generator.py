@@ -2046,7 +2046,7 @@ def generar_pdf(
             index = (doc.page - 18) // 2
         
             if index < len(lineas_accion_data):
-            print("PAGE:", doc.page, "INDEX:", index, "TOTAL:", len(lineas_accion_data)) #test indice
+                print("PAGE:", doc.page, "INDEX:", index, "TOTAL:", len(lineas_accion_data)) #test indice
             
                 linea = lineas_accion_data[index]
                 page_width, page_height = A4
