@@ -971,11 +971,11 @@ def draw_pagina_linea_accion(
     TITULO_COLOR = colors.HexColor("#013051")
     TITULO_WIDTH = page_width * 0.8
     TITULO_X = (page_width - TITULO_WIDTH) / 2
-    TITULO_Y = page_height - 120
+    TITULO_Y = page_height - 130
 
-    VECTOR_WIDTH = 120
-    VECTOR_HEIGHT = 120
-    VECTOR_Y = page_height - 200
+    VECTOR_WIDTH = 150
+    VECTOR_HEIGHT = 150
+    VECTOR_Y = page_height - 300
     VECTOR_SPACING = 30
 
     TABLA_C_X = 40
@@ -983,7 +983,7 @@ def draw_pagina_linea_accion(
     TABLA_C_WIDTH = page_width * 0.45
 
     TABLA_P_X = page_width / 2 + 10
-    TABLA_P_Y = page_height - 350
+    TABLA_P_Y = page_height - 300
     TABLA_P_WIDTH = page_width * 0.45
     # =================================================
 
