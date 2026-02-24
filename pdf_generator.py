@@ -1,3 +1,6 @@
+import unicodedata
+import re
+import os
 from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
@@ -930,6 +933,134 @@ def draw_tabla_dias_distritos_p15(
 
     table.wrapOn(canvas, TABLE_WIDTH, 2000)
     table.drawOn(canvas, x, y - table._height)
+
+#==============================DEFINICION; LINEAS ACCION==========
+
+def normalizar_nombre(texto):
+    texto = texto.lower()
+    texto = ''.join(
+        c for c in unicodedata.normalize('NFD', texto)
+        if unicodedata.category(c) != 'Mn'
+    )
+    texto = re.sub(r"[()]", "", texto)
+    texto = texto.replace(" ", "_")
+    texto = re.sub(r"[^a-z0-9_]", "", texto)
+    return texto
+
+def draw_pagina_linea_accion(
+    canvas,
+    doc,
+    linea,
+    vectores_path="assets/vectores"
+):
+    page_width, page_height = A4
+
+    # ================= CONFIGURABLES =================
+    SUBTITULO_FONT = "Helvetica-Bold"
+    SUBTITULO_SIZE = 14
+    SUBTITULO_COLOR = colors.HexColor("#013051")
+    SUBTITULO_X = 40
+    SUBTITULO_Y = page_height - 60
+
+    TITULO_FONT = "Helvetica-Bold"
+    TITULO_SIZE = 18
+    TITULO_COLOR = colors.black
+    TITULO_WIDTH = page_width * 0.8
+    TITULO_X = (page_width - TITULO_WIDTH) / 2
+    TITULO_Y = page_height - 100
+
+    VECTOR_WIDTH = 90
+    VECTOR_HEIGHT = 90
+    VECTOR_Y = page_height - 200
+    VECTOR_SPACING = 30
+
+    TABLA_C_X = 40
+    TABLA_C_Y = page_height - 350
+    TABLA_C_WIDTH = page_width * 0.45
+
+    TABLA_P_X = page_width / 2 + 10
+    TABLA_P_Y = page_height - 350
+    TABLA_P_WIDTH = page_width * 0.45
+    # =================================================
+
+    # ===== SUBTITULO =====
+    canvas.setFont(SUBTITULO_FONT, SUBTITULO_SIZE)
+    canvas.setFillColor(SUBTITULO_COLOR)
+    canvas.drawString(SUBTITULO_X, SUBTITULO_Y, "Líneas de Acción")
+
+    # ===== TITULO =====
+    from reportlab.platypus import Paragraph
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER
+
+    titulo_style = ParagraphStyle(
+        name="TituloLineaInterna",
+        fontName=TITULO_FONT,
+        fontSize=TITULO_SIZE,
+        textColor=TITULO_COLOR,
+        alignment=TA_CENTER
+    )
+
+    texto_titulo = "<br/>".join(linea["problematicas"])
+    p = Paragraph(texto_titulo, titulo_style)
+    w, h = p.wrap(TITULO_WIDTH, 200)
+    p.drawOn(canvas, TITULO_X, TITULO_Y)
+
+    # ===== VECTORES =====
+    total_vectores = len(linea["problematicas"])
+    if total_vectores > 0:
+        total_width = total_vectores * VECTOR_WIDTH + (total_vectores - 1) * VECTOR_SPACING
+        start_x = (page_width - total_width) / 2
+
+        for i, problema in enumerate(linea["problematicas"]):
+            nombre = normalizar_nombre(problema) + ".png"
+            ruta = os.path.join(vectores_path, nombre)
+
+            if os.path.exists(ruta):
+                canvas.drawImage(
+                    ruta,
+                    start_x + i * (VECTOR_WIDTH + VECTOR_SPACING),
+                    VECTOR_Y,
+                    width=VECTOR_WIDTH,
+                    height=VECTOR_HEIGHT,
+                    preserveAspectRatio=True,
+                    mask="auto"
+                )
+
+    # ===== TABLA CAUSAS =====
+    from reportlab.platypus import Table, TableStyle
+
+    tabla_c = Table(
+        [["Causas Socio Culturales y Estructurales"]] + linea["causas"],
+        colWidths=[TABLA_C_WIDTH]
+    )
+
+    tabla_c.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#30A907")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+    ]))
+
+    tabla_c.wrapOn(canvas, TABLA_C_WIDTH, 400)
+    tabla_c.drawOn(canvas, TABLA_C_X, TABLA_C_Y - tabla_c._height)
+
+    # ===== TABLA PROBLEMAS =====
+    tabla_p = Table(
+        [["Problemas Influyentes", ""]] + linea["problemas_influyentes"],
+        colWidths=[TABLA_P_WIDTH / 2, TABLA_P_WIDTH / 2]
+    )
+
+    tabla_p.setStyle(TableStyle([
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+    ]))
+
+    tabla_p.wrapOn(canvas, TABLA_P_WIDTH, 400)
+    tabla_p.drawOn(canvas, TABLA_P_X, TABLA_P_Y - tabla_p._height)
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
@@ -1907,138 +2038,106 @@ def generar_pdf(
                     f"Mixtas: {lineas_mixtas}"
                 )
 
-        elif doc.page >= 18 and doc.page < 18 + len(lineas_accion_data):
+        elif doc.page >= 18:
 
-            index_linea = doc.page - 18  # Ajuste de índice
-
-            linea = lineas_accion_data[index_linea]
-
-            page_width, page_height = A4
-
-            # ===== VARIABLES CONFIGURABLES =====
-
-            PORTADA_PATH = "assets/la.png"
-
-            # Logos
-            LOGO_WIDTH = 200 #120
-            LOGO_HEIGHT = 200
-            LOGO_Y = page_height - 675 #200
-            LOGO_X_FP = 380
-            LOGO_X_MUNI = 200
-
-            # Titulo
-            TITULO_FONT = "Helvetica-Bold"
-            TITULO_SIZE = 18
-            TITULO_COLOR = colors.white
-            
-            TITULO_WIDTH = page_width * 0.7
-            TITULO_X = (page_width - TITULO_WIDTH) / 2
-            
-            TITULO_Y = page_height - 765
-
-            # Numero linea
-            NUMERO_FONT = "Helvetica-Bold"
-            NUMERO_SIZE = 150
-            NUMERO_COLOR = colors.white
-            NUMERO_X = 400 #200
-            NUMERO_Y = page_height - 300
-
-            # ===================================
-
-            # ===== DIBUJAR PORTADA FULL =====
-            canvas.drawImage(
-                PORTADA_PATH,
-                0,
-                0,
-                width=page_width,
-                height=page_height,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-
-            # ===== NUMERO LINEA =====
-            canvas.setFont(NUMERO_FONT, NUMERO_SIZE)
-            canvas.setFillColor(NUMERO_COLOR)
-            canvas.drawString(
-                NUMERO_X,
-                NUMERO_Y,
-                f"{linea['numero']}"
-            )
-
-            # ===== TITULO PROBLEMATICAS =====
-            from reportlab.platypus import Paragraph
-            from reportlab.lib.styles import ParagraphStyle
-
-            from reportlab.lib.enums import TA_CENTER
-            
-            titulo_style = ParagraphStyle(
-                name="TituloLinea",
-                fontName=TITULO_FONT,
-                fontSize=TITULO_SIZE,
-                textColor=TITULO_COLOR,
-                leading=22,
-                alignment=TA_CENTER
-            )
-
-            texto_titulo = "<br/>".join(linea["problematicas"])
-
-            p = Paragraph(texto_titulo, titulo_style)
-            
-            # Calcular tamaño real que ocupará
-            w, h = p.wrap(TITULO_WIDTH, 500)
-            
-            # Ajuste vertical automático (centrado dentro del botón)
-            AJUSTE_VERTICAL = 20  # podés subir o bajar todo el bloque aquí
-            
-            p.drawOn(
-                canvas,
-                TITULO_X,
-                TITULO_Y - (h / 2) + AJUSTE_VERTICAL
-            )
-
-            # ===== LOGOS SEGUN CORRESPONSABLE =====
-            if linea["corresponsable"] == "Fuerza Publica":
-
-                canvas.drawImage(
-                    "assets/fp.png",
-                    LOGO_X_FP,
-                    LOGO_Y,
-                    width=LOGO_WIDTH,
-                    height=LOGO_HEIGHT,
-                    mask="auto"
-                )
-
-            elif linea["corresponsable"] == "Municipalidad":
-
-                canvas.drawImage(
-                    logo_muni_path,
-                    LOGO_X_FP,
-                    LOGO_Y,
-                    width=LOGO_WIDTH,
-                    height=LOGO_HEIGHT,
-                    mask="auto"
-                )
-
-            elif linea["corresponsable"] == "Mixta":
-
-                canvas.drawImage(
-                    "assets/fp.png",
-                    LOGO_X_FP,
-                    LOGO_Y,
-                    width=LOGO_WIDTH,
-                    height=LOGO_HEIGHT,
-                    mask="auto"
-                )
-
-                canvas.drawImage(
-                    logo_muni_path,
-                    LOGO_X_MUNI,
-                    LOGO_Y,
-                    width=LOGO_WIDTH,
-                    height=LOGO_HEIGHT,
-                    mask="auto"
-                )
-
+            index = (doc.page - 18) // 2
+        
+            if index < len(lineas_accion_data):
+        
+                linea = lineas_accion_data[index]
+                page_width, page_height = A4
+        
+                # =====================================
+                # SI ES PAGINA PAR → PORTADA
+                # =====================================
+                if (doc.page - 18) % 2 == 0:
+        
+                    PORTADA_PATH = "assets/la.png"
+        
+                    canvas.drawImage(
+                        PORTADA_PATH,
+                        0,
+                        0,
+                        width=page_width,
+                        height=page_height,
+                        preserveAspectRatio=True,
+                        mask="auto"
+                    )
+        
+                    # ===== NUMERO =====
+                    canvas.setFont("Helvetica-Bold", 150)
+                    canvas.setFillColor(colors.white)
+                    canvas.drawString(400, page_height - 300, f"{linea['numero']}")
+        
+                    # ===== TITULO =====
+                    titulo_style = ParagraphStyle(
+                        name="TituloLinea",
+                        fontName="Helvetica-Bold",
+                        fontSize=18,
+                        textColor=colors.white,
+                        alignment=TA_CENTER
+                    )
+        
+                    TITULO_WIDTH = page_width * 0.7
+                    TITULO_X = (page_width - TITULO_WIDTH) / 2
+                    TITULO_Y = page_height - 765
+        
+                    texto_titulo = "<br/>".join(linea["problematicas"])
+                    p = Paragraph(texto_titulo, titulo_style)
+                    w, h = p.wrap(TITULO_WIDTH, 500)
+        
+                    p.drawOn(canvas, TITULO_X, TITULO_Y - (h / 2))
+        
+                    # ===== LOGOS =====
+                    if linea["corresponsable"] == "Fuerza Publica":
+        
+                        canvas.drawImage(
+                            "assets/fp.png",
+                            380,
+                            page_height - 675,
+                            width=200,
+                            height=200,
+                            mask="auto"
+                        )
+        
+                    elif linea["corresponsable"] == "Municipalidad":
+        
+                        canvas.drawImage(
+                            logo_muni_path,
+                            380,
+                            page_height - 675,
+                            width=200,
+                            height=200,
+                            mask="auto"
+                        )
+        
+                    elif linea["corresponsable"] == "Mixta":
+        
+                        canvas.drawImage(
+                            "assets/fp.png",
+                            380,
+                            page_height - 675,
+                            width=200,
+                            height=200,
+                            mask="auto"
+                        )
+        
+                        canvas.drawImage(
+                            logo_muni_path,
+                            200,
+                            page_height - 675,
+                            width=200,
+                            height=200,
+                            mask="auto"
+                        )
+        
+                # =====================================
+                # SI ES IMPAR → PAGINA INTERNA
+                # =====================================
+                else:
+        
+                    header_footer(canvas, doc)
+                    draw_pagina_linea_accion(canvas, doc, linea)
 
 
         else:
