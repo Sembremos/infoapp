@@ -1031,11 +1031,26 @@ def draw_pagina_linea_accion(
                     mask="auto"
                 )
 
+    #FORMATO DE CELDAS
+    CELDA_STYLE = ParagraphStyle(
+        name="CeldaTabla",
+        fontName="Helvetica",
+        fontSize=9,
+        leading=11,   # controla interlineado
+        alignment=TA_LEFT
+    )
+    
     # ===== TABLA CAUSAS =====
     from reportlab.platypus import Table, TableStyle
 
+    tabla_c_data = [["Causas Socio Culturales y Estructurales"]]
+    
+    for fila in linea["causas"]:
+        texto = Paragraph(fila[0], CELDA_STYLE)
+        tabla_c_data.append([texto])
+    
     tabla_c = Table(
-        [["Causas Socio Culturales y Estructurales"]] + linea["causas"],
+        tabla_c_data,
         colWidths=[TABLA_C_WIDTH]
     )
 
@@ -1050,8 +1065,14 @@ def draw_pagina_linea_accion(
     tabla_c.drawOn(canvas, TABLA_C_X, TABLA_C_Y - tabla_c._height)
 
     # ===== TABLA PROBLEMAS =====
+    tabla_p_data = [["Problematicas Influyentes"]]
+
+    for fila in linea["problemas_influyentes"]:
+        texto = Paragraph(fila[0], CELDA_STYLE)
+        tabla_p_data.append([texto])
+    
     tabla_p = Table(
-        [["Problematicas Influyentes"]] + linea["problemas_influyentes"],
+        tabla_p_data,
         colWidths=[TABLA_P_WIDTH]
     )
 
