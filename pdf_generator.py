@@ -1001,7 +1001,7 @@ def draw_pagina_linea_accion(
         name="TituloLineaInterna",
         fontName=TITULO_FONT,
         fontSize=TITULO_SIZE,
-        leading=TITULA_SIZE + 5,
+        leading=TITULO_SIZE + 5,
         textColor=TITULO_COLOR,
         alignment=TA_CENTER
     )
