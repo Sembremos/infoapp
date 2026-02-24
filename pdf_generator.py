@@ -979,11 +979,11 @@ def draw_pagina_linea_accion(
     VECTOR_SPACING = 30
 
     TABLA_C_X = 40
-    TABLA_C_Y = page_height - 250
+    TABLA_C_Y = page_height - 310
     TABLA_C_WIDTH = page_width * 0.45
 
     TABLA_P_X = page_width / 2 + 10
-    TABLA_P_Y = page_height - 300
+    TABLA_P_Y = page_height - 310
     TABLA_P_WIDTH = page_width * 0.45
     # =================================================
 
