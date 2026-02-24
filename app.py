@@ -1023,7 +1023,7 @@ if archivo:
             for col in [1, 2, 3]:  # B, C, D
                 valor = df.iloc[fila_problematicas, col]
                 if pd.notna(valor) and str(valor).strip() != "":
-                    problematicas.append(str(valor))
+                    problemas.append([str(valor)])
         
             # ===== CAUSAS =====
             col_causa = columnas_causas[i]
@@ -1131,4 +1131,3 @@ if archivo:
     
     except Exception as e:
         st.error(f"Error procesando el archivo: {e}")
-
