@@ -1007,6 +1007,11 @@ if archivo:
             75   # BX246
         ]
 
+        # ================= COLUMNAS DINAMICAS LINEAS DE ACCION =================
+
+        columnas_causas = [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71]
+        columnas_problemas = [6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72]
+
         lineas_accion_data = []
 
         for i in range(int(total_lineas)):
