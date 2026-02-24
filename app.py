@@ -1008,37 +1008,42 @@ if archivo:
         ]
         
         lineas_accion_data = []
-        
-        for i in range(int(total_lineas)):
-        
-            # ===== CORRESPONSABLE =====
-            col_corresp = columnas_corresponsables[i]
-            corresponsable = df.iloc[245, col_corresp]
-        
-            # ===== PROBLEMATICAS (B242-D253) =====
-            fila_problematicas = 241 + i  # B242 empieza en índice 241
-        
-            problematica_1 = df.iloc[fila_problematicas, 1]
-            problematica_2 = df.iloc[fila_problematicas, 2]
-            problematica_3 = df.iloc[fila_problematicas, 3]
-        
-            problematicas = []
-        
-            if pd.notna(problematica_1):
-                problematicas.append(str(problematica_1))
-        
-            if pd.notna(problematica_2):
-                problematicas.append(str(problematica_2))
-        
-            if pd.notna(problematica_3):
-                problematicas.append(str(problematica_3))
-        
-            lineas_accion_data.append({
-                "numero": i + 1,
-                "corresponsable": str(corresponsable).strip() if pd.notna(corresponsable) else "",
-                "problematicas": problematicas
-            })
-        
+
+            for i in range(int(total_lineas)):
+            
+                fila_problematicas = 241 + i  # B242 empieza en 241
+            
+                # ===== PROBLEMATICAS =====
+                problematicas = []
+                for col in [1, 2, 3]:  # B, C, D
+                    valor = df.iloc[fila_problematicas, col]
+                    if pd.notna(valor) and str(valor).strip() != "":
+                        problematicas.append(str(valor).strip())
+            
+                # ===== CAUSAS =====
+                col_causa = columnas_causas[i]
+                causas = []
+            
+                for fila in range(246, 276):  # F247 a F276 (índice 246–275)
+                    valor = df.iloc[fila, col_causa]
+                    if pd.notna(valor) and str(valor).strip() != "":
+                        causas.append([str(valor).strip()])
+            
+                # ===== PROBLEMAS INFLUYENTES =====
+                col_problema = columnas_problemas[i]
+                problemas = []
+            
+                for fila in range(246, 276):
+                    valor = df.iloc[fila, col_problema]
+                    if pd.notna(valor) and str(valor).strip() != "":
+                        problemas.append([str(valor).strip(), ""])  # segunda columna vacía por ahora
+            
+                lineas_accion_data.append({
+                    "numero": i + 1,
+                    "problematicas": problematicas,
+                    "causas": causas,
+                    "problemas_influyentes": problemas
+                })
                 
         st.write("Cantidad de lineas detectadas:", len(lineas_accion_data)) ###debugging
         
