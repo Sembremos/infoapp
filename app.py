@@ -1105,6 +1105,12 @@ if archivo:
                 lineas_mixtas=lineas_mixtas,
                 logo_muni_path=str(logo_muni_path),
                 lineas_accion_data=lineas_accion_data,
+                total_lineas=total_lineas,
+                lineas_municipalidad=lineas_municipalidad,
+                lineas_fp=lineas_fp,
+                lineas_mixtas=lineas_mixtas,
+                logo_muni_path=logo_muni_path,
+                lineas_accion_data=lineas_accion_data,
             )
 
             pdf_bytes = pdf_buffer.getvalue()
