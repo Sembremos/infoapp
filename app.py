@@ -1047,7 +1047,12 @@ if archivo:
                 "numero": i + 1,
                 "problematicas": problematicas,
                 "causas": causas,
-                "problemas_influyentes": problemas
+                "problemas_influyentes": problemas,
+                "corresponsable": (
+                    "Municipalidad" if i < int(lineas_municipalidad)
+                    else "Fuerza Publica" if i < int(lineas_municipalidad) + int(lineas_fp)
+                    else "Mixta"
+                )
             })
 
                 
