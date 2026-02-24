@@ -938,13 +938,17 @@ def draw_tabla_dias_distritos_p15(
 
 def normalizar_nombre(texto):
     texto = texto.lower()
+
     texto = ''.join(
         c for c in unicodedata.normalize('NFD', texto)
         if unicodedata.category(c) != 'Mn'
     )
-    texto = re.sub(r"[()]", "", texto)
+
     texto = texto.replace(" ", "_")
-    texto = re.sub(r"[^a-z0-9_]", "", texto)
+
+    # 🔥 IMPORTANTE: NO quitamos paréntesis ahora
+    texto = re.sub(r"[^a-z0-9_()]", "", texto)
+
     return texto
 
 def draw_pagina_linea_accion(
