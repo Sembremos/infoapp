@@ -1333,9 +1333,8 @@ def generar_pdf(
     # CREAR PAGINAS DINAMICAS DE PORTADAS
     # =========================================
     
-    for i in range(len(lineas_accion_data)):
-        story.append(PageBreak())
-        story.append(Spacer(1, 1))  # Fuerza contenido mínimo
+for i in range(len(lineas_accion_data) * 2):
+    story.append(PageBreak())
         
     ##----------------------------------Bloque de funciones 
                  
@@ -2048,14 +2047,12 @@ def generar_pdf(
                 page_width, page_height = A4
         
                 # =====================================
-                # SI ES PAGINA PAR → PORTADA
+                # PAGINA PAR → PORTADA
                 # =====================================
                 if (doc.page - 18) % 2 == 0:
         
-                    PORTADA_PATH = "assets/la.png"
-        
                     canvas.drawImage(
-                        PORTADA_PATH,
+                        "assets/la.png",
                         0,
                         0,
                         width=page_width,
@@ -2064,12 +2061,12 @@ def generar_pdf(
                         mask="auto"
                     )
         
-                    # ===== NUMERO =====
+                    # NUMERO
                     canvas.setFont("Helvetica-Bold", 150)
                     canvas.setFillColor(colors.white)
                     canvas.drawString(400, page_height - 300, f"{linea['numero']}")
         
-                    # ===== TITULO =====
+                    # TITULO
                     titulo_style = ParagraphStyle(
                         name="TituloLinea",
                         fontName="Helvetica-Bold",
@@ -2088,7 +2085,7 @@ def generar_pdf(
         
                     p.drawOn(canvas, TITULO_X, TITULO_Y - (h / 2))
         
-                    # ===== LOGOS =====
+                    # LOGOS
                     if linea["corresponsable"] == "Fuerza Publica":
         
                         canvas.drawImage(
@@ -2132,13 +2129,12 @@ def generar_pdf(
                         )
         
                 # =====================================
-                # SI ES IMPAR → PAGINA INTERNA
+                # PAGINA IMPAR → INTERNA
                 # =====================================
                 else:
         
                     header_footer(canvas, doc)
                     draw_pagina_linea_accion(canvas, doc, linea)
-
 
         else:
             header_footer(canvas, doc)
