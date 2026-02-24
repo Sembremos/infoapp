@@ -1051,7 +1051,7 @@ def draw_pagina_linea_accion(
 
     # ===== TABLA PROBLEMAS =====
     tabla_p = Table(
-        [["Problematicas Influyentes", ""]] + linea["problemas_influyentes"],
+        [["Problematicas Influyentes"]] + linea["problemas_influyentes"],
         colWidths=[TABLA_P_WIDTH]
     )
 
