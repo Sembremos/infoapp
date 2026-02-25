@@ -1177,6 +1177,147 @@ def draw_pagina_linea_accion(
     tabla_c.drawOn(canvas, 40, y_tabla_c)
     tabla_p.drawOn(canvas, 40, y_tabla_p)
 
+##==================segunda pagina LA================
+
+def draw_pagina_linea_accion_detalle(canvas, doc, linea):
+    from reportlab.platypus import Paragraph, Table, TableStyle
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.enums import TA_LEFT
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+
+    page_width, page_height = A4
+
+    # ================= CONFIGURABLES =================
+
+    MARGEN_X = 40
+    ANCHO_UTIL = page_width - 80
+
+    OBJ_TITULO_FONT = "Helvetica-Bold"
+    OBJ_TITULO_SIZE = 14
+    OBJ_TEXTO_SIZE = 11
+
+    OBJ_Y = page_height - 120
+
+    LIDER_Y = page_height - 200
+    LIDER_HEIGHT = 35
+
+    BLOQUE_Y = page_height - 260
+
+    ESPACIO_BLOQUES = 30
+
+    COLOR_AZUL_1 = colors.HexColor("#9DC3E6")
+    COLOR_AZUL_2 = colors.HexColor("#D9E1F2")
+
+    COLOR_TITULO_TABLA = colors.HexColor("#013051")
+    COLOR_HEADER_TABLA = colors.HexColor("#30A907")
+
+    # =================================================
+
+    # ===== OBJETIVO GENERAL =====
+
+    canvas.setFont(OBJ_TITULO_FONT, OBJ_TITULO_SIZE)
+    canvas.drawString(MARGEN_X, OBJ_Y, "Objetivo general de la intervención:")
+
+    objetivo_texto = "Optimizar la identificación y respuesta a reincidentes en situación de calle, mejorando la eficacia policial y reduciendo los delitos para aumentar la seguridad comunitaria."
+
+    estilo_obj = ParagraphStyle(
+        name="objetivo",
+        fontName="Helvetica",
+        fontSize=OBJ_TEXTO_SIZE,
+        leading=15,
+        alignment=TA_LEFT
+    )
+
+    p_obj = Paragraph(objetivo_texto, estilo_obj)
+    w, h = p_obj.wrap(ANCHO_UTIL, 200)
+    p_obj.drawOn(canvas, MARGEN_X, OBJ_Y - 20 - h)
+
+    # ===== LIDER ESTRATEGICO =====
+
+    if linea["lider_estrategico"]:
+
+        data_lider = [
+            ["Líder Estratégico", linea["lider_estrategico"]]
+        ]
+
+        tabla_lider = Table(
+            data_lider,
+            colWidths=[ANCHO_UTIL * 0.4, ANCHO_UTIL * 0.6],
+            rowHeights=[LIDER_HEIGHT]
+        )
+
+        tabla_lider.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (0, 0), COLOR_AZUL_1),
+            ("BACKGROUND", (1, 0), (1, 0), COLOR_AZUL_2),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.white),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ]))
+
+        tabla_lider.wrapOn(canvas, ANCHO_UTIL, 100)
+        tabla_lider.drawOn(canvas, MARGEN_X, LIDER_Y)
+
+    current_y = BLOQUE_Y
+
+    # ===== ACCIONES ESTRATEGICAS =====
+
+    if linea["acciones"]:
+
+        acciones_data = [["Acciones estratégicas"]]
+
+        for a in linea["acciones"]:
+            acciones_data.append(["• " + a])
+
+        tabla_acciones = Table(
+            acciones_data,
+            colWidths=[ANCHO_UTIL]
+        )
+
+        tabla_acciones.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), COLOR_HEADER_TABLA),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 0.3, colors.grey),
+            ("LEFTPADDING", (0, 0), (-1, -1), 6),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ]))
+
+        tabla_acciones.wrapOn(canvas, ANCHO_UTIL, 400)
+        tabla_acciones.drawOn(canvas, MARGEN_X, current_y - tabla_acciones._height)
+
+        current_y = current_y - tabla_acciones._height - ESPACIO_BLOQUES
+
+    # ===== COGESTORES =====
+
+    if linea["cogestores"]:
+
+        mitad = len(linea["cogestores"]) // 2
+        col1 = linea["cogestores"][:mitad]
+        col2 = linea["cogestores"][mitad:]
+
+        filas = [["Cogestores", ""]]
+
+        max_len = max(len(col1), len(col2))
+
+        for i in range(max_len):
+            c1 = "• " + col1[i] if i < len(col1) else ""
+            c2 = "• " + col2[i] if i < len(col2) else ""
+            filas.append([c1, c2])
+
+        tabla_cog = Table(
+            filas,
+            colWidths=[ANCHO_UTIL / 2, ANCHO_UTIL / 2]
+        )
+
+        tabla_cog.setStyle(TableStyle([
+            ("SPAN", (0, 0), (-1, 0)),
+            ("BACKGROUND", (0, 0), (-1, 0), COLOR_TITULO_TABLA),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 0.3, colors.grey),
+        ]))
+
+        tabla_cog.wrapOn(canvas, ANCHO_UTIL, 400)
+        tabla_cog.drawOn(canvas, MARGEN_X, current_y - tabla_cog._height)
+
 # ================= GENERADOR PDF =================
 def generar_pdf(
     portada_path,
@@ -2250,6 +2391,8 @@ def generar_pdf(
         
                     header_footer(canvas, doc)
                     draw_pagina_linea_accion(canvas, doc, linea)
+                    elif (doc.page - 18) % 2 == 1:
+                    draw_pagina_linea_accion_detalle(canvas, doc, lineas_accion_data[index])
 
         else:
             header_footer(canvas, doc)
