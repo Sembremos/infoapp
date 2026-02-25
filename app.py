@@ -1059,7 +1059,19 @@ if archivo:
                 valor = df.iloc[fila, col_problema]
                 if pd.notna(valor) and str(valor).strip() != "":
                     problemas.append([str(valor).strip()])
-        
+            # ===== PORCENTAJE TOTAL =====
+            col_total = columnas_total_porcentaje[i]
+            valor_total = df.iloc[241, col_total]  # Fila 242
+            
+            if pd.notna(valor_total):
+                try:
+                    total_porcentaje = float(valor_total) * 100
+                    total_porcentaje = f"{total_porcentaje:.2f}%"
+                except:
+                    total_porcentaje = "0.00%"
+            else:
+                total_porcentaje = "0.00%"
+    
             lineas_accion_data.append({
                 "numero": i + 1,
                 "problematicas": problematicas,
@@ -1075,18 +1087,6 @@ if archivo:
                 )
             })
 
-            # ===== PORCENTAJE TOTAL =====
-            col_total = columnas_total_porcentaje[i]
-            valor_total = df.iloc[241, col_total]  # Fila 242 (índice 241)
-            
-            if pd.notna(valor_total):
-                try:
-                    total_porcentaje = float(valor_total) * 100
-                    total_porcentaje = f"{total_porcentaje:.2f}%"
-                except:
-                    total_porcentaje = "0.00%"
-            else:
-                total_porcentaje = "0.00%"
                 
         st.write("Cantidad de lineas detectadas:", len(lineas_accion_data)) ###debugging
         
