@@ -1109,12 +1109,18 @@ def draw_pagina_linea_accion(
         colors.HexColor("#30A907")
     )
     
-    tabla_c.wrapOn(canvas, page_width - 80, 400)
+    BASE_TABLA_Y = page_height - 320  # 👈 SOLO ESTE NÚMERO CONTROLÁS
+    ESPACIO_ENTRE_TABLAS = 20
+    
+    # Posición tabla verde
+    y_tabla_c = BASE_TABLA_Y - tabla_c._height
+    
     tabla_c.drawOn(
         canvas,
         40,
-        page_height - 360 - tabla_c._height
+        y_tabla_c
     )
+
     
     # ===== TABLA PROBLEMAS (ABAJO) =====
     tabla_p = construir_tabla_dinamica(
@@ -1123,13 +1129,13 @@ def draw_pagina_linea_accion(
         page_width - 80,
         colors.HexColor("#013051")
     )
-    
-    tabla_p.wrapOn(canvas, page_width - 80, 400)
+    # Posición tabla azul debajo
+    y_tabla_p = y_tabla_c - ESPACIO_ENTRE_TABLAS - tabla_p._height
     
     tabla_p.drawOn(
         canvas,
         40,
-        page_height - 380 - tabla_c._height - tabla_p._height
+        y_tabla_p
     )
 
 # ================= GENERADOR PDF =================
