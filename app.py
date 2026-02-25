@@ -1037,7 +1037,7 @@ if archivo:
         lineas_accion_data = []
 
         for i in range(int(total_lineas)):
-        
+
             fila_problematicas = 241 + i  # B242 empieza en índice 241
         
             # ===== PROBLEMATICAS =====
@@ -1064,10 +1064,11 @@ if archivo:
                 valor = df.iloc[fila, col_problema]
                 if pd.notna(valor) and str(valor).strip() != "":
                     problemas.append([str(valor).strip()])
+        
             # ===== PORCENTAJE TOTAL =====
             col_total = columnas_total_porcentaje[i]
             valor_total = df.iloc[241, col_total]  # Fila 242
-            
+        
             if pd.notna(valor_total):
                 try:
                     total_porcentaje = float(valor_total) * 100
@@ -1076,7 +1077,38 @@ if archivo:
                     total_porcentaje = "0.00%"
             else:
                 total_porcentaje = "0.00%"
-    
+        
+            # ===== LIDER ESTRATEGICO =====
+            col_lider = columnas_lider[i]
+            lider_estrategico = df.iloc[245, col_lider]
+        
+            if pd.notna(lider_estrategico):
+                lider_estrategico = str(lider_estrategico).strip()
+            else:
+                lider_estrategico = ""
+        
+            # ===== ACCIONES ESTRATEGICAS =====
+            col_acciones = columnas_acciones[i]
+            acciones = []
+        
+            for fila in range(248, 257):  # I249 a I257
+                valor = df.iloc[fila, col_acciones]
+                if pd.notna(valor) and str(valor).strip() != "":
+                    acciones.append(str(valor).strip())
+        
+            # ===== COGESTORES =====
+            col_cogestores = columnas_cogestores[i]
+            cogestores = []
+        
+            for fila in range(261, 263):  # I262 a I263
+                valor = df.iloc[fila, col_cogestores]
+                if pd.notna(valor) and str(valor).strip() != "":
+                    partes = str(valor).split(",")
+                    for p in partes:
+                        if p.strip():
+                            cogestores.append(p.strip())
+        
+            # ===== APPEND FINAL =====
             lineas_accion_data.append({
                 "numero": i + 1,
                 "problematicas": problematicas,
@@ -1091,38 +1123,6 @@ if archivo:
                     else "Fuerza Publica" if i < int(lineas_municipalidad) + int(lineas_fp)
                     else "Mixta"
                 )
-            })
-
-                ### SEGUNDA PAGINA
-                #Lider estrategico
-            col_lider = columnas_lider[i]
-            lider_estrategico = df.iloc[245, col_lider]
-            if pd.notna(lider_estrategico):
-                lider_estrategico = str(lider_estrategico).strip()
-            else:
-                lider_estrategico = ""
-                
-            # ===== ACCIONES ESTRATEGICAS =====
-            col_acciones = columnas_acciones[i]
-            acciones = []
-                
-            for fila in range(248, 257):  # I249 a I257
-                valor = df.iloc[fila, col_acciones]
-                if pd.notna(valor) and str(valor).strip() != "":
-                    acciones.append(str(valor).strip())
-                
-            # ===== COGESTORES =====
-            col_cogestores = columnas_cogestores[i]
-            cogestores = []
-                
-            for fila in range(261, 263):  # I262 a I263
-                valor = df.iloc[fila, col_cogestores]
-                if pd.notna(valor) and str(valor).strip() != "":
-                    partes = str(valor).split(",")
-                    for p in partes:
-                        if p.strip():
-                            cogestores.append(p.strip())
-                                                
             })
 
                 
