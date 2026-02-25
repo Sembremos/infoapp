@@ -1054,7 +1054,7 @@ def draw_pagina_linea_accion(
     TOTAL_HEIGHT = 90
     
     TOTAL_X = page_width - TOTAL_WIDTH - 40
-    TOTAL_Y = page_height - 160 #altura de la bolita we
+    TOTAL_Y = page_height - 170 #altura de la bolita we
     
     TOTAL_FONT = "Helvetica-Bold"
     TOTAL_FONT_SIZE = 16
@@ -2192,7 +2192,7 @@ def generar_pdf(
         
                     TITULO_WIDTH = page_width * 0.7
                     TITULO_X = (page_width - TITULO_WIDTH) / 2
-                    TITULO_Y = page_height - 765
+                    TITULO_Y = page_height - 750 #altura titulo?
         
                     texto_titulo = "<br/>".join(linea["problematicas"])
                     p = Paragraph(texto_titulo, titulo_style)
