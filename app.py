@@ -1095,34 +1095,34 @@ if archivo:
 
                 ### SEGUNDA PAGINA
                 #Lider estrategico
-                col_lider = columnas_lider[i]
-                lider_estrategico = df.iloc[245, col_lider]
-                if pd.notna(lider_estrategico):
-                    lider_estrategico = str(lider_estrategico).strip()
-                else:
-                    lider_estrategico = ""
+            col_lider = columnas_lider[i]
+            lider_estrategico = df.iloc[245, col_lider]
+            if pd.notna(lider_estrategico):
+                lider_estrategico = str(lider_estrategico).strip()
+            else:
+                lider_estrategico = ""
                 
-                # ===== ACCIONES ESTRATEGICAS =====
-                col_acciones = columnas_acciones[i]
-                acciones = []
+            # ===== ACCIONES ESTRATEGICAS =====
+            col_acciones = columnas_acciones[i]
+            acciones = []
                 
-                for fila in range(248, 257):  # I249 a I257
-                    valor = df.iloc[fila, col_acciones]
-                    if pd.notna(valor) and str(valor).strip() != "":
-                        acciones.append(str(valor).strip())
+            for fila in range(248, 257):  # I249 a I257
+                valor = df.iloc[fila, col_acciones]
+                if pd.notna(valor) and str(valor).strip() != "":
+                    acciones.append(str(valor).strip())
                 
-                # ===== COGESTORES =====
-                col_cogestores = columnas_cogestores[i]
-                cogestores = []
+            # ===== COGESTORES =====
+            col_cogestores = columnas_cogestores[i]
+            cogestores = []
                 
-                for fila in range(261, 263):  # I262 a I263
-                    valor = df.iloc[fila, col_cogestores]
-                    if pd.notna(valor) and str(valor).strip() != "":
-                        partes = str(valor).split(",")
-                        for p in partes:
-                            if p.strip():
-                                cogestores.append(p.strip())
-                                
+            for fila in range(261, 263):  # I262 a I263
+                valor = df.iloc[fila, col_cogestores]
+                if pd.notna(valor) and str(valor).strip() != "":
+                    partes = str(valor).split(",")
+                    for p in partes:
+                        if p.strip():
+                            cogestores.append(p.strip())
+                                                
             })
 
                 
