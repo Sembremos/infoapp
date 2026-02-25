@@ -1088,7 +1088,7 @@ if archivo:
                 "cogestores": cogestores,
                 "corresponsable": (
                     "Municipalidad" if i < int(lineas_municipalidad),
-                    else "Fuerza Publica" if i < int(lineas_municipalidad) + int(lineas_fp),
+                    else "Fuerza Publica" if i < int(lineas_municipalidad) + int(lineas_fp)
                     else "Mixta"                    
                 )
 
