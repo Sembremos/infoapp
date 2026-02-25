@@ -950,6 +950,67 @@ def normalizar_nombre(texto):
     texto = re.sub(r"[^a-z0-9_()]", "", texto)
 
     return texto
+#_________tablas________________________
+
+def construir_tabla_dinamica(titulo, items, ancho_total, estilo_header_color):
+    from reportlab.platypus import Table, TableStyle, Paragraph
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.enums import TA_LEFT
+    from reportlab.lib import colors
+
+    CELDA_STYLE = ParagraphStyle(
+        name="CeldaTabla",
+        fontName="Helvetica",
+        fontSize=9,
+        leading=11,
+        alignment=TA_LEFT
+    )
+
+    data = []
+
+    # HEADER
+    data.append([titulo])
+
+    # UNA SOLA COLUMNA
+    if len(items) <= 10:
+        for item in items:
+            data.append([Paragraph(item[0], CELDA_STYLE)])
+
+        tabla = Table(data, colWidths=[ancho_total])
+
+    # DOS COLUMNAS
+    else:
+        mitad = (len(items) + 1) // 2
+        col1 = items[:mitad]
+        col2 = items[mitad:]
+
+        while len(col2) < len(col1):
+            col2.append([""])
+
+        data = [[titulo, ""]]
+
+        for i in range(len(col1)):
+            p1 = Paragraph(col1[i][0], CELDA_STYLE) if col1[i][0] else ""
+            p2 = Paragraph(col2[i][0], CELDA_STYLE) if col2[i][0] else ""
+            data.append([p1, p2])
+
+        tabla = Table(data, colWidths=[ancho_total/2, ancho_total/2])
+
+    tabla.setStyle(TableStyle([
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), estilo_header_color),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+
+    return tabla
+
+#========================================LINEAS DE ACCION===============================
 
 def draw_pagina_linea_accion(
     canvas,
@@ -1039,54 +1100,37 @@ def draw_pagina_linea_accion(
         fontSize=9,
         leading=11,   # controla interlineado
         alignment=TA_LEFT
+    ) 
+    # ===== TABLA CAUSAS (ARRIBA) =====
+    tabla_c = construir_tabla_dinamica(
+        "Causas Socio Culturales y Estructurales",
+        linea["causas"],
+        page_width - 80,
+        colors.HexColor("#30A907")
     )
     
-    # ===== TABLA CAUSAS =====
-    from reportlab.platypus import Table, TableStyle
-
-    tabla_c_data = [["Causas Socio Culturales y Estructurales"]]
-    
-    for fila in linea["causas"]:
-        texto = Paragraph(fila[0], CELDA_STYLE)
-        tabla_c_data.append([texto])
-    
-    tabla_c = Table(
-        tabla_c_data,
-        colWidths=[TABLA_C_WIDTH]
+    tabla_c.wrapOn(canvas, page_width - 80, 400)
+    tabla_c.drawOn(
+        canvas,
+        40,
+        page_height - 360 - tabla_c._height
     )
-
-    tabla_c.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#30A907")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-    ]))
-
-    tabla_c.wrapOn(canvas, TABLA_C_WIDTH, 400)
-    tabla_c.drawOn(canvas, TABLA_C_X, TABLA_C_Y - tabla_c._height)
-
-    # ===== TABLA PROBLEMAS =====
-    tabla_p_data = [["Problematicas Influyentes"]]
-
-    for fila in linea["problemas_influyentes"]:
-        texto = Paragraph(fila[0], CELDA_STYLE)
-        tabla_p_data.append([texto])
     
-    tabla_p = Table(
-        tabla_p_data,
-        colWidths=[TABLA_P_WIDTH]
+    # ===== TABLA PROBLEMAS (ABAJO) =====
+    tabla_p = construir_tabla_dinamica(
+        "Problematicas Influyentes",
+        linea["problemas_influyentes"],
+        page_width - 80,
+        colors.HexColor("#013051")
     )
-
-    tabla_p.setStyle(TableStyle([
-        ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-    ]))
-
-    tabla_p.wrapOn(canvas, TABLA_P_WIDTH, 400)
-    tabla_p.drawOn(canvas, TABLA_P_X, TABLA_P_Y - tabla_p._height)
+    
+    tabla_p.wrapOn(canvas, page_width - 80, 400)
+    
+    tabla_p.drawOn(
+        canvas,
+        40,
+        page_height - 380 - tabla_c._height - tabla_p._height
+    )
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
