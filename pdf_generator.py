@@ -2192,7 +2192,7 @@ def generar_pdf(
         
                     TITULO_WIDTH = page_width * 0.7
                     TITULO_X = (page_width - TITULO_WIDTH) / 2
-                    TITULO_Y = page_height - 750 #altura titulo?
+                    TITULO_Y = page_height - 740 #altura titulo?
         
                     texto_titulo = "<br/>".join(linea["problematicas"])
                     p = Paragraph(texto_titulo, titulo_style)
