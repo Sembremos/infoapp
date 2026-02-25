@@ -1126,7 +1126,7 @@ def draw_pagina_linea_accion(
     
     
     # ===== POSICIONAMIENTO CONTROLADO =====
-    BASE_TABLA_Y = page_height - 320
+    BASE_TABLA_Y = page_height - 280
     ESPACIO_ENTRE_TABLAS = 20
     
     y_tabla_c = BASE_TABLA_Y - alto_tabla_c
