@@ -1030,7 +1030,8 @@ def draw_pagina_linea_accion(
     TITULO_FONT = "Helvetica-Bold"
     TITULO_SIZE = 18
     TITULO_COLOR = colors.HexColor("#013051")
-    TITULO_X = 80#arriba de esto TITULO_WIDTH = page_width * 0.8
+    TITULO_WIDTH = page_width * 0.8
+    TITULO_X = 80
     TITULO_Y = page_height - 80
 
     VECTOR_WIDTH = 150
@@ -1077,7 +1078,7 @@ def draw_pagina_linea_accion(
         fontSize=TITULO_SIZE,
         leading=TITULO_SIZE + 5,
         textColor=TITULO_COLOR,
-        alignment=TA_CENTER
+        alignment=0
     )
 
     texto_titulo = "<br/>".join(linea["problematicas"])
