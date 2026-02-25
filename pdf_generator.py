@@ -1031,7 +1031,7 @@ def draw_pagina_linea_accion(
     TITULO_SIZE = 18
     TITULO_COLOR = colors.HexColor("#013051")
     TITULO_WIDTH = page_width * 0.8
-    TITULO_X = (page_width - TITULO_WIDTH) / 2
+    TITULO_X = 80
     TITULO_Y = page_height - 80
 
     VECTOR_WIDTH = 150
@@ -1050,11 +1050,11 @@ def draw_pagina_linea_accion(
     # ===== TOTAL CIRCULO CONFIG =====
     TOTAL_IMAGE_PATH = "assets/total.png"
     
-    TOTAL_WIDTH = 180
-    TOTAL_HEIGHT = 180
+    TOTAL_WIDTH = 120
+    TOTAL_HEIGHT = 120
     
     TOTAL_X = page_width - TOTAL_WIDTH - 40
-    TOTAL_Y = page_height - 320
+    TOTAL_Y = page_height - 300
     
     TOTAL_FONT = "Helvetica-Bold"
     TOTAL_FONT_SIZE = 26
