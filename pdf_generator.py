@@ -1046,6 +1046,20 @@ def draw_pagina_linea_accion(
     TABLA_P_X = page_width / 2 + 10
     TABLA_P_Y = page_height - 270
     TABLA_P_WIDTH = page_width * 0.45
+
+    # ===== TOTAL CIRCULO CONFIG =====
+    TOTAL_IMAGE_PATH = "assets/total.png"
+    
+    TOTAL_WIDTH = 180
+    TOTAL_HEIGHT = 180
+    
+    TOTAL_X = page_width - TOTAL_WIDTH - 40
+    TOTAL_Y = page_height - 320
+    
+    TOTAL_FONT = "Helvetica-Bold"
+    TOTAL_FONT_SIZE = 26
+    TOTAL_FONT_COLOR = colors.white
+        
     # =================================================
 
     # ===== SUBTITULO =====
@@ -1092,6 +1106,33 @@ def draw_pagina_linea_accion(
                     preserveAspectRatio=True,
                     mask="auto"
                 )
+
+    # ===== IMAGEN TOTAL =====
+    if os.path.exists(TOTAL_IMAGE_PATH):
+        canvas.drawImage(
+            TOTAL_IMAGE_PATH,
+            TOTAL_X,
+            TOTAL_Y,
+            width=TOTAL_WIDTH,
+            height=TOTAL_HEIGHT,
+            preserveAspectRatio=True,
+            mask="auto"
+        )
+    
+        # ===== TEXTO DENTRO DEL CIRCULO =====
+        canvas.setFont(TOTAL_FONT, TOTAL_FONT_SIZE)
+        canvas.setFillColor(TOTAL_FONT_COLOR)
+    
+        texto_total = linea.get("total_porcentaje", "0.00%")
+    
+        text_width = canvas.stringWidth(texto_total, TOTAL_FONT, TOTAL_FONT_SIZE)
+    
+        canvas.drawString(
+            TOTAL_X + (TOTAL_WIDTH - text_width) / 2,
+            TOTAL_Y + TOTAL_HEIGHT / 2 - (TOTAL_FONT_SIZE / 2),
+            texto_total
+        )
+
 
     #FORMATO DE CELDAS
     CELDA_STYLE = ParagraphStyle(
