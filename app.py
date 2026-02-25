@@ -1024,10 +1024,15 @@ if archivo:
             75   # BX242
         ]
 
+        
+
         # ================= COLUMNAS DINAMICAS LINEAS DE ACCION =================
 
         columnas_causas = [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71]
         columnas_problemas = [6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72]
+        columnas_lider = [9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75]
+        columnas_acciones = [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74]
+        columnas_cogestores = [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74]
 
         lineas_accion_data = []
 
@@ -1078,13 +1083,45 @@ if archivo:
                 "causas": causas,
                 "problemas_influyentes": problemas,
                 "total_porcentaje": total_porcentaje,
+                "lider_estrategico": lider_estrategico,
+                "acciones": acciones,
+                "cogestores": cogestores,
                 "corresponsable": (
                     "Municipalidad" if i < int(lineas_municipalidad)
                     else "Fuerza Publica" if i < int(lineas_municipalidad) + int(lineas_fp)
-                    else "Mixta"
-
-                    
+                    else "Mixta"                    
                 )
+
+                ### SEGUNDA PAGINA
+                #Lider estrategico
+                col_lider = columnas_lider[i]
+                lider_estrategico = df.iloc[245, col_lider]
+                if pd.notna(lider_estrategico):
+                    lider_estrategico = str(lider_estrategico).strip()
+                else:
+                    lider_estrategico = ""
+                
+                # ===== ACCIONES ESTRATEGICAS =====
+                col_acciones = columnas_acciones[i]
+                acciones = []
+                
+                for fila in range(248, 257):  # I249 a I257
+                    valor = df.iloc[fila, col_acciones]
+                    if pd.notna(valor) and str(valor).strip() != "":
+                        acciones.append(str(valor).strip())
+                
+                # ===== COGESTORES =====
+                col_cogestores = columnas_cogestores[i]
+                cogestores = []
+                
+                for fila in range(261, 263):  # I262 a I263
+                    valor = df.iloc[fila, col_cogestores]
+                    if pd.notna(valor) and str(valor).strip() != "":
+                        partes = str(valor).split(",")
+                        for p in partes:
+                            if p.strip():
+                                cogestores.append(p.strip())
+                                
             })
 
                 
