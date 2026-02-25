@@ -2383,16 +2383,19 @@ def generar_pdf(
                             height=200,
                             mask="auto"
                         )
+        # =====================================
+        # PAGINA IMPAR → INTERNA
+        # =====================================
+        else:
         
-                # =====================================
-                # PAGINA IMPAR → INTERNA
-                # =====================================
-                else:
+            header_footer(canvas, doc)
         
-                    header_footer(canvas, doc)
-                    draw_pagina_linea_accion(canvas, doc, linea)
-                    elif (doc.page - 18) % 2 == 1:
-                    draw_pagina_linea_accion_detalle(canvas, doc, lineas_accion_data[index])
+            # Página interna 1 (la que ya tenías)
+            draw_pagina_linea_accion(canvas, doc, linea)
+        
+            # Página interna 2 (detalle)
+            draw_pagina_linea_accion_detalle(canvas, doc, linea)
+
 
         else:
             header_footer(canvas, doc)
