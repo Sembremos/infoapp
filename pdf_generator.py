@@ -1054,7 +1054,7 @@ def draw_pagina_linea_accion(
     TOTAL_HEIGHT = 120
     
     TOTAL_X = page_width - TOTAL_WIDTH - 40
-    TOTAL_Y = page_height - 300
+    TOTAL_Y = page_height - 280
     
     TOTAL_FONT = "Helvetica-Bold"
     TOTAL_FONT_SIZE = 26
@@ -1129,7 +1129,7 @@ def draw_pagina_linea_accion(
     
         canvas.drawString(
             TOTAL_X + (TOTAL_WIDTH - text_width) / 2,
-            TOTAL_Y + TOTAL_HEIGHT / 2 - (TOTAL_FONT_SIZE / 2),
+            TOTAL_Y + TOTAL_HEIGHT / 2 - (TOTAL_FONT_SIZE / 2)+10,
             texto_total
         )
 
