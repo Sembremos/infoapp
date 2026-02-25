@@ -1008,6 +1008,22 @@ if archivo:
             75   # BX246
         ]
 
+        # Columnas porcentaje total (fila 242)
+        columnas_total_porcentaje = [
+            9,   # J242
+            15,  # P242
+            21,  # V242
+            27,  # AB242
+            33,  # AH242
+            39,  # AN242
+            45,  # AT242
+            51,  # AZ242
+            57,  # BF242
+            63,  # BL242
+            69,  # BR242
+            75   # BX242
+        ]
+
         # ================= COLUMNAS DINAMICAS LINEAS DE ACCION =================
 
         columnas_causas = [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71]
@@ -1049,13 +1065,28 @@ if archivo:
                 "problematicas": problematicas,
                 "causas": causas,
                 "problemas_influyentes": problemas,
+                "total_porcentaje": total_porcentaje,
                 "corresponsable": (
                     "Municipalidad" if i < int(lineas_municipalidad)
                     else "Fuerza Publica" if i < int(lineas_municipalidad) + int(lineas_fp)
                     else "Mixta"
+
+                    
                 )
             })
 
+            # ===== PORCENTAJE TOTAL =====
+            col_total = columnas_total_porcentaje[i]
+            valor_total = df.iloc[241, col_total]  # Fila 242 (índice 241)
+            
+            if pd.notna(valor_total):
+                try:
+                    total_porcentaje = float(valor_total) * 100
+                    total_porcentaje = f"{total_porcentaje:.2f}%"
+                except:
+                    total_porcentaje = "0.00%"
+            else:
+                total_porcentaje = "0.00%"
                 
         st.write("Cantidad de lineas detectadas:", len(lineas_accion_data)) ###debugging
         
