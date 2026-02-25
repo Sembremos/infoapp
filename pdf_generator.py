@@ -1101,7 +1101,7 @@ def draw_pagina_linea_accion(
         leading=11,   # controla interlineado
         alignment=TA_LEFT
     ) 
-    # ===== TABLA CAUSAS (ARRIBA) =====
+   # ===== TABLA CAUSAS (ARRIBA) =====
     tabla_c = construir_tabla_dinamica(
         "Causas Socio Culturales y Estructurales",
         linea["causas"],
@@ -1109,18 +1109,9 @@ def draw_pagina_linea_accion(
         colors.HexColor("#30A907")
     )
     
-    BASE_TABLA_Y = page_height - 320  # 👈 SOLO ESTE NÚMERO CONTROLÁS
-    ESPACIO_ENTRE_TABLAS = 20
+    tabla_c.wrapOn(canvas, page_width - 80, 400)
+    alto_tabla_c = tabla_c._height  # 🔥 ahora sí existe
     
-    # Posición tabla verde
-    y_tabla_c = BASE_TABLA_Y - tabla_c._height
-    
-    tabla_c.drawOn(
-        canvas,
-        40,
-        y_tabla_c
-    )
-
     
     # ===== TABLA PROBLEMAS (ABAJO) =====
     tabla_p = construir_tabla_dinamica(
@@ -1129,14 +1120,21 @@ def draw_pagina_linea_accion(
         page_width - 80,
         colors.HexColor("#013051")
     )
-    # Posición tabla azul debajo
-    y_tabla_p = y_tabla_c - ESPACIO_ENTRE_TABLAS - tabla_p._height
     
-    tabla_p.drawOn(
-        canvas,
-        40,
-        y_tabla_p
-    )
+    tabla_p.wrapOn(canvas, page_width - 80, 400)
+    alto_tabla_p = tabla_p._height  # 🔥 ahora sí existe
+    
+    
+    # ===== POSICIONAMIENTO CONTROLADO =====
+    BASE_TABLA_Y = page_height - 320
+    ESPACIO_ENTRE_TABLAS = 20
+    
+    y_tabla_c = BASE_TABLA_Y - alto_tabla_c
+    y_tabla_p = y_tabla_c - ESPACIO_ENTRE_TABLAS - alto_tabla_p
+    
+    
+    tabla_c.drawOn(canvas, 40, y_tabla_c)
+    tabla_p.drawOn(canvas, 40, y_tabla_p)
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
