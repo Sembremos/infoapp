@@ -1589,9 +1589,10 @@ def generar_pdf(
     # CREAR PAGINAS DINAMICAS DE PORTADAS
     # =========================================
     
-    for i in range(len(lineas_accion_data) * 2):
-        story.append(PageBreak())
-        story.append(Spacer(1, 1))
+    for i in range(total_lineas):
+        Story.append(PageBreak())  # Portada
+        Story.append(PageBreak())  # Interna 1
+        Story.append(PageBreak())  # Interna 2 (detalle)
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
