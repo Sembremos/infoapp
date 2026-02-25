@@ -1054,7 +1054,7 @@ def draw_pagina_linea_accion(
     TOTAL_HEIGHT = 90
     
     TOTAL_X = page_width - TOTAL_WIDTH - 40
-    TOTAL_Y = page_height - 180 #altura de la bolita we
+    TOTAL_Y = page_height - 160 #altura de la bolita we
     
     TOTAL_FONT = "Helvetica-Bold"
     TOTAL_FONT_SIZE = 16
