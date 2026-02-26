@@ -1232,32 +1232,50 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
     p_obj = Paragraph(objetivo_texto, estilo_obj)
     w, h = p_obj.wrap(ANCHO_UTIL, 200)
     p_obj.drawOn(canvas, MARGEN_X, OBJ_Y - 20 - h)
+    current_y = OBJ_Y - 20 - h - ESPACIO_BLOQUES
+    
+    # ===== LIDER ESTRATEGICO =====
 
     # ===== LIDER ESTRATEGICO =====
 
     if linea["lider_estrategico"]:
-
+    
+        estilo_lider = ParagraphStyle(
+            name="LiderCell",
+            fontName="Helvetica",
+            fontSize=10,
+            leading=13,
+            alignment=TA_LEFT,
+            wordWrap="CJK"
+        )
+    
         data_lider = [
-            ["Líder Estratégico", linea["lider_estrategico"]]
+            [
+                Paragraph("Líder Estratégico", estilo_lider),
+                Paragraph(linea["lider_estrategico"], estilo_lider)
+            ]
         ]
-
+    
         tabla_lider = Table(
             data_lider,
-            colWidths=[ANCHO_UTIL * 0.4, ANCHO_UTIL * 0.6],
-            rowHeights=[LIDER_HEIGHT]
+            colWidths=[ANCHO_UTIL * 0.4, ANCHO_UTIL * 0.6]
         )
-
+    
         tabla_lider.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (0, 0), COLOR_AZUL_1),
             ("BACKGROUND", (1, 0), (1, 0), COLOR_AZUL_2),
             ("GRID", (0, 0), (-1, -1), 0.5, colors.white),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 6),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+            ("TOPPADDING", (0, 0), (-1, -1), 4),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
         ]))
-
-        tabla_lider.wrapOn(canvas, ANCHO_UTIL, 100)
-        tabla_lider.drawOn(canvas, MARGEN_X, LIDER_Y)
-
-    current_y = LIDER_Y - LIDER_HEIGHT - ESPACIO_BLOQUES
+    
+        tabla_lider.wrapOn(canvas, ANCHO_UTIL, 200)
+        tabla_lider.drawOn(canvas, MARGEN_X, current_y - tabla_lider._height)
+    
+        current_y = current_y - tabla_lider._height - ESPACIO_BLOQUESS
 
 
     # ===== ACCIONES ESTRATEGICAS =====
