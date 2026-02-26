@@ -2301,7 +2301,7 @@ def generar_pdf(
 
         elif doc.page >= 18:
 
-            index = (doc.page - 18) // 2
+            index = (doc.page - 18) // 3
         
             if index < len(lineas_accion_data):
                             
