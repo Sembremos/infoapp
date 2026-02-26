@@ -1199,7 +1199,7 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
 
     OBJ_Y = page_height - 120
 
-    LIDER_Y = page_height - 250 ### este de 200
+    LIDER_Y = page_height - 240 ### este de 200
     LIDER_HEIGHT = 35
 
     BLOQUE_Y = page_height - 260
@@ -1257,33 +1257,55 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
         tabla_lider.wrapOn(canvas, ANCHO_UTIL, 100)
         tabla_lider.drawOn(canvas, MARGEN_X, LIDER_Y)
 
-    current_y = BLOQUE_Y
+    current_y = LIDER_Y - LIDER_HEIGHT - ESPACIO_BLOQUES
+
 
     # ===== ACCIONES ESTRATEGICAS =====
-
+    
     if linea["acciones"]:
-
-        acciones_data = [["Acciones estratégicas"]]
-
+    
+        estilo_header = ParagraphStyle(
+            name="HeaderAcciones",
+            fontName="Helvetica-Bold",
+            fontSize=11,
+            textColor=colors.white
+        )
+    
+        estilo_celda = ParagraphStyle(
+            name="CeldaAcciones",
+            fontName="Helvetica",
+            fontSize=10,
+            leading=13,
+            alignment=TA_LEFT,
+            wordWrap="CJK"
+        )
+    
+        acciones_data = [
+            [Paragraph("Acciones estratégicas", estilo_header)]
+        ]
+    
         for a in linea["acciones"]:
-            acciones_data.append(["• " + a])
-
+            acciones_data.append(
+                [Paragraph("• " + a, estilo_celda)]
+            )
+    
         tabla_acciones = Table(
             acciones_data,
             colWidths=[ANCHO_UTIL]
         )
-
+    
         tabla_acciones.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), COLOR_HEADER_TABLA),
-            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
             ("GRID", (0, 0), (-1, -1), 0.3, colors.grey),
             ("LEFTPADDING", (0, 0), (-1, -1), 6),
             ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+            ("TOPPADDING", (0, 0), (-1, -1), 4),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
         ]))
-
+    
         tabla_acciones.wrapOn(canvas, ANCHO_UTIL, 400)
         tabla_acciones.drawOn(canvas, MARGEN_X, current_y - tabla_acciones._height)
-
+    
         current_y = current_y - tabla_acciones._height - ESPACIO_BLOQUES
 
     # ===== COGESTORES =====
