@@ -1186,7 +1186,7 @@ if archivo:
                 lineas_mixtas=lineas_mixtas,
                 logo_muni_path=str(logo_muni_path),
                 lineas_accion_data=lineas_accion_data,
-                excel_path=archivo_excel,
+                excel_path=archivo,
              )
 
             pdf_bytes = pdf_buffer.getvalue()
