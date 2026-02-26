@@ -1797,6 +1797,9 @@ def generar_pdf(
     # ===== PORTADA PERCEPCION CIUDADANA =====
     story.append(PageBreak())
     story.append(Spacer(1, 1))
+
+    story.append(PageBreak())
+    story.append(Spacer(1, 1))
     
     ##----------------------------------Bloque de funciones 
                  
