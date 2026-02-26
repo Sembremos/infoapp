@@ -1243,7 +1243,7 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
             name="LiderCell",
             fontName="Helvetica-Bold",
             fontSize=22,
-            leading=13,
+            leading=26,
             alignment=TA_LEFT,
             wordWrap="CJK"
         )
