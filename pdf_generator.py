@@ -1234,7 +1234,6 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
     p_obj.drawOn(canvas, MARGEN_X, OBJ_Y - 20 - h)
     current_y = OBJ_Y - 20 - h - ESPACIO_BLOQUES
     
-    # ===== LIDER ESTRATEGICO =====
 
     # ===== LIDER ESTRATEGICO =====
 
@@ -1242,8 +1241,8 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
     
         estilo_lider = ParagraphStyle(
             name="LiderCell",
-            fontName="Helvetica",
-            fontSize=10,
+            fontName="Helvetica-Bold",
+            fontSize=22,
             leading=13,
             alignment=TA_LEFT,
             wordWrap="CJK"
@@ -1268,7 +1267,7 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
         tabla_lider.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (0, 0), COLOR_LIDER_LABEL),
             ("BACKGROUND", (1, 0), (1, 0), COLOR_LIDER_VALUE),
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.white),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#013051")),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("LEFTPADDING", (0, 0), (-1, -1), 6),
             ("RIGHTPADDING", (0, 0), (-1, -1), 6),
