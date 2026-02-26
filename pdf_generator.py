@@ -2302,16 +2302,17 @@ def generar_pdf(
         elif doc.page >= 18:
 
             index = (doc.page - 18) // 3
+            posicion = (doc.page - 18) % 3
         
             if index < len(lineas_accion_data):
-                            
+        
                 linea = lineas_accion_data[index]
                 page_width, page_height = A4
         
-                # =====================================
-                # PAGINA PAR → PORTADA
-                # =====================================
-                if (doc.page - 18) % 2 == 0:
+                # =========================
+                # 0 → PORTADA
+                # =========================
+                if posicion == 0:
         
                     canvas.drawImage(
                         "assets/la.png",
@@ -2323,12 +2324,10 @@ def generar_pdf(
                         mask="auto"
                     )
         
-                    # NUMERO
                     canvas.setFont("Helvetica-Bold", 150)
                     canvas.setFillColor(colors.white)
                     canvas.drawString(400, page_height - 300, f"{linea['numero']}")
         
-                    # TITULO
                     titulo_style = ParagraphStyle(
                         name="TituloLinea",
                         fontName="Helvetica-Bold",
@@ -2339,72 +2338,31 @@ def generar_pdf(
         
                     TITULO_WIDTH = page_width * 0.7
                     TITULO_X = (page_width - TITULO_WIDTH) / 2
-                    TITULO_Y = page_height - 740 #altura titulo?
+                    TITULO_Y = page_height - 740
         
                     texto_titulo = "<br/>".join(linea["problematicas"])
                     p = Paragraph(texto_titulo, titulo_style)
                     w, h = p.wrap(TITULO_WIDTH, 500)
-        
                     p.drawOn(canvas, TITULO_X, TITULO_Y - (h / 2))
         
-                    # LOGOS
-                    if linea["corresponsable"] == "Fuerza Publica":
+                # =========================
+                # 1 → INTERNA 1
+                # =========================
+                elif posicion == 1:
         
-                        canvas.drawImage(
-                            "assets/fp.png",
-                            380,
-                            page_height - 675,
-                            width=200,
-                            height=200,
-                            mask="auto"
-                        )
-        
-                    elif linea["corresponsable"] == "Municipalidad":
-        
-                        canvas.drawImage(
-                            logo_muni_path,
-                            380,
-                            page_height - 675,
-                            width=200,
-                            height=200,
-                            mask="auto"
-                        )
-        
-                    elif linea["corresponsable"] == "Mixta":
-        
-                        canvas.drawImage(
-                            "assets/fp.png",
-                            380,
-                            page_height - 675,
-                            width=200,
-                            height=200,
-                            mask="auto"
-                        )
-        
-                        canvas.drawImage(
-                            logo_muni_path,
-                            200,
-                            page_height - 675,
-                            width=200,
-                            height=200,
-                            mask="auto"
-                        )
-            # =====================================
-            # PAGINA IMPAR → INTERNA
-            # =====================================
-                else:
-                
                     header_footer(canvas, doc)
-                
-                    # Página interna 1 (la que ya tenías)
                     draw_pagina_linea_accion(canvas, doc, linea)
-                
-                    # Página interna 2 (detalle)
+        
+                # =========================
+                # 2 → INTERNA 2
+                # =========================
+                elif posicion == 2:
+        
+                    header_footer(canvas, doc)
                     draw_pagina_linea_accion_detalle(canvas, doc, linea)
-
-
-        else:
-            header_footer(canvas, doc)
+        
+            else:
+                header_footer(canvas, doc)
 
     doc.build(
         story,
