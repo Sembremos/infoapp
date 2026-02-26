@@ -1362,6 +1362,133 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
         tabla_cog.wrapOn(canvas, ANCHO_UTIL, 400)
         tabla_cog.drawOn(canvas, MARGEN_X, current_y - tabla_cog._height)
 
+# =========================================================
+# PAGINA 1 PERCEPCION - SEGURIDAD CIUDADANA
+# =========================================================
+
+import pandas as pd
+from reportlab.graphics.shapes import Drawing
+from reportlab.graphics.charts.piecharts import Pie
+from reportlab.graphics.charts.barcharts import VerticalBarChart
+from reportlab.graphics import renderPDF
+
+
+def draw_pagina_seguridad(canvas, doc, excel_path):
+
+    # =========================
+    # VARIABLES EDITABLES
+    # =========================
+    TITLE_FONT = "Helvetica-Bold"
+    TITLE_SIZE = 18
+    TITLE_COLOR = colors.HexColor("#013051")
+
+    PIE_WIDTH = 250
+    PIE_HEIGHT = 200
+
+    BAR_WIDTH = 250
+    BAR_HEIGHT = 200
+
+    TABLE_WIDTH = 500
+
+    TITLE_X = 40
+    TITLE_Y = A4[1] - 90
+
+    PIE_X = 40
+    PIE_Y = A4[1] - 330
+
+    BAR_X = A4[0] - BAR_WIDTH - 40
+    BAR_Y = A4[1] - 330
+
+    TABLE_X = 40
+    TABLE_Y = 250
+
+    # =========================
+    # HEADER
+    # =========================
+    header_footer(canvas, doc)
+
+    # =========================
+    # TITULO
+    # =========================
+    canvas.setFont(TITLE_FONT, TITLE_SIZE)
+    canvas.setFillColor(TITLE_COLOR)
+    canvas.drawString(TITLE_X, TITLE_Y, "¿Se siente seguro en su comunidad?")
+
+    # =========================
+    # LEER EXCEL
+    # =========================
+    df = pd.read_excel(excel_path, sheet_name="Hoja1")
+
+    # =========================
+    # PIE CHART
+    # =========================
+    pie_labels = df.iloc[283:285, 0].tolist()
+    pie_values = df.iloc[283:285, 1].tolist()
+
+    drawing = Drawing(PIE_WIDTH, PIE_HEIGHT)
+    pie = Pie()
+    pie.x = 50
+    pie.y = 20
+    pie.width = 150
+    pie.height = 150
+    pie.data = pie_values
+    pie.labels = [f"{v:.2f}%" for v in pie_values]
+
+    drawing.add(pie)
+    renderPDF.draw(drawing, canvas, PIE_X, PIE_Y)
+
+    canvas.setFont("Helvetica-Bold", 12)
+    canvas.drawString(PIE_X, PIE_Y + 170, "Actualmente")
+
+    # =========================
+    # BAR CHART
+    # =========================
+    bar_labels = df.iloc[290:294, 0].tolist()
+    bar_values = df.iloc[290:294, 1].tolist()
+
+    drawing2 = Drawing(BAR_WIDTH, BAR_HEIGHT)
+    chart = VerticalBarChart()
+    chart.x = 30
+    chart.y = 30
+    chart.width = 180
+    chart.height = 150
+    chart.data = [bar_values]
+    chart.categoryAxis.categoryNames = bar_labels
+    chart.valueAxis.valueMin = 0
+    chart.valueAxis.valueMax = 100
+
+    drawing2.add(chart)
+    renderPDF.draw(drawing2, canvas, BAR_X, BAR_Y)
+
+    canvas.setFont("Helvetica-Bold", 12)
+    canvas.drawString(BAR_X, BAR_Y + 170, "Comparacion con el año anterior (2025).")
+
+    # =========================
+    # TABLA GRANDE
+    # =========================
+    table_df = df.iloc[297:309, [0,2,4,6]]
+
+    data = [table_df.columns.tolist()] + table_df.values.tolist()
+
+    for r in range(3, len(data)):
+        for c in [1,2,3]:
+            data[r][c] = f"{data[r][c]:.2f}%"
+
+    table = Table(data, colWidths=[120,120,120,120])
+
+    table.setStyle(TableStyle([
+        ("GRID",(0,0),(-1,-1),0.5,colors.black),
+        ("BACKGROUND",(0,0),(-1,1),colors.HexColor("#013051")),
+        ("TEXTCOLOR",(0,0),(-1,1),colors.white),
+        ("ALIGN",(1,2),(-1,-1),"CENTER")
+    ]))
+
+    table.wrapOn(canvas, TABLE_WIDTH, 300)
+    table.drawOn(canvas, TABLE_X, TABLE_Y)
+
+    canvas.setFont("Helvetica-Bold", 14)
+    canvas.drawString(TABLE_X, TABLE_Y + 180, "Comparativo Percepción Ciudadana por Zonas")
+
 # ================= GENERADOR PDF =================
 def generar_pdf(
     portada_path,
@@ -1417,7 +1544,8 @@ def generar_pdf(
     lineas_fp,
     lineas_mixtas,
     logo_muni_path,
-    lineas_accion_data,    
+    lineas_accion_data,
+    excel_path,
 ):
 
     buffer = BytesIO()
@@ -2347,6 +2475,11 @@ def generar_pdf(
                     MIXTAS_Y,
                     f"Mixtas: {lineas_mixtas}"
                 )
+
+        
+        #participacion
+        elif doc.page == 18:
+            draw_pagina_seguridad(canvas, doc, excel_path)
 
         
         elif doc.page >= 18:
