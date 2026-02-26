@@ -1,3 +1,6 @@
+import openpyxl
+import matplotlib.pyplot as plt
+import tempfile
 import unicodedata
 import re
 import os
@@ -1361,6 +1364,157 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
         tabla_cog.wrapOn(canvas, ANCHO_UTIL, 400)
         tabla_cog.drawOn(canvas, MARGEN_X, current_y - tabla_cog._height)
 
+#===========================percepción======================================
+
+def leer_rango_excel(path, hoja, rango_inicio, rango_fin):
+    wb = openpyxl.load_workbook(path, data_only=True)
+    ws = wb[hoja]
+    data = []
+
+    for row in ws[f"{rango_inicio}:{rango_fin}"]:
+        fila = []
+        for cell in row:
+            fila.append(cell.value)
+        data.append(fila)
+
+    return data
+
+
+def formatear_porcentaje(valor):
+    return f"{float(valor):.2f}%"
+
+#GRAFICO PAASTEL
+
+def crear_grafico_pastel(labels, valores, titulo):
+    fig, ax = plt.subplots()
+
+    valores = [float(v) for v in valores]
+
+    wedges, texts, autotexts = ax.pie(
+        valores,
+        labels=labels,
+        autopct=lambda p: f"{p:.2f}%",
+        startangle=90
+    )
+
+    ax.set_title(titulo)
+
+    temp = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+    plt.savefig(temp.name, bbox_inches="tight")
+    plt.close(fig)
+
+    return temp.name, wedges
+
+#Grafico Barras
+def crear_grafico_barras(labels, valores, titulo):
+    fig, ax = plt.subplots()
+
+    valores = [float(v) for v in valores]
+
+    bars = ax.bar(labels, valores)
+
+    ax.set_title(titulo)
+    ax.set_ylim(0, 100)
+
+    for i, v in enumerate(valores):
+        ax.text(i, v + 1, f"{v:.2f}%", ha="center")
+
+    temp = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+    plt.savefig(temp.name, bbox_inches="tight")
+    plt.close(fig)
+
+    return temp.name
+
+#PAGINAS===============================================================
+
+def draw_pagina_seguridad(canvas, doc, excel_path):
+
+    # ================= VARIABLES EDITABLES =================
+    HOJA = "Hoja1"
+
+    TITULO_Y = A4[1] - 80
+    TITULO_FONT = "Helvetica-Bold"
+    TITULO_SIZE = 18
+
+    GRAFICO_WIDTH = 250
+    GRAFICO_HEIGHT = 250
+
+    GRAFICO_SUP_Y = A4[1] - 350
+    GRAFICO_IZQ_X = 40
+    GRAFICO_DER_X = A4[0] / 2 + 20
+
+    TABLA_X = 40
+    TABLA_Y = A4[1] - 420
+    TABLA_WIDTH = A4[0] - 80
+
+    # ======================================================
+
+    # HEADER
+    header_footer(canvas, doc)
+
+    # TITULO
+    canvas.setFont(TITULO_FONT, TITULO_SIZE)
+    canvas.drawString(40, TITULO_Y, "¿Se siente seguro en su comunidad?")
+
+    # ===== GRAFICO PASTEL =====
+    datos = leer_rango_excel(excel_path, HOJA, "A284", "B285")
+    labels = [d[0] for d in datos]
+    valores = [d[1] for d in datos]
+
+    img_pastel, _ = crear_grafico_pastel(labels, valores, "Actualmente")
+
+    canvas.drawImage(
+        img_pastel,
+        GRAFICO_IZQ_X,
+        GRAFICO_SUP_Y,
+        width=GRAFICO_WIDTH,
+        height=GRAFICO_HEIGHT,
+        preserveAspectRatio=True,
+        mask="auto"
+    )
+
+    # ===== GRAFICO BARRAS =====
+    datos2 = leer_rango_excel(excel_path, HOJA, "A291", "B294")
+    labels2 = [d[0] for d in datos2]
+    valores2 = [d[1] for d in datos2]
+
+    img_barras = crear_grafico_barras(
+        labels2,
+        valores2,
+        "Comparacion con el año anterior (2025)."
+    )
+
+    canvas.drawImage(
+        img_barras,
+        GRAFICO_DER_X,
+        GRAFICO_SUP_Y,
+        width=GRAFICO_WIDTH,
+        height=GRAFICO_HEIGHT,
+        preserveAspectRatio=True,
+        mask="auto"
+    )
+
+    # ===== TABLA GRANDE =====
+    datos_tabla = leer_rango_excel(excel_path, HOJA, "A298", "G309")
+
+    tabla_data = []
+
+    for i, fila in enumerate(datos_tabla):
+        nueva = []
+        for j, valor in enumerate(fila):
+            if j in [1,3,5]:
+                continue
+            if i >= 2 and j in [2,4,6] and valor is not None:
+                nueva.append(formatear_porcentaje(valor))
+            else:
+                nueva.append(valor)
+        tabla_data.append(nueva)
+
+    table = Table(tabla_data)
+    table.wrapOn(canvas, TABLA_WIDTH, 400)
+    table.drawOn(canvas, TABLA_X, 60)
+
+
 # ================= GENERADOR PDF =================
 def generar_pdf(
     portada_path,
@@ -1416,7 +1570,8 @@ def generar_pdf(
     lineas_fp,
     lineas_mixtas,
     logo_muni_path,
-    lineas_accion_data,    
+    lineas_accion_data,
+    excel_path,
 ):
 
     buffer = BytesIO()
@@ -2411,14 +2566,33 @@ def generar_pdf(
                     header_footer(canvas, doc)
                     draw_pagina_linea_accion_detalle(canvas, doc, linea)
 
-            # ======================================
-            # SI YA NO HAY MÁS LÍNEAS → PERCEPCIÓN
-            # ======================================
-            else:
+            # =========================
+            # PERCEPCION
+            # =========================
+            elif doc.page == pagina_percepcion:
         
                 FullImage("assets/percepcion.png")(canvas, doc)
-                return
-                
+        
+            # =========================
+            # PAGINAS POSTERIORES
+            # =========================
+            elif doc.page == pagina_percepcion + 1:
+                draw_pagina_seguridad(canvas, doc, excel_path)
+        
+            elif doc.page == pagina_percepcion + 2:
+                draw_victimizacion(canvas, doc, excel_path)
+        
+            elif doc.page == pagina_percepcion + 3:
+                draw_aportes_operativos(canvas, doc, excel_path)
+        
+            elif doc.page == pagina_percepcion + 4:
+                draw_servicio_policial(canvas, doc, excel_path)
+        
+            elif doc.page == pagina_percepcion + 5:
+                draw_sector_comercial(canvas, doc, excel_path)
+        
+            else:
+                header_footer(canvas, doc)
 
     doc.build(
         story,
