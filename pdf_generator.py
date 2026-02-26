@@ -1261,9 +1261,13 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
             colWidths=[ANCHO_UTIL * 0.4, ANCHO_UTIL * 0.6]
         )
     
+        # ===== COLORES DEL LIDER =====
+        COLOR_LIDER_LABEL = colors.HexColor("#30A907")   # verde fuerte
+        COLOR_LIDER_VALUE = colors.HexColor("#E2FDD9")   # verde claro
+        
         tabla_lider.setStyle(TableStyle([
-            ("BACKGROUND", (0, 0), (0, 0), COLOR_AZUL_1),
-            ("BACKGROUND", (1, 0), (1, 0), COLOR_AZUL_2),
+            ("BACKGROUND", (0, 0), (0, 0), COLOR_LIDER_LABEL),
+            ("BACKGROUND", (1, 0), (1, 0), COLOR_LIDER_VALUE),
             ("GRID", (0, 0), (-1, -1), 0.5, colors.white),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("LEFTPADDING", (0, 0), (-1, -1), 6),
