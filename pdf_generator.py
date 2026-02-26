@@ -1641,6 +1641,11 @@ def generar_pdf(
     
         story.append(PageBreak())
         story.append(Spacer(1, 1))
+
+    # ===== PORTADA PERCEPCION CIUDADANA =====
+    story.append(PageBreak())
+    story.append(Spacer(1, 1))
+    
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
@@ -2403,6 +2408,25 @@ def generar_pdf(
         
                     header_footer(canvas, doc)
                     draw_pagina_linea_accion_detalle(canvas, doc, linea)
+
+                 # ===== PORTADA PERCEPCION CIUDADANA =====
+                pagina_percepcion = 18 + (total_lineas * 3)
+                
+                if doc.page == pagina_percepcion:
+                
+                    canvas.drawImage(
+                        "assets/percepcion.png",
+                        0,
+                        0,
+                        width=A4[0],
+                        height=A4[1],
+                        preserveAspectRatio=True,
+                        mask="auto"
+                    )
+                
+                    return
+
+                
         
             else:
                 header_footer(canvas, doc)
