@@ -1590,9 +1590,14 @@ def generar_pdf(
     # =========================================
     
     for i in range(total_lineas):
-        story.append(PageBreak())  # Portada
-        story.append(PageBreak())  # Interna 1
-        story.append(PageBreak())  # Interna 2 (detalle)
+        story.append(PageBreak())
+        story.append(Spacer(1, 1))
+    
+        story.append(PageBreak())
+        story.append(Spacer(1, 1))
+    
+        story.append(PageBreak())
+        story.append(Spacer(1, 1))
     ##----------------------------------Bloque de funciones 
                  
     def first_page(canvas, doc):
