@@ -1443,23 +1443,46 @@ def draw_pagina_seguridad(canvas, doc, excel_path):
     # =========================
     # BAR CHART
     # =========================
-    bar_labels = df.iloc[290:294, 0].tolist()
-    bar_values = df.iloc[290:294, 1].tolist()
-
+    # ===============================
+    # LIMPIAR DATOS COMPARACIÓN 2025
+    # ===============================
+    
+    bar_labels_raw = df.iloc[290:294, 0].tolist()
+    bar_values_raw = df.iloc[290:294, 1].tolist()
+    
+    bar_labels = []
+    bar_values = []
+    
+    for label, val in zip(bar_labels_raw, bar_values_raw):
+        if label is not None and str(label).strip() != "" and val is not None:
+            bar_labels.append(str(label))
+            bar_values.append(float(val) * 100)
+    
+    # Si no hay datos válidos, no dibujar gráfico
+    if not bar_labels:
+        return
+    
+    # ===============================
+    # CREAR GRAFICO
+    # ===============================
+    
     drawing2 = Drawing(BAR_WIDTH, BAR_HEIGHT)
     chart = VerticalBarChart()
+    
     chart.x = 30
     chart.y = 30
     chart.width = 180
     chart.height = 150
+    
     chart.data = [bar_values]
     chart.categoryAxis.categoryNames = bar_labels
+    
     chart.valueAxis.valueMin = 0
     chart.valueAxis.valueMax = 100
-
+    
     drawing2.add(chart)
     renderPDF.draw(drawing2, canvas, BAR_X, BAR_Y)
-
+    
     canvas.setFont("Helvetica-Bold", 12)
     canvas.drawString(BAR_X, BAR_Y + 170, "Comparacion con el año anterior (2025).")
 
