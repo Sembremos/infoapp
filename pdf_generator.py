@@ -1798,11 +1798,16 @@ def generar_pdf(
     story.append(PageBreak())
     story.append(Spacer(1, 1))
 
+    # ===== PAGINA 1 PERCEPCION (GRAFICOS Y TABLA) =====
     story.append(PageBreak())
     story.append(Spacer(1, 1))
     
     ##----------------------------------Bloque de funciones 
                  
+    pagina_inicio_lineas = 18
+    total_paginas_lineas = len(lineas_accion_data) * 3
+    pagina_percepcion = pagina_inicio_lineas + total_paginas_lineas
+
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
 
@@ -2503,9 +2508,8 @@ def generar_pdf(
                 )
 
         
-        #participacion
-        elif doc.page == 18:
-            draw_pagina_seguridad(canvas, doc, excel_path)
+
+
 
         
         elif doc.page >= 18:
@@ -2571,12 +2575,10 @@ def generar_pdf(
                     header_footer(canvas, doc)
                     draw_pagina_linea_accion_detalle(canvas, doc, linea)
 
-            # ======================================
-            # SI YA NO HAY MÁS LÍNEAS → PERCEPCIÓN
-            # ======================================
-            else:
-        
-                FullImage("assets/percepcion.png")(canvas, doc)
+                
+                elif doc.page == pagina_percepcion:
+                    draw_pagina_seguridad(canvas, doc, excel_path)
+
                
                 
 
