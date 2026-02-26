@@ -1199,7 +1199,7 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
 
     OBJ_Y = page_height - 120
 
-    LIDER_Y = page_height - 200
+    LIDER_Y = page_height - 250 ### este de 200
     LIDER_HEIGHT = 35
 
     BLOQUE_Y = page_height - 260
