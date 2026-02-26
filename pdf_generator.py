@@ -2413,10 +2413,11 @@ def generar_pdf(
                 index = (doc.page - 18) // 3
                 posicion = (doc.page - 18) % 3
                 
-                # ===== SI YA TERMINARON LAS LINEAS → PORTADA PERCEPCION =====
+                # ===== SI YA TERMINARON LAS LINEAS → PERCEPCION =====
                 if index >= len(lineas_accion_data):
+                    print(">>> Dibujando Percepcion en pagina:", doc.page)  # DEBUG
                     FullImage("assets/percepcion.png")(canvas, doc)
-                    returnreturn
+                    return
 
                 
         
