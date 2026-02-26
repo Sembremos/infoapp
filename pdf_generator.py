@@ -1275,7 +1275,7 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
         tabla_lider.wrapOn(canvas, ANCHO_UTIL, 200)
         tabla_lider.drawOn(canvas, MARGEN_X, current_y - tabla_lider._height)
     
-        current_y = current_y - tabla_lider._height - ESPACIO_BLOQUESS
+        current_y = current_y - tabla_lider._height - ESPACIO_BLOQUES
 
 
     # ===== ACCIONES ESTRATEGICAS =====
