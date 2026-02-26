@@ -1242,8 +1242,8 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
         estilo_lider = ParagraphStyle(
             name="LiderCell",
             fontName="Helvetica-Bold",
-            fontSize=22,
-            leading=26,
+            fontSize=18,
+            leading=20,
             alignment=TA_LEFT,
             wordWrap="CJK"
         )
