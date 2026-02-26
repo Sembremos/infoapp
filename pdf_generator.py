@@ -2419,8 +2419,6 @@ def generar_pdf(
                 FullImage("assets/percepcion.png")(canvas, doc)
                 return
                 
-            else:
-                header_footer(canvas, doc)
 
     doc.build(
         story,
