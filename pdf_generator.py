@@ -2574,7 +2574,7 @@ def generar_pdf(
             else:
         
                 FullImage("assets/percepcion.png")(canvas, doc)
-                return
+               
                 
 
     doc.build(
