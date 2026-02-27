@@ -2512,6 +2512,59 @@ def generar_pdf(
                         preserveAspectRatio=True,
                         mask="auto"
                     )
+
+                    # ================= LOGO RESPONSABLE =================
+
+                    LOGO_WIDTH = 160
+                    LOGO_HEIGHT = 160
+                        
+                    LOGO_Y = A4[1] - 260
+                        
+                    if linea.get("corresponsable") == "Fuerza Publica":
+                        
+                        canvas.drawImage(
+                            "assets/fp.png",
+                            A4[0] - LOGO_WIDTH - 40,
+                            LOGO_Y,
+                            width=LOGO_WIDTH,
+                            height=LOGO_HEIGHT,
+                            preserveAspectRatio=True,
+                            mask="auto"
+                        )
+                        
+                    elif linea.get("corresponsable") == "Municipalidad":
+                        
+                        canvas.drawImage(
+                            logo_muni_path,
+                            A4[0] - LOGO_WIDTH - 40,
+                            LOGO_Y,
+                            width=LOGO_WIDTH,
+                            height=LOGO_HEIGHT,
+                            preserveAspectRatio=True,
+                            mask="auto"
+                        )
+                        
+                    elif linea.get("corresponsable") == "Mixta":
+                        
+                        canvas.drawImage(
+                            logo_muni_path,
+                            A4[0] - LOGO_WIDTH - 40,
+                            LOGO_Y,
+                            width=LOGO_WIDTH,
+                            height=LOGO_HEIGHT,
+                            preserveAspectRatio=True,
+                            mask="auto"
+                        )
+                        
+                        canvas.drawImage(
+                            "assets/fp.png",
+                            40,
+                            LOGO_Y,
+                            width=LOGO_WIDTH,
+                            height=LOGO_HEIGHT,
+                            preserveAspectRatio=True,
+                            mask="auto"
+                        )
                 
                     # Numero grande
                     canvas.setFont("Helvetica-Bold", 150)
