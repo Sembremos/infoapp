@@ -2393,134 +2393,70 @@ def generar_pdf(
             )
             
 
-        elif doc.page == 16:
-            FullImage("assets/lineas.png")(canvas, doc)  
+                elif doc.page == 16:
+            FullImage("assets/lineas.png")(canvas, doc)
 
         elif doc.page == 17:
 
             header_footer(canvas, doc)
-        
             page_width, page_height = A4
-        
-            # ================= VARIABLES CONFIGURABLES =================
-        
-            # Imagen base
-            IMG_PATH = "assets/lins.png"
-            IMG_WIDTH = 700
-            IMG_HEIGHT = 400
-            IMG_X = (page_width - IMG_WIDTH) / 2
-            IMG_Y = 100
-        
-            # TOTAL LINEAS
-            TOTAL_FONT = "Helvetica-Bold"
-            TOTAL_SIZE = 60
-            TOTAL_COLOR = colors.white
-            TOTAL_X = 130 #bien
-            TOTAL_Y = 185
-        
-            # Logo municipalidad
-            LOGO_WIDTH = 175
-            LOGO_HEIGHT = 175
-            LOGO_X = 400
-            LOGO_Y = 320 #355
-        
-            # Texto lineas municipales
-            TEXT_FONT = "Helvetica-Bold"
-            TEXT_SIZE = 40
-            
-            COLOR_MUNICIPAL = colors.HexColor("#30A907")  # Verde
-            COLOR_FP = colors.white                       # Blanco
-            COLOR_MIXTAS = colors.white     # blanco
-        
-            MUNICIPAL_X = 330 #380
-            MUNICIPAL_Y = 370
-            
-            FP_X = 330
-            FP_Y = 170 # bien
-            
-            MIXTAS_X = 375
-            MIXTAS_Y = 280 #280
-        
-            # ===========================================================
-        
-            # ===== DIBUJAR IMAGEN BASE =====
+
+            # ===== IMAGEN BASE =====
             canvas.drawImage(
-                IMG_PATH,
-                IMG_X,
-                IMG_Y,
-                width=IMG_WIDTH,
-                height=IMG_HEIGHT,
+                "assets/lins.png",
+                (page_width - 700) / 2,
+                100,
+                width=700,
+                height=400,
                 preserveAspectRatio=True,
                 mask="auto"
             )
-        
+
             # ===== TOTAL LINEAS =====
-            canvas.setFont(TOTAL_FONT, TOTAL_SIZE)
+            canvas.setFont("Helvetica-Bold", 60)
             canvas.setFillColor(colors.white)
-            canvas.drawCentredString(
-                TOTAL_X,
-                TOTAL_Y,
-                str(total_lineas)
-            )
-        
+            canvas.drawCentredString(130, 185, str(total_lineas))
+
             # ===== LOGO MUNICIPALIDAD =====
             canvas.drawImage(
                 logo_muni_path,
-                LOGO_X,
-                LOGO_Y,
-                width=LOGO_WIDTH,
-                height=LOGO_HEIGHT,
+                400,
+                320,
+                width=175,
+                height=175,
                 preserveAspectRatio=True,
                 mask="auto"
             )
-        
+
             # ===== LINEAS MUNICIPALIDAD =====
-            canvas.setFont(TEXT_FONT, TEXT_SIZE)
-            canvas.setFillColor(COLOR_MUNICIPAL)
-            
-            canvas.drawString(
-                MUNICIPAL_X,
-                MUNICIPAL_Y,
-                f"{lineas_municipalidad}"
-            )
-        
+            canvas.setFont("Helvetica-Bold", 40)
+            canvas.setFillColor(colors.HexColor("#30A907"))
+            canvas.drawString(330, 370, f"{lineas_municipalidad}")
+
             # ===== LINEAS FP =====
-            canvas.drawString(
-                FP_X,
-                FP_Y,
-                f"{lineas_fp}"
-            )
-        
-            # ===== LINEAS MIXTAS (CONDICIONAL) =====
+            canvas.setFillColor(colors.white)
+            canvas.drawString(330, 170, f"{lineas_fp}")
+
+            # ===== LINEAS MIXTAS =====
             if lineas_mixtas is not None:
-                canvas.setFillColor(COLOR_MIXTAS)
-                canvas.drawString(
-                    MIXTAS_X,
-                    MIXTAS_Y,
-                    f"Mixtas: {lineas_mixtas}"
-                )
+                canvas.drawString(375, 280, f"Mixtas: {lineas_mixtas}")
 
-        
+        # =====================================================
+        # BLOQUE DINAMICO DE LINEAS DE ACCION
+        # =====================================================
+        elif doc.page >= pagina_inicio_lineas and doc.page < pagina_percepcion:
 
+            index = (doc.page - pagina_inicio_lineas) // 3
+            posicion = (doc.page - pagina_inicio_lineas) % 3
 
-
-        
-        elif doc.page >= 18:
-
-            index = (doc.page - 18) // 3
-            posicion = (doc.page - 18) % 3
-        
-            # ===== SI TODAVÍA HAY LÍNEAS DE ACCIÓN =====
             if index < len(lineas_accion_data):
-        
+
                 linea = lineas_accion_data[index]
                 page_width, page_height = A4
-        
-                # =========================
-                # 0 → PORTADA
-                # =========================
+
+                # ===== PORTADA LINEA =====
                 if posicion == 0:
-        
+
                     canvas.drawImage(
                         "assets/la.png",
                         0,
@@ -2530,11 +2466,11 @@ def generar_pdf(
                         preserveAspectRatio=True,
                         mask="auto"
                     )
-        
+
                     canvas.setFont("Helvetica-Bold", 150)
                     canvas.setFillColor(colors.white)
                     canvas.drawString(400, page_height - 300, f"{linea['numero']}")
-        
+
                     titulo_style = ParagraphStyle(
                         name="TituloLinea",
                         fontName="Helvetica-Bold",
@@ -2542,34 +2478,31 @@ def generar_pdf(
                         textColor=colors.white,
                         alignment=TA_CENTER
                     )
-        
+
                     TITULO_WIDTH = page_width * 0.7
                     TITULO_X = (page_width - TITULO_WIDTH) / 2
                     TITULO_Y = page_height - 740
-        
+
                     texto_titulo = "<br/>".join(linea["problematicas"])
                     p = Paragraph(texto_titulo, titulo_style)
                     w, h = p.wrap(TITULO_WIDTH, 500)
                     p.drawOn(canvas, TITULO_X, TITULO_Y - (h / 2))
-        
-                # =========================
-                # 1 → INTERNA 1
-                # =========================
+
+                # ===== INTERNA 1 =====
                 elif posicion == 1:
-        
                     header_footer(canvas, doc)
                     draw_pagina_linea_accion(canvas, doc, linea)
-        
-                # =========================
-                # 2 → INTERNA 2
-                # =========================
+
+                # ===== INTERNA 2 =====
                 elif posicion == 2:
-        
                     header_footer(canvas, doc)
                     draw_pagina_linea_accion_detalle(canvas, doc, linea)
 
-                
-        elif doc.page >= pagina_inicio_lineas and doc.page < pagina_percepcion:
+        # =====================================================
+        # PAGINA PERCEPCION (UNA SOLA VEZ)
+        # =====================================================
+        elif doc.page == pagina_percepcion:
+            draw_pagina_seguridad(canvas, doc, excel_path)
 
                
                 
