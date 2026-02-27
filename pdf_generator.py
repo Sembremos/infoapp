@@ -2531,7 +2531,7 @@ def generar_pdf(
                     
                     LOGO_WIDTH = 160
                     LOGO_HEIGHT = 160
-                    LOGO_Y = A4[1] - 500
+                    LOGO_Y = A4[1] - 700
                     
                     LOGO_DERECHA_X = A4[0] - LOGO_WIDTH - 40
                     LOGO_IZQUIERDA_X = 40
