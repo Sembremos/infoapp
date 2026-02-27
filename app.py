@@ -554,17 +554,13 @@ if archivo:
         
             fig, ax = plt.subplots(figsize=(6, 6))
         
-            wedges, texts, autotexts = ax.pie(
+            ax.pie(
                 df["porcentaje"],
-                labels=df["respuesta"],
-                autopct=lambda p: f"{p:.2f}%",
+                labels=df["categoria"],
+                autopct="%1.0f%%",
                 startangle=90,
-                textprops={"fontsize": 18}  # <-- AQUI
+                colors=colores[:len(df)]
             )
-            
-            # Cambiar tamaño solo de los porcentajes
-            for autotext in autotexts:
-                autotext.set_fontsize(20)  # <-- AQUI
         
             ax.axis("equal")
             plt.tight_layout()
@@ -1025,12 +1021,17 @@ if archivo:
         
             fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
         
-            ax.pie(
+            wedges, texts, autotexts = ax.pie(
                 df["porcentaje"],
                 labels=df["respuesta"],
                 autopct=lambda p: f"{p:.2f}%",
-                startangle=90
+                startangle=90,
+                textprops={"fontsize": 18}  # <-- AQUI
             )
+            
+            # Cambiar tamaño solo de los porcentajes
+            for autotext in autotexts:
+                autotext.set_fontsize(20) 
         
             ax.axis("equal")
         
