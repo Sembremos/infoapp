@@ -1410,6 +1410,10 @@ def draw_pagina_percepcion_1(
         "¿Se siente seguro en su comunidad?"
     )
         
+    # ===== TITULO GRAFICO ACTUAL =====
+    canvas.setFont("Helvetica-Bold", 14)
+    canvas.setFillColor(colors.HexColor("#013051"))
+    canvas.drawString(GRAFICO_IZQ_X, GRAFICO_Y + GRAFICO_HEIGHT + 10, "Actualmente")
     # ===== GRAFICO PASTEL =====
     canvas.drawImage(
         grafico_actual_path,
@@ -1421,6 +1425,12 @@ def draw_pagina_percepcion_1(
         mask="auto"
     )
         
+    # ===== TITULO GRAFICO COMPARACION =====
+    canvas.drawString(
+        GRAFICO_DER_X,
+        GRAFICO_Y + GRAFICO_HEIGHT + 10,
+        "Comparación con el año anterior (2025)"
+    )
     # ===== GRAFICO BARRAS =====
     canvas.drawImage(
         grafico_comparacion_path,
@@ -1432,6 +1442,15 @@ def draw_pagina_percepcion_1(
         mask="auto"
     )
         
+    # ===== TITULO TABLA =====
+    canvas.setFont("Helvetica-Bold", 16)
+    canvas.setFillColor(colors.HexColor("#013051"))
+    canvas.drawString(
+        TABLA_X,
+        TABLA_Y + 220,  # ajustable
+        "Comparativo Percepción Ciudadana por Zonas"
+    )
+
 # ===== TABLA GRANDE =====
     TOTAL_COLUMNAS = len(tabla_percepcion[0])
     ANCHO_COLUMNA = TABLA_WIDTH_TOTAL / TOTAL_COLUMNAS
@@ -1457,6 +1476,19 @@ def draw_pagina_percepcion_1(
         
     tabla.wrapOn(canvas, TABLA_WIDTH_TOTAL, 400)
     tabla.drawOn(canvas, TABLA_X, TABLA_Y)
+
+    # ===== FORZAR ENCABEZADOS =====
+    if len(tabla_percepcion) >= 2:
+    
+        # Fila 298 (índice 0)
+        tabla_percepcion[0][1] = "Seguro"
+        tabla_percepcion[0][2] = "Inseguro"
+        tabla_percepcion[0][3] = "No existe"
+    
+        # Fila 299 (índice 1)
+        tabla_percepcion[1][1] = ""
+        tabla_percepcion[1][2] = ""
+        tabla_percepcion[1][3] = ""
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
@@ -2471,6 +2503,7 @@ def generar_pdf(
                 linea = lineas_accion_data[index]
             
                 if posicion == 0:
+
                     canvas.drawImage(
                         "assets/la.png",
                         0, 0,
@@ -2479,10 +2512,30 @@ def generar_pdf(
                         preserveAspectRatio=True,
                         mask="auto"
                     )
-            
+                
+                    # Numero grande
                     canvas.setFont("Helvetica-Bold", 150)
                     canvas.setFillColor(colors.white)
                     canvas.drawString(400, A4[1] - 300, f"{linea['numero']}")
+                
+                    # ===== TITULO PROBLEMATICAS =====
+                    titulo_style = ParagraphStyle(
+                        name="TituloLinea",
+                        fontName="Helvetica-Bold",
+                        fontSize=18,
+                        textColor=colors.white,
+                        alignment=TA_CENTER
+                    )
+                
+                    TITULO_WIDTH = A4[0] * 0.7
+                    TITULO_X = (A4[0] - TITULO_WIDTH) / 2
+                    TITULO_Y = A4[1] - 740
+                
+                    texto_titulo = "<br/>".join(linea["problematicas"])
+                
+                    p = Paragraph(texto_titulo, titulo_style)
+                    w, h = p.wrap(TITULO_WIDTH, 500)
+                    p.drawOn(canvas, TITULO_X, TITULO_Y - (h / 2))
             
                 elif posicion == 1:
                     header_footer(canvas, doc)
