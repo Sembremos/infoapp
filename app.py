@@ -1021,6 +1021,12 @@ if archivo:
         
             fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
         
+            COLORES_PERCEPCION = [
+                "#30A907",  # Verde institucional
+                "#013051",  # Azul institucional
+                "#A5A5A5"   # Gris (si hubiera tercera categoría)
+            ]
+            
             wedges, texts, autotexts = ax.pie(
                 df["porcentaje"],
                 labels=df["respuesta"],
