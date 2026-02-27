@@ -1364,99 +1364,99 @@ def draw_pagina_linea_accion_detalle(canvas, doc, linea):
         tabla_cog.drawOn(canvas, MARGEN_X, current_y - tabla_cog._height)
 
 
-  # =========================================================
-        # ================= PERCEPCION PAGINA 1 ===================
-        # =========================================================
+# =========================================================
+# ================= PERCEPCION PAGINA 1 ===================
+# =========================================================
         
-        def draw_pagina_percepcion_1(
-            canvas,
-            doc,
-            grafico_actual_path,
-            grafico_comparacion_path,
-            tabla_percepcion
-        ):
+def draw_pagina_percepcion_1(
+    canvas,
+    doc,
+    grafico_actual_path,
+    grafico_comparacion_path,
+    tabla_percepcion
+):
         
-            page_width, page_height = A4
+    page_width, page_height = A4
         
-            # ================= CONFIGURABLES =================
-            TITLE_FONT = "Helvetica-Bold"
-            TITLE_SIZE = 18
-            TITLE_COLOR = colors.HexColor("#013051")
-            TITLE_X = 40
-            TITLE_Y = page_height - 80
+    # ================= CONFIGURABLES =================
+    TITLE_FONT = "Helvetica-Bold"
+    TITLE_SIZE = 18
+    TITLE_COLOR = colors.HexColor("#013051")
+    TITLE_X = 40
+    TITLE_Y = page_height - 80
         
-            # Graficos
-            GRAFICO_WIDTH = 230
-            GRAFICO_HEIGHT = 230
+    # Graficos
+    GRAFICO_WIDTH = 230
+    GRAFICO_HEIGHT = 230
         
-            GRAFICO_Y = page_height - 340
+    GRAFICO_Y = page_height - 340
         
-            GRAFICO_IZQ_X = 40
-            GRAFICO_DER_X = page_width - GRAFICO_WIDTH - 40
+    GRAFICO_IZQ_X = 40
+    GRAFICO_DER_X = page_width - GRAFICO_WIDTH - 40
         
-            # Tabla
-            TABLA_X = 40
-            TABLA_Y = 300
-            TABLA_WIDTH_TOTAL = page_width - 80
+    # Tabla
+    TABLA_X = 40
+    TABLA_Y = 300
+    TABLA_WIDTH_TOTAL = page_width - 80
         
-            # =================================================
+    # =================================================
         
-            # ===== TITULO PRINCIPAL =====
-            canvas.setFont(TITLE_FONT, TITLE_SIZE)
-            canvas.setFillColor(TITLE_COLOR)
-            canvas.drawString(
-                TITLE_X,
-                TITLE_Y,
-                "¿Se siente seguro en su comunidad?"
-            )
+    # ===== TITULO PRINCIPAL =====
+    canvas.setFont(TITLE_FONT, TITLE_SIZE)
+    canvas.setFillColor(TITLE_COLOR)
+    canvas.drawString(
+        TITLE_X,
+        TITLE_Y,
+        "¿Se siente seguro en su comunidad?"
+    )
         
-            # ===== GRAFICO PASTEL =====
-            canvas.drawImage(
-                grafico_actual_path,
-                GRAFICO_IZQ_X,
-                GRAFICO_Y,
-                width=GRAFICO_WIDTH,
-                height=GRAFICO_HEIGHT,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
+    # ===== GRAFICO PASTEL =====
+    canvas.drawImage(
+        grafico_actual_path,
+        GRAFICO_IZQ_X,
+        GRAFICO_Y,
+        width=GRAFICO_WIDTH,
+        height=GRAFICO_HEIGHT,
+        preserveAspectRatio=True,
+        mask="auto"
+    )
         
-            # ===== GRAFICO BARRAS =====
-            canvas.drawImage(
-                grafico_comparacion_path,
-                GRAFICO_DER_X,
-                GRAFICO_Y,
-                width=GRAFICO_WIDTH,
-                height=GRAFICO_HEIGHT,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
+    # ===== GRAFICO BARRAS =====
+    canvas.drawImage(
+        grafico_comparacion_path,
+        GRAFICO_DER_X,
+        GRAFICO_Y,
+        width=GRAFICO_WIDTH,
+        height=GRAFICO_HEIGHT,
+        preserveAspectRatio=True,
+        mask="auto"
+    )
         
-            # ===== TABLA GRANDE =====
-            TOTAL_COLUMNAS = len(tabla_percepcion[0])
-            ANCHO_COLUMNA = TABLA_WIDTH_TOTAL / TOTAL_COLUMNAS
+# ===== TABLA GRANDE =====
+    TOTAL_COLUMNAS = len(tabla_percepcion[0])
+    ANCHO_COLUMNA = TABLA_WIDTH_TOTAL / TOTAL_COLUMNAS
         
-            from reportlab.platypus import Table, TableStyle
+    from reportlab.platypus import Table, TableStyle
         
-            tabla = Table(
-                tabla_percepcion,
-                colWidths=[ANCHO_COLUMNA] * TOTAL_COLUMNAS
-            )
+    tabla = Table(
+        tabla_percepcion,
+        colWidths=[ANCHO_COLUMNA] * TOTAL_COLUMNAS
+    )
         
-            tabla.setStyle(TableStyle([
-                ("GRID", (0,0), (-1,-1), 0.5, colors.black),
+    tabla.setStyle(TableStyle([
+        ("GRID", (0,0), (-1,-1), 0.5, colors.black),
         
-                # Encabezados (filas 0 y 1)
-                ("BACKGROUND", (0,0), (-1,1), colors.HexColor("#30A907")),
-                ("TEXTCOLOR", (0,0), (-1,1), colors.white),
-                ("FONTNAME", (0,0), (-1,1), "Helvetica-Bold"),
+        # Encabezados (filas 0 y 1)
+        ("BACKGROUND", (0,0), (-1,1), colors.HexColor("#30A907")),
+        ("TEXTCOLOR", (0,0), (-1,1), colors.white),
+        ("FONTNAME", (0,0), (-1,1), "Helvetica-Bold"),
         
-                ("ALIGN", (0,0), (-1,-1), "CENTER"),
-                ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
-            ]))
+        ("ALIGN", (0,0), (-1,-1), "CENTER"),
+        ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
+    ]))
         
-            tabla.wrapOn(canvas, TABLA_WIDTH_TOTAL, 400)
-            tabla.drawOn(canvas, TABLA_X, TABLA_Y)
+    tabla.wrapOn(canvas, TABLA_WIDTH_TOTAL, 400)
+    tabla.drawOn(canvas, TABLA_X, TABLA_Y)
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
