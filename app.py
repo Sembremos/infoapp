@@ -1108,22 +1108,56 @@ if archivo:
         generar_grafico_percepcion_comparacion(df_percepcion_comparacion)
         
         
-       # ================= TABLA COMPARATIVA =================
-
+        # =========================================================
+        # ============== TABLA COMPARATIVA PERCEPCION =============
+        # =========================================================
+        
+        # ----- Validar tamaño mínimo del DataFrame -----
+        FILAS_MINIMAS = 309
+        COLUMNAS_MINIMAS = 7
+        
+        filas_actuales, columnas_actuales = df.shape
+        
+        # Expandir filas si faltan
+        if filas_actuales < FILAS_MINIMAS:
+            filas_extra = FILAS_MINIMAS - filas_actuales
+            df_extra = pd.DataFrame(
+                [[None] * columnas_actuales] * filas_extra
+            )
+            df = pd.concat([df, df_extra], ignore_index=True)
+        
+        # Expandir columnas si faltan
+        if columnas_actuales < COLUMNAS_MINIMAS:
+            columnas_extra = COLUMNAS_MINIMAS - columnas_actuales
+            for i in range(columnas_extra):
+                df[f"_extra_{i}"] = None
+        
+        # ----- Extraer rango seguro -----
         tabla_percepcion_df = df.iloc[297:309, 0:7].copy()
         
-        # Eliminar columnas B, D, F (índices 1,3,5)
-        tabla_percepcion_df = tabla_percepcion_df.drop(
-            tabla_percepcion_df.columns[[1,3,5]],
-            axis=1
-        )
-        
-        # 🔹 Formatear porcentajes SOLO desde la fila 300 (índice 299)
-        for col in [2,3,4]:  # columnas C, E, G luego de eliminar
-            tabla_percepcion_df.iloc[2:, col] = tabla_percepcion_df.iloc[2:, col].apply(
-                lambda x: f"{float(x)*100:.2f}%" if pd.notna(x) and x != "" else ""
+        # Eliminar columnas B, D y F (índices 1,3,5)
+        try:
+            tabla_percepcion_df = tabla_percepcion_df.drop(
+                tabla_percepcion_df.columns[[1,3,5]],
+                axis=1
             )
+        except:
+            pass
         
+        # ----- Formatear porcentajes SOLO desde fila 300 en adelante -----
+        # (las dos primeras filas son encabezado)
+        for col in range(2, tabla_percepcion_df.shape[1]):
+            for fila in range(2, tabla_percepcion_df.shape[0]):
+                valor = tabla_percepcion_df.iat[fila, col]
+                if pd.notna(valor) and valor != "":
+                    try:
+                        tabla_percepcion_df.iat[fila, col] = f"{float(valor)*100:.2f}%"
+                    except:
+                        tabla_percepcion_df.iat[fila, col] = valor
+                else:
+                    tabla_percepcion_df.iat[fila, col] = ""
+        
+        # ----- Limpiar nulos -----
         tabla_percepcion = (
             tabla_percepcion_df
             .fillna("")
