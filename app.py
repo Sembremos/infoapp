@@ -1026,18 +1026,20 @@ if archivo:
                 "#013051",  # Azul institucional
                 "#A5A5A5"   # Gris (si hubiera tercera categoría)
             ]
-            
+        
             wedges, texts, autotexts = ax.pie(
                 df["porcentaje"],
                 labels=df["respuesta"],
                 autopct=lambda p: f"{p:.2f}%",
                 startangle=90,
-                textprops={"fontsize": 18}  # <-- AQUI
+                colors=COLORES_PERCEPCION[:len(df)],  # <-- AQUI ESTABA LO QUE FALTABA
+                textprops={"fontsize": 18}
             )
-            
-            # Cambiar tamaño solo de los porcentajes
+        
+            # Tamaño porcentajes
             for autotext in autotexts:
-                autotext.set_fontsize(20) 
+                autotext.set_fontsize(20)
+                autotext.set_color("white")  # opcional, se ve más profesional
         
             ax.axis("equal")
         
