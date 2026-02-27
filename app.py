@@ -1146,14 +1146,16 @@ if archivo:
         
         # ----- Formatear porcentajes SOLO desde fila 300 en adelante -----
         # (las dos primeras filas son encabezado)
-        for col in range(2, tabla_percepcion_df.shape[1]):
+        # ===== FORMATEAR SOLO COLUMNAS PORCENTUALES =====
+        # Columnas 1,2,3 después de eliminar B,D,F
+        for col in [1, 2, 3]:
             for fila in range(2, tabla_percepcion_df.shape[0]):
                 valor = tabla_percepcion_df.iat[fila, col]
                 if pd.notna(valor) and valor != "":
                     try:
                         tabla_percepcion_df.iat[fila, col] = f"{float(valor)*100:.2f}%"
                     except:
-                        tabla_percepcion_df.iat[fila, col] = valor
+                        pass
                 else:
                     tabla_percepcion_df.iat[fila, col] = ""
         
