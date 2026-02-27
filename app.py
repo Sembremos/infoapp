@@ -1108,7 +1108,8 @@ if archivo:
         generar_grafico_percepcion_comparacion(df_percepcion_comparacion)
         
         
-        # ================= TABLA COMPARATIVA =================
+       # ================= TABLA COMPARATIVA =================
+
         tabla_percepcion_df = df.iloc[297:309, 0:7].copy()
         
         # Eliminar columnas B, D, F (índices 1,3,5)
@@ -1117,13 +1118,19 @@ if archivo:
             axis=1
         )
         
-        # Formatear porcentajes columnas C,E,G (ahora índices 2,3,4)
-        for col in [2,3,4]:
+        # 🔹 Formatear porcentajes SOLO desde la fila 300 (índice 299)
+        for col in [2,3,4]:  # columnas C, E, G luego de eliminar
             tabla_percepcion_df.iloc[2:, col] = tabla_percepcion_df.iloc[2:, col].apply(
-                lambda x: f"{float(x)*100:.2f}%" if pd.notna(x) else ""
+                lambda x: f"{float(x)*100:.2f}%" if pd.notna(x) and x != "" else ""
             )
         
-        tabla_percepcion = tabla_percepcion_df.fillna("").astype(str).values.tolist()
+        tabla_percepcion = (
+            tabla_percepcion_df
+            .fillna("")
+            .astype(str)
+            .values
+            .tolist()
+        )
         
         
         # =========================================
