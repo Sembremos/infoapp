@@ -2393,7 +2393,7 @@ def generar_pdf(
             )
             
 
-                elif doc.page == 16:
+        elif doc.page == 16:
             FullImage("assets/lineas.png")(canvas, doc)
 
         elif doc.page == 17:
