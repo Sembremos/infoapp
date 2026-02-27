@@ -2517,48 +2517,55 @@ def generar_pdf(
 
                     LOGO_WIDTH = 160
                     LOGO_HEIGHT = 160
-                        
-                    LOGO_Y = A4[1] - 260
-                        
+                    
+                    # 👇 posición vertical
+                    LOGO_Y = A4[1] - 500  
+                    
+                    # 👇 posiciones horizontales
+                    LOGO_DERECHA_X = A4[0] - LOGO_WIDTH - 40
+                    LOGO_IZQUIERDA_X = 40
+                    
                     if linea.get("corresponsable") == "Fuerza Publica":
-                        
+                    
                         canvas.drawImage(
                             "assets/fp.png",
-                            A4[0] - LOGO_WIDTH - 40,
+                            LOGO_DERECHA_X,
                             LOGO_Y,
                             width=LOGO_WIDTH,
                             height=LOGO_HEIGHT,
                             preserveAspectRatio=True,
                             mask="auto"
                         )
-                        
+                    
                     elif linea.get("corresponsable") == "Municipalidad":
-                        
+                    
                         canvas.drawImage(
                             logo_muni_path,
-                            A4[0] - LOGO_WIDTH - 40,
+                            LOGO_DERECHA_X,
                             LOGO_Y,
                             width=LOGO_WIDTH,
                             height=LOGO_HEIGHT,
                             preserveAspectRatio=True,
                             mask="auto"
                         )
-                        
+                    
                     elif linea.get("corresponsable") == "Mixta":
-                        
+                    
+                        # Municipalidad derecha
                         canvas.drawImage(
                             logo_muni_path,
-                            A4[0] - LOGO_WIDTH - 40,
+                            LOGO_DERECHA_X,
                             LOGO_Y,
                             width=LOGO_WIDTH,
                             height=LOGO_HEIGHT,
                             preserveAspectRatio=True,
                             mask="auto"
                         )
-                        
+                    
+                        # Fuerza Pública izquierda
                         canvas.drawImage(
                             "assets/fp.png",
-                            40,
+                            LOGO_IZQUIERDA_X,
                             LOGO_Y,
                             width=LOGO_WIDTH,
                             height=LOGO_HEIGHT,
