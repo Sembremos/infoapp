@@ -1787,8 +1787,12 @@ def generar_pdf(
     def later_pages(canvas, doc):
         if doc.page == 2:
             FullImage("assets/intro.png")(canvas, doc)
+        elif doc.page == 3:
+            header_footer(canvas, doc)
         elif doc.page == 4:
             FullImage("assets/participacion.png")(canvas, doc)
+        elif doc.page == 5:
+            header_footer(canvas, doc)
         elif doc.page == 6:
             header_footer(canvas, doc)
             draw_grafico_edad(canvas, doc, grafico_edad_path)
