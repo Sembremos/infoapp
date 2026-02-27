@@ -2501,7 +2501,7 @@ def generar_pdf(
         # =====================================================
         # PAGINA PERCEPCION (UNA SOLA VEZ)
         # =====================================================
-        elif doc.page == pagina_percepcion:
+        elif doc.page >= pagina_percepcion:
             draw_pagina_seguridad(canvas, doc, excel_path)
 
                
