@@ -1092,10 +1092,12 @@ if archivo:
                     f"{height:.2f}%",
                     ha="center",
                     va="bottom",
-                    fontsize=10
+                    fontsize=16
                 )
         
             ax.tick_params(axis="x", rotation=45)
+            ax.tick_params(axis="x", labelsize=14)
+            ax.tick_params(axis="y", labelsize=14)
         
             for spine in ax.spines.values():
                 spine.set_visible(False)
