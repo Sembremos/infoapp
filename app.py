@@ -992,6 +992,8 @@ if archivo:
         # ================= PERCEPCION CIUDADANA ==================
         # =========================================================
         
+        st.write("Filas del DataFrame:", df.shape[0])
+        st.write("Columnas del DataFrame:", df.shape[1])
         # ================= PREGUNTA ACTUAL =================
         df_percepcion_actual = df.iloc[283:285, 0:2].copy()
         df_percepcion_actual.columns = ["respuesta", "porcentaje"]
@@ -1042,7 +1044,7 @@ if archivo:
         
         
         # ================= COMPARACION AÑO ANTERIOR =================
-        df_percepcion_comparacion = df.iloc[290:294, 0:2].copy()
+        df_percepcion_comparacion = df.iloc[290:293, 0:2].copy()
         df_percepcion_comparacion.columns = ["categoria", "porcentaje"]
         
         df_percepcion_comparacion["porcentaje"] = (
