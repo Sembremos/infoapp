@@ -1794,13 +1794,6 @@ def generar_pdf(
         story.append(PageBreak())
         story.append(Spacer(1, 1))
 
-    # ===== PORTADA PERCEPCION CIUDADANA =====
-    story.append(PageBreak())
-    story.append(Spacer(1, 1))
-
-    # ===== PAGINA 1 PERCEPCION (GRAFICOS Y TABLA) =====
-    story.append(PageBreak())
-    story.append(Spacer(1, 1))
     
     ##----------------------------------Bloque de funciones 
                  
@@ -2576,8 +2569,7 @@ def generar_pdf(
                     draw_pagina_linea_accion_detalle(canvas, doc, linea)
 
                 
-        elif doc.page == pagina_percepcion:
-            draw_pagina_seguridad(canvas, doc, excel_path)
+        elif doc.page >= pagina_inicio_lineas and doc.page < pagina_percepcion:
 
                
                 
