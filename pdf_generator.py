@@ -2455,7 +2455,7 @@ def generar_pdf(
             # ===== BLOQUE LINEAS DE ACCION Y PERCEPCION ============
             # =========================================================
             
-            lineas_inicio = 17
+            lineas_inicio = 18
             percepcion_inicio = lineas_inicio + (len(lineas_accion_data) * 3)
             
             # =========================
