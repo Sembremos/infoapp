@@ -2501,11 +2501,23 @@ def generar_pdf(
         # =====================================================
         # PAGINA PERCEPCION (UNA SOLA VEZ)
         # =====================================================
-        elif doc.page >= pagina_percepcion:
+        elif doc.page == pagina_percepcion:
+        
+            page_width, page_height = A4
+        
+            # 1️⃣ Primero dibujas el fondo
+            canvas.drawImage(
+                "assets/percepcion.png",
+                0,
+                0,
+                width=page_width,
+                height=page_height,
+                preserveAspectRatio=True,
+                mask="auto"
+            )
+        
+            # 2️⃣ Luego dibujas el contenido encima
             draw_pagina_seguridad(canvas, doc, excel_path)
-
-               
-                
 
     doc.build(
         story,
