@@ -2451,81 +2451,81 @@ def generar_pdf(
       
         
         
-            # =========================================================
-            # ===== BLOQUE LINEAS DE ACCION Y PERCEPCION ============
-            # =========================================================
+        # =========================================================
+        # ===== BLOQUE LINEAS DE ACCION Y PERCEPCION ============
+        # =========================================================
             
-            lineas_inicio = 18
-            percepcion_inicio = lineas_inicio + (len(lineas_accion_data) * 3)
+        lineas_inicio = 18
+        percepcion_inicio = lineas_inicio + (len(lineas_accion_data) * 3)
             
-            # =========================
-            # LINEAS DE ACCION
-            # =========================
-            if lineas_inicio <= doc.page < percepcion_inicio:
+        # =========================
+        # LINEAS DE ACCION
+        # =========================
+        if lineas_inicio <= doc.page < percepcion_inicio:
             
-                index = (doc.page - lineas_inicio) // 3
-                posicion = (doc.page - lineas_inicio) % 3
+            index = (doc.page - lineas_inicio) // 3
+            posicion = (doc.page - lineas_inicio) % 3
             
-                if index < len(lineas_accion_data):
+            if index < len(lineas_accion_data):
             
-                    linea = lineas_accion_data[index]
+                linea = lineas_accion_data[index]
             
-                    if posicion == 0:
-                        canvas.drawImage(
-                            "assets/la.png",
-                            0, 0,
-                            width=A4[0],
-                            height=A4[1],
-                            preserveAspectRatio=True,
-                            mask="auto"
-                        )
+                if posicion == 0:
+                    canvas.drawImage(
+                        "assets/la.png",
+                        0, 0,
+                        width=A4[0],
+                        height=A4[1],
+                        preserveAspectRatio=True,
+                        mask="auto"
+                    )
             
-                        canvas.setFont("Helvetica-Bold", 150)
-                        canvas.setFillColor(colors.white)
-                        canvas.drawString(400, A4[1] - 300, f"{linea['numero']}")
+                    canvas.setFont("Helvetica-Bold", 150)
+                    canvas.setFillColor(colors.white)
+                    canvas.drawString(400, A4[1] - 300, f"{linea['numero']}")
             
-                    elif posicion == 1:
-                        header_footer(canvas, doc)
-                        draw_pagina_linea_accion(canvas, doc, linea)
+                elif posicion == 1:
+                    header_footer(canvas, doc)
+                    draw_pagina_linea_accion(canvas, doc, linea)
             
-                    elif posicion == 2:
-                        header_footer(canvas, doc)
-                        draw_pagina_linea_accion_detalle(canvas, doc, linea)
+                elif posicion == 2:
+                    header_footer(canvas, doc)
+                    draw_pagina_linea_accion_detalle(canvas, doc, linea)
             
-            # =========================
-            # PERCEPCION (6 PAGINAS)
-            # =========================
-            elif doc.page == percepcion_inicio:
-                FullImage("assets/percepcion.png")(canvas, doc)
+        # =========================
+        # PERCEPCION (6 PAGINAS)
+        # =========================
+        elif doc.page == percepcion_inicio:
+            FullImage("assets/percepcion.png")(canvas, doc)
             
-            elif doc.page == percepcion_inicio + 1:
-                header_footer(canvas, doc)
-                draw_pagina_percepcion_1(
-                    canvas,
-                    doc,
-                    grafico_percepcion_actual_path,
-                    grafico_percepcion_comparacion_path,
-                    tabla_percepcion
-                )
+        elif doc.page == percepcion_inicio + 1:
+            header_footer(canvas, doc)
+            draw_pagina_percepcion_1(
+                canvas,
+                doc,
+                grafico_percepcion_actual_path,
+                grafico_percepcion_comparacion_path,
+                tabla_percepcion
+            )
             
-            elif doc.page == percepcion_inicio + 2:
-                header_footer(canvas, doc)
-                # futura draw_pagina_percepcion_2(...)
-                canvas.drawString(100, 500, "Percepción Página 2")
+        elif doc.page == percepcion_inicio + 2:
+            header_footer(canvas, doc)
+            # futura draw_pagina_percepcion_2(...)
+            canvas.drawString(100, 500, "Percepción Página 2")
             
-            elif doc.page == percepcion_inicio + 3:
-                header_footer(canvas, doc)
-                canvas.drawString(100, 500, "Percepción Página 3")
+        elif doc.page == percepcion_inicio + 3:
+            header_footer(canvas, doc)
+            canvas.drawString(100, 500, "Percepción Página 3")
             
-            elif doc.page == percepcion_inicio + 4:
-                header_footer(canvas, doc)
-                canvas.drawString(100, 500, "Percepción Página 4")
+        elif doc.page == percepcion_inicio + 4:
+            header_footer(canvas, doc)
+            canvas.drawString(100, 500, "Percepción Página 4")
             
-            elif doc.page == percepcion_inicio + 5:
-                header_footer(canvas, doc)
-                canvas.drawString(100, 500, "Percepción Página 5")
+        elif doc.page == percepcion_inicio + 5:
+            header_footer(canvas, doc)
+            canvas.drawString(100, 500, "Percepción Página 5")
 
-            return
+        return
 
     doc.build(
         story,
