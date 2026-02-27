@@ -2519,7 +2519,7 @@ def generar_pdf(
                     LOGO_HEIGHT = 160
                     
                     # 👇 posición vertical
-                    LOGO_Y = A4[1] - 500  
+                    LOGO_Y = A4[1] - 700
                     
                     # 👇 posiciones horizontales
                     LOGO_DERECHA_X = A4[0] - LOGO_WIDTH - 40
