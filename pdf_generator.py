@@ -2525,7 +2525,32 @@ def generar_pdf(
                     LOGO_DERECHA_X = A4[0] - LOGO_WIDTH - 40
                     LOGO_IZQUIERDA_X = 40
                     
-                    if linea.get("corresponsable") == "Fuerza Publica":
+                    # ================= LOGO RESPONSABLE =================
+                    
+                    cor = str(linea.get("corresponsable", "")).lower().strip()
+                    
+                    LOGO_WIDTH = 160
+                    LOGO_HEIGHT = 160
+                    LOGO_Y = A4[1] - 500
+                    
+                    LOGO_DERECHA_X = A4[0] - LOGO_WIDTH - 40
+                    LOGO_IZQUIERDA_X = 40
+                    
+                    # Solo Municipalidad
+                    if "municipal" in cor and "mixta" not in cor:
+                    
+                        canvas.drawImage(
+                            logo_muni_path,
+                            LOGO_DERECHA_X,
+                            LOGO_Y,
+                            width=LOGO_WIDTH,
+                            height=LOGO_HEIGHT,
+                            preserveAspectRatio=True,
+                            mask="auto"
+                        )
+                    
+                    # Solo Fuerza Pública
+                    elif "fuerza" in cor and "mixta" not in cor:
                     
                         canvas.drawImage(
                             "assets/fp.png",
@@ -2537,7 +2562,8 @@ def generar_pdf(
                             mask="auto"
                         )
                     
-                    elif linea.get("corresponsable") == "Municipalidad":
+                    # Mixta = ambos
+                    elif "mixta" in cor:
                     
                         canvas.drawImage(
                             logo_muni_path,
@@ -2549,20 +2575,6 @@ def generar_pdf(
                             mask="auto"
                         )
                     
-                    elif linea.get("corresponsable") == "Mixta":
-                    
-                        # Municipalidad derecha
-                        canvas.drawImage(
-                            logo_muni_path,
-                            LOGO_DERECHA_X,
-                            LOGO_Y,
-                            width=LOGO_WIDTH,
-                            height=LOGO_HEIGHT,
-                            preserveAspectRatio=True,
-                            mask="auto"
-                        )
-                    
-                        # Fuerza Pública izquierda
                         canvas.drawImage(
                             "assets/fp.png",
                             LOGO_IZQUIERDA_X,
