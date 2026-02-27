@@ -1389,14 +1389,14 @@ def draw_pagina_percepcion_1(
     GRAFICO_WIDTH = 230
     GRAFICO_HEIGHT = 230
         
-    GRAFICO_Y = page_height - 360
+    GRAFICO_Y = page_height - 380
         
     GRAFICO_IZQ_X = 40
     GRAFICO_DER_X = page_width - GRAFICO_WIDTH - 40
         
     # Tabla
     TABLA_X = 40
-    TABLA_Y = 380
+    TABLA_Y = 470
     TABLA_WIDTH_TOTAL = page_width - 80
         
     # =================================================
