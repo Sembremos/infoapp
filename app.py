@@ -987,6 +987,143 @@ if archivo:
             f"{numero_delegacion}.png"
         )
 
+
+        # =========================================================
+        # ================= PERCEPCION CIUDADANA ==================
+        # =========================================================
+        
+        # ================= PREGUNTA ACTUAL =================
+        df_percepcion_actual = df.iloc[283:285, 0:2].copy()
+        df_percepcion_actual.columns = ["respuesta", "porcentaje"]
+        
+        df_percepcion_actual["porcentaje"] = (
+            df_percepcion_actual["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        
+        df_percepcion_actual["porcentaje"] = pd.to_numeric(
+            df_percepcion_actual["porcentaje"],
+            errors="coerce"
+        )
+        
+        df_percepcion_actual = df_percepcion_actual.dropna()
+        
+        # ===== GRAFICO PASTEL =====
+        def generar_grafico_percepcion_actual(df):
+        
+            FIG_WIDTH = 5
+            FIG_HEIGHT = 5
+            DPI = 300
+        
+            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
+        
+            ax.pie(
+                df["porcentaje"],
+                labels=df["respuesta"],
+                autopct=lambda p: f"{p:.2f}%",
+                startangle=90
+            )
+        
+            ax.axis("equal")
+        
+            plt.tight_layout()
+        
+            plt.savefig(
+                ASSETS_DIR / "grafico_percepcion_actual.png",
+                dpi=DPI,
+                transparent=True
+            )
+        
+            plt.close()
+        
+        generar_grafico_percepcion_actual(df_percepcion_actual)
+        
+        
+        # ================= COMPARACION AÑO ANTERIOR =================
+        df_percepcion_comparacion = df.iloc[290:294, 0:2].copy()
+        df_percepcion_comparacion.columns = ["categoria", "porcentaje"]
+        
+        df_percepcion_comparacion["porcentaje"] = (
+            df_percepcion_comparacion["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        
+        df_percepcion_comparacion["porcentaje"] = pd.to_numeric(
+            df_percepcion_comparacion["porcentaje"],
+            errors="coerce"
+        )
+        
+        df_percepcion_comparacion = df_percepcion_comparacion.dropna()
+        
+        # ===== GRAFICO BARRAS =====
+        def generar_grafico_percepcion_comparacion(df):
+        
+            FIG_WIDTH = 6
+            FIG_HEIGHT = 5
+            DPI = 300
+            COLOR_BARRAS = "#30A907"
+        
+            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
+        
+            barras = ax.bar(
+                df["categoria"],
+                df["porcentaje"],
+                color=COLOR_BARRAS
+            )
+        
+            ax.set_ylim(0, df["porcentaje"].max() * 1.25)
+        
+            for bar in barras:
+                height = bar.get_height()
+                ax.text(
+                    bar.get_x() + bar.get_width()/2,
+                    height,
+                    f"{height:.2f}%",
+                    ha="center",
+                    va="bottom",
+                    fontsize=10
+                )
+        
+            ax.tick_params(axis="x", rotation=45)
+        
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+        
+            plt.tight_layout()
+        
+            plt.savefig(
+                ASSETS_DIR / "grafico_percepcion_comparacion.png",
+                dpi=DPI,
+                transparent=True
+            )
+        
+            plt.close()
+        
+        generar_grafico_percepcion_comparacion(df_percepcion_comparacion)
+        
+        
+        # ================= TABLA COMPARATIVA =================
+        tabla_percepcion_df = df.iloc[297:309, 0:7].copy()
+        
+        # Eliminar columnas B, D, F (índices 1,3,5)
+        tabla_percepcion_df = tabla_percepcion_df.drop(
+            tabla_percepcion_df.columns[[1,3,5]],
+            axis=1
+        )
+        
+        # Formatear porcentajes columnas C,E,G (ahora índices 2,3,4)
+        for col in [2,3,4]:
+            tabla_percepcion_df.iloc[2:, col] = tabla_percepcion_df.iloc[2:, col].apply(
+                lambda x: f"{float(x)*100:.2f}%" if pd.notna(x) else ""
+            )
+        
+        tabla_percepcion = tabla_percepcion_df.fillna("").astype(str).values.tolist()
+        
+        
         # =========================================
         # LINEAS DE ACCION DINAMICAS PORTADAS
         # =========================================
@@ -1187,6 +1324,9 @@ if archivo:
                 lineas_mixtas=lineas_mixtas,
                 logo_muni_path=str(logo_muni_path),
                 lineas_accion_data=lineas_accion_data,
+                grafico_percepcion_actual_path=str(ASSETS_DIR / "grafico_percepcion_actual.png"),
+                grafico_percepcion_comparacion_path=str(ASSETS_DIR / "grafico_percepcion_comparacion.png"),
+                tabla_percepcion=tabla_percepcion,
              )
 
             pdf_bytes = pdf_buffer.getvalue()
