@@ -76,6 +76,22 @@ if archivo:
         # Lectura del excel
         wb = load_workbook(archivo, data_only=True)
         ws = wb["Hoja1"]
+        # ================= CORRESPONSABLES DESDE EXCEL =================
+
+        columnas_corresponsable = [
+            "J", "P", "V", "AB", "AH", "AN",
+            "AT", "AZ", "BF", "BL", "BR", "BX"
+        ]
+        
+        corresponsables_excel = []
+        
+        for col in columnas_corresponsable:
+            valor = ws[f"{col}246"].value
+        
+            if valor:
+                corresponsables_excel.append(str(valor).strip())
+            else:
+                corresponsables_excel.append("")
         df = pd.DataFrame(ws.values)
 
         # ================= DATOS BASE =================
@@ -1231,6 +1247,7 @@ if archivo:
         columnas_lider = [9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75]
         columnas_acciones = [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74]
         columnas_cogestores = [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74]
+        columnas_corresponsable = [9,15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75]
 
         lineas_accion_data = []
 
@@ -1279,6 +1296,15 @@ if archivo:
             # ===== LIDER ESTRATEGICO =====
             col_lider = columnas_lider[i]
             lider_estrategico = df.iloc[245, col_lider]
+
+            # ===== CORRESPONSABLE =====
+            col_corresponsable = columnas_corresponsable[i]
+            corresponsable = df.iloc[245, col_corresponsable]
+            
+            if pd.notna(corresponsable):
+                corresponsable = str(corresponsable).strip()
+            else:
+                corresponsable = ""
         
             if pd.notna(lider_estrategico):
                 lider_estrategico = str(lider_estrategico).strip()
@@ -1316,13 +1342,8 @@ if archivo:
                 "lider_estrategico": lider_estrategico,
                 "acciones": acciones,
                 "cogestores": cogestores,
-                "corresponsable": (
-                    "Municipalidad" if i < int(lineas_municipalidad)
-                    else "Fuerza Publica" if i < int(lineas_municipalidad) + int(lineas_fp)
-                    else "Mixta"
-                )
+                "corresponsable": corresponsable  # 👈 NUEVO
             })
-
                 
         st.write("Cantidad de lineas detectadas:", len(lineas_accion_data)) ###debugging
         
