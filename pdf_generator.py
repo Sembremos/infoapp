@@ -2450,91 +2450,58 @@ def generar_pdf(
       
         
         
-        elif doc.page >= 18:
-
-            index = (doc.page - 18) // 3
-            posicion = (doc.page - 18) % 3
+        # =========================================================
+        # ============ BLOQUE LINEAS DE ACCION + PERCEPCION ======
+        # =========================================================
         
-            # ===== SI TODAVÍA HAY LÍNEAS DE ACCIÓN =====
+        lineas_inicio = 18
+        percepcion_inicio = lineas_inicio + (len(lineas_accion_data) * 3)
+        
+        if doc.page >= lineas_inicio and doc.page < percepcion_inicio:
+        
+            index = (doc.page - lineas_inicio) // 3
+            posicion = (doc.page - lineas_inicio) % 3
+        
             if index < len(lineas_accion_data):
         
                 linea = lineas_accion_data[index]
-                page_width, page_height = A4
         
-                # =========================
-                # 0 → PORTADA
-                # =========================
                 if posicion == 0:
-        
                     canvas.drawImage(
                         "assets/la.png",
-                        0,
-                        0,
-                        width=page_width,
-                        height=page_height,
+                        0, 0,
+                        width=A4[0],
+                        height=A4[1],
                         preserveAspectRatio=True,
                         mask="auto"
                     )
         
                     canvas.setFont("Helvetica-Bold", 150)
                     canvas.setFillColor(colors.white)
-                    canvas.drawString(400, page_height - 300, f"{linea['numero']}")
+                    canvas.drawString(400, A4[1] - 300, f"{linea['numero']}")
         
-                    titulo_style = ParagraphStyle(
-                        name="TituloLinea",
-                        fontName="Helvetica-Bold",
-                        fontSize=18,
-                        textColor=colors.white,
-                        alignment=TA_CENTER
-                    )
-        
-                    TITULO_WIDTH = page_width * 0.7
-                    TITULO_X = (page_width - TITULO_WIDTH) / 2
-                    TITULO_Y = page_height - 740
-        
-                    texto_titulo = "<br/>".join(linea["problematicas"])
-                    p = Paragraph(texto_titulo, titulo_style)
-                    w, h = p.wrap(TITULO_WIDTH, 500)
-                    p.drawOn(canvas, TITULO_X, TITULO_Y - (h / 2))
-        
-                # =========================
-                # 1 → INTERNA 1
-                # =========================
                 elif posicion == 1:
-        
                     header_footer(canvas, doc)
                     draw_pagina_linea_accion(canvas, doc, linea)
         
-                # =========================
-                # 2 → INTERNA 2
-                # =========================
                 elif posicion == 2:
-        
                     header_footer(canvas, doc)
                     draw_pagina_linea_accion_detalle(canvas, doc, linea)
-
-            # ======================================
-            # SI YA NO HAY MÁS LÍNEAS → PERCEPCIÓN
-            # ======================================
-            else:
-            
-                percepcion_inicio = 18 + (len(lineas_accion_data) * 3)
-            
-                if doc.page == percepcion_inicio:
-                    FullImage("assets/percepcion.png")(canvas, doc)
-            
-                elif doc.page == percepcion_inicio + 1:
-                    header_footer(canvas, doc)
-                    draw_pagina_percepcion_1(
-                        canvas,
-                        doc,
-                        grafico_percepcion_actual_path,
-                        grafico_percepcion_comparacion_path,
-                        tabla_percepcion
-                    )
-            
-                return
-                
+        
+        elif doc.page == percepcion_inicio:
+        
+            FullImage("assets/percepcion.png")(canvas, doc)
+        
+        elif doc.page == percepcion_inicio + 1:
+        
+            header_footer(canvas, doc)
+            draw_pagina_percepcion_1(
+                canvas,
+                doc,
+                grafico_percepcion_actual_path,
+                grafico_percepcion_comparacion_path,
+                tabla_percepcion
+            )
 
     doc.build(
         story,
