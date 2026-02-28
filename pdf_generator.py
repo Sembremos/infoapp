@@ -321,83 +321,33 @@ def draw_tabla_victimizacion(
     header_color
 ):
 
-    from reportlab.platypus import Table
-    from reportlab.platypus import TableStyle
+    from reportlab.platypus import Table, TableStyle
     from reportlab.lib import colors
 
-    # 🔹 Tamaños configurables
     FONT_SIZE_HEADER = 14
     FONT_SIZE_BODY = 12
 
     tabla = Table(data, colWidths=col_widths)
 
     tabla.setStyle(TableStyle([
-
-        # Header
         ('BACKGROUND', (0,0), (-1,0), header_color),
         ('TEXTCOLOR', (0,0), (-1,0), colors.white),
         ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
         ('FONTSIZE', (0,0), (-1,0), FONT_SIZE_HEADER),
 
-        # Body
         ('FONTNAME', (0,1), (-1,-1), 'Helvetica'),
         ('FONTSIZE', (0,1), (-1,-1), FONT_SIZE_BODY),
 
-        # Grid
         ('GRID', (0,0), (-1,-1), 0.6, colors.black),
 
-        # Padding
-        ('LEFTPADDING', (0,0), (-1,-1), 8),
-        ('RIGHTPADDING', (0,0), (-1,-1), 8),
-        ('TOPPADDING', (0,0), (-1,-1), 6),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+        ('LEFTPADDING', (0,0), (-1,-1), 6),
+        ('RIGHTPADDING', (0,0), (-1,-1), 6),
+        ('TOPPADDING', (0,0), (-1,-1), 4),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
     ]))
 
     tabla.wrapOn(canvas, 0, 0)
     tabla.drawOn(canvas, x, y)
-    
-    # ===== ESTILO CELDAS =====
-    cell_style = ParagraphStyle(
-        name="CellStyle",
-        fontName="Helvetica",
-        fontSize=font_size_body,
-        leading=font_size_body + 2,
-        alignment=TA_LEFT,
-        wordWrap="CJK"
-    )
-
-    header_style = ParagraphStyle(
-        name="HeaderStyle",
-        fontName="Helvetica-Bold",
-        fontSize=font_size_header,
-        alignment=TA_LEFT
-    )
-
-    # ===== CONSTRUIR TABLA =====
-    table_data = [
-        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
-    ]
-
-    for row in data:
-        nueva_fila = []
-        for cell in row:
-            nueva_fila.append(Paragraph(str(cell), cell_style))
-        table_data.append(nueva_fila)
-
-    table = Table(table_data, colWidths=col_widths)
-
-    style = [
-        ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), header_color),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("GRID", (0, 0), (-1, -1), 1, border_color),
-        ("BACKGROUND", (0, 1), (-1, -1), body_color),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-    ]
-
-    table.setStyle(TableStyle(style))
-    table.wrapOn(canvas, TABLE_WIDTH, 400)
-    table.drawOn(canvas, x, y)
 
 #=========================================Tabla Pareto==================
 
