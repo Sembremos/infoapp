@@ -1197,7 +1197,7 @@ if archivo:
             if pd.notna(categoria) and pd.notna(valor):
                 tabla_no_denuncia.append([
                     str(categoria),
-                    f"{float(valor):.2f}%"
+                    int(valor)
                 ])
 
         ## mayor frecuencia
