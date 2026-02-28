@@ -1555,7 +1555,7 @@ def draw_pagina_percepcion_2(
     GRAFICO_X = 40
 
     TABLA_X = 40
-    TABLA_Y = 250
+    TABLA_Y = 280
     TABLA_WIDTH = page_width * 0.55
 
     TEXTO_X = page_width * 0.65
@@ -1584,7 +1584,7 @@ def draw_pagina_percepcion_2(
     canvas.drawImage(
         grafico_victimizacion_path,
         GRAFICO_X,
-        page_height - 380,  #posiscion g1
+        page_height - 400,  #posiscion g1
         width=GRAFICO_WIDTH,
         height=GRAFICO_HEIGHT,
         preserveAspectRatio=True,
@@ -1595,7 +1595,7 @@ def draw_pagina_percepcion_2(
     canvas.setFont("Helvetica-Bold", 14)
     canvas.drawString(
         GRAFICO_X,
-        page_height - 390,
+        page_height - 480,
         "¿Por qué la población que ha sido víctima no denuncia?"
     )
 
@@ -1617,7 +1617,7 @@ def draw_pagina_percepcion_2(
         titulo="Detalle motivos de no denuncia",
         x=TABLA_X,
         y=TABLA_Y,
-        col_widths=[150, 70],
+        col_widths=[170, 70],
         header_color=colors.HexColor("#30A907")
     )
 
