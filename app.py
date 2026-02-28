@@ -1520,4 +1520,6 @@ if archivo:
             )
     
     except Exception as e:
-        st.error(f"Error procesando el archivo: {e}")
+        import traceback
+        st.error("ERROR DETALLADO:")
+        st.code(traceback.format_exc())
