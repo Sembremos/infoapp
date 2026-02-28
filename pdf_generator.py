@@ -1555,7 +1555,7 @@ def draw_pagina_percepcion_2(
     GRAFICO_X = 40
 
     TABLA_X = 40
-    TABLA_Y = 280
+    TABLA_Y = 300
     TABLA_WIDTH = page_width * 0.55
 
     TEXTO_X = page_width * 0.65
@@ -1584,7 +1584,7 @@ def draw_pagina_percepcion_2(
     canvas.drawImage(
         grafico_victimizacion_path,
         GRAFICO_X,
-        page_height - 400,  #posiscion g1
+        page_height - 420,  #posiscion g1
         width=GRAFICO_WIDTH,
         height=GRAFICO_HEIGHT,
         preserveAspectRatio=True,
@@ -1595,14 +1595,14 @@ def draw_pagina_percepcion_2(
     canvas.setFont("Helvetica-Bold", 14)
     canvas.drawString(
         GRAFICO_X,
-        page_height - 480,
+        page_height - 350,
         "¿Por qué la población que ha sido víctima no denuncia?"
     )
 
     canvas.drawImage(
         grafico_no_denuncia_path,
         GRAFICO_X,
-        page_height - 550, #pocicion a meno, mas arriba
+        page_height - 580, #pocicion a meno, mas arriba
         width=GRAFICO_WIDTH,
         height=GRAFICO_HEIGHT,
         preserveAspectRatio=True,
