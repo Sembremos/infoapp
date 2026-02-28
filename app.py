@@ -1424,31 +1424,44 @@ if archivo:
 
         ##==================== graficos pagina 2===========
 
-        def generar_grafico_victimizacion(df, nombre_archivo):
+        import numpy as np
 
+        def generar_grafico_victimizacion(df, nombre_archivo):
+        
             COLOR_BARRAS = "#30A907"
             COLOR_TEXTO = "#013051"
-            FIG_WIDTH = 12
-            FIG_HEIGHT = 5
+        
+            FIG_WIDTH = 14   # MÁS ancho real
+            FIG_HEIGHT = 6
             DPI = 300
         
             fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
         
+            x = np.arange(len(df))  # posiciones controladas
+        
             barras = ax.bar(
-                df["categoria"],
+                x,
                 df["porcentaje"],
-                color=COLOR_BARRAS
+                color=COLOR_BARRAS,
+                width=0.5
             )
         
             ax.set_ylim(0, df["porcentaje"].max() * 1.25)
         
+            # 🔥 Aquí está la clave
+            ax.set_xticks(x)
             ax.set_xticklabels(
                 df["categoria"],
-                rotation=30,
-                ha="right"
+                rotation=35,
+                ha="right",
+                fontsize=11
             )
         
-            for bar in barras:
+            # Espacio inferior real
+            plt.subplots_adjust(bottom=0.35)
+        
+            # Etiquetas arriba
+            for i, bar in enumerate(barras):
                 height = bar.get_height()
                 ax.text(
                     bar.get_x() + bar.get_width()/2,
@@ -1463,7 +1476,6 @@ if archivo:
             for spine in ax.spines.values():
                 spine.set_visible(False)
         
-            plt.subplots_adjust(bottom=0.30)
             plt.tight_layout()
         
             plt.savefig(
