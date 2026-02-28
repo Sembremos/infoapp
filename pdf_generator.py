@@ -309,7 +309,7 @@ def draw_tabla_simple(
 
     TABLE_WIDTH = sum(col_widths)
 
-    #tabla, pagina 2 final
+    #tabla, pagina 2 final################################################
 
 def draw_tabla_victimizacion(
     canvas,
@@ -325,6 +325,10 @@ def draw_tabla_victimizacion(
     from reportlab.platypus import TableStyle
     from reportlab.lib import colors
 
+    # 🔹 Tamaños configurables aquí
+    FONT_SIZE_HEADER = 14
+    FONT_SIZE_BODY = 12
+
     tabla = Table(data, colWidths=col_widths)
 
     tabla.setStyle(TableStyle([
@@ -333,11 +337,11 @@ def draw_tabla_victimizacion(
         ('BACKGROUND', (0,0), (-1,0), header_color),
         ('TEXTCOLOR', (0,0), (-1,0), colors.white),
         ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (-1,0), 14),
+        ('FONTSIZE', (0,0), (-1,0), FONT_SIZE_HEADER),
 
         # Body
         ('FONTNAME', (0,1), (-1,-1), 'Helvetica'),
-        ('FONTSIZE', (0,1), (-1,-1), 12),
+        ('FONTSIZE', (0,1), (-1,-1), FONT_SIZE_BODY),
 
         # Grid
         ('GRID', (0,0), (-1,-1), 0.6, colors.black),
