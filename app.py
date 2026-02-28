@@ -1159,6 +1159,25 @@ if archivo:
         )
         
         df_victimizacion = df_victimizacion.dropna()
+
+
+        # ----- GRAFICO 2 (A323:B330) -----
+        df_no_denuncia = df.iloc[322:330, 0:2].copy()
+        df_no_denuncia.columns = ["categoria", "porcentaje"]
+        
+        df_no_denuncia["porcentaje"] = (
+            df_no_denuncia["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        
+        df_no_denuncia["porcentaje"] = pd.to_numeric(
+            df_no_denuncia["porcentaje"],
+            errors="coerce"
+        )
+        
+        df_no_denuncia = df_no_denuncia.dropna()
        
        # ----- TABLA INFERIOR (A323:C330 ignorando B) -----
 
