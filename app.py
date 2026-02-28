@@ -1173,13 +1173,16 @@ if archivo:
         ## mayor frecuencia
 
         # Obtener motivo con mayor frecuencia
-        if not df_no_denuncia.empty:
+        if not df_no_denuncia.empty and df_no_denuncia["porcentaje"].notna().any():
             fila_max = df_no_denuncia.loc[df_no_denuncia["porcentaje"].idxmax()]
             motivo_principal = str(fila_max["categoria"])
         else:
-            motivo_principal = ""
+            motivo_principal = "No especificado"
             
-        total_omitidas = seguro_int(df.iloc[321, 6])  # G322
+        if df.shape[0] > 321 and df.shape[1] > 6:
+            total_omitidas = seguro_int(df.iloc[321, 6])
+        else:
+            total_omitidas = 0 # G322
 
 
         # =========================================================
