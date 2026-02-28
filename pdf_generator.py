@@ -325,7 +325,7 @@ def draw_tabla_victimizacion(
     from reportlab.platypus import TableStyle
     from reportlab.lib import colors
 
-    # 🔹 Tamaños configurables aquí
+    # 🔹 Tamaños configurables
     FONT_SIZE_HEADER = 14
     FONT_SIZE_BODY = 12
 
@@ -355,7 +355,7 @@ def draw_tabla_victimizacion(
 
     tabla.wrapOn(canvas, 0, 0)
     tabla.drawOn(canvas, x, y)
-
+    
     # ===== ESTILO CELDAS =====
     cell_style = ParagraphStyle(
         name="CellStyle",
