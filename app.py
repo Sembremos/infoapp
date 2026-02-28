@@ -1428,8 +1428,8 @@ if archivo:
 
             COLOR_BARRAS = "#30A907"
             COLOR_TEXTO = "#013051"
-            FIG_WIDTH = 8
-            FIG_HEIGHT = 4
+            FIG_WIDTH = 12
+            FIG_HEIGHT = 5
             DPI = 300
         
             fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
@@ -1442,9 +1442,11 @@ if archivo:
         
             ax.set_ylim(0, df["porcentaje"].max() * 1.25)
         
-            ax.tick_params(axis="x", rotation=45)
-            ax.tick_params(axis="x", labelsize=12)
-            ax.tick_params(axis="y", labelsize=12)
+            ax.set_xticklabels(
+                df["categoria"],
+                rotation=30,
+                ha="right"
+            )
         
             for bar in barras:
                 height = bar.get_height()
@@ -1461,12 +1463,19 @@ if archivo:
             for spine in ax.spines.values():
                 spine.set_visible(False)
         
+            plt.subplots_adjust(bottom=0.30)
             plt.tight_layout()
-            plt.savefig(ASSETS_DIR / nombre_archivo, dpi=DPI, transparent=True)
+        
+            plt.savefig(
+                ASSETS_DIR / nombre_archivo,
+                dpi=DPI,
+                transparent=True
+            )
+        
             plt.close()
         
-        generar_grafico_victimizacion(df_victimizacion, "grafico_victimizacion.png")
-        generar_grafico_victimizacion(df_no_denuncia, "grafico_no_denuncia.png")
+
+        
             
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
