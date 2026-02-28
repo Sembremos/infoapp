@@ -1521,7 +1521,9 @@ if archivo:
         
             plt.close()
                 
-            
+        generar_grafico_victimizacion(df_victimizacion, "grafico_victimizacion.png")
+        generar_grafico_victimizacion(df_no_denuncia, "grafico_no_denuncia.png")
+        
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
