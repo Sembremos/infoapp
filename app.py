@@ -1197,7 +1197,7 @@ if archivo:
             if pd.notna(categoria) and pd.notna(valor):
                 tabla_no_denuncia.append([
                     str(categoria),
-                    f"{float(valor)*100:.2f}%"
+                    f"{float(valor):.2f}%"
                 ])
 
         ## mayor frecuencia
@@ -1486,7 +1486,7 @@ if archivo:
                 df["categoria"],
                 rotation=0,
                 ha="center",
-                fontsize=14
+                fontsize=18
             )
             
             # Espacio inferior real
@@ -1501,7 +1501,7 @@ if archivo:
                     f"{height:.2f}%",
                     ha="center",
                     va="bottom",
-                    fontsize=12,
+                    fontsize=18,
                     color=COLOR_TEXTO
                 )
         
