@@ -1490,6 +1490,121 @@ def draw_pagina_percepcion_1(
         tabla_percepcion[1][2] = ""
         tabla_percepcion[1][3] = ""
 
+#pagina 2 final
+
+def draw_pagina_percepcion_2(
+    canvas,
+    doc,
+    grafico_victimizacion_path,
+    grafico_no_denuncia_path,
+    tabla_no_denuncia,
+    motivo_principal,
+    total_omitidas
+):
+
+    page_width, page_height = A4
+
+    # ================= CONFIGURABLES =================
+
+    TITLE_FONT = "Helvetica-Bold"
+    TITLE_SIZE = 20
+    TITLE_COLOR = colors.HexColor("#013051")
+    TITLE_X = 40
+    TITLE_Y = page_height - 90
+
+    BLOQUE_ALTURA = page_height / 3
+
+    GRAFICO_WIDTH = page_width - 80
+    GRAFICO_HEIGHT = 200
+    GRAFICO_X = 40
+
+    TABLA_X = 40
+    TABLA_Y = 120
+    TABLA_WIDTH = page_width * 0.55
+
+    TEXTO_X = page_width * 0.65
+    TEXTO_Y = 200
+
+    # =================================================
+
+    # ===== TITULO PAGINA =====
+    canvas.setFont(TITLE_FONT, TITLE_SIZE)
+    canvas.setFillColor(TITLE_COLOR)
+    canvas.drawString(TITLE_X, TITLE_Y, "Victimización Ciudadana")
+
+    # ===== TITULO GRAFICO 1 =====
+    canvas.setFont("Helvetica-Bold", 14)
+    canvas.drawString(
+        GRAFICO_X,
+        page_height - 140,
+        "¿Usted ha sido víctima de algún delito en los últimos 12 meses?"
+    )
+    canvas.drawString(
+        GRAFICO_X,
+        page_height - 160,
+        "¿Denunció ante el O.I.J?"
+    )
+
+    canvas.drawImage(
+        grafico_victimizacion_path,
+        GRAFICO_X,
+        page_height - 350,
+        width=GRAFICO_WIDTH,
+        height=GRAFICO_HEIGHT,
+        preserveAspectRatio=True,
+        mask="auto"
+    )
+
+    # ===== TITULO GRAFICO 2 =====
+    canvas.setFont("Helvetica-Bold", 14)
+    canvas.drawString(
+        GRAFICO_X,
+        page_height - 390,
+        "¿Por qué la población que ha sido víctima no denuncia?"
+    )
+
+    canvas.drawImage(
+        grafico_no_denuncia_path,
+        GRAFICO_X,
+        page_height - 600,
+        width=GRAFICO_WIDTH,
+        height=GRAFICO_HEIGHT,
+        preserveAspectRatio=True,
+        mask="auto"
+    )
+
+    # ===== TABLA INFERIOR =====
+    draw_tabla_simple(
+        canvas=canvas,
+        data=tabla_no_denuncia,
+        titulo="Detalle motivos de no denuncia",
+        x=TABLA_X,
+        y=TABLA_Y,
+        col_widths=[200, 100],
+        header_color=colors.HexColor("#30A907")
+    )
+
+    # ===== TEXTO DINAMICO =====
+    canvas.setFont("Helvetica", 11)
+    texto = (
+        f"La mayor cantidad de los encuestados que fueron víctimas de algún delito, "
+        f"señalan que no denuncian, debido a {motivo_principal}. "
+        f"Total respuestas omitidas: {total_omitidas}."
+    )
+
+    from reportlab.platypus import Paragraph
+    estilo = ParagraphStyle(
+        name="textoVict",
+        fontName="Helvetica",
+        fontSize=11,
+        leading=14,
+        alignment=TA_JUSTIFY
+    )
+
+    p = Paragraph(texto, estilo)
+    w, h = p.wrap(page_width * 0.3, 200)
+    p.drawOn(canvas, TEXTO_X, TEXTO_Y)
+
 # ================= GENERADOR PDF =================
 def generar_pdf(
     portada_path,
@@ -1549,6 +1664,11 @@ def generar_pdf(
     grafico_percepcion_actual_path,
     grafico_percepcion_comparacion_path,
     tabla_percepcion,
+    grafico_victimizacion_path,
+    grafico_no_denuncia_path,
+    tabla_no_denuncia,
+    motivo_principal,
+    total_omitidas,
 ):
 
     buffer = BytesIO()
@@ -2639,8 +2759,15 @@ def generar_pdf(
             
         elif doc.page == percepcion_inicio + 2:
             header_footer(canvas, doc)
-            # futura draw_pagina_percepcion_2(...)
-            canvas.drawString(100, 500, "Percepción Página 2")
+            draw_pagina_percepcion_2(
+                canvas,
+                doc,
+                grafico_victimizacion_path,
+                grafico_no_denuncia_path,
+                tabla_no_denuncia,
+                motivo_principal,
+                total_omitidas
+            )
             
         elif doc.page == percepcion_inicio + 3:
             header_footer(canvas, doc)
