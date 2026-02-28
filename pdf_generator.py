@@ -1555,11 +1555,11 @@ def draw_pagina_percepcion_2(
     GRAFICO_X = 40
 
     TABLA_X = 40
-    TABLA_Y = 200
+    TABLA_Y = 250
     TABLA_WIDTH = page_width * 0.55
 
     TEXTO_X = page_width * 0.65
-    TEXTO_Y = 150
+    TEXTO_Y = 130
 
     # =================================================
 
