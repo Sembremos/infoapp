@@ -1584,7 +1584,7 @@ def draw_pagina_percepcion_2(
     canvas.drawImage(
         grafico_victimizacion_path,
         GRAFICO_X,
-        page_height - 350,
+        page_height - 380,  #posiscion g1
         width=GRAFICO_WIDTH,
         height=GRAFICO_HEIGHT,
         preserveAspectRatio=True,
@@ -1602,7 +1602,7 @@ def draw_pagina_percepcion_2(
     canvas.drawImage(
         grafico_no_denuncia_path,
         GRAFICO_X,
-        page_height - 600,
+        page_height - 550, #pocicion a meno, mas arriba
         width=GRAFICO_WIDTH,
         height=GRAFICO_HEIGHT,
         preserveAspectRatio=True,
