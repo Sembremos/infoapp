@@ -1137,15 +1137,7 @@ if archivo:
             plt.close()
         
         generar_grafico_percepcion_comparacion(df_percepcion_comparacion)
-        generar_grafico_victimizacion(
-            df_victimizacion,
-            "grafico_victimizacion.png"
-        )
-        
-        generar_grafico_victimizacion(
-            df_no_denuncia,
-            "grafico_no_denuncia.png"
-        )
+
         
         # =========================================================
         # ================= VICTIMIZACION CIUDADANA PAGINA " PARTE FINAL===============
@@ -1436,6 +1428,9 @@ if archivo:
         import numpy as np
 
         def generar_grafico_victimizacion(df, nombre_archivo):
+
+            if df.empty:
+                return
         
             COLOR_BARRAS = "#30A907"
             COLOR_TEXTO = "#013051"
@@ -1494,7 +1489,16 @@ if archivo:
             )
         
             plt.close()
+
+        generar_grafico_victimizacion(
+            df_victimizacion,
+            "grafico_victimizacion.png"
+        )
         
+        generar_grafico_victimizacion(
+            df_no_denuncia,
+            "grafico_no_denuncia.png"
+        )
 
         
             
