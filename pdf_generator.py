@@ -1554,11 +1554,11 @@ def draw_pagina_percepcion_2(
     GRAFICO_HEIGHT = 350
     GRAFICO_X = 40
 
-    TABLA_X = 40
-    TABLA_Y = 300
+    TABLA_X = 60
+    TABLA_Y = 320
     TABLA_WIDTH = page_width * 0.55
 
-    TEXTO_X = page_width * 0.65
+    TEXTO_X = 120
     TEXTO_Y = 130
 
     # =================================================
@@ -1602,7 +1602,7 @@ def draw_pagina_percepcion_2(
     canvas.drawImage(
         grafico_no_denuncia_path,
         GRAFICO_X,
-        page_height - 580, #pocicion a meno, mas arriba
+        page_height - 600, #pocicion a meno, mas arriba
         width=GRAFICO_WIDTH,
         height=GRAFICO_HEIGHT,
         preserveAspectRatio=True,
