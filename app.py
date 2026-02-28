@@ -1462,11 +1462,10 @@ if archivo:
             ax.set_ylim(0, df["porcentaje"].max() * 1.25)
         
             # 🔥 Aquí está la clave
-            ax.set_xticks(x)
             ax.set_xticklabels(
                 df["categoria"],
-                rotation=35,
-                ha="right",
+                rotation=0,
+                ha="center",
                 fontsize=11
             )
         
@@ -1489,7 +1488,7 @@ if archivo:
             for spine in ax.spines.values():
                 spine.set_visible(False)
         
-            plt.tight_layout()
+            plt.tight_layout(rect=[0, 0.1, 1, 1])
         
             plt.savefig(
                 ASSETS_DIR / nombre_archivo,
