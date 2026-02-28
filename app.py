@@ -1444,7 +1444,7 @@ if archivo:
             fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
             
             fig.patch.set_facecolor("none")
-            ax.margins(x=0.10)
+            ax.set_xlim(-0.5, len(df) - 0.5)
         
             # Convertir etiquetas largas en máximo 2 líneas
             def dividir_texto(texto, ancho=18):
