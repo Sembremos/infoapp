@@ -1160,6 +1160,11 @@ if archivo:
         
         df_victimizacion = df_victimizacion.dropna()
        
+       # ----- TABLA INFERIOR (A323:C330 ignorando B) -----
+
+        tabla_no_denuncia_df = df.iloc[322:330, [0, 2]].copy()
+        tabla_no_denuncia_df = tabla_no_denuncia_df.dropna(how="all")
+        
         ## TABLA
         tabla_no_denuncia = []
 
