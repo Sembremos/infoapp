@@ -311,7 +311,7 @@ def draw_tabla_simple(
 
     #tabla, pagina 2 final
 
-        def draw_tabla_victimizacion(
+def draw_tabla_victimizacion(
     canvas,
     data,
     titulo,
