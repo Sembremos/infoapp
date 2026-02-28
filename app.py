@@ -8,6 +8,7 @@ from pathlib import Path
 import base64
 from openpyxl import load_workbook
 
+
 from pdf_generator import generar_pdf
 
 
@@ -1426,7 +1427,8 @@ if archivo:
         ##==================== graficos pagina 2===========
 
         import numpy as np
-
+        import textwrap
+        
         def generar_grafico_victimizacion(df, nombre_archivo):
 
             if df.empty:
@@ -1441,6 +1443,13 @@ if archivo:
         
             fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
         
+            # Convertir etiquetas largas en máximo 2 líneas
+            def dividir_texto(texto, ancho=18):
+                lineas = textwrap.wrap(texto, width=ancho)
+                return "\n".join(lineas[:2])  # máximo 2 líneas
+            
+            df["categoria"] = df["categoria"].apply(dividir_texto)
+            
             x = np.arange(len(df))  # posiciones controladas
         
             barras = ax.bar(
