@@ -1426,103 +1426,101 @@ if archivo:
 
         ##==================== graficos pagina 2===========
 
+        
         import numpy as np
         import textwrap
         
-        import numpy as np
-import textwrap
-
-def generar_grafico_victimizacion(df, nombre_archivo):
-
-    if df.empty:
-        return
-
-    COLOR_BARRAS = "#30A907"
-    COLOR_TEXTO = "#013051"
-
-    FIG_WIDTH = 14
-    FIG_HEIGHT = 6
-    DPI = 300
-
-    fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
-    fig.patch.set_facecolor("none")
-
-    # =============================
-    # Ajustes dinámicos por gráfico
-    # =============================
-    if "no_denuncia" in nombre_archivo:
-        ancho_wrap = 16        # texto más comprimido
-        max_lineas = 3
-        fontsize_xticks = 11
-        bottom_space = 0.42
-    else:
-        ancho_wrap = 22
-        max_lineas = 2
-        fontsize_xticks = 14
-        bottom_space = 0.30
-
-    # =============================
-    # Crear etiquetas envueltas SIN modificar df
-    # =============================
-    def dividir_texto(texto):
-        lineas = textwrap.wrap(str(texto), width=ancho_wrap)
-        return "\n".join(lineas[:max_lineas])
-
-    categorias_wrapped = df["categoria"].apply(dividir_texto)
-
-    # =============================
-    # Crear barras
-    # =============================
-    x = np.arange(len(df))
-
-    barras = ax.bar(
-        x,
-        df["porcentaje"],
-        color=COLOR_BARRAS,
-        width=0.5
-    )
-
-    ax.set_ylim(0, df["porcentaje"].max() * 1.25)
-
-    ax.set_xticks(x)
-    ax.set_xticklabels(
-        categorias_wrapped,
-        rotation=0,
-        ha="center",
-        fontsize=fontsize_xticks
-    )
-
-    plt.subplots_adjust(bottom=bottom_space)
-
-    # =============================
-    # Etiquetas de porcentaje arriba
-    # =============================
-    for bar in barras:
-        height = bar.get_height()
-        ax.text(
-            bar.get_x() + bar.get_width()/2,
-            height,
-            f"{height:.2f}%",
-            ha="center",
-            va="bottom",
-            fontsize=14,
-            color=COLOR_TEXTO
-        )
-
-    # Quitar bordes
-    for spine in ax.spines.values():
-        spine.set_visible(False)
-
-    plt.tight_layout(rect=[0, 0.1, 1, 1])
-
-    plt.savefig(
-        ASSETS_DIR / nombre_archivo,
-        dpi=DPI,
-        transparent=True
-    )
-
-    plt.close()
+        def generar_grafico_victimizacion(df, nombre_archivo):
         
+            if df.empty:
+                return
+        
+            COLOR_BARRAS = "#30A907"
+            COLOR_TEXTO = "#013051"
+        
+            FIG_WIDTH = 14
+            FIG_HEIGHT = 6
+            DPI = 300
+        
+            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
+            fig.patch.set_facecolor("none")
+        
+            # =============================
+            # Ajustes dinámicos por gráfico
+            # =============================
+            if "no_denuncia" in nombre_archivo:
+                ancho_wrap = 16        # texto más comprimido
+                max_lineas = 3
+                fontsize_xticks = 11
+                bottom_space = 0.42
+            else:
+                ancho_wrap = 22
+                max_lineas = 2
+                fontsize_xticks = 14
+                bottom_space = 0.30
+        
+            # =============================
+            # Crear etiquetas envueltas SIN modificar df
+            # =============================
+            def dividir_texto(texto):
+                lineas = textwrap.wrap(str(texto), width=ancho_wrap)
+                return "\n".join(lineas[:max_lineas])
+        
+            categorias_wrapped = df["categoria"].apply(dividir_texto)
+        
+            # =============================
+            # Crear barras
+            # =============================
+            x = np.arange(len(df))
+        
+            barras = ax.bar(
+                x,
+                df["porcentaje"],
+                color=COLOR_BARRAS,
+                width=0.5
+            )
+        
+            ax.set_ylim(0, df["porcentaje"].max() * 1.25)
+        
+            ax.set_xticks(x)
+            ax.set_xticklabels(
+                categorias_wrapped,
+                rotation=0,
+                ha="center",
+                fontsize=fontsize_xticks
+            )
+        
+            plt.subplots_adjust(bottom=bottom_space)
+        
+            # =============================
+            # Etiquetas de porcentaje arriba
+            # =============================
+            for bar in barras:
+                height = bar.get_height()
+                ax.text(
+                    bar.get_x() + bar.get_width()/2,
+                    height,
+                    f"{height:.2f}%",
+                    ha="center",
+                    va="bottom",
+                    fontsize=14,
+                    color=COLOR_TEXTO
+                )
+        
+            # Quitar bordes
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+        
+            plt.tight_layout(rect=[0, 0.1, 1, 1])
+        
+            plt.savefig(
+                ASSETS_DIR / nombre_archivo,
+                dpi=DPI,
+                transparent=True
+            )
+        
+            plt.close()
+                
             
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
