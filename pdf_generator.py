@@ -321,33 +321,72 @@ def draw_tabla_victimizacion(
     header_color
 ):
 
-    from reportlab.platypus import Table, TableStyle
+    from reportlab.platypus import Table, TableStyle, Paragraph
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.enums import TA_LEFT
     from reportlab.lib import colors
 
-    FONT_SIZE_HEADER = 14
-    FONT_SIZE_BODY = 12
+    FONT_SIZE_HEADER = 13
+    FONT_SIZE_BODY = 11
 
-    tabla = Table(data, colWidths=col_widths)
+    TABLE_WIDTH = sum(col_widths)
+
+    # ===== ESTILOS =====
+    header_style = ParagraphStyle(
+        name="HeaderVict",
+        fontName="Helvetica-Bold",
+        fontSize=FONT_SIZE_HEADER,
+        alignment=TA_LEFT,
+        textColor=colors.white
+    )
+
+    cell_style = ParagraphStyle(
+        name="CellVict",
+        fontName="Helvetica",
+        fontSize=FONT_SIZE_BODY,
+        leading=FONT_SIZE_BODY + 3,
+        alignment=TA_LEFT,
+        wordWrap="CJK"
+    )
+
+    # ===== CONSTRUIR TABLA =====
+    table_data = []
+
+    # Título combinado
+    table_data.append(
+        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
+    )
+
+    # Encabezado real + cuerpo
+    for row in data:
+        nueva_fila = []
+        for cell in row:
+            nueva_fila.append(Paragraph(str(cell), cell_style))
+        table_data.append(nueva_fila)
+
+    tabla = Table(table_data, colWidths=col_widths)
 
     tabla.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), header_color),
-        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (-1,0), FONT_SIZE_HEADER),
 
-        ('FONTNAME', (0,1), (-1,-1), 'Helvetica'),
-        ('FONTSIZE', (0,1), (-1,-1), FONT_SIZE_BODY),
+        # Combinar título
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), header_color),
 
-        ('GRID', (0,0), (-1,-1), 0.6, colors.black),
+        # Grid
+        ("GRID", (0, 0), (-1, -1), 0.6, colors.black),
 
-        ('LEFTPADDING', (0,0), (-1,-1), 6),
-        ('RIGHTPADDING', (0,0), (-1,-1), 6),
-        ('TOPPADDING', (0,0), (-1,-1), 4),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        # Padding
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+
+        # Alineación vertical
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
     ]))
 
-    tabla.wrapOn(canvas, 0, 0)
-    tabla.drawOn(canvas, x, y)
+    tabla.wrapOn(canvas, TABLE_WIDTH, 400)
+    tabla.drawOn(canvas, x, y - tabla._height)
 
 #=========================================Tabla Pareto==================
 
