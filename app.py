@@ -1442,6 +1442,9 @@ if archivo:
             DPI = 300
         
             fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
+            
+            fig.patch.set_facecolor("none")
+            ax.margins(x=0.10)
         
             # Convertir etiquetas largas en máximo 2 líneas
             def dividir_texto(texto, ancho=18):
@@ -1466,9 +1469,11 @@ if archivo:
                 df["categoria"],
                 rotation=0,
                 ha="center",
-                fontsize=11
+                fontsize=14
             )
         
+            ax.tick_params(axis="y", labelsize=13)
+            
             # Espacio inferior real
             plt.subplots_adjust(bottom=0.35)
         
