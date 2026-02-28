@@ -1161,14 +1161,18 @@ if archivo:
         df_victimizacion = df_victimizacion.dropna()
        
         ## TABLA
-        tabla_no_denuncia_df = df.iloc[322:330, [0, 2]].copy()
-        tabla_no_denuncia_df = tabla_no_denuncia_df.dropna(how="all")
+        tabla_no_denuncia = []
+
+        for _, row in tabla_no_denuncia_df.iterrows():
         
-        tabla_no_denuncia = [
-            [str(row[0]), f"{float(row[1])*100:.2f}%"]
-            for _, row in tabla_no_denuncia_df.iterrows()
-            if pd.notna(row[0]) and pd.notna(row[1])
-        ]
+            categoria = row.iloc[0] if len(row) > 0 else None
+            valor = row.iloc[1] if len(row) > 1 else None
+        
+            if pd.notna(categoria) and pd.notna(valor):
+                tabla_no_denuncia.append([
+                    str(categoria),
+                    f"{float(valor)*100:.2f}%"
+                ])
 
         ## mayor frecuencia
 
