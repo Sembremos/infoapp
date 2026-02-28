@@ -1438,7 +1438,7 @@ if archivo:
             COLOR_BARRAS = "#30A907"
             COLOR_TEXTO = "#013051"
         
-            FIG_WIDTH = max(14, len(df) * 2)
+            FIG_WIDTH = max(18, len(df) * 3)
             FIG_HEIGHT = 6
             DPI = 300
         
