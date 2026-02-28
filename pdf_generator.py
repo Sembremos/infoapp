@@ -309,6 +309,49 @@ def draw_tabla_simple(
 
     TABLE_WIDTH = sum(col_widths)
 
+    #tabla, pagina 2 final
+
+        def draw_tabla_victimizacion(
+    canvas,
+    data,
+    titulo,
+    x,
+    y,
+    col_widths,
+    header_color
+):
+
+    from reportlab.platypus import Table
+    from reportlab.platypus import TableStyle
+    from reportlab.lib import colors
+
+    tabla = Table(data, colWidths=col_widths)
+
+    tabla.setStyle(TableStyle([
+
+        # Header
+        ('BACKGROUND', (0,0), (-1,0), header_color),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0,0), (-1,0), 14),
+
+        # Body
+        ('FONTNAME', (0,1), (-1,-1), 'Helvetica'),
+        ('FONTSIZE', (0,1), (-1,-1), 12),
+
+        # Grid
+        ('GRID', (0,0), (-1,-1), 0.6, colors.black),
+
+        # Padding
+        ('LEFTPADDING', (0,0), (-1,-1), 8),
+        ('RIGHTPADDING', (0,0), (-1,-1), 8),
+        ('TOPPADDING', (0,0), (-1,-1), 6),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+    ]))
+
+    tabla.wrapOn(canvas, 0, 0)
+    tabla.drawOn(canvas, x, y)
+
     # ===== ESTILO CELDAS =====
     cell_style = ParagraphStyle(
         name="CellStyle",
@@ -1574,7 +1617,8 @@ def draw_pagina_percepcion_2(
     )
 
     # ===== TABLA INFERIOR =====
-    draw_tabla_simple(
+    
+    draw_tabla_victimizacion(
         canvas=canvas,
         data=tabla_no_denuncia,
         titulo="Detalle motivos de no denuncia",
