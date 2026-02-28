@@ -1510,11 +1510,11 @@ def draw_pagina_percepcion_2(
     TITLE_SIZE = 20
     TITLE_COLOR = colors.HexColor("#013051")
     TITLE_X = 40
-    TITLE_Y = page_height - 90
+    TITLE_Y = page_height - 100
 
     BLOQUE_ALTURA = page_height / 3
 
-    GRAFICO_WIDTH = page_width - 80
+    GRAFICO_WIDTH = page_width - 100 # ancho de grafico
     GRAFICO_HEIGHT = 200
     GRAFICO_X = 40
 
