@@ -1551,7 +1551,7 @@ def draw_pagina_percepcion_2(
     BLOQUE_ALTURA = page_height / 3
 
     GRAFICO_WIDTH = page_width - 80 # ancho de grafico
-    GRAFICO_HEIGHT = 200
+    GRAFICO_HEIGHT = 350
     GRAFICO_X = 40
 
     TABLA_X = 40
