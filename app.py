@@ -1451,12 +1451,12 @@ if archivo:
             if "no_denuncia" in nombre_archivo:
                 ancho_wrap = 16        # texto más comprimido
                 max_lineas = 3
-                fontsize_xticks = 11
+                fontsize_xticks = 20
                 bottom_space = 0.42
             else:
                 ancho_wrap = 22
                 max_lineas = 2
-                fontsize_xticks = 14
+                fontsize_xticks = 20
                 bottom_space = 0.30
         
             # =============================
@@ -1503,7 +1503,7 @@ if archivo:
                     f"{height:.2f}%",
                     ha="center",
                     va="bottom",
-                    fontsize=14,
+                    fontsize=20, #fuente etiquetas
                     color=COLOR_TEXTO
                 )
         
