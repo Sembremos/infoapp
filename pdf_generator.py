@@ -326,8 +326,8 @@ def draw_tabla_victimizacion(
     from reportlab.lib.enums import TA_LEFT
     from reportlab.lib import colors
 
-    FONT_SIZE_HEADER = 13
-    FONT_SIZE_BODY = 11
+    FONT_SIZE_HEADER = 10
+    FONT_SIZE_BODY = 9
 
     TABLE_WIDTH = sum(col_widths)
 
@@ -1617,7 +1617,7 @@ def draw_pagina_percepcion_2(
         titulo="Detalle motivos de no denuncia",
         x=TABLA_X,
         y=TABLA_Y,
-        col_widths=[200, 100],
+        col_widths=[150, 70],
         header_color=colors.HexColor("#30A907")
     )
 
