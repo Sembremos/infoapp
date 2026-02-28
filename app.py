@@ -1465,14 +1465,29 @@ if archivo:
             ax.set_ylim(0, df["porcentaje"].max() * 1.25)
         
             # 🔥 Aquí está la clave
+            x = np.arange(len(df))
+
+            barras = ax.bar(
+                x,
+                df["porcentaje"],
+                color=COLOR_BARRAS,
+                width=0.5
+            )
+            
+            ax.set_ylim(0, df["porcentaje"].max() * 1.25)
+            
+            # 🔥 BORRAR cualquier tick previo
+            ax.set_xticks([])
+            ax.set_yticks(ax.get_yticks())
+            
+            # 🔥 Ahora sí definir bien
+            ax.set_xticks(x)
             ax.set_xticklabels(
                 df["categoria"],
                 rotation=0,
                 ha="center",
                 fontsize=14
             )
-        
-            ax.tick_params(axis="y", labelsize=13)
             
             # Espacio inferior real
             plt.subplots_adjust(bottom=0.35)
