@@ -1138,7 +1138,50 @@ if archivo:
         
         generar_grafico_percepcion_comparacion(df_percepcion_comparacion)
         
+        # =========================================================
+        # ================= VICTIMIZACION CIUDADANA PAGINA " PARTE FINAL===============
+        # =========================================================
         
+        # ----- GRAFICO 1 (A314:B316) -----
+        df_victimizacion = df.iloc[313:316, 0:2].copy()
+        df_victimizacion.columns = ["categoria", "porcentaje"]
+        
+        df_victimizacion["porcentaje"] = (
+            df_victimizacion["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        
+        df_victimizacion["porcentaje"] = pd.to_numeric(
+            df_victimizacion["porcentaje"],
+            errors="coerce"
+        )
+        
+        df_victimizacion = df_victimizacion.dropna()
+       
+        ## TABLA
+        tabla_no_denuncia_df = df.iloc[322:330, [0, 2]].copy()
+        tabla_no_denuncia_df = tabla_no_denuncia_df.dropna(how="all")
+        
+        tabla_no_denuncia = [
+            [str(row[0]), f"{float(row[1])*100:.2f}%"]
+            for _, row in tabla_no_denuncia_df.iterrows()
+            if pd.notna(row[0]) and pd.notna(row[1])
+        ]
+
+        ## mayor frecuencia
+
+        # Obtener motivo con mayor frecuencia
+        if not df_no_denuncia.empty:
+            fila_max = df_no_denuncia.loc[df_no_denuncia["porcentaje"].idxmax()]
+            motivo_principal = str(fila_max["categoria"])
+        else:
+            motivo_principal = ""
+            
+        total_omitidas = seguro_int(df.iloc[321, 6])  # G322
+
+
         # =========================================================
         # ============== TABLA COMPARATIVA PERCEPCION =============
         # =========================================================
@@ -1346,7 +1389,54 @@ if archivo:
             })
                 
         st.write("Cantidad de lineas detectadas:", len(lineas_accion_data)) ###debugging
+
+
+        ##==================== graficos pagina 2===========
+
+        def generar_grafico_victimizacion(df, nombre_archivo):
+
+            COLOR_BARRAS = "#30A907"
+            COLOR_TEXTO = "#013051"
+            FIG_WIDTH = 8
+            FIG_HEIGHT = 4
+            DPI = 300
         
+            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
+        
+            barras = ax.bar(
+                df["categoria"],
+                df["porcentaje"],
+                color=COLOR_BARRAS
+            )
+        
+            ax.set_ylim(0, df["porcentaje"].max() * 1.25)
+        
+            ax.tick_params(axis="x", rotation=45)
+            ax.tick_params(axis="x", labelsize=12)
+            ax.tick_params(axis="y", labelsize=12)
+        
+            for bar in barras:
+                height = bar.get_height()
+                ax.text(
+                    bar.get_x() + bar.get_width()/2,
+                    height,
+                    f"{height:.2f}%",
+                    ha="center",
+                    va="bottom",
+                    fontsize=12,
+                    color=COLOR_TEXTO
+                )
+        
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+        
+            plt.tight_layout()
+            plt.savefig(ASSETS_DIR / nombre_archivo, dpi=DPI, transparent=True)
+            plt.close()
+        
+        generar_grafico_victimizacion(df_victimizacion, "grafico_victimizacion.png")
+        generar_grafico_victimizacion(df_no_denuncia, "grafico_no_denuncia.png")
+            
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -1408,6 +1498,11 @@ if archivo:
                 grafico_percepcion_actual_path=str(ASSETS_DIR / "grafico_percepcion_actual.png"),
                 grafico_percepcion_comparacion_path=str(ASSETS_DIR / "grafico_percepcion_comparacion.png"),
                 tabla_percepcion=tabla_percepcion,
+                grafico_victimizacion_path=str(ASSETS_DIR / "grafico_victimizacion.png"),
+                grafico_no_denuncia_path=str(ASSETS_DIR / "grafico_no_denuncia.png"),
+                tabla_no_denuncia=tabla_no_denuncia,
+                motivo_principal=motivo_principal,
+                total_omitidas=total_omitidas,
              )
 
             pdf_bytes = pdf_buffer.getvalue()
