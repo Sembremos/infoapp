@@ -1558,8 +1558,8 @@ def draw_pagina_percepcion_2(
     TABLA_Y = 320
     TABLA_WIDTH = page_width * 0.55
 
-    TEXTO_X = 320
-    TEXTO_Y = 130
+    TEXTO_X = 350
+    TEXTO_Y = 200
 
     # =================================================
 
