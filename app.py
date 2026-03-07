@@ -1677,13 +1677,13 @@ if archivo:
                 tabla_no_denuncia=tabla_no_denuncia,
                 motivo_principal=motivo_principal,
                 total_omitidas=total_omitidas,
-                grafico_horarios_percepcion,
-                grafico_armas_percepcion,
-                tabla_horarios_percepcion,
-                tabla_armas,
-                horario_mayor,
-                metodo_mas_usado,
-                omitidas_aportes,
+                grafico_horarios_percepcion=grafico_horarios_percepcion,
+                grafico_armas_percepcion=grafico_armas_percepcion,
+                tabla_horarios_percepcion=tabla_horarios_percepcion,
+                tabla_armas=tabla_armas,
+                horario_mayor=horario_mayor,
+                metodo_mas_usado=metodo_mas_usado,
+                omitidas_aportes=omitidas_aportes,
              )
 
             pdf_bytes = pdf_buffer.getvalue()
