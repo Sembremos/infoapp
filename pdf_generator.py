@@ -1642,31 +1642,34 @@ def draw_pagina_percepcion_2(
     w, h = p.wrap(page_width * 0.3, 200)
     p.drawOn(canvas, TEXTO_X, TEXTO_Y)
 
+# =========================================================
+# CONFIGURACION VISUAL - PERCEPCION PAGINA 3
+# =========================================================
 
-    # ---------------------------------------------------------
-    # CONFIG PAGINA PERCEPCION 3
-    # ---------------------------------------------------------
-    
-    P3_TITULO_Y = 730
-    
-    P3_GRAFICO1_X = 70
-    P3_GRAFICO1_Y = 470
-    P3_GRAFICO_SIZE = 200
-    
-    P3_TABLA1_X = 330
-    P3_TABLA1_Y = 470
-    
-    P3_TEXTO1_X = 330
-    P3_TEXTO1_Y = 430
-    
-    P3_GRAFICO2_X = 350
-    P3_GRAFICO2_Y = 170
-    
-    P3_TABLA2_X = 70
-    P3_TABLA2_Y = 170
-    
-    P3_TEXTO2_X = 70
-    P3_TEXTO2_Y = 130
+P3_TITULO_X = 200
+P3_TITULO_Y = 730
+
+# ---- MITAD SUPERIOR ----
+P3_GRAFICO1_X = 70
+P3_GRAFICO1_Y = 470
+P3_GRAFICO_SIZE = 200
+
+P3_TABLA1_X = 330
+P3_TABLA1_Y = 470
+
+P3_TEXTO1_X = 330
+P3_TEXTO1_Y = 430
+
+
+# ---- MITAD INFERIOR ----
+P3_GRAFICO2_X = 350
+P3_GRAFICO2_Y = 170
+
+P3_TABLA2_X = 70
+P3_TABLA2_Y = 170
+
+P3_TEXTO2_X = 70
+P3_TEXTO2_Y = 130
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
@@ -2842,7 +2845,7 @@ def generar_pdf(
         elif doc.page == percepcion_inicio + 3:
             header_footer(canvas, doc)
             canvas.setFont("Helvetica-Bold", 16)
-            canvas.drawString(200, P3_TITULO_Y, "Aportes Operativos de la Comunidad")
+            canvas.drawString(P3_TITULO_X, P3_TITULO_Y, "Aportes Operativos de la Comunidad")
         
         
             # ---------------- GRAFICO HORARIOS ----------------
@@ -2859,9 +2862,11 @@ def generar_pdf(
             tabla1 = Table(tabla_horarios_percepcion)
         
             tabla1.setStyle(TableStyle([
+                ("BACKGROUND",(0,0),(-1,0),colors.HexColor("#30A907")),
+                ("TEXTCOLOR",(0,0),(-1,0),colors.white),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
                 ("FONTSIZE",(0,0),(-1,-1),9),
-                ("GRID",(0,0),(-1,-1),0.5,colors.grey)
+                ("GRID",(0,0),(-1,-1),0.5,colors.black)
             ]))
         
             tabla1.wrapOn(canvas,0,0)
@@ -2900,9 +2905,11 @@ def generar_pdf(
             tabla2 = Table(tabla_armas)
         
             tabla2.setStyle(TableStyle([
+                ("BACKGROUND",(0,0),(-1,0),colors.HexColor("#30A907")),
+                ("TEXTCOLOR",(0,0),(-1,0),colors.white),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
                 ("FONTSIZE",(0,0),(-1,-1),9),
-                ("GRID",(0,0),(-1,-1),0.5,colors.grey)
+                ("GRID",(0,0),(-1,-1),0.5,colors.black)
             ]))
         
             tabla2.wrapOn(canvas,0,0)
