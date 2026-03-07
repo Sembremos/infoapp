@@ -1642,6 +1642,32 @@ def draw_pagina_percepcion_2(
     w, h = p.wrap(page_width * 0.3, 200)
     p.drawOn(canvas, TEXTO_X, TEXTO_Y)
 
+
+    # ---------------------------------------------------------
+    # CONFIG PAGINA PERCEPCION 3
+    # ---------------------------------------------------------
+    
+    P3_TITULO_Y = 730
+    
+    P3_GRAFICO1_X = 70
+    P3_GRAFICO1_Y = 470
+    P3_GRAFICO_SIZE = 200
+    
+    P3_TABLA1_X = 330
+    P3_TABLA1_Y = 470
+    
+    P3_TEXTO1_X = 330
+    P3_TEXTO1_Y = 430
+    
+    P3_GRAFICO2_X = 350
+    P3_GRAFICO2_Y = 170
+    
+    P3_TABLA2_X = 70
+    P3_TABLA2_Y = 170
+    
+    P3_TEXTO2_X = 70
+    P3_TEXTO2_Y = 130
+
 # ================= GENERADOR PDF =================
 def generar_pdf(
     portada_path,
@@ -1706,6 +1732,13 @@ def generar_pdf(
     tabla_no_denuncia,
     motivo_principal,
     total_omitidas,
+    grafico_horarios_percepcion,
+    grafico_armas_percepcion,
+    tabla_horarios_percepcion,
+    tabla_armas,
+    horario_mayor,
+    metodo_mas_usado,
+    omitidas_aportes,
 ):
 
     buffer = BytesIO()
@@ -2808,7 +2841,91 @@ def generar_pdf(
             
         elif doc.page == percepcion_inicio + 3:
             header_footer(canvas, doc)
-            canvas.drawString(100, 500, "Percepción Página 3")
+            canvas.setFont("Helvetica-Bold", 16)
+            canvas.drawString(200, P3_TITULO_Y, "Aportes Operativos de la Comunidad")
+        
+        
+            # ---------------- GRAFICO HORARIOS ----------------
+            canvas.drawImage(
+                grafico_horarios_percepcion,
+                P3_GRAFICO1_X,
+                P3_GRAFICO1_Y,
+                P3_GRAFICO_SIZE,
+                P3_GRAFICO_SIZE
+            )
+        
+        
+            # ---------------- TABLA HORARIOS ----------------
+            tabla1 = Table(tabla_horarios_percepcion)
+        
+            tabla1.setStyle(TableStyle([
+                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
+                ("FONTSIZE",(0,0),(-1,-1),9),
+                ("GRID",(0,0),(-1,-1),0.5,colors.grey)
+            ]))
+        
+            tabla1.wrapOn(canvas,0,0)
+            tabla1.drawOn(canvas,P3_TABLA1_X,P3_TABLA1_Y)
+        
+        
+            # ---------------- TEXTO HORARIOS ----------------
+            texto1 = f"""
+            La mayor parte de las personas que fueron víctimas de algún delito,
+            consideran que las horas con mayor incidencia delincuencial se ubican
+            entre las {horario_mayor} horas.
+        
+            Total respuestas omitidas: {omitidas_aportes}.
+            """
+        
+            canvas.setFont("Helvetica",10)
+            textobject = canvas.beginText(P3_TEXTO1_X,P3_TEXTO1_Y)
+        
+            for line in texto1.split("\n"):
+                textobject.textLine(line)
+        
+            canvas.drawText(textobject)
+        
+        
+            # ---------------- GRAFICO ARMAS ----------------
+            canvas.drawImage(
+                grafico_armas_percepcion,
+                P3_GRAFICO2_X,
+                P3_GRAFICO2_Y,
+                P3_GRAFICO_SIZE,
+                P3_GRAFICO_SIZE
+            )
+        
+        
+            # ---------------- TABLA ARMAS ----------------
+            tabla2 = Table(tabla_armas)
+        
+            tabla2.setStyle(TableStyle([
+                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
+                ("FONTSIZE",(0,0),(-1,-1),9),
+                ("GRID",(0,0),(-1,-1),0.5,colors.grey)
+            ]))
+        
+            tabla2.wrapOn(canvas,0,0)
+            tabla2.drawOn(canvas,P3_TABLA2_X,P3_TABLA2_Y)
+        
+        
+            # ---------------- TEXTO ARMAS ----------------
+            texto2 = f"""
+            La mayor parte de las personas que fueron víctimas de algún delito
+            consideran que el método más utilizado para la ejecución de ilícitos
+            es el {metodo_mas_usado}.
+        
+            Total respuestas omitidas: {omitidas_aportes}.
+            """
+        
+            canvas.setFont("Helvetica",10)
+        
+            textobject2 = canvas.beginText(P3_TEXTO2_X,P3_TEXTO2_Y)
+        
+            for line in texto2.split("\n"):
+                textobject2.textLine(line)
+        
+            canvas.drawText(textobject2)
             
         elif doc.page == percepcion_inicio + 4:
             header_footer(canvas, doc)
