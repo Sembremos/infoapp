@@ -1523,7 +1523,94 @@ if archivo:
                 
         generar_grafico_victimizacion(df_victimizacion, "grafico_victimizacion.png")
         generar_grafico_victimizacion(df_no_denuncia, "grafico_no_denuncia.png")
+
+
+        # ---------------------------------------------------------
+        # PERCEPCION CIUDADANA - PAGINA 3
+        # ---------------------------------------------------------
         
+        # ---------- GRAFICO 1: HORARIO DELICTIVO ----------
+        tabla_horarios_percepcion_df = df.iloc[335:344, [0,1,2]].copy()
+        tabla_horarios_percepcion_df = tabla_horarios_percepcion_df.dropna(how="all")
+        
+        # Datos grafico
+        horarios_labels = tabla_horarios_percepcion_df.iloc[:,0].astype(str).tolist()
+        horarios_porcentajes = (
+            tabla_horarios_percepcion_df.iloc[:,1]
+            .astype(str)
+            .str.replace("%","")
+            .str.replace(",",".")
+        )
+        
+        horarios_porcentajes = pd.to_numeric(horarios_porcentajes, errors="coerce").fillna(0)
+        
+        # Datos tabla (ignorar columna B)
+        tabla_horarios_percepcion = []
+        
+        for _, row in tabla_horarios_percepcion_df.iterrows():
+        
+            categoria = row.iloc[0]
+            frecuencia = row.iloc[2]
+        
+            if pd.notna(categoria) and pd.notna(frecuencia):
+                tabla_horarios_percepcion.append([str(categoria), int(frecuencia)])
+        
+        
+        # obtener horario mayor frecuencia
+        max_fila = tabla_horarios_percepcion_df.iloc[
+            tabla_horarios_percepcion_df.iloc[:,2].astype(float).idxmax()
+        ]
+        
+        horario_mayor = str(max_fila.iloc[0])
+        
+        
+        # ---------- GRAFICO 2: ARMAS DELICTIVAS ----------
+        
+        tabla_armas_df = df.iloc[349:357, [0,1,2]].copy()
+        tabla_armas_df = tabla_armas_df.dropna(how="all")
+        
+        armas_labels = tabla_armas_df.iloc[:,0].astype(str).tolist()
+        
+        armas_porcentajes = (
+            tabla_armas_df.iloc[:,1]
+            .astype(str)
+            .str.replace("%","")
+            .str.replace(",",".")
+        )
+        
+        armas_porcentajes = pd.to_numeric(armas_porcentajes, errors="coerce").fillna(0)
+        
+        tabla_armas = []
+        
+        for _, row in tabla_armas_df.iterrows():
+        
+            categoria = row.iloc[0]
+            frecuencia = row.iloc[2]
+        
+            if pd.notna(categoria) and pd.notna(frecuencia):
+                tabla_armas.append([str(categoria), int(frecuencia)])
+        
+        # metodo mayor frecuencia
+        max_fila_armas = tabla_armas_df.iloc[
+            tabla_armas_df.iloc[:,2].astype(float).idxmax()
+        ]
+        
+        metodo_mas_usado = str(max_fila_armas.iloc[0])
+        
+        
+        # respuestas omitidas
+        omitidas_aportes = ws["G322"].value
+
+        grafico_horarios_percepcion = generar_grafico_horarios_percepcion(
+            horarios_labels,
+            horarios_porcentajes
+        )
+        
+        grafico_armas_percepcion = generar_grafico_armas_percepcion(
+            armas_labels,
+            armas_porcentajes
+        )
+                
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -1590,6 +1677,13 @@ if archivo:
                 tabla_no_denuncia=tabla_no_denuncia,
                 motivo_principal=motivo_principal,
                 total_omitidas=total_omitidas,
+                grafico_horarios_percepcion,
+                grafico_armas_percepcion,
+                tabla_horarios_percepcion,
+                tabla_armas,
+                horario_mayor,
+                metodo_mas_usado,
+                omitidas_aportes,
              )
 
             pdf_bytes = pdf_buffer.getvalue()
