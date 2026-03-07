@@ -1557,11 +1557,20 @@ if archivo:
         
         
         # obtener horario mayor frecuencia
-        max_fila = tabla_horarios_percepcion_df.iloc[
-            tabla_horarios_percepcion_df.iloc[:,2].astype(float).idxmax()
-        ]
+        if not tabla_horarios_percepcion_df.empty:
+
+            frecuencias = pd.to_numeric(
+                tabla_horarios_percepcion_df.iloc[:,2],
+                errors="coerce"
+            ).fillna(0)
         
-        horario_mayor = str(max_fila.iloc[0])
+            idx_max = frecuencias.idxmax()
+        
+            horario_mayor = str(tabla_horarios_percepcion_df.loc[idx_max].iloc[0])
+        
+        else:
+        
+            horario_mayor = "No disponible"
         
         
         # ---------- GRAFICO 2: ARMAS DELICTIVAS ----------
@@ -1591,12 +1600,21 @@ if archivo:
                 tabla_armas.append([str(categoria), int(frecuencia)])
         
         # metodo mayor frecuencia
-        max_fila_armas = tabla_armas_df.iloc[
-            tabla_armas_df.iloc[:,2].astype(float).idxmax()
-        ]
+        if not tabla_armas_df.empty:
         
-        metodo_mas_usado = str(max_fila_armas.iloc[0])
+            frecuencias_armas = pd.to_numeric(
+                tabla_armas_df.iloc[:,2],
+                errors="coerce"
+            ).fillna(0)
         
+            idx_max_armas = frecuencias_armas.idxmax()
+        
+            metodo_mas_usado = str(tabla_armas_df.loc[idx_max_armas].iloc[0])
+        
+        else:
+        
+            metodo_mas_usado = "No disponible"
+                
         
         # respuestas omitidas
         omitidas_aportes = ws["G322"].value
