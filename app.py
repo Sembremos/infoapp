@@ -1524,6 +1524,54 @@ if archivo:
         generar_grafico_victimizacion(df_victimizacion, "grafico_victimizacion.png")
         generar_grafico_victimizacion(df_no_denuncia, "grafico_no_denuncia.png")
 
+        #pagina 3_____________________________________________________
+
+        def generar_grafico_horarios_percepcion(labels, valores):
+
+            import matplotlib.pyplot as plt
+        
+            plt.figure(figsize=(6,6))
+        
+            plt.pie(
+                valores,
+                labels=None,
+                autopct=lambda p: f"{p:.2f}%",
+                startangle=90
+            )
+        
+            plt.axis("equal")
+        
+            ruta = ASSETS_DIR / "grafico_horarios_percepcion.png"
+        
+            plt.savefig(ruta, dpi=300, bbox_inches="tight")
+        
+            plt.close()
+        
+            return ruta
+
+        def generar_grafico_armas_percepcion(labels, valores):
+
+            import matplotlib.pyplot as plt
+        
+            plt.figure(figsize=(6,6))
+        
+            plt.pie(
+                valores,
+                labels=None,
+                autopct=lambda p: f"{p:.2f}%",
+                startangle=90
+            )
+        
+            plt.axis("equal")
+        
+            ruta = ASSETS_DIR / "grafico_armas_percepcion.png"
+        
+            plt.savefig(ruta, dpi=300, bbox_inches="tight")
+        
+            plt.close()
+        
+            return ruta
+
 
         # ---------------------------------------------------------
         # PERCEPCION CIUDADANA - PAGINA 3
