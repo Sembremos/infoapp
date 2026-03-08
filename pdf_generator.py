@@ -1702,6 +1702,13 @@ P3_PALETA_GRAFICO = [
     P3_COLOR_9
 ]
 
+# ----- TITULOS DE GRAFICOS -----
+
+P3_TITULO_GRAFICO_SIZE = 12
+P3_TITULO_GRAFICO_COLOR = colors.HexColor("#013051")
+P3_TITULO_GRAFICO_OFFSET = 10
+
+
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
@@ -2879,7 +2886,16 @@ def generar_pdf(
             canvas.setFont("Helvetica-Bold", 16)
             canvas.drawString(P3_TITULO_X, P3_TITULO_Y, "Aportes Operativos de la Comunidad")
         
-        
+            canvas.setFont("Helvetica-Bold", 12)
+            canvas.setFillColor(colors.HexColor("#013051"))
+            
+            canvas.drawString(
+                P3_GRAFICO1_X,
+                P3_GRAFICO1_Y + P3_GRAFICO_SIZE + 10,
+                "Horario y método delictivo según la percepción ciudadana"
+            )
+           
+            
             # ---------------- GRAFICO HORARIOS ----------------
             canvas.drawImage(
                 grafico_horarios_percepcion,
@@ -2923,6 +2939,15 @@ def generar_pdf(
             canvas.drawText(textobject)
         
         
+            canvas.setFont("Helvetica-Bold", 12)
+            canvas.setFillColor(colors.HexColor("#013051"))
+            
+            canvas.drawString(
+                P3_GRAFICO2_X,
+                P3_GRAFICO2_Y + P3_GRAFICO_SIZE + 10,
+                "Armas utilizadas en hechos delictivos"
+            )
+            
             # ---------------- GRAFICO ARMAS ----------------
             canvas.drawImage(
                 grafico_armas_percepcion,
