@@ -1680,7 +1680,150 @@ if archivo:
             armas_labels,
             armas_porcentajes
         )
+
+
+        # =====================================================
+        # PERCEPCION SERVICIO POLICIAL - DATOS
+        # =====================================================
+        
+        # ----- GRAFICO 1 (BARRAS) -----
+        labels_servicio = df.iloc[362:367,0].tolist()
+        valores_servicio = df.iloc[362:367,1].astype(float).tolist()
+        
+        tabla_servicio = list(zip(
+            df.iloc[362:367,0],
+            df.iloc[362:367,2]
+        ))
+        
+        # ----- GRAFICO 2 (PASTEL GRANDE) -----
+        labels_servicio_anual = df.iloc[372:375,0].tolist()
+        valores_servicio_anual = df.iloc[372:375,1].astype(float).tolist()
+        
+        tabla_servicio_anual = list(zip(
+            df.iloc[372:375,0],
+            df.iloc[372:375,2]
+        ))
+        
+        # ----- GRAFICO 3 -----
+        labels_conoce = df.iloc[380:382,0].tolist()
+        valores_conoce = df.iloc[380:382,1].astype(float).tolist()
+        
+        tabla_conoce = list(zip(
+            df.iloc[380:382,0],
+            df.iloc[380:382,2]
+        ))
+        
+        # ----- GRAFICO 4 -----
+        labels_conversado = df.iloc[387:389,0].tolist()
+        valores_conversado = df.iloc[387:389,1].astype(float).tolist()
+        
+        tabla_conversado = list(zip(
+            df.iloc[387:389,0],
+            df.iloc[387:389,2]
+        ))
+        
+        # ----- OMITIDAS -----
+        omitidas_servicio = int(df.iloc[386,6])
+        total_respuestas_servicio = int(df.iloc[382,2])
+
+
+        # =====================================================
+        # GRAFICO BARRAS SERVICIO POLICIAL
+        # =====================================================
+        
+        def generar_grafico_servicio_policial(labels, valores):
+        
+            import matplotlib.pyplot as plt
+        
+            colores = [
+                "#5b9bd5",
+                "#a5a5a5",
+                "#4472c4",
+                "#255e91",
+                "#636363"
+            ]
+        
+            plt.figure(figsize=(8,4))
+        
+            barras = plt.bar(labels,valores,color=colores)
+        
+            for i,v in enumerate(valores):
+                plt.text(i,v+0.5,f"{v:.2f}%",ha="center",fontsize=10)
+        
+            plt.ylim(0,max(valores)*1.2)
+        
+            ruta = ASSETS_DIR / "grafico_servicio_policial.png"
+        
+            plt.savefig(ruta,dpi=300,bbox_inches="tight")
+            plt.close()
+        
+            return ruta
+
+
+        # =====================================================
+        # FUNCION PIE GENERICA
+        # =====================================================
+        
+        def generar_pie_servicio(labels,valores,nombre):
+        
+            import matplotlib.pyplot as plt
+        
+            colores = [
+                "#5b9bd5",
+                "#a5a5a5",
+                "#4472c4",
+                "#255e91",
+                "#636363"
+            ]
+        
+            plt.figure(figsize=(6,6))
+        
+            plt.pie(
+                valores,
+                labels=None,
+                colors=colores,
+                autopct=lambda p: f"{p:.2f}%"
+            )
+        
+            plt.axis("equal")
+        
+            ruta = ASSETS_DIR / nombre
+        
+            plt.savefig(ruta,dpi=300,bbox_inches="tight")
+            plt.close()
+        
+            return ruta
+
+
+        #======================================================
+        #Generar graficos p4
+
+        grafico_servicio_policial = generar_grafico_servicio_policial(
+            labels_servicio,
+            valores_servicio
+        )
+        
+        grafico_servicio_anual = generar_pie_servicio(
+            labels_servicio_anual,
+            valores_servicio_anual,
+            "grafico_servicio_anual.png"
+        )
+        
+        grafico_conoce_policia = generar_pie_servicio(
+            labels_conoce,
+            valores_conoce,
+            "grafico_conoce.png"
+        )
+        
+        grafico_conversado = generar_pie_servicio(
+            labels_conversado,
+            valores_conversado,
+            "grafico_conversado.png"
+        )
                 
+        
+        
+
         #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
@@ -1754,6 +1897,16 @@ if archivo:
                 horario_mayor=horario_mayor,
                 metodo_mas_usado=metodo_mas_usado,
                 omitidas_aportes=omitidas_aportes,
+                grafico_servicio_policial=grafico_servicio_policial,
+                grafico_servicio_anual=grafico_servicio_anual,
+                grafico_conoce_policia=grafico_conoce_policia,
+                grafico_conversado=grafico_conversado,
+                tabla_servicio=tabla_servicio,
+                tabla_servicio_anual=tabla_servicio_anual,
+                tabla_conoce=tabla_conoce,
+                tabla_conversado=tabla_conversado, 
+                omitidas_servicio=omitidas_servicio,
+                total_respuestas_servicio=total_respuestas_servicio,
              )
 
             pdf_bytes = pdf_buffer.getvalue()
