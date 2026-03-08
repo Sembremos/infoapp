@@ -1782,6 +1782,16 @@ def generar_pdf(
     horario_mayor,
     metodo_mas_usado,
     omitidas_aportes,
+    grafico_servicio_policial,
+    grafico_servicio_anual,
+    grafico_conoce_policia,
+    grafico_conversado,
+    tabla_servicio,
+    tabla_servicio_anual,
+    tabla_conoce,
+    tabla_conversado,
+    omitidas_servicio,
+    total_respuestas_servicio,
 ):
 
     buffer = BytesIO()
@@ -3001,8 +3011,223 @@ def generar_pdf(
             p.drawOn(canvas, P3_TEXTO2_X, P3_TEXTO2_Y)
             
         elif doc.page == percepcion_inicio + 4:
+
             header_footer(canvas, doc)
-            canvas.drawString(100, 500, "Percepción Página 4")
+        
+            page_width, page_height = A4
+        
+        
+            # =====================================================
+            # VARIABLES EDITABLES PAGINA
+            # =====================================================
+        
+            TITULO_X = 60
+            TITULO_Y = 740
+            TITULO_SIZE = 18
+            TITULO_COLOR = colors.HexColor("#013051")
+        
+        
+            BARRA_X = 70
+            BARRA_Y = 500
+            BARRA_WIDTH = 450
+            BARRA_HEIGHT = 200
+        
+            TITULO_BARRA_SIZE = 12
+        
+        
+            PIE_GRANDE_X = 60
+            PIE_GRANDE_Y = 180
+            PIE_GRANDE_SIZE = 220
+        
+        
+            PIE_DER1_X = 350
+            PIE_DER1_Y = 330
+            PIE_PEQUE_SIZE = 130
+        
+            PIE_DER2_X = 350
+            PIE_DER2_Y = 140
+        
+        
+            TABLA1_X = 520
+            TABLA1_Y = 520
+        
+            TABLA2_X = 60
+            TABLA2_Y = 120
+        
+            TABLA3_X = 520
+            TABLA3_Y = 340
+        
+            TABLA4_X = 520
+            TABLA4_Y = 150
+        
+        
+            OMITIDAS_X = 350
+            OMITIDAS_Y = 60
+            OMITIDAS_WIDTH = 250
+            OMITIDAS_HEIGHT = 40
+        
+            OMITIDAS_COLOR = colors.HexColor("#30A907")
+        
+            # =====================================================
+            # TITULO PAGINA
+            # =====================================================
+        
+            canvas.setFont("Helvetica-Bold", TITULO_SIZE)
+            canvas.setFillColor(TITULO_COLOR)
+            canvas.drawString(
+                TITULO_X,
+                TITULO_Y,
+                "Percepción del Servicio Policial"
+            )
+        
+        
+            # =====================================================
+            # GRAFICO BARRAS
+            # =====================================================
+        
+            canvas.setFont("Helvetica-Bold", TITULO_BARRA_SIZE)
+        
+            canvas.drawString(
+                BARRA_X,
+                BARRA_Y + BARRA_HEIGHT + 10,
+                "¿Cómo califica el servicio de Fuerza Pública en su comunidad?"
+            )
+        
+            canvas.drawImage(
+                grafico_servicio_policial,
+                BARRA_X,
+                BARRA_Y,
+                BARRA_WIDTH,
+                BARRA_HEIGHT
+            )
+        
+        
+            tabla1 = Table(tabla_servicio)
+        
+            tabla1.setStyle(TableStyle([
+                ("GRID",(0,0),(-1,-1),0.5,colors.black),
+                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
+                ("FONTSIZE",(0,0),(-1,-1),9)
+            ]))
+        
+            tabla1.wrapOn(canvas,0,0)
+            tabla1.drawOn(canvas,TABLA1_X,TABLA1_Y)
+        
+        
+            # =====================================================
+            # PIE GRANDE
+            # =====================================================
+        
+            canvas.drawString(
+                PIE_GRANDE_X,
+                PIE_GRANDE_Y + PIE_GRANDE_SIZE + 10,
+                "Calificación del servicio policial de los últimos dos años"
+            )
+        
+            canvas.drawImage(
+                grafico_servicio_anual,
+                PIE_GRANDE_X,
+                PIE_GRANDE_Y,
+                PIE_GRANDE_SIZE,
+                PIE_GRANDE_SIZE
+            )
+        
+        
+            tabla2 = Table(tabla_servicio_anual)
+        
+            tabla2.setStyle(TableStyle([
+                ("GRID",(0,0),(-1,-1),0.5,colors.black),
+                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
+                ("FONTSIZE",(0,0),(-1,-1),9)
+            ]))
+        
+            tabla2.wrapOn(canvas,0,0)
+            tabla2.drawOn(canvas,TABLA2_X,TABLA2_Y)
+        
+        
+            # =====================================================
+            # PIE DERECHO 1
+            # =====================================================
+        
+            canvas.drawString(
+                PIE_DER1_X,
+                PIE_DER1_Y + PIE_PEQUE_SIZE + 10,
+                "¿Conoce usted a los policías de la Fuerza Pública de su comunidad?"
+            )
+        
+            canvas.drawImage(
+                grafico_conoce_policia,
+                PIE_DER1_X,
+                PIE_DER1_Y,
+                PIE_PEQUE_SIZE,
+                PIE_PEQUE_SIZE
+            )
+        
+            tabla3 = Table(tabla_conoce)
+        
+            tabla3.setStyle(TableStyle([
+                ("GRID",(0,0),(-1,-1),0.5,colors.black),
+                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
+                ("FONTSIZE",(0,0),(-1,-1),9)
+            ]))
+        
+            tabla3.wrapOn(canvas,0,0)
+            tabla3.drawOn(canvas,TABLA3_X,TABLA3_Y)
+        
+        
+            # =====================================================
+            # PIE DERECHO 2
+            # =====================================================
+        
+            canvas.drawString(
+                PIE_DER2_X,
+                PIE_DER2_Y + PIE_PEQUE_SIZE + 10,
+                "¿Ha conversado con ellos sobre temas de seguridad?"
+            )
+        
+            canvas.drawImage(
+                grafico_conversado,
+                PIE_DER2_X,
+                PIE_DER2_Y,
+                PIE_PEQUE_SIZE,
+                PIE_PEQUE_SIZE
+            )
+        
+            tabla4 = Table(tabla_conversado)
+        
+            tabla4.setStyle(TableStyle([
+                ("GRID",(0,0),(-1,-1),0.5,colors.black),
+                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
+                ("FONTSIZE",(0,0),(-1,-1),9)
+            ]))
+        
+            tabla4.wrapOn(canvas,0,0)
+            tabla4.drawOn(canvas,TABLA4_X,TABLA4_Y)
+        
+        
+            # =====================================================
+            # CUADRO OMITIDAS
+            # =====================================================
+        
+            canvas.setFillColor(OMITIDAS_COLOR)
+        
+            canvas.rect(
+                OMITIDAS_X,
+                OMITIDAS_Y,
+                OMITIDAS_WIDTH,
+                OMITIDAS_HEIGHT,
+                fill=1,
+                stroke=0
+            )
+        
+            canvas.setFillColor(colors.white)
+            canvas.setFont("Helvetica-Bold",10)
+        
+            canvas.drawCentredString(
+                OMITIDAS_X + OMITIDAS_WIDTH/2,
+                OMITIDAS_Y + 15,
+                f"Cantidad de respuestas omitidas {omitidas_servicio}, de un total de {total_respuestas_servicio}"
+            )
             
         elif doc.page == percepcion_inicio + 5:
             header_footer(canvas, doc)
