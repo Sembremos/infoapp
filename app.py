@@ -8,7 +8,7 @@ from pathlib import Path
 import base64
 from openpyxl import load_workbook
 
-
+from pdf_generator import P3_PALETA_GRAFICO
 from pdf_generator import generar_pdf
 
 
@@ -1535,6 +1535,7 @@ if archivo:
             plt.pie(
                 valores,
                 labels=None,
+                colors=P3_PALETA_GRAFICO,
                 autopct=lambda p: f"{p:.2f}%",
                 startangle=90
             )
@@ -1550,7 +1551,7 @@ if archivo:
             return ruta
 
         def generar_grafico_armas_percepcion(labels, valores):
-
+        
             import matplotlib.pyplot as plt
         
             plt.figure(figsize=(6,6))
@@ -1558,6 +1559,7 @@ if archivo:
             plt.pie(
                 valores,
                 labels=None,
+                colors=P3_PALETA_GRAFICO,
                 autopct=lambda p: f"{p:.2f}%",
                 startangle=90
             )
