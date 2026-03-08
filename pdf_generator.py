@@ -1642,34 +1642,58 @@ def draw_pagina_percepcion_2(
     w, h = p.wrap(page_width * 0.3, 200)
     p.drawOn(canvas, TEXTO_X, TEXTO_Y)
 
-# =========================================================
+# ==================================================
 # CONFIGURACION VISUAL - PERCEPCION PAGINA 3
-# =========================================================
+# ==================================================
 
+# ----- TITULO -----
 P3_TITULO_X = 200
 P3_TITULO_Y = 730
+P3_TITULO_SIZE = 16
+P3_TITULO_COLOR = colors.HexColor("#013051")
 
-# ---- MITAD SUPERIOR ----
-P3_GRAFICO1_X = 70
-P3_GRAFICO1_Y = 470
+# ----- GRAFICOS -----
 P3_GRAFICO_SIZE = 200
 
-P3_TABLA1_X = 330
-P3_TABLA1_Y = 470
+P3_GRAFICO1_X = 70
+P3_GRAFICO1_Y = 470
 
-P3_TEXTO1_X = 330
-P3_TEXTO1_Y = 430
-
-
-# ---- MITAD INFERIOR ----
 P3_GRAFICO2_X = 350
 P3_GRAFICO2_Y = 170
+
+# ----- TABLAS -----
+P3_TABLA1_X = 330
+P3_TABLA1_Y = 470
 
 P3_TABLA2_X = 70
 P3_TABLA2_Y = 170
 
+# ----- TEXTOS -----
+P3_TEXTO1_X = 330
+P3_TEXTO1_Y = 430
+P3_TEXTO_SIZE = 10
+
 P3_TEXTO2_X = 70
 P3_TEXTO2_Y = 130
+
+# ==================================================
+# COLORES GRAFICOS PERCEPCION
+# ==================================================
+
+P3_COLOR_1 = "#30A907"
+P3_COLOR_2 = "#013051"
+P3_COLOR_3 = "#9DC3E6"
+P3_COLOR_4 = "#A5A5A5"
+P3_COLOR_5 = "#D9D9D9"
+
+P3_PALETA_GRAFICO = [
+    P3_COLOR_1,
+    P3_COLOR_2,
+    P3_COLOR_3,
+    P3_COLOR_4,
+    P3_COLOR_5
+]
+
 
 # ================= GENERADOR PDF =================
 def generar_pdf(
