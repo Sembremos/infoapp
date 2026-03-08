@@ -1669,12 +1669,12 @@ P3_TABLA2_X = 65
 P3_TABLA2_Y = 200
 
 # ----- TEXTOS -----
-P3_TEXTO1_X = 200
-P3_TEXTO1_Y = 480
-P3_TEXTO_SIZE = 10
+P3_TEXTO1_X = 250
+P3_TEXTO1_Y = 420
+P3_TEXTO_SIZE = 12
 
-P3_TEXTO2_X = 35
-P3_TEXTO2_Y = 180
+P3_TEXTO2_X = 50
+P3_TEXTO2_Y = 150
 
 # ==================================================
 # COLORES GRAFICOS PERCEPCION
@@ -2936,7 +2936,7 @@ def generar_pdf(
             Total respuestas omitidas: {omitidas_aportes}.
             """
         
-            canvas.setFont("Helvetica",10)
+            canvas.setFont("Helvetica",12)
             estilo = ParagraphStyle(
                 name="texto",
                 fontName="Helvetica",
