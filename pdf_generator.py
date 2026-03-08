@@ -1669,12 +1669,12 @@ P3_TABLA2_X = 65
 P3_TABLA2_Y = 200
 
 # ----- TEXTOS -----
-P3_TEXTO1_X = 250
+P3_TEXTO1_X = 270
 P3_TEXTO1_Y = 420
 P3_TEXTO_SIZE = 12
 
-P3_TEXTO2_X = 50
-P3_TEXTO2_Y = 150
+P3_TEXTO2_X = 60
+P3_TEXTO2_Y = 140
 
 # ==================================================
 # COLORES GRAFICOS PERCEPCION
