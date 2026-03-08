@@ -1680,18 +1680,26 @@ P3_TEXTO2_Y = 130
 # COLORES GRAFICOS PERCEPCION
 # ==================================================
 
-P3_COLOR_1 = "#30A907"
-P3_COLOR_2 = "#013051"
-P3_COLOR_3 = "#9DC3E6"
-P3_COLOR_4 = "#A5A5A5"
-P3_COLOR_5 = "#D9D9D9"
+P3_COLOR_1 = "#5b9bd5"
+P3_COLOR_2 = "#a5a5a5"
+P3_COLOR_3 = "#4472c4"
+P3_COLOR_4 = "#255e91"
+P3_COLOR_5 = "#636363"
+P3_COLOR_6 = "#264478"
+P3_COLOR_7 = "#7cafdd"
+P3_COLOR_8 = "#b7b7b7"
+P3_COLOR_9 = "#698ed0"
 
 P3_PALETA_GRAFICO = [
     P3_COLOR_1,
     P3_COLOR_2,
     P3_COLOR_3,
     P3_COLOR_4,
-    P3_COLOR_5
+    P3_COLOR_5,
+    P3_COLOR_6,
+    P3_COLOR_7,
+    P3_COLOR_8,
+    P3_COLOR_9
 ]
 
 
