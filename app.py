@@ -1537,8 +1537,8 @@ if archivo:
                 labels=None,
                 colors=P3_PALETA_GRAFICO,
                 autopct=lambda p: f"{p:.2f}%",
-                startangle=90
-                textprops={'fontsize':18}
+                startangle=90,
+                textprops={'fontsize':18},
             )
         
             plt.axis("equal")
@@ -1562,8 +1562,8 @@ if archivo:
                 labels=None,
                 colors=P3_PALETA_GRAFICO,
                 autopct=lambda p: f"{p:.2f}%",
-                startangle=90
-                textprops={'fontsize':18}
+                startangle=90,
+                textprops={'fontsize':18},
             )
         
             plt.axis("equal")
