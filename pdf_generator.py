@@ -2947,12 +2947,7 @@ def generar_pdf(
             p = Paragraph(texto1, estilo)
             p.wrapOn(canvas, 230, 200)
             p.drawOn(canvas, P3_TEXTO1_X, P3_TEXTO1_Y)
-            
-            p = Paragraph(texto2, estilo)
-            p.wrapOn(canvas, 230, 200)
-            p.drawOn(canvas, P3_TEXTO2_X, P3_TEXTO2_Y)
-        
-        
+                  
             canvas.setFont("Helvetica-Bold", 12)
             canvas.setFillColor(colors.HexColor("#013051"))
             
@@ -3000,19 +2995,6 @@ def generar_pdf(
         
             Total respuestas omitidas: {omitidas_aportes}.
             """
-        
-            canvas.setFont("Helvetica",10)
-        
-           estilo = ParagraphStyle(
-                name="texto",
-                fontName="Helvetica",
-                fontSize=10,
-                alignment=TA_JUSTIFY
-            )
-            
-            p = Paragraph(texto1, estilo)
-            p.wrapOn(canvas, 230, 200)
-            p.drawOn(canvas, P3_TEXTO1_X, P3_TEXTO1_Y)
             
             p = Paragraph(texto2, estilo)
             p.wrapOn(canvas, 230, 200)
