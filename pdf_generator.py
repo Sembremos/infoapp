@@ -2910,11 +2910,16 @@ def generar_pdf(
             tabla1 = Table(tabla_horarios_percepcion)
         
             tabla1.setStyle(TableStyle([
-                ("BACKGROUND",(0,0),(-1,0),colors.HexColor("#30A907")),
-                ("TEXTCOLOR",(0,0),(-1,0),colors.white),
+
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
                 ("FONTSIZE",(0,0),(-1,-1),9),
-                ("GRID",(0,0),(-1,-1),0.5,colors.black)
+            
+                ("BACKGROUND",(0,0),(-1,-1),colors.white),
+            
+                ("GRID",(0,0),(-1,-1),0.5,colors.black),
+            
+                ("ALIGN",(1,0),(1,-1),"CENTER"),
+            
             ]))
         
             tabla1.wrapOn(canvas,0,0)
@@ -2962,11 +2967,16 @@ def generar_pdf(
             tabla2 = Table(tabla_armas)
         
             tabla2.setStyle(TableStyle([
-                ("BACKGROUND",(0,0),(-1,0),colors.HexColor("#30A907")),
-                ("TEXTCOLOR",(0,0),(-1,0),colors.white),
+
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
                 ("FONTSIZE",(0,0),(-1,-1),9),
-                ("GRID",(0,0),(-1,-1),0.5,colors.black)
+            
+                ("BACKGROUND",(0,0),(-1,-1),colors.white),
+            
+                ("GRID",(0,0),(-1,-1),0.5,colors.black),
+            
+                ("ALIGN",(1,0),(1,-1),"CENTER"),
+            
             ]))
         
             tabla2.wrapOn(canvas,0,0)
