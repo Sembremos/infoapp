@@ -1659,7 +1659,7 @@ P3_GRAFICO1_X = 70
 P3_GRAFICO1_Y = 480
 
 P3_GRAFICO2_X = 340
-P3_GRAFICO2_Y = 170
+P3_GRAFICO2_Y = 150
 
 # ----- TABLAS -----
 P3_TABLA1_X = 330
@@ -1673,7 +1673,7 @@ P3_TEXTO1_X = 270
 P3_TEXTO1_Y = 420
 P3_TEXTO_SIZE = 12
 
-P3_TEXTO2_X = 60
+P3_TEXTO2_X = 65
 P3_TEXTO2_Y = 140
 
 # ==================================================
