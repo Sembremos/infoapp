@@ -1663,17 +1663,17 @@ P3_GRAFICO2_Y = 160
 
 # ----- TABLAS -----
 P3_TABLA1_X = 330
-P3_TABLA1_Y = 480
+P3_TABLA1_Y = 490
 
 P3_TABLA2_X = 70
 P3_TABLA2_Y = 200
 
 # ----- TEXTOS -----
-P3_TEXTO1_X = 330
+P3_TEXTO1_X = 280
 P3_TEXTO1_Y = 480
 P3_TEXTO_SIZE = 10
 
-P3_TEXTO2_X = 40
+P3_TEXTO2_X = 35
 P3_TEXTO2_Y = 180
 
 # ==================================================
