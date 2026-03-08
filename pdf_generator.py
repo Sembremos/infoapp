@@ -1647,7 +1647,7 @@ def draw_pagina_percepcion_2(
 # ==================================================
 
 # ----- TITULO -----
-P3_TITULO_X = 100
+P3_TITULO_X = 70
 P3_TITULO_Y = 730
 P3_TITULO_SIZE = 16
 P3_TITULO_COLOR = colors.HexColor("#013051")
@@ -1704,7 +1704,7 @@ P3_PALETA_GRAFICO = [
 
 # ----- TITULOS DE GRAFICOS -----
 
-P3_TITULO_GRAFICO_SIZE = 12
+P3_TITULO_GRAFICO_SIZE = 14
 P3_TITULO_GRAFICO_COLOR = colors.HexColor("#013051")
 P3_TITULO_GRAFICO_OFFSET = 10
 
