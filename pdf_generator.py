@@ -1647,7 +1647,7 @@ def draw_pagina_percepcion_2(
 # ==================================================
 
 # ----- TITULO -----
-P3_TITULO_X = 180
+P3_TITULO_X = 100
 P3_TITULO_Y = 730
 P3_TITULO_SIZE = 16
 P3_TITULO_COLOR = colors.HexColor("#013051")
@@ -1656,10 +1656,10 @@ P3_TITULO_COLOR = colors.HexColor("#013051")
 P3_GRAFICO_SIZE = 200
 
 P3_GRAFICO1_X = 70
-P3_GRAFICO1_Y = 450
+P3_GRAFICO1_Y = 480
 
-P3_GRAFICO2_X = 350
-P3_GRAFICO2_Y = 180
+P3_GRAFICO2_X = 340
+P3_GRAFICO2_Y = 160
 
 # ----- TABLAS -----
 P3_TABLA1_X = 330
@@ -1670,10 +1670,10 @@ P3_TABLA2_Y = 200
 
 # ----- TEXTOS -----
 P3_TEXTO1_X = 330
-P3_TEXTO1_Y = 450
+P3_TEXTO1_Y = 480
 P3_TEXTO_SIZE = 10
 
-P3_TEXTO2_X = 70
+P3_TEXTO2_X = 50
 P3_TEXTO2_Y = 180
 
 # ==================================================
