@@ -2937,12 +2937,20 @@ def generar_pdf(
             """
         
             canvas.setFont("Helvetica",10)
-            textobject = canvas.beginText(P3_TEXTO1_X,P3_TEXTO1_Y)
-        
-            for line in texto1.split("\n"):
-                textobject.textLine(line)
-        
-            canvas.drawText(textobject)
+            estilo = ParagraphStyle(
+                name="texto",
+                fontName="Helvetica",
+                fontSize=10,
+                alignment=TA_JUSTIFY
+            )
+            
+            p = Paragraph(texto1, estilo)
+            p.wrapOn(canvas, 230, 200)
+            p.drawOn(canvas, P3_TEXTO1_X, P3_TEXTO1_Y)
+            
+            p = Paragraph(texto2, estilo)
+            p.wrapOn(canvas, 230, 200)
+            p.drawOn(canvas, P3_TEXTO2_X, P3_TEXTO2_Y)
         
         
             canvas.setFont("Helvetica-Bold", 12)
@@ -2995,12 +3003,20 @@ def generar_pdf(
         
             canvas.setFont("Helvetica",10)
         
-            textobject2 = canvas.beginText(P3_TEXTO2_X,P3_TEXTO2_Y)
-        
-            for line in texto2.split("\n"):
-                textobject2.textLine(line)
-        
-            canvas.drawText(textobject2)
+           estilo = ParagraphStyle(
+                name="texto",
+                fontName="Helvetica",
+                fontSize=10,
+                alignment=TA_JUSTIFY
+            )
+            
+            p = Paragraph(texto1, estilo)
+            p.wrapOn(canvas, 230, 200)
+            p.drawOn(canvas, P3_TEXTO1_X, P3_TEXTO1_Y)
+            
+            p = Paragraph(texto2, estilo)
+            p.wrapOn(canvas, 230, 200)
+            p.drawOn(canvas, P3_TEXTO2_X, P3_TEXTO2_Y)
             
         elif doc.page == percepcion_inicio + 4:
             header_footer(canvas, doc)
