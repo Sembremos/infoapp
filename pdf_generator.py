@@ -3048,7 +3048,7 @@ def generar_pdf(
             PIE_DER2_Y = 140
         
         
-            TABLA1_X = 520
+            TABLA1_X = 420
             TABLA1_Y = 520
         
             TABLA2_X = 60
