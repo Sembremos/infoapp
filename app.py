@@ -1688,7 +1688,7 @@ if archivo:
         
         # ----- GRAFICO 1 (BARRAS) -----
         labels_servicio = df.iloc[362:367,0].tolist()
-        valores_servicio = df.iloc[362:367,1].astype(float) * 100.tolist()
+        valores_servicio = (df.iloc[362:367,1].astype(float) * 100).tolist()
         
         tabla_servicio = list(zip(
             df.iloc[362:367,0],
