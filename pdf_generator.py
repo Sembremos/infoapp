@@ -3120,8 +3120,14 @@ def generar_pdf(
         
             canvas.drawString(
                 PIE_GRANDE_X,
+                PIE_GRANDE_Y + PIE_GRANDE_SIZE + 22,
+                "Calificación del servicio policial"
+            )
+            
+            canvas.drawString(
+                PIE_GRANDE_X,
                 PIE_GRANDE_Y + PIE_GRANDE_SIZE + 10,
-                "Calificación del servicio policial de los últimos dos años"
+                "de los últimos dos años"
             )
         
             canvas.drawImage(
@@ -3151,8 +3157,14 @@ def generar_pdf(
         
             canvas.drawString(
                 PIE_DER1_X,
+                PIE_DER1_Y + PIE_PEQUE_SIZE + 22,
+                "¿Conoce usted a los policías"
+            )
+            
+            canvas.drawString(
+                PIE_DER1_X,
                 PIE_DER1_Y + PIE_PEQUE_SIZE + 10,
-                "¿Conoce usted a los policías de la Fuerza Pública de su comunidad?"
+                "de la Fuerza Pública de su comunidad?"
             )
         
             canvas.drawImage(
@@ -3181,8 +3193,14 @@ def generar_pdf(
         
             canvas.drawString(
                 PIE_DER2_X,
+                PIE_DER2_Y + PIE_PEQUE_SIZE + 22,
+                "¿Ha conversado con ellos"
+            )
+            
+            canvas.drawString(
+                PIE_DER2_X,
                 PIE_DER2_Y + PIE_PEQUE_SIZE + 10,
-                "¿Ha conversado con ellos sobre temas de seguridad?"
+                "sobre temas de seguridad?"
             )
         
             canvas.drawImage(
@@ -3225,8 +3243,14 @@ def generar_pdf(
         
             canvas.drawCentredString(
                 OMITIDAS_X + OMITIDAS_WIDTH/2,
-                OMITIDAS_Y + 15,
-                f"Cantidad de respuestas omitidas {omitidas_servicio}, de un total de {total_respuestas_servicio}"
+                OMITIDAS_Y + 22,
+                f"Cantidad de respuestas omitidas {omitidas_servicio}"
+            )
+            
+            canvas.drawCentredString(
+                OMITIDAS_X + OMITIDAS_WIDTH/2,
+                OMITIDAS_Y + 8,
+                f"de un total de {total_respuestas_servicio}"
             )
             
         elif doc.page == percepcion_inicio + 5:
