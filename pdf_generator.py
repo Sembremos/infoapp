@@ -3446,11 +3446,8 @@ def generar_pdf(
             )
 
         elif doc.page == percepcion_inicio + 6:
-            header_footer(canvas, doc)
-            canvas.drawString(100, 500, "Percepción Página 6")
-
-        elif doc.page == percepcion_inicio + 7:
             FullImage("assets/final.png")(canvas, doc)
+
 
         return
 
