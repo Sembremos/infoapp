@@ -1792,6 +1792,10 @@ def generar_pdf(
     tabla_conversado,
     omitidas_servicio,
     total_respuestas_servicio,
+    grafico_comercio_seguridad,
+    grafico_comercio_programa,
+    grafico_comercio_inscrito,
+    grafico_comercio_contacto,
 ):
 
     buffer = BytesIO()
@@ -3293,8 +3297,125 @@ def generar_pdf(
             )
             
         elif doc.page == percepcion_inicio + 5:
+        
             header_footer(canvas, doc)
-            canvas.drawString(100, 500, "Percepción Página 5")
+        
+            page_width, page_height = A4
+        
+            # ======================================================
+            # VARIABLES EDITABLES PAGINA
+            # ======================================================
+        
+            TITULO_X = 60
+            TITULO_Y = 740
+            TITULO_SIZE = 18
+            TITULO_COLOR = colors.HexColor("#013051")
+        
+            # POSICIONES GRAFICOS
+            GRAFICO_SIZE = 200
+        
+            GRAFICO1_X = 70
+            GRAFICO1_Y = 420
+        
+            GRAFICO2_X = 330
+            GRAFICO2_Y = 420
+        
+            GRAFICO3_X = 70
+            GRAFICO3_Y = 150
+        
+            GRAFICO4_X = 330
+            GRAFICO4_Y = 150
+        
+            # TITULOS
+            TITULO_GRAFICO_SIZE = 12
+            TITULO_COLOR = colors.HexColor("#013051")
+        
+            OFFSET_TITULO = 15
+        
+            # ======================================================
+        
+            canvas.setFont("Helvetica-Bold", TITULO_SIZE)
+            canvas.setFillColor(TITULO_COLOR)
+        
+            canvas.drawString(
+                TITULO_X,
+                TITULO_Y,
+                "Percepción Sector Comercial"
+            )
+        
+            canvas.setFont("Helvetica-Bold", TITULO_GRAFICO_SIZE)
+        
+            # ======================================================
+            # GRAFICO 1
+            # ======================================================
+        
+            canvas.drawString(
+                GRAFICO1_X,
+                GRAFICO1_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                "¿Se siente seguro en su establecimiento comercial?"
+            )
+        
+            canvas.drawImage(
+                grafico_comercio_seguridad,
+                GRAFICO1_X,
+                GRAFICO1_Y,
+                GRAFICO_SIZE,
+                GRAFICO_SIZE
+            )
+        
+            # ======================================================
+            # GRAFICO 2
+            # ======================================================
+        
+            canvas.drawString(
+                GRAFICO2_X,
+                GRAFICO2_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                "¿Conoce el programa de Seguridad Comercial que imparte Fuerza Pública?"
+            )
+        
+            canvas.drawImage(
+                grafico_comercio_programa,
+                GRAFICO2_X,
+                GRAFICO2_Y,
+                GRAFICO_SIZE,
+                GRAFICO_SIZE
+            )
+        
+            # ======================================================
+            # GRAFICO 3
+            # ======================================================
+        
+            canvas.drawString(
+                GRAFICO3_X,
+                GRAFICO3_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                "¿Está inscrito en el programa de Seguridad Comercial?"
+            )
+        
+            canvas.drawImage(
+                grafico_comercio_inscrito,
+                GRAFICO3_X,
+                GRAFICO3_Y,
+                GRAFICO_SIZE,
+                GRAFICO_SIZE
+            )
+        
+            # ======================================================
+            # GRAFICO 4
+            # ======================================================
+        
+            canvas.drawString(
+                GRAFICO4_X,
+                GRAFICO4_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                "¿Le gustaría que se le contacte para formar parte del programa?"
+            )
+        
+            canvas.drawImage(
+                grafico_comercio_contacto,
+                GRAFICO4_X,
+                GRAFICO4_Y,
+                GRAFICO_SIZE,
+                GRAFICO_SIZE
+            )
 
         elif doc.page == percepcion_inicio + 6:
             header_footer(canvas, doc)
