@@ -3405,6 +3405,14 @@ def generar_pdf(
                 COMER_W = 80,
                 COMER_H= 80,
             )
+
+            canvas.drawImage(
+                "assets/comer.png",
+                COMER_X,
+                COMER_Y,
+                COMER_W,
+                COMER_H
+            )
             
             # ======================================================
             # GRAFICO 1
