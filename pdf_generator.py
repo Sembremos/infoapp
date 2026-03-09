@@ -3398,14 +3398,11 @@ def generar_pdf(
         
             canvas.setFont("Helvetica-Bold", TITULO_GRAFICO_SIZE)
 
-            canvas.drawImage(
-                "assets/comer.png",
-                COMER_X = 258,
-                COMER_Y = 381,
-                COMER_W = 80,
-                COMER_H= 80,
-            )
-
+            COMER_X = 258
+            COMER_Y = 381
+            COMER_W = 80
+            COMER_H = 80
+            
             canvas.drawImage(
                 "assets/comer.png",
                 COMER_X,
