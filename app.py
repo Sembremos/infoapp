@@ -1774,8 +1774,8 @@ if archivo:
         # FUNCION PIE GENERICA
         # =====================================================
         
-        def generar_pie_servicio(labels,valores,nombre):
-        
+        def generar_pie_servicio(labels, valores, nombre, texto_size=14):
+
             import matplotlib.pyplot as plt
         
             colores = [
@@ -1793,14 +1793,15 @@ if archivo:
                 labels=None,
                 colors=colores,
                 autopct=lambda p: f"{p:.2f}%",
-                textprops={'fontsize':14}
+                pctdistance=0.7,
+                textprops={'fontsize': texto_size}
             )
         
             plt.axis("equal")
         
             ruta = ASSETS_DIR / nombre
         
-            plt.savefig(ruta,dpi=300,bbox_inches="tight")
+            plt.savefig(ruta, dpi=300, bbox_inches="tight")
             plt.close()
         
             return ruta
@@ -1817,19 +1818,22 @@ if archivo:
         grafico_servicio_anual = generar_pie_servicio(
             labels_servicio_anual,
             valores_servicio_anual,
-            "grafico_servicio_anual.png"
+            "grafico_servicio_anual.png",
+            texto_size=14
         )
         
         grafico_conoce_policia = generar_pie_servicio(
             labels_conoce,
             valores_conoce,
-            "grafico_conoce.png"
+            "grafico_conoce.png",
+            texto_size=20
         )
         
         grafico_conversado = generar_pie_servicio(
             labels_conversado,
             valores_conversado,
-            "grafico_conversado.png"
+            "grafico_conversado.png",
+            texto_size=20
         )
                 
         
