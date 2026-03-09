@@ -1826,14 +1826,14 @@ if archivo:
             labels_conoce,
             valores_conoce,
             "grafico_conoce.png",
-            texto_size=20
+            texto_size=22
         )
         
         grafico_conversado = generar_pie_servicio(
             labels_conversado,
             valores_conversado,
             "grafico_conversado.png",
-            texto_size=20
+            texto_size=22
         )
                 
         
