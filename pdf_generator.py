@@ -3368,10 +3368,10 @@ def generar_pdf(
             GRAFICO_SIZE = 200
         
             GRAFICO1_X = 70
-            GRAFICO1_Y = 450
+            GRAFICO1_Y = 470
         
             GRAFICO2_X = 330
-            GRAFICO2_Y = 450
+            GRAFICO2_Y = 470
         
             GRAFICO3_X = 70
             GRAFICO3_Y = 150
