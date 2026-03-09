@@ -2497,7 +2497,7 @@ def generar_pdf(
                 data=tabla_denuncias,
                 titulo="Detalle de denuncias por distrito",
                 x=347,
-                y=page_height - 100,
+                y=page_height - 80,
                 col_widths=[100],
                 header_color=colors.HexColor("#4472C4"),
                 font_size_header=12,
