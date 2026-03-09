@@ -1743,14 +1743,20 @@ if archivo:
                 "#636363"
             ]
         
-            plt.figure(figsize=(8,4))
-        
+            plt.figure(figsize=(8,5))
+
+            ax = plt.gca()
+
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+                    
             barras = plt.bar(labels,valores,color=colores)
         
             for i,v in enumerate(valores):
-                plt.text(i,v+0.5,f"{v:.2f}%",ha="center",fontsize=10)
+                plt.text(i,v+0.01,f"{v:.2f}%",ha="center",fontsize=11)
         
-            plt.ylim(0,max(valores)*1.2)
+            plt.ylim(0,max(valores)*1.05)
         
             ruta = ASSETS_DIR / "grafico_servicio_policial.png"
         
