@@ -2125,7 +2125,7 @@ def generar_pdf(
                 data=tabla_otras_encuestas,
                 titulo="Otras encuestas",
                 x=90,                  # 👈 centrada respecto a la tabla 1
-                y=page_height - 190,   # 👈 distancia estética hacia abajo
+                y=page_height - 230,   # 👈 distancia estética hacia abajo
                 col_widths=[100, 100, 100, 100],
                 header_color=colors.HexColor("#4471C4")
             )
