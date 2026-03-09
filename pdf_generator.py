@@ -3352,7 +3352,13 @@ def generar_pdf(
             canvas.drawString(
                 GRAFICO1_X,
                 GRAFICO1_Y + GRAFICO_SIZE + OFFSET_TITULO,
-                "¿Se siente seguro en su establecimiento comercial?"
+                "¿Se siente seguro en"
+            )
+
+            canvas.drawString(
+                GRAFICO1_X,
+                GRAFICO1_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                "su establecimiento comercial?"
             )
         
             canvas.drawImage(
@@ -3370,7 +3376,13 @@ def generar_pdf(
             canvas.drawString(
                 GRAFICO2_X,
                 GRAFICO2_Y + GRAFICO_SIZE + OFFSET_TITULO,
-                "¿Conoce el programa de Seguridad Comercial que imparte Fuerza Pública?"
+                "¿Conoce el programa de Seguridad Comercial"
+            )
+
+            canvas.drawString(
+                GRAFICO2_X,
+                GRAFICO2_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                "que imparte Fuerza Pública?"
             )
         
             canvas.drawImage(
@@ -3388,7 +3400,13 @@ def generar_pdf(
             canvas.drawString(
                 GRAFICO3_X,
                 GRAFICO3_Y + GRAFICO_SIZE + OFFSET_TITULO,
-                "¿Está inscrito en el programa de Seguridad Comercial?"
+                "¿Está inscrito en el programa"
+            )
+
+            canvas.drawString(
+                GRAFICO3_X,
+                GRAFICO3_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                "de Seguridad Comercial?"
             )
         
             canvas.drawImage(
@@ -3406,7 +3424,13 @@ def generar_pdf(
             canvas.drawString(
                 GRAFICO4_X,
                 GRAFICO4_Y + GRAFICO_SIZE + OFFSET_TITULO,
-                "¿Le gustaría que se le contacte para formar parte del programa?"
+                "¿Le gustaría que se le contacte"
+            )
+
+            canvas.drawString(
+                GRAFICO4_X,
+                GRAFICO4_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                "para formar parte del programa?"
             )
         
             canvas.drawImage(
