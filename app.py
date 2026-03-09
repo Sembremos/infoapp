@@ -1791,7 +1791,7 @@ if archivo:
         grafico_comercio_seguridad = generar_grafico_pastel_comercio(
             labels_comercio_seguridad,
             valores_comercio_seguridad,
-            "grafico_comercio_seguridad.png"
+            "grafico_comercio_seguridad.png",
             ["#5b9bd5", "#a5a5a5"]
         )
         
@@ -1802,7 +1802,7 @@ if archivo:
         grafico_comercio_programa = generar_grafico_pastel_comercio(
             labels_comercio_programa,
             valores_comercio_programa,
-            "grafico_comercio_programa.png"
+            "grafico_comercio_programa.png",
             ["#4472c4", "#9dc3e6"]
         )
         
@@ -1813,7 +1813,7 @@ if archivo:
         grafico_comercio_inscrito = generar_grafico_pastel_comercio(
             labels_comercio_inscrito,
             valores_comercio_inscrito,
-            "grafico_comercio_inscrito.png"
+            "grafico_comercio_inscrito.png",
             ["#5b9bd5", "#a5a5a5"]
         )
         
@@ -1824,7 +1824,7 @@ if archivo:
         grafico_comercio_contacto = generar_grafico_pastel_comercio(
             labels_comercio_contacto,
             valores_comercio_contacto,
-            "grafico_comercio_contacto.png"
+            "grafico_comercio_contacto.png",
             ["#4472c4", "#9dc3e6"]
         )
 
