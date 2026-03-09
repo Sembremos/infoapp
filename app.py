@@ -1758,7 +1758,7 @@ if archivo:
             barras = plt.bar(labels,valores,color=colores)
         
             for i,v in enumerate(valores):
-                plt.text(i,v+0.01,f"{v:.2f}%",ha="center",fontsize=11)
+                plt.text(i,v+0.01,f"{v:.2f}%",ha="center",fontsize=14)
         
             plt.ylim(0,max(valores)*1.05)
         
@@ -1792,7 +1792,8 @@ if archivo:
                 valores,
                 labels=None,
                 colors=colores,
-                autopct=lambda p: f"{p:.2f}%"
+                autopct=lambda p: f"{p:.2f}%",
+                textprops={'fontsize':14}
             )
         
             plt.axis("equal")
