@@ -1750,6 +1750,10 @@ if archivo:
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
             ax.spines['left'].set_visible(False)
+            
+            ax.set_yticks([])
+
+            ax.tick_params(left=False) #ne se que hace eso
                     
             barras = plt.bar(labels,valores,color=colores)
         
