@@ -3038,7 +3038,7 @@ def generar_pdf(
         
             BARRA_X = 50
             BARRA_Y = 500
-            BARRA_WIDTH = 420
+            BARRA_WIDTH = 400
             BARRA_HEIGHT = 200
         
             TITULO_BARRA_SIZE = 12
