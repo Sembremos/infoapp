@@ -2019,10 +2019,10 @@ if archivo:
                 tabla_conversado=tabla_conversado, 
                 omitidas_servicio=omitidas_servicio,
                 total_respuestas_servicio=total_respuestas_servicio,
-                grafico_comercio_seguridad,
-                grafico_comercio_programa,
-                grafico_comercio_inscrito,
-                grafico_comercio_contacto,
+                grafico_comercio_seguridad=grafico_comercio_seguridad,
+                grafico_comercio_programa=grafico_comercio_programa,
+                grafico_comercio_inscrito=grafico_comercio_inscrito,
+                grafico_comercio_contacto=grafico_comercio_contacto,
              )
 
             pdf_bytes = pdf_buffer.getvalue()
