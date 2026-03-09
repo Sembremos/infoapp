@@ -3029,7 +3029,7 @@ def generar_pdf(
         
             BARRA_X = 50
             BARRA_Y = 500
-            BARRA_WIDTH = 450
+            BARRA_WIDTH = 420
             BARRA_HEIGHT = 200
         
             TITULO_BARRA_SIZE = 12
@@ -3049,7 +3049,7 @@ def generar_pdf(
         
         
             TABLA1_X = 420
-            TABLA1_Y = 520
+            TABLA1_Y = 550
         
             TABLA2_X = 60
             TABLA2_Y = 120
@@ -3089,7 +3089,7 @@ def generar_pdf(
         
             canvas.drawString(
                 BARRA_X,
-                BARRA_Y + BARRA_HEIGHT + 10,
+                BARRA_Y + BARRA_HEIGHT + 14,
                 "¿Cómo califica el servicio de Fuerza Pública en su comunidad?"
             )
         
