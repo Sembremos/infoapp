@@ -1697,7 +1697,7 @@ if archivo:
         
         # ----- GRAFICO 2 (PASTEL GRANDE) -----
         labels_servicio_anual = df.iloc[372:375,0].tolist()
-        valores_servicio = (df.iloc[362:367,1].astype(float) * 100).tolist()
+        valores_servicio_anual = df.iloc[372:375,1].astype(float).tolist()
         
         tabla_servicio_anual = list(zip(
             df.iloc[372:375,0],
