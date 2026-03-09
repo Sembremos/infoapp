@@ -3156,20 +3156,22 @@ def generar_pdf(
             )
         
         
-            tabla2 = Table(tabla_servicio_anual)
-        
-            tabla2.setStyle(TableStyle([
+           tabla2 = Table(tabla_servicio_anual)
+
+            estilo_tabla2 = [
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-                ("FONTSIZE",(0,0),(-1,-1),9)
-            ]))
-
+                ("FONTSIZE",(0,0),(-1,-1),9),
+                ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
+            ]
+            
             for i, color in enumerate(TABLA_COLORES_SERVICIO[:3]):
-                    estilo_tabla2.append(
-                        ("BACKGROUND",(0,i),(-1,i),color)
-                    )
+                estilo_tabla2.append(
+                    ("BACKGROUND",(0,i),(-1,i),color)
+                )
+            
             tabla2.setStyle(TableStyle(estilo_tabla2))
-        
+            
             tabla2.wrapOn(canvas,0,0)
             tabla2.drawOn(canvas,TABLA2_X,TABLA2_Y)
         
