@@ -3351,7 +3351,7 @@ def generar_pdf(
         
             canvas.drawString(
                 GRAFICO1_X,
-                GRAFICO1_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                GRAFICO1_Y + GRAFICO_SIZE + OFFSET_TITULO + 12,
                 "¿Se siente seguro en"
             )
 
@@ -3375,7 +3375,7 @@ def generar_pdf(
         
             canvas.drawString(
                 GRAFICO2_X,
-                GRAFICO2_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                GRAFICO2_Y + GRAFICO_SIZE + OFFSET_TITULO + 12,
                 "¿Conoce el programa de Seguridad Comercial"
             )
 
@@ -3399,7 +3399,7 @@ def generar_pdf(
         
             canvas.drawString(
                 GRAFICO3_X,
-                GRAFICO3_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                GRAFICO3_Y + GRAFICO_SIZE + OFFSET_TITULO + 12,
                 "¿Está inscrito en el programa"
             )
 
@@ -3423,7 +3423,7 @@ def generar_pdf(
         
             canvas.drawString(
                 GRAFICO4_X,
-                GRAFICO4_Y + GRAFICO_SIZE + OFFSET_TITULO,
+                GRAFICO4_Y + GRAFICO_SIZE + OFFSET_TITULO + 12,
                 "¿Le gustaría que se le contacte"
             )
 
