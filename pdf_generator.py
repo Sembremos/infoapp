@@ -3156,8 +3156,8 @@ def generar_pdf(
             )
         
         
-           tabla2 = Table(tabla_servicio_anual)
-
+            tabla2 = Table(tabla_servicio_anual)
+            
             estilo_tabla2 = [
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
@@ -3201,7 +3201,7 @@ def generar_pdf(
             )
         
             tabla3 = Table(tabla_conoce)
-
+            
             estilo_tabla3 = [
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
@@ -3245,9 +3245,9 @@ def generar_pdf(
             )
         
             tabla4 = Table(tabla_conversado)
-
+            
             estilo_tabla4 = [
-                ("GRID",(0,0),(-1,-1),0.5,colors.white),
+                ("GRID",(0,0),(-1,-1),0.5,colors.black),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
                 ("FONTSIZE",(0,0),(-1,-1),9),
                 ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
