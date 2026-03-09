@@ -3025,6 +3025,15 @@ def generar_pdf(
             TITULO_Y = 740
             TITULO_SIZE = 18
             TITULO_COLOR = colors.HexColor("#013051")
+
+            # COLORES TABLAS SERVICIO POLICIAL
+            TABLA_COLORES_SERVICIO = [
+                colors.HexColor("#5b9bd5"),
+                colors.HexColor("#a5a5a5"),
+                colors.HexColor("#4472c4"),
+                colors.HexColor("#255e91"),
+                colors.HexColor("#636363")
+            ]
         
         
             BARRA_X = 50
@@ -3048,7 +3057,7 @@ def generar_pdf(
             PIE_DER2_Y = 140
         
         
-            TABLA1_X = 450
+            TABLA1_X = 460
             TABLA1_Y = 570
         
             TABLA2_X = 60
@@ -3103,12 +3112,20 @@ def generar_pdf(
         
         
             tabla1 = Table(tabla_servicio)
-        
-            tabla1.setStyle(TableStyle([
+            
+            estilo_tabla = [
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-                ("FONTSIZE",(0,0),(-1,-1),9)
-            ]))
+                ("FONTSIZE",(0,0),(-1,-1),9),
+                ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
+            ]
+            
+            for i, color in enumerate(TABLA_COLORES_SERVICIO):
+                estilo_tabla.append(
+                    ("BACKGROUND",(0,i),(-1,i),color)
+                )
+            
+            tabla1.setStyle(TableStyle(estilo_tabla))
         
             tabla1.wrapOn(canvas,0,0)
             tabla1.drawOn(canvas,TABLA1_X,TABLA1_Y)
@@ -3146,6 +3163,8 @@ def generar_pdf(
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
                 ("FONTSIZE",(0,0),(-1,-1),9)
             ]))
+
+            for i, color in enumerate(TABLA_COLORES_SERVICIO[:3]):
         
             tabla2.wrapOn(canvas,0,0)
             tabla2.drawOn(canvas,TABLA2_X,TABLA2_Y)
@@ -3182,6 +3201,8 @@ def generar_pdf(
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
                 ("FONTSIZE",(0,0),(-1,-1),9)
             ]))
+
+            for i, color in enumerate(TABLA_COLORES_SERVICIO[:2]):
         
             tabla3.wrapOn(canvas,0,0)
             tabla3.drawOn(canvas,TABLA3_X,TABLA3_Y)
@@ -3222,7 +3243,7 @@ def generar_pdf(
             tabla4.wrapOn(canvas,0,0)
             tabla4.drawOn(canvas,TABLA4_X,TABLA4_Y)
         
-        
+            for i, color in enumerate(TABLA_COLORES_SERVICIO[:2]):
             # =====================================================
             # CUADRO OMITIDAS
             # =====================================================
