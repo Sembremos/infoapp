@@ -3165,6 +3165,10 @@ def generar_pdf(
             ]))
 
             for i, color in enumerate(TABLA_COLORES_SERVICIO[:3]):
+                    estilo_tabla2.append(
+                        ("BACKGROUND",(0,i),(-1,i),color)
+                    )
+            tabla2.setStyle(TableStyle(estilo_tabla2))
         
             tabla2.wrapOn(canvas,0,0)
             tabla2.drawOn(canvas,TABLA2_X,TABLA2_Y)
@@ -3195,15 +3199,21 @@ def generar_pdf(
             )
         
             tabla3 = Table(tabla_conoce)
-        
-            tabla3.setStyle(TableStyle([
+
+            estilo_tabla3 = [
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-                ("FONTSIZE",(0,0),(-1,-1),9)
-            ]))
-
+                ("FONTSIZE",(0,0),(-1,-1),9),
+                ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
+            ]
+            
             for i, color in enumerate(TABLA_COLORES_SERVICIO[:2]):
-        
+                estilo_tabla3.append(
+                    ("BACKGROUND",(0,i),(-1,i),color)
+                )
+            
+            tabla3.setStyle(TableStyle(estilo_tabla3))
+            
             tabla3.wrapOn(canvas,0,0)
             tabla3.drawOn(canvas,TABLA3_X,TABLA3_Y)
         
@@ -3233,17 +3243,23 @@ def generar_pdf(
             )
         
             tabla4 = Table(tabla_conversado)
-        
-            tabla4.setStyle(TableStyle([
-                ("GRID",(0,0),(-1,-1),0.5,colors.black),
+
+            estilo_tabla4 = [
+                ("GRID",(0,0),(-1,-1),0.5,colors.white),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-                ("FONTSIZE",(0,0),(-1,-1),9)
-            ]))
-        
+                ("FONTSIZE",(0,0),(-1,-1),9),
+                ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
+            ]
+            
+            for i, color in enumerate(TABLA_COLORES_SERVICIO[:2]):
+                estilo_tabla4.append(
+                    ("BACKGROUND",(0,i),(-1,i),color)
+                )
+            
+            tabla4.setStyle(TableStyle(estilo_tabla4))
+            
             tabla4.wrapOn(canvas,0,0)
             tabla4.drawOn(canvas,TABLA4_X,TABLA4_Y)
-        
-            for i, color in enumerate(TABLA_COLORES_SERVICIO[:2]):
             # =====================================================
             # CUADRO OMITIDAS
             # =====================================================
