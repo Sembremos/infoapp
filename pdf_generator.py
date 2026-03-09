@@ -304,10 +304,59 @@ def draw_tabla_simple(
     font_size_body=11
 ):
 
-    from reportlab.platypus import Paragraph
+    from reportlab.platypus import Table, TableStyle, Paragraph
     from reportlab.lib.styles import ParagraphStyle
 
     TABLE_WIDTH = sum(col_widths)
+
+    header_style = ParagraphStyle(
+        name="HeaderSimple",
+        fontName="Helvetica-Bold",
+        fontSize=font_size_header,
+        textColor=colors.white
+    )
+
+    cell_style = ParagraphStyle(
+        name="CellSimple",
+        fontName="Helvetica",
+        fontSize=font_size_body
+    )
+
+    table_data = []
+
+    # titulo
+    table_data.append(
+        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
+    )
+
+    # contenido
+    for row in data:
+        nueva_fila = []
+        for cell in row:
+            nueva_fila.append(Paragraph(str(cell), cell_style))
+        table_data.append(nueva_fila)
+
+    tabla = Table(table_data, colWidths=col_widths)
+
+    tabla.setStyle(TableStyle([
+
+        ("SPAN",(0,0),(-1,0)),
+        ("BACKGROUND",(0,0),(-1,0),header_color),
+
+        ("GRID",(0,0),(-1,-1),0.5,border_color),
+
+        ("BACKGROUND",(0,1),(-1,-1),body_color),
+
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+
+        ("LEFTPADDING",(0,0),(-1,-1),6),
+        ("RIGHTPADDING",(0,0),(-1,-1),6),
+        ("TOPPADDING",(0,0),(-1,-1),4),
+        ("BOTTOMPADDING",(0,0),(-1,-1),4),
+    ]))
+
+    tabla.wrapOn(canvas, TABLE_WIDTH, 400)
+    tabla.drawOn(canvas, x, y - tabla._height)
 
     #tabla, pagina 2 final################################################
 
