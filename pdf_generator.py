@@ -2114,7 +2114,7 @@ def generar_pdf(
                 data=tabla_encuesta_comunidad,
                 titulo="Encuesta a Comunidad",
                 x=90,                  # 👈 posición horizontal (editable)
-                y=page_height - 190,   # 👈 posición vertical (editable)
+                y=page_height - 150,   # 👈 posición vertical (editable)
                 col_widths=[100, 100, 100, 100],  # 👈 ancho columnas
                 header_color=colors.HexColor("#4471C4")
             )
