@@ -1577,6 +1577,59 @@ if archivo:
             return ruta
 
 
+        # ==========================================================
+        # GRAFICO PERCEPCION COMERCIO
+        # ==========================================================
+        
+        def generar_grafico_pastel_comercio(labels, valores, nombre_archivo):
+        
+            import matplotlib.pyplot as plt
+        
+            # ================= VARIABLES EDITABLES =================
+        
+            FIG_SIZE_X = 6
+            FIG_SIZE_Y = 6
+        
+            PORCENTAJE_SIZE = 14
+        
+            COLORES = [
+                "#5b9bd5",
+                "#a5a5a5",
+                "#4472c4",
+                "#255e91",
+                "#636363"
+            ]
+        
+            START_ANGLE = 90
+        
+            # =======================================================
+        
+            plt.figure(figsize=(FIG_SIZE_X, FIG_SIZE_Y))
+        
+            plt.pie(
+                valores,
+                labels=labels,
+                colors=COLORES[:len(valores)],
+                autopct=lambda p: f"{p:.2f}%",
+                startangle=START_ANGLE,
+                textprops={'fontsize': PORCENTAJE_SIZE}
+            )
+        
+            plt.axis("equal")
+        
+            ruta = ASSETS_DIR / nombre_archivo
+        
+            plt.savefig(
+                ruta,
+                dpi=300,
+                bbox_inches="tight"
+            )
+        
+            plt.close()
+        
+            return ruta
+
+
         # ---------------------------------------------------------
         # PERCEPCION CIUDADANA - PAGINA 3
         # ---------------------------------------------------------
@@ -1881,59 +1934,6 @@ if archivo:
             texto_size=22
         )
                 
-        
-
-        # ==========================================================
-        # GRAFICO PERCEPCION COMERCIO
-        # ==========================================================
-        
-        def generar_grafico_pastel_comercio(labels, valores, nombre_archivo):
-        
-            import matplotlib.pyplot as plt
-        
-            # ================= VARIABLES EDITABLES =================
-        
-            FIG_SIZE_X = 6
-            FIG_SIZE_Y = 6
-        
-            PORCENTAJE_SIZE = 14
-        
-            COLORES = [
-                "#5b9bd5",
-                "#a5a5a5",
-                "#4472c4",
-                "#255e91",
-                "#636363"
-            ]
-        
-            START_ANGLE = 90
-        
-            # =======================================================
-        
-            plt.figure(figsize=(FIG_SIZE_X, FIG_SIZE_Y))
-        
-            plt.pie(
-                valores,
-                labels=labels,
-                colors=COLORES[:len(valores)],
-                autopct=lambda p: f"{p:.2f}%",
-                startangle=START_ANGLE,
-                textprops={'fontsize': PORCENTAJE_SIZE}
-            )
-        
-            plt.axis("equal")
-        
-            ruta = ASSETS_DIR / nombre_archivo
-        
-            plt.savefig(
-                ruta,
-                dpi=300,
-                bbox_inches="tight"
-            )
-        
-            plt.close()
-        
-            return ruta
         
 
         #______________________________________________________________________________________________________
