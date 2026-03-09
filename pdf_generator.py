@@ -2025,6 +2025,10 @@ def generar_pdf(
     for _ in range(6):
         story.append(PageBreak())
         story.append(Spacer(1, 1))
+
+    # ===== PORTADA FINAL =====
+    story.append(PageBreak())
+    story.append(Spacer(1,1))
     
     ##----------------------------------Bloque de funciones 
    
@@ -3444,6 +3448,9 @@ def generar_pdf(
         elif doc.page == percepcion_inicio + 6:
             header_footer(canvas, doc)
             canvas.drawString(100, 500, "Percepción Página 6")
+
+        elif doc.page == percepcion_inicio + 7:
+            FullImage("assets/final.png")(canvas, doc)
 
         return
 
