@@ -3027,7 +3027,7 @@ def generar_pdf(
             TITULO_COLOR = colors.HexColor("#013051")
         
         
-            BARRA_X = 70
+            BARRA_X = 50
             BARRA_Y = 500
             BARRA_WIDTH = 450
             BARRA_HEIGHT = 200
