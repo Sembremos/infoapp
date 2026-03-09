@@ -3058,7 +3058,7 @@ def generar_pdf(
         
         
             TABLA1_X = 460
-            TABLA1_Y = 570
+            TABLA1_Y = 575
         
             TABLA2_X = 60
             TABLA2_Y = 120
