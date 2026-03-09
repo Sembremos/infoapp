@@ -1581,7 +1581,7 @@ if archivo:
         # GRAFICO PERCEPCION COMERCIO
         # ==========================================================
         
-        def generar_grafico_pastel_comercio(labels, valores, nombre_archivo):
+        def generar_grafico_pastel_comercio(labels, valores, nombre_archivo, colores):
         
             import matplotlib.pyplot as plt
         
@@ -1609,7 +1609,7 @@ if archivo:
             plt.pie(
                 valores,
                 labels=labels,
-                colors=COLORES[:len(valores)],
+                colors=colores[:len(valores)],
                 autopct=lambda p: f"{p:.2f}%",
                 startangle=START_ANGLE,
                 textprops={'fontsize': PORCENTAJE_SIZE}
@@ -1792,6 +1792,7 @@ if archivo:
             labels_comercio_seguridad,
             valores_comercio_seguridad,
             "grafico_comercio_seguridad.png"
+            ["#5b9bd5", "#a5a5a5"]
         )
         
         # ----- GRAFICO 2 -----
@@ -1802,6 +1803,7 @@ if archivo:
             labels_comercio_programa,
             valores_comercio_programa,
             "grafico_comercio_programa.png"
+            ["#4472c4", "#9dc3e6"]
         )
         
         # ----- GRAFICO 3 -----
@@ -1812,6 +1814,7 @@ if archivo:
             labels_comercio_inscrito,
             valores_comercio_inscrito,
             "grafico_comercio_inscrito.png"
+            ["#5b9bd5", "#a5a5a5"]
         )
         
         # ----- GRAFICO 4 -----
@@ -1822,6 +1825,7 @@ if archivo:
             labels_comercio_contacto,
             valores_comercio_contacto,
             "grafico_comercio_contacto.png"
+            ["#4472c4", "#9dc3e6"]
         )
 
 
