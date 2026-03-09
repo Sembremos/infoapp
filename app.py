@@ -1727,6 +1727,51 @@ if archivo:
         total_respuestas_servicio = int(df.iloc[382,2])
 
 
+        # ==========================================================
+        # DATOS PERCEPCION SECTOR COMERCIAL
+        # ==========================================================
+        
+        # ----- GRAFICO 1 -----
+        labels_comercio_seguridad = df.iloc[398:400,0].tolist()
+        valores_comercio_seguridad = df.iloc[398:400,1].astype(float).tolist()
+        
+        grafico_comercio_seguridad = generar_grafico_pastel_comercio(
+            labels_comercio_seguridad,
+            valores_comercio_seguridad,
+            "grafico_comercio_seguridad.png"
+        )
+        
+        # ----- GRAFICO 2 -----
+        labels_comercio_programa = df.iloc[405:407,0].tolist()
+        valores_comercio_programa = df.iloc[405:407,1].astype(float).tolist()
+        
+        grafico_comercio_programa = generar_grafico_pastel_comercio(
+            labels_comercio_programa,
+            valores_comercio_programa,
+            "grafico_comercio_programa.png"
+        )
+        
+        # ----- GRAFICO 3 -----
+        labels_comercio_inscrito = df.iloc[412:414,0].tolist()
+        valores_comercio_inscrito = df.iloc[412:414,1].astype(float).tolist()
+        
+        grafico_comercio_inscrito = generar_grafico_pastel_comercio(
+            labels_comercio_inscrito,
+            valores_comercio_inscrito,
+            "grafico_comercio_inscrito.png"
+        )
+        
+        # ----- GRAFICO 4 -----
+        labels_comercio_contacto = df.iloc[419:421,0].tolist()
+        valores_comercio_contacto = df.iloc[419:421,1].astype(float).tolist()
+        
+        grafico_comercio_contacto = generar_grafico_pastel_comercio(
+            labels_comercio_contacto,
+            valores_comercio_contacto,
+            "grafico_comercio_contacto.png"
+        )
+
+
         # =====================================================
         # GRAFICO BARRAS SERVICIO POLICIAL
         # =====================================================
@@ -1837,6 +1882,58 @@ if archivo:
         )
                 
         
+
+        # ==========================================================
+        # GRAFICO PERCEPCION COMERCIO
+        # ==========================================================
+        
+        def generar_grafico_pastel_comercio(labels, valores, nombre_archivo):
+        
+            import matplotlib.pyplot as plt
+        
+            # ================= VARIABLES EDITABLES =================
+        
+            FIG_SIZE_X = 6
+            FIG_SIZE_Y = 6
+        
+            PORCENTAJE_SIZE = 14
+        
+            COLORES = [
+                "#5b9bd5",
+                "#a5a5a5",
+                "#4472c4",
+                "#255e91",
+                "#636363"
+            ]
+        
+            START_ANGLE = 90
+        
+            # =======================================================
+        
+            plt.figure(figsize=(FIG_SIZE_X, FIG_SIZE_Y))
+        
+            plt.pie(
+                valores,
+                labels=labels,
+                colors=COLORES[:len(valores)],
+                autopct=lambda p: f"{p:.2f}%",
+                startangle=START_ANGLE,
+                textprops={'fontsize': PORCENTAJE_SIZE}
+            )
+        
+            plt.axis("equal")
+        
+            ruta = ASSETS_DIR / nombre_archivo
+        
+            plt.savefig(
+                ruta,
+                dpi=300,
+                bbox_inches="tight"
+            )
+        
+            plt.close()
+        
+            return ruta
         
 
         #______________________________________________________________________________________________________
@@ -1922,6 +2019,10 @@ if archivo:
                 tabla_conversado=tabla_conversado, 
                 omitidas_servicio=omitidas_servicio,
                 total_respuestas_servicio=total_respuestas_servicio,
+                grafico_comercio_seguridad,
+                grafico_comercio_programa,
+                grafico_comercio_inscrito,
+                grafico_comercio_contacto,
              )
 
             pdf_bytes = pdf_buffer.getvalue()
