@@ -2481,7 +2481,7 @@ def generar_pdf(
             page_width, page_height = A4     
 
             # ================== ICONO HORAS ==================
-            HORAS_X = 300
+            HORAS_X = 395
             HORAS_Y = 410
             HORAS_W = 70
             HORAS_H = 70
