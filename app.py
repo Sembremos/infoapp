@@ -41,11 +41,27 @@ def limpiar_series(labels, values):
     return df["label"].astype(str), df["value"]
 
 
+#graficosssssssssssssssssssssssssssssssssssssssssssssssss
 def crear_grafico(labels, values):
     fig, ax = plt.subplots()
+
     ax.bar(labels, values)
+
     ax.set_ylim(0, 100)
-    ax.set_ylabel("%")
+
+    # tamaño de etiqueta eje Y
+    ax.set_ylabel("%", fontsize=18)
+
+    # tamaño etiquetas eje X
+    ax.tick_params(axis='x', labelsize=14)
+
+    # tamaño números eje Y
+    ax.tick_params(axis='y', labelsize=14)
+
+    # opcional: título del gráfico
+    ax.set_title("Relación por distrito", fontsize=18)
+
+    return fig
 
     for i, v in enumerate(values):
         ax.text(i, v + 1, f"{v:.0f}%", ha="center", fontsize=9)
