@@ -300,8 +300,8 @@ def draw_tabla_simple(
     header_color=colors.HexColor("#013051"),
     body_color=colors.white,
     border_color=colors.black,
-    font_size_header=12,
-    font_size_body=11
+    font_size_header=14,
+    font_size_body=14
 ):
 
     from reportlab.platypus import Table, TableStyle, Paragraph
@@ -1940,6 +1940,8 @@ def generar_pdf(
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0,0), (-1,0), 14),
+        ("FONTSIZE", (0,1), (-1,-1), 12),
         ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
         ("BACKGROUND", (1, 1), (-1, -1), colors.HexColor("#E2FDD9"))
     ]))
