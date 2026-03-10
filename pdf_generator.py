@@ -2562,13 +2562,7 @@ def generar_pdf(
                 font_size_body=10
             ) 
 
-            canvas.drawImage(
-                "assets/horas.png",
-                HORAS_X,
-                HORAS_Y,
-                HORAS_W,
-                HORAS_H
-            )
+
 
             # ===== CUADRO AM =====
             canvas.setFillColor(colors.HexColor("#013051"))
@@ -2610,6 +2604,15 @@ def generar_pdf(
                 x=40,
                 y=275,
                 col_widths=[ancho_columna] * total_columnas
+            )
+
+
+            canvas.drawImage(
+                "assets/horas.png",
+                HORAS_X,
+                HORAS_Y,
+                HORAS_W,
+                HORAS_H
             )
 
         elif doc.page == 14:
