@@ -2481,10 +2481,10 @@ def generar_pdf(
             page_width, page_height = A4     
 
             # ================== ICONO HORAS ==================
-            HORAS_X = 270
-            HORAS_Y = 400
-            HORAS_W = 80
-            HORAS_H = 80
+            HORAS_X = 290
+            HORAS_Y = 410
+            HORAS_W = 70
+            HORAS_H = 70
             
        
             # ================== GRÁFICO CIRCULAR ==================
