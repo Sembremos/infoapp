@@ -2478,7 +2478,14 @@ def generar_pdf(
 
         elif doc.page == 13:
             header_footer(canvas, doc)
-            page_width, page_height = A4        
+            page_width, page_height = A4     
+
+            # ================== ICONO HORAS ==================
+            HORAS_X = 258
+            HORAS_Y = 381
+            HORAS_W = 80
+            HORAS_H = 80
+            
        
             # ================== GRÁFICO CIRCULAR ==================
             canvas.drawImage(
@@ -2554,6 +2561,14 @@ def generar_pdf(
                 font_size_header=12,
                 font_size_body=10
             ) 
+
+            canvas.drawImage(
+                "assets/horas.png",
+                HORAS_X,
+                HORAS_Y,
+                HORAS_W,
+                HORAS_H
+            )
 
             # ===== CUADRO AM =====
             canvas.setFillColor(colors.HexColor("#013051"))
