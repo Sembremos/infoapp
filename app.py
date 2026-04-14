@@ -994,7 +994,7 @@ if archivo:
         delegacion_codigo = str(df.iloc[2, 1])  # B3
         
         # Extraer número 28 de "D-28"
-        numero_delegacion = int(delegacion_codigo.replace("D-", "").strip())
+        numero_delegacion = int(delegacion_codigo.replace("D-", "").replace("D", "").strip())
         
         # Totales líneas
         # ================= SAFE INT =================
