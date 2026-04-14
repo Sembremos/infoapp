@@ -513,7 +513,7 @@ if archivo:
         tabla_delitos_micmac2 = limpiar_lista_simple(df.iloc[123:140, 11])  # L124:L140
         
         # ===== DATOS SUELTOS =====
-        cantidad_problematicas = riesgos_total + delitos_total # M141
+        cantidad_problematicas = int(df.iloc[140, 12])  # M141
         riesgos_total = int(df.iloc[140, 10])           # K141
         delitos_total = int(df.iloc[140, 11])           # L141
 
