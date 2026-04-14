@@ -573,8 +573,8 @@ if archivo:
             if pd.notna(row["categoria"]) and pd.notna(row["cantidad"])
         ]
         
-        # ----- TOTAL DENUNCIAS (B177) -----
-        total_denuncias = int(df.iloc[176, 1])
+        # ----- TOTAL DENUNCIAS (B178) -----
+        total_denuncias = int(df.iloc[177, 1])
 
        
 # ================== GRÁFICO CIRCULAR DENUNCIAS ==================
