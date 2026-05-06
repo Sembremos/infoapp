@@ -1849,6 +1849,7 @@ def generar_pdf(
 
     buffer = BytesIO()
     styles = getSampleStyleSheet()
+    styles["Heading1"].textColor = colors.HexColor("#013051")
 
     styles.add(ParagraphStyle(
         name="NormalJustificado",
