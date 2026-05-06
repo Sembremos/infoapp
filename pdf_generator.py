@@ -1898,7 +1898,7 @@ def generar_pdf(
     story = []
 
     story.append(PageBreak())
-    story.append(Spacer(1, 40))
+    story.append(Spacer(1, 80))#________________________________________________________________________________________________titulo
     story.append(Paragraph("DELEGACIÓN POLICIAL", styles["TituloGrande"]))
     story.append(Paragraph(delegacion, styles["TituloDelta"]))
     story.append(Paragraph(codigo, styles["TituloD2"]))
