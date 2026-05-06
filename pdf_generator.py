@@ -1861,8 +1861,8 @@ def generar_pdf(
         fontName="Helvetica",
         fontSize=26,
         textColor=colors.white,
-        leading=80,
-        spaceAfter=10,
+        leading=30,
+        spaceAfter=2,
         alignment=TA_LEFT
     ))
 
