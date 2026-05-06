@@ -124,7 +124,7 @@ if archivo:
 
         def formatear(v):
             if isinstance(v, (int, float)):
-                if 0 <= v <= 1:
+                if 0 < v < 1:
                     return f"{v*100:.0f}%"
                 return f"{v:.0f}"
             return str(v)
