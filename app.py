@@ -1825,7 +1825,28 @@ if archivo:
         
         # ----- GRAFICO 3 -----
         labels_comercio_inscrito = df.iloc[412:414,0].tolist()
-        valores_comercio_inscrito = df.iloc[412:414,1].astype(float).tolist()
+        # Leer valores originales
+        serie_comercio = df.iloc[412:414, 1]
+        
+        # Detectar si existe #DIV/0!
+        if serie_comercio.astype(str).str.contains("#DIV/0!").any():
+        
+            # Interpretar como:
+            # SI = 0%
+            # NO = 100%
+            valores_comercio_inscrito = [0.0, 100.0]
+        
+        else:
+        
+            # Flujo normal
+            valores_comercio_inscrito = (
+                pd.to_numeric(
+                    serie_comercio,
+                    errors="coerce"
+                )
+                .fillna(0)
+                .tolist()
+            )
         
         grafico_comercio_inscrito = generar_grafico_pastel_comercio(
             labels_comercio_inscrito,
