@@ -1921,7 +1921,7 @@ def generar_pdf(
         styles["NormalJustificado"]
     ))
 
-    story.append(Spacer(1, 20))
+    story.append(Spacer(1, 40))
     story.append(Image("assets/conformacion.png", width=600, height=400))
 
     story.append(PageBreak())
