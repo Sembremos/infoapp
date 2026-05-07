@@ -138,6 +138,48 @@ def draw_grafico_genero(canvas, grafico_path):
         mask="auto"
     )
 
+# ================= GRAFICO RELACION DISTRITO =================
+
+def draw_grafico_relacion(canvas, grafico_path):
+
+    page_width, page_height = A4
+
+    # ===== TITULO =====
+
+    canvas.setFont("Helvetica-Bold", 16)
+    canvas.setFillColor(colors.HexColor("#013051"))
+
+    canvas.drawString(
+        40,
+        320,
+        "Relación por distrito"
+    )
+
+    # ===== FONDO SUAVE =====
+
+    canvas.setFillColor(colors.HexColor("#F7F9FC"))
+
+    canvas.roundRect(
+        35,
+        35,
+        520,
+        250,
+        12,
+        stroke=0,
+        fill=1
+    )
+
+    # ===== GRAFICO =====
+
+    canvas.drawImage(
+        grafico_path,
+        60,
+        50,
+        width=470,
+        height=220,
+        preserveAspectRatio=True,
+        mask="auto"
+    )
 
 # ================= TABLA EDAD =================
 def draw_tabla_edad(canvas, doc, tabla_edad):
@@ -1084,15 +1126,36 @@ def construir_tabla_dinamica(titulo, items, ancho_total, estilo_header_color):
         tabla = Table(data, colWidths=[ancho_total/2, ancho_total/2])
 
     tabla.setStyle(TableStyle([
-        ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), estilo_header_color),
+
+        # HEADER
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("LEFTPADDING", (0, 0), (-1, -1), 6),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("FONTSIZE", (0,0), (-1,0), 13),
+    
+        # BODY
+        ("BACKGROUND", (0, 1), (-1, -1), colors.white),
+        ("TEXTCOLOR", (0, 1), (-1, -1), colors.HexColor("#222222")),
+        ("FONTSIZE", (0,1), (-1,-1), 11),
+    
+        # ALINEACION
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+    
+        # GRID SUAVE
+        ("LINEBELOW", (0,0), (-1,-1), 0.3, colors.HexColor("#D9D9D9")),
+    
+        # PADDING
+        ("TOPPADDING", (0,0), (-1,-1), 8),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 8),
+        ("LEFTPADDING", (0,0), (-1,-1), 6),
+        ("RIGHTPADDING", (0,0), (-1,-1), 6),
+    
+        # ZEBRA ROWS
+        ("ROWBACKGROUNDS", (0,1), (-1,-1), [
+            colors.white,
+            colors.HexColor("#F7F9FC")
+        ]),
     ]))
 
     return tabla
@@ -1949,11 +2012,6 @@ def generar_pdf(
 
     story.append(tabla)
 
-    story.append(Spacer(1, 25))
-    story.append(Paragraph("Relación por distrito", styles["Heading2"]))
-    story.append(Spacer(1, 15))
-    story.append(Image(grafico_relacion_path, width=400, height=250))
-
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
@@ -2093,7 +2151,13 @@ def generar_pdf(
         elif doc.page == 3:
             header_footer(canvas, doc)
         elif doc.page == 4:
+
             FullImage("assets/participacion.png")(canvas, doc)
+        
+            draw_grafico_relacion(
+                canvas,
+                grafico_relacion_path
+            )
         elif doc.page == 5:
             header_footer(canvas, doc)
         elif doc.page == 6:
