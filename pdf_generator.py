@@ -144,39 +144,64 @@ def draw_grafico_relacion(canvas, grafico_path):
 
     page_width, page_height = A4
 
-    # ===== TITULO =====
+    # =========================
+    # CONFIGURABLES
+    # =========================
+
+    TITULO_X = 40
+    TITULO_Y = 380
+
+    CAJA_X = 35
+    CAJA_Y = 110
+
+    CAJA_WIDTH = 520
+    CAJA_HEIGHT = 250
+
+    GRAFICO_X = 60
+    GRAFICO_Y = 125
+
+    GRAFICO_WIDTH = 470
+    GRAFICO_HEIGHT = 220
+
+    # =========================
+    # TITULO
+    # =========================
 
     canvas.setFont("Helvetica-Bold", 16)
     canvas.setFillColor(colors.HexColor("#013051"))
 
     canvas.drawString(
-        40,
-        320,
+        TITULO_X,
+        TITULO_Y,
         "Relación por distrito"
     )
 
-    # ===== FONDO SUAVE =====
+    # =========================
+    # FONDO
+    # =========================
 
     canvas.setFillColor(colors.HexColor("#F7F9FC"))
 
     canvas.roundRect(
-        35,
-        35,
-        520,
-        250,
+        CAJA_X,
+        CAJA_Y,
+        CAJA_WIDTH,
+        CAJA_HEIGHT,
         12,
         stroke=0,
         fill=1
     )
 
-    # ===== GRAFICO =====
+    # =========================
+    # GRAFICO
+    # =========================
 
     canvas.drawImage(
         grafico_path,
-        60,
-        50,
-        width=470,
-        height=220,
+        GRAFICO_X,
+        GRAFICO_Y,
+        width=GRAFICO_WIDTH,
+        height=GRAFICO_HEIGHT,
         preserveAspectRatio=True,
         mask="auto"
     )
