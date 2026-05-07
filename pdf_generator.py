@@ -2018,7 +2018,7 @@ def generar_pdf(
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
     story.append(Spacer(1, 20))
-    story.append(Paragraph("Participación por Distrito", styles["Heading2"]))
+    story.append(Paragraph("Participación por Distrito", styles["Heading1"]))
     story.append(Spacer(1, 10))
 
     tabla = Table(tabla_participacion, colWidths=[180, 180, 120])
