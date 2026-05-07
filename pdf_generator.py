@@ -2153,11 +2153,7 @@ def generar_pdf(
         elif doc.page == 4:
 
             FullImage("assets/participacion.png")(canvas, doc)
-        
-            draw_grafico_relacion(
-                canvas,
-                grafico_relacion_path
-            )
+                    
         elif doc.page == 5:
             header_footer(canvas, doc)
 
