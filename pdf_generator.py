@@ -3063,7 +3063,7 @@ def generar_pdf(
         elif doc.page == percepcion_inicio + 3:
             header_footer(canvas, doc)
             canvas.setFont("Helvetica-Bold", 16)
-            canvas.drawString(P3_TITULO_X, P3_TITULO_Y, "Aportes Operativos de la Comunidad")
+            canvas.drawString(P3_TITULO_X, P3_TITULO_Y, "Información Relevante de la Comunidad")
         
             canvas.setFont("Helvetica-Bold", 12)
             canvas.setFillColor(colors.HexColor("#013051"))
