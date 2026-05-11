@@ -1258,7 +1258,7 @@ def draw_pagina_linea_accion(
 
     texto_titulo = "<br/>".join(linea["problematicas"])
     p = Paragraph(texto_titulo, titulo_style)
-    w, h = p.wrap(TITULO_WIDTH, 200)
+    w, h = p.wrap(TITULO_WIDTH, 150) # tamaño fuente de titulos
     p.drawOn(canvas, TITULO_X, TITULO_Y - h)
 
     # ===== VECTORES =====
