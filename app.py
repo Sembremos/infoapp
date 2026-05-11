@@ -478,9 +478,14 @@ if archivo:
         porcentaje_riesgos = f"{valor_riesgos * 100:.2f}%" if pd.notna(valor_riesgos) else "0.00%"
 
 
-        # ================= CANTIDAD DELITOS / riesgos=================
-        cantidad_delitos = int(pd.to_numeric(df.iloc[117, 1], errors="coerce").sum())
-        cantidad_riesgos = int(pd.to_numeric(df.iloc[117, 2], errors="coerce").sum())
+        # ================= CANTIDAD DELITOS / riesgos PARETOS =================
+        cantidad_delitos = int(
+            pd.to_numeric(df.iloc[117, 1], errors="coerce")
+        )
+        
+        cantidad_riesgos = int(
+            pd.to_numeric(df.iloc[117, 2], errors="coerce")
+        )
        # ================= MICMAC =================
 
         def limpiar_lista(col):
