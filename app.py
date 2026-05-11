@@ -479,8 +479,8 @@ if archivo:
 
 
         # ================= CANTIDAD DELITOS / riesgos=================
-        cantidad_delitos = int(pd.to_numeric(df.iloc[96:117, 1], errors="coerce").sum())
-        cantidad_riesgos = int(pd.to_numeric(df.iloc[96:117, 2], errors="coerce").sum())
+        cantidad_delitos = int(pd.to_numeric(df.iloc[117, 1], errors="coerce").sum())
+        cantidad_riesgos = int(pd.to_numeric(df.iloc[117, 2], errors="coerce").sum())
        # ================= MICMAC =================
 
         def limpiar_lista(col):
