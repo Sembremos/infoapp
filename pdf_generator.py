@@ -3009,7 +3009,7 @@ def generar_pdf(
                     titulo_style = ParagraphStyle(
                         name="TituloLinea",
                         fontName="Helvetica-Bold",
-                        fontSize=18,
+                        fontSize=14,
                         leading=28, #________________________________aqui el cambio
                         textColor=colors.white,
                         alignment=TA_CENTER
