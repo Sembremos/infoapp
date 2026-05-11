@@ -3017,7 +3017,7 @@ def generar_pdf(
                 
                     TITULO_WIDTH = A4[0] * 0.7
                     TITULO_X = (A4[0] - TITULO_WIDTH) / 2
-                    TITULO_Y = A4[1] - 740
+                    TITULO_Y = A4[1] - 760#____________---------------__________________leading
                 
                     texto_titulo = "<br/>".join(linea["problematicas"])
                 
