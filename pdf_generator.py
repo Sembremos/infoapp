@@ -3010,6 +3010,7 @@ def generar_pdf(
                         name="TituloLinea",
                         fontName="Helvetica-Bold",
                         fontSize=18,
+                        leading=28, #________________________________aqui el cambio
                         textColor=colors.white,
                         alignment=TA_CENTER
                     )
