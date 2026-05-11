@@ -1256,7 +1256,7 @@ def draw_pagina_linea_accion(
         alignment=0
     )
 
-    texto_titulo = "<br/>".join(linea["problematicas"])
+    texto_titulo = "<br/><br/>".join(linea["problematicas"])
     p = Paragraph(texto_titulo, titulo_style)
     w, h = p.wrap(TITULO_WIDTH, 200)
     p.drawOn(canvas, TITULO_X, TITULO_Y - h)
