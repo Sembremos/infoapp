@@ -1689,6 +1689,13 @@ if archivo:
             fig, ax = plt.subplots(
                 figsize=(FIG_SIZE_X, FIG_SIZE_Y)
             )
+
+            fig.subplots_adjust(
+                left=0.08,
+                right=0.92,
+                top=0.92,
+                bottom=0.08
+            )
         
             wedges, texts, autotexts = ax.pie(
                 valores,
@@ -1713,7 +1720,7 @@ if archivo:
             )
         
             # ===== FORZAR CIRCULO PERFECTO =====
-            ax.set_aspect('equal')
+            ax.set_aspect('equal', adjustable='box')
         
             ruta = ASSETS_DIR / nombre_archivo
         
