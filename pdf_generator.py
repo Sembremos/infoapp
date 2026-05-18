@@ -1652,8 +1652,8 @@ def draw_pagina_percepcion_1(
     TITLE_Y = page_height - 110
         
     # Graficos
-    GRAFICO_WIDTH = 260
-    GRAFICO_HEIGHT = 260
+    GRAFICO_WIDTH = 230
+    GRAFICO_HEIGHT = 230
         
     GRAFICO_Y = page_height - 380
         
@@ -1680,13 +1680,26 @@ def draw_pagina_percepcion_1(
     canvas.setFont("Helvetica-Bold", 14)
     canvas.setFillColor(colors.HexColor("#013051"))
     canvas.drawString(GRAFICO_IZQ_X, GRAFICO_Y + GRAFICO_HEIGHT + 10, "Actualmente")
+    
     # ===== GRAFICO PASTEL =====
+
+      PIE_WIDTH = 290
+    PIE_HEIGHT = 290
+    
+    # bajar ligeramente
+    PIE_Y = GRAFICO_Y - 15
+    
     canvas.drawImage(
         grafico_actual_path,
-        GRAFICO_IZQ_X,
-        GRAFICO_Y,
-        width=GRAFICO_WIDTH,
-        height=GRAFICO_HEIGHT,
+    
+        # mover un poco a la izquierda
+        GRAFICO_IZQ_X - 20,
+    
+        PIE_Y,
+    
+        width=PIE_WIDTH,
+        height=PIE_HEIGHT,
+    
         preserveAspectRatio=True,
         mask="auto"
     )
