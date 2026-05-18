@@ -1895,6 +1895,15 @@ if archivo:
         
         # ----- GRAFICO 1 -----
         labels_comercio_seguridad = df.iloc[398:400,0].tolist()
+        
+        labels_comercio_seguridad = [
+            label.replace(
+                "Ni seguro ni inseguro",
+                "Neutral"
+            )
+            for label in labels_comercio_seguridad
+        ]
+        
         valores_comercio_seguridad = df.iloc[398:400,1].astype(float).tolist()
         
         grafico_comercio_seguridad = generar_grafico_pastel_comercio(
