@@ -1652,8 +1652,8 @@ def draw_pagina_percepcion_1(
     TITLE_Y = page_height - 110
         
     # Graficos
-    GRAFICO_WIDTH = 230
-    GRAFICO_HEIGHT = 230
+    GRAFICO_WIDTH = 260
+    GRAFICO_HEIGHT = 260
         
     GRAFICO_Y = page_height - 380
         
