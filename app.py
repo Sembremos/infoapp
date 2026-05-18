@@ -1099,7 +1099,7 @@ if archivo:
                 df["porcentaje"],
             
                 # SIN LABELS EXTERNOS
-                labels=df["respuesta"],
+                labels=None,
             
                 autopct=lambda p: f"{p:.2f}%",
             
@@ -1125,6 +1125,23 @@ if archivo:
                 autotext.set_fontsize(12)
                 autotext.set_fontweight("bold")
                 autotext.set_color("white")
+
+            # ===== LABELS MANUALES =====
+
+            labels = df["respuesta"].tolist()
+            
+            ax.legend(
+                wedges,
+                labels,
+            
+                loc="center left",
+            
+                bbox_to_anchor=(0.95, 0.5),
+            
+                fontsize=10,
+            
+                frameon=False
+            )
                     
             ax.axis("equal")
         
