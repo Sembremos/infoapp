@@ -7,6 +7,7 @@ from io import BytesIO
 from pathlib import Path
 import base64
 from openpyxl import load_workbook
+import numpy as np
 
 from pdf_generator import P3_PALETA_GRAFICO
 from pdf_generator import generar_pdf
@@ -1700,7 +1701,7 @@ if archivo:
             wedges, texts, autotexts = ax.pie(
                 valores,
         
-                labels=labels,
+                labels=None,
         
                 colors=colores[:len(valores)],
         
@@ -1718,6 +1719,27 @@ if archivo:
                     'fontsize': PORCENTAJE_SIZE
                 }
             )
+
+            # ===== LABELS MANUALES =====
+
+            for i, wedge in enumerate(wedges):
+            
+                angulo = (wedge.theta2 + wedge.theta1) / 2
+            
+                x = np.cos(np.deg2rad(angulo))
+                y = np.sin(np.deg2rad(angulo))
+            
+                ax.text(
+                    x * 1.18,
+                    y * 1.18,
+            
+                    labels[i],
+            
+                    ha='center',
+                    va='center',
+            
+                    fontsize=10
+                )
         
             # ===== FORZAR CIRCULO PERFECTO =====
             ax.set_aspect('equal', adjustable='box')
