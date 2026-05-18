@@ -1154,9 +1154,6 @@ if archivo:
             
                 transparent=True,
             
-                # RECORTAR ESPACIOS VACÍOS
-                bbox_inches="tight",
-            
                 # MARGEN MÍNIMO
                 pad_inches=0.03
             )
