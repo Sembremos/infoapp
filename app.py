@@ -808,9 +808,47 @@ if archivo:
         # Agregar filas válidas
         for _, row in tabla_p14_raw.iterrows():
             # Ignorar fila si TODAS las frecuencias están vacías
-            if row.iloc[1:].isna().all():
-                continue
-        
+            # Agregar filas válidas
+            for _, row in tabla_p14_raw.iterrows():
+            
+                # ===== VALIDAR DISTRITO =====
+                distrito = row.iloc[0]
+            
+                if pd.isna(distrito):
+                    continue
+            
+                distrito_str = str(distrito).strip()
+            
+                # ❌ Ignorar filas donde distrito sea "0"
+                if distrito_str == "0":
+                    continue
+            
+                # ===== VALIDAR SI TODAS LAS FRECUENCIAS SON 0 O VACIAS =====
+                frecuencias = row.iloc[1:]
+            
+                frecuencias_numericas = pd.to_numeric(
+                    frecuencias,
+                    errors="coerce"
+                ).fillna(0)
+            
+                if (frecuencias_numericas == 0).all():
+                    continue
+            
+                fila = []
+            
+                for cell in row:
+            
+                    if pd.isna(cell):
+                        fila.append("")
+                    else:
+                        fila.append(
+                            str(int(cell))
+                            if isinstance(cell, (int, float))
+                            else str(cell)
+                        )
+            
+                tabla_p14.append(fila)
+                    
             fila = []
             for cell in row:
                 if pd.isna(cell):
