@@ -3006,24 +3006,40 @@ def generar_pdf(
                     canvas.drawString(400, A4[1] - 300, f"{linea['numero']}")
                 
                     # ===== TITULO PROBLEMATICAS =====
+                    # ================= CONFIGURABLES =================
+                    TITULO_FONT_SIZE = 11
+                    TITULO_LEADING = 13
+                    TITULO_WIDTH = A4[0] * 0.82
+                    
+                    TITULO_X = (A4[0] - TITULO_WIDTH) / 2
+                    
+                    # MÁS ARRIBA
+                    TITULO_Y = A4[1] - 720
+                    
+                    # =================================================
+                    
                     titulo_style = ParagraphStyle(
                         name="TituloLinea",
                         fontName="Helvetica-Bold",
-                        fontSize=14,
-                        leading=28, #________________________________aqui el cambio
+                        fontSize=TITULO_FONT_SIZE,
+                        leading=TITULO_LEADING,
                         textColor=colors.white,
-                        alignment=TA_CENTER
+                        alignment=TA_CENTER,
+                        wordWrap="CJK"
                     )
-                
-                    TITULO_WIDTH = A4[0] * 0.7
-                    TITULO_X = (A4[0] - TITULO_WIDTH) / 2
-                    TITULO_Y = A4[1] - 760#____________---------------__________________leadinsg
-                
+                    
                     texto_titulo = "<br/>".join(linea["problematicas"])
-                
+                    
                     p = Paragraph(texto_titulo, titulo_style)
-                    w, h = p.wrap(TITULO_WIDTH, 500)
-                    p.drawOn(canvas, TITULO_X, TITULO_Y - (h / 2))
+                    
+                    w, h = p.wrap(TITULO_WIDTH, 300)
+                    
+                    # ===== DIBUJAR TEXTO =====
+                    p.drawOn(
+                        canvas,
+                        TITULO_X,
+                        TITULO_Y - h
+                    )
             
                 elif posicion == 1:
                     header_footer(canvas, doc)
