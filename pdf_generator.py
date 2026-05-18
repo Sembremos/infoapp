@@ -1237,6 +1237,7 @@ def construir_tabla_dinamica(titulo, items, ancho_total, estilo_header_color):
     tabla.setStyle(TableStyle([
 
         # HEADER
+        ("SPAN", (0, 0), (-1, 0)),
         ("BACKGROUND", (0, 0), (-1, 0), estilo_header_color),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
