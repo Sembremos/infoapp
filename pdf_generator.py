@@ -1253,7 +1253,7 @@ def draw_pagina_linea_accion(
         fontSize=TITULO_SIZE,
         leading=TITULO_SIZE + 2,
         textColor=TITULO_COLOR,
-        alignment=0
+        alignment=0,
         wordWrap="CJK"
     )
 
