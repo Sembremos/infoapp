@@ -1203,11 +1203,11 @@ def draw_pagina_linea_accion(
     SUBTITULO_Y = page_height - 70
 
     TITULO_FONT = "Helvetica-Bold"
-    TITULO_SIZE = 18
+    TITULO_SIZE = 13
     TITULO_COLOR = colors.HexColor("#013051")
-    TITULO_WIDTH = page_width * 0.8
-    TITULO_X = 40
-    TITULO_Y = page_height - 80
+    TITULO_WIDTH = page_width * 0.90
+    TITULO_X = 30
+    TITULO_Y = page_height - 78
 
     VECTOR_WIDTH = 150
     VECTOR_HEIGHT = 150
@@ -1251,15 +1251,16 @@ def draw_pagina_linea_accion(
         name="TituloLineaInterna",
         fontName=TITULO_FONT,
         fontSize=TITULO_SIZE,
-        leading=TITULO_SIZE + 16,
+        leading=TITULO_SIZE + 2,
         textColor=TITULO_COLOR,
         alignment=0
+        wordWrap="CJK"
     )
 
     texto_titulo = "<br/>".join(linea["problematicas"])
     p = Paragraph(texto_titulo, titulo_style)
     w, h = p.wrap(TITULO_WIDTH, 150) # tamaño fuente de titulos
-    p.drawOn(canvas, TITULO_X, TITULO_Y - h)
+    
 
     # ===== VECTORES =====
     total_vectores = len(linea["problematicas"])
@@ -1281,6 +1282,13 @@ def draw_pagina_linea_accion(
                     preserveAspectRatio=True,
                     mask="auto"
                 )
+
+    # ===== DIBUJAR TITULO ENCIMA DE LOS VECTORES =====
+    p.drawOn(
+        canvas,
+        TITULO_X,
+        TITULO_Y - h
+    )
 
     # ===== IMAGEN TOTAL =====
     if os.path.exists(TOTAL_IMAGE_PATH):
@@ -3006,40 +3014,24 @@ def generar_pdf(
                     canvas.drawString(400, A4[1] - 300, f"{linea['numero']}")
                 
                     # ===== TITULO PROBLEMATICAS =====
-                    # ================= CONFIGURABLES =================
-                    TITULO_FONT_SIZE = 11
-                    TITULO_LEADING = 13
-                    TITULO_WIDTH = A4[0] * 0.82
-                    
-                    TITULO_X = (A4[0] - TITULO_WIDTH) / 2
-                    
-                    # MÁS ARRIBA
-                    TITULO_Y = A4[1] - 720
-                    
-                    # =================================================
-                    
                     titulo_style = ParagraphStyle(
                         name="TituloLinea",
                         fontName="Helvetica-Bold",
-                        fontSize=TITULO_FONT_SIZE,
-                        leading=TITULO_LEADING,
+                        fontSize=14,
+                        leading=28,
                         textColor=colors.white,
-                        alignment=TA_CENTER,
-                        wordWrap="CJK"
+                        alignment=TA_CENTER
                     )
+                    
+                    TITULO_WIDTH = A4[0] * 0.7
+                    TITULO_X = (A4[0] - TITULO_WIDTH) / 2
+                    TITULO_Y = A4[1] - 760
                     
                     texto_titulo = "<br/>".join(linea["problematicas"])
                     
                     p = Paragraph(texto_titulo, titulo_style)
-                    
-                    w, h = p.wrap(TITULO_WIDTH, 300)
-                    
-                    # ===== DIBUJAR TEXTO =====
-                    p.drawOn(
-                        canvas,
-                        TITULO_X,
-                        TITULO_Y - h
-                    )
+                    w, h = p.wrap(TITULO_WIDTH, 500)
+                    p.drawOn(canvas, TITULO_X, TITULO_Y - (h / 2))
             
                 elif posicion == 1:
                     header_footer(canvas, doc)
