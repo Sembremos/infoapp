@@ -1097,26 +1097,51 @@ if archivo:
         
             wedges, texts, autotexts = ax.pie(
                 df["porcentaje"],
-                labels=df["respuesta"],
+            
+                # SIN LABELS EXTERNOS
+                labels=None,
+            
                 autopct=lambda p: f"{p:.2f}%",
+            
                 startangle=90,
-                colors=COLORES_PERCEPCION[:len(df)],  # <-- AQUI ESTABA LO QUE FALTABA
-                textprops={"fontsize": 18}
+            
+                colors=COLORES_PERCEPCION[:len(df)],
+            
+                # HACER EL CIRCULO MÁS GRANDE
+                radius=1.25,
+            
+                # PORCENTAJES MÁS CENTRADOS
+                pctdistance=0.62,
+            
+                textprops={
+                    "fontsize": 11,
+                    "fontweight": "bold"
+                }
             )
         
-            # Tamaño porcentajes
+
+            # ===== ESTILO PORCENTAJES =====
             for autotext in autotexts:
-                autotext.set_fontsize(20)
-                autotext.set_color("white")  # opcional, se ve más profesional
-        
+                autotext.set_fontsize(12)
+                autotext.set_fontweight("bold")
+                autotext.set_color("white")
+                    
             ax.axis("equal")
         
             plt.tight_layout()
         
             plt.savefig(
                 ASSETS_DIR / "grafico_percepcion_actual.png",
+            
                 dpi=DPI,
-                transparent=True
+            
+                transparent=True,
+            
+                # RECORTAR ESPACIOS VACÍOS
+                bbox_inches="tight",
+            
+                # MARGEN MÍNIMO
+                pad_inches=0.03
             )
         
             plt.close()
