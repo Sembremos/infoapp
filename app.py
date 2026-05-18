@@ -1139,7 +1139,7 @@ if archivo:
             
                 bbox_to_anchor=(0.95, 0.5),
             
-                fontsize=14,
+                fontsize=10,
             
                 frameon=False
             )
@@ -1738,8 +1738,7 @@ if archivo:
                     ha='center',
                     va='center',
             
-                    fontsize=15,
-                    fontweight='bold'
+                    fontsize=15
                     
                 )
         
