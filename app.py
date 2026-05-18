@@ -1139,7 +1139,7 @@ if archivo:
             
                 bbox_to_anchor=(0.95, 0.5),
             
-                fontsize=10,
+                fontsize=14,
             
                 frameon=False
             )
