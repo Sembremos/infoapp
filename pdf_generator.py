@@ -1112,12 +1112,35 @@ def construir_tabla_dinamica(titulo, items, ancho_total, estilo_header_color):
     from reportlab.lib.enums import TA_LEFT
     from reportlab.lib import colors
 
+    # ===== DETERMINAR CANTIDAD DE COLUMNAS =====
+
+    total_items = len(items)
+    
+    if total_items <= 10:
+        columnas = 1
+        font_size = 9
+        leading_size = 11
+    
+    elif total_items <= 18:
+        columnas = 2
+        font_size = 9
+        leading_size = 10
+    
+    else:
+        columnas = 3
+        font_size = 8
+        leading_size = 9
+    
+    
+    # ===== ESTILO CELDAS =====
+    
     CELDA_STYLE = ParagraphStyle(
         name="CeldaTabla",
         fontName="Helvetica",
-        fontSize=9,
-        leading=11,
-        alignment=TA_LEFT
+        fontSize=font_size,
+        leading=leading_size,
+        alignment=TA_LEFT,
+        wordWrap="CJK"
     )
 
     data = []
@@ -1126,34 +1149,95 @@ def construir_tabla_dinamica(titulo, items, ancho_total, estilo_header_color):
     data.append([titulo])
 
     # UNA SOLA COLUMNA
-    if len(items) <= 10:
+
+    # =====================================================
+    # ================= 1 COLUMNA =========================
+    # =====================================================
+    
+    if columnas == 1:
+    
         for item in items:
             data.append([Paragraph(item[0], CELDA_STYLE)])
-
-        tabla = Table(data, colWidths=[ancho_total])
-
-    # DOS COLUMNAS
-    else:
+    
+        tabla = Table(
+            data,
+            colWidths=[ancho_total]
+        )
+    
+    
+    # =====================================================
+    # ================= 2 COLUMNAS ========================
+    # =====================================================
+    
+    elif columnas == 2:
+    
         mitad = (len(items) + 1) // 2
+    
         col1 = items[:mitad]
         col2 = items[mitad:]
-
+    
         while len(col2) < len(col1):
             col2.append([""])
-
+    
         data = [[titulo, ""]]
-
+    
         for i in range(len(col1)):
+    
             p1 = Paragraph(col1[i][0], CELDA_STYLE) if col1[i][0] else ""
             p2 = Paragraph(col2[i][0], CELDA_STYLE) if col2[i][0] else ""
+    
             data.append([p1, p2])
-
-        tabla = Table(data, colWidths=[ancho_total/2, ancho_total/2])
-
+    
+        tabla = Table(
+            data,
+            colWidths=[
+                ancho_total / 2,
+                ancho_total / 2
+            ]
+        )
+    
+    
+    # =====================================================
+    # ================= 3 COLUMNAS ========================
+    # =====================================================
+    
+    else:
+    
+        tercio = (len(items) + 2) // 3
+    
+        col1 = items[:tercio]
+        col2 = items[tercio:tercio * 2]
+        col3 = items[tercio * 2:]
+    
+        while len(col2) < len(col1):
+            col2.append([""])
+    
+        while len(col3) < len(col1):
+            col3.append([""])
+    
+        data = [[titulo, "", ""]]
+    
+        for i in range(len(col1)):
+    
+            p1 = Paragraph(col1[i][0], CELDA_STYLE) if col1[i][0] else ""
+            p2 = Paragraph(col2[i][0], CELDA_STYLE) if col2[i][0] else ""
+            p3 = Paragraph(col3[i][0], CELDA_STYLE) if col3[i][0] else ""
+    
+            data.append([p1, p2, p3])
+    
+        tabla = Table(
+            data,
+            colWidths=[
+                ancho_total / 3,
+                ancho_total / 3,
+                ancho_total / 3
+            ]
+        )
+        
     tabla.setStyle(TableStyle([
 
         # HEADER
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
+        ("BACKGROUND", (0, 0), (-1, 0), estilo_header_color),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("FONTSIZE", (0,0), (-1,0), 13),
