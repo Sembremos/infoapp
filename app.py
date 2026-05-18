@@ -1675,7 +1675,7 @@ if archivo:
         # ==========================================================
         
         def generar_grafico_pastel_comercio(labels, valores, nombre_archivo, colores):
-        
+
             import matplotlib.pyplot as plt
         
             # ================= VARIABLES EDITABLES =================
@@ -1685,37 +1685,49 @@ if archivo:
         
             PORCENTAJE_SIZE = 14
         
-            COLORES = [
-                "#5b9bd5",
-                "#a5a5a5",
-                "#4472c4",
-                "#255e91",
-                "#636363"
-            ]
-        
             START_ANGLE = 90
         
             # =======================================================
         
-            plt.figure(figsize=(FIG_SIZE_X, FIG_SIZE_Y))
-        
-            plt.pie(
-                valores,
-                labels=labels,
-                colors=colores[:len(valores)],
-                autopct=lambda p: f"{p:.2f}%",
-                startangle=START_ANGLE,
-                textprops={'fontsize': PORCENTAJE_SIZE}
+            fig, ax = plt.subplots(
+                figsize=(FIG_SIZE_X, FIG_SIZE_Y)
             )
         
-            plt.axis("equal")
+            wedges, texts, autotexts = ax.pie(
+                valores,
+        
+                labels=labels,
+        
+                colors=colores[:len(valores)],
+        
+                autopct=lambda p: f"{p:.2f}%",
+        
+                startangle=START_ANGLE,
+        
+                # DISTANCIA LABELS
+                labeldistance=1.08,
+        
+                # DISTANCIA PORCENTAJES
+                pctdistance=0.72,
+        
+                textprops={
+                    'fontsize': PORCENTAJE_SIZE
+                }
+            )
+        
+            # ===== FORZAR CIRCULO PERFECTO =====
+            ax.set_aspect('equal')
         
             ruta = ASSETS_DIR / nombre_archivo
         
             plt.savefig(
                 ruta,
                 dpi=300,
-                bbox_inches="tight"
+        
+                # RECORTAR MARGENES
+                bbox_inches="tight",
+        
+                transparent=True
             )
         
             plt.close()
