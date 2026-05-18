@@ -1738,7 +1738,9 @@ if archivo:
                     ha='center',
                     va='center',
             
-                    fontsize=10
+                    fontsize=15,
+                    fontweight='bold'
+                    
                 )
         
             # ===== FORZAR CIRCULO PERFECTO =====
