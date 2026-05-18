@@ -1683,8 +1683,8 @@ def draw_pagina_percepcion_1(
     
     # ===== GRAFICO PASTEL =====
 
-    PIE_WIDTH = 220
-    PIE_HEIGHT = 220
+    PIE_WIDTH = 200
+    PIE_HEIGHT = 200
     
     # bajar ligeramente
     PIE_Y = GRAFICO_Y - 15
