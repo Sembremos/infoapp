@@ -1099,7 +1099,7 @@ if archivo:
                 df["porcentaje"],
             
                 # SIN LABELS EXTERNOS
-                labels=None,
+                labels=df["respuesta"],
             
                 autopct=lambda p: f"{p:.2f}%",
             
