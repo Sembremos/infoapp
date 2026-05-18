@@ -1899,7 +1899,7 @@ if archivo:
         labels_comercio_seguridad = [
             label.replace(
                 "Ni seguro ni inseguro",
-                "Neutral"
+                "Ni seguro\nni inseguro"
             )
             for label in labels_comercio_seguridad
         ]
