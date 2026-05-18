@@ -1687,13 +1687,13 @@ def draw_pagina_percepcion_1(
     PIE_HEIGHT = 200
     
     # bajar ligeramente
-    PIE_Y = GRAFICO_Y - 15
+    PIE_Y = GRAFICO_Y + 10
     
     canvas.drawImage(
         grafico_actual_path,
     
         # mover un poco a la izquierda
-        GRAFICO_IZQ_X - 20,
+        GRAFICO_IZQ_X + 10,
     
         PIE_Y,
     
