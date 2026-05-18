@@ -807,57 +807,48 @@ if archivo:
         
         # Agregar filas válidas
         for _, row in tabla_p14_raw.iterrows():
-            # Ignorar fila si TODAS las frecuencias están vacías
-            # Agregar filas válidas
-            for _, row in tabla_p14_raw.iterrows():
-            
-                # ===== VALIDAR DISTRITO =====
-                distrito = row.iloc[0]
-            
-                if pd.isna(distrito):
-                    continue
-            
-                distrito_str = str(distrito).strip()
-            
-                # ❌ Ignorar filas donde distrito sea "0"
-                if distrito_str == "0":
-                    continue
-            
-                # ===== VALIDAR SI TODAS LAS FRECUENCIAS SON 0 O VACIAS =====
-                frecuencias = row.iloc[1:]
-            
-                frecuencias_numericas = pd.to_numeric(
-                    frecuencias,
-                    errors="coerce"
-                ).fillna(0)
-            
-                if (frecuencias_numericas == 0).all():
-                    continue
-            
-                fila = []
-            
-                for cell in row:
-            
-                    if pd.isna(cell):
-                        fila.append("")
-                    else:
-                        fila.append(
-                            str(int(cell))
-                            if isinstance(cell, (int, float))
-                            else str(cell)
-                        )
-            
-                tabla_p14.append(fila)
-                    
+        
+            # ===== VALIDAR DISTRITO =====
+            distrito = row.iloc[0]
+        
+            # Ignorar distrito vacío
+            if pd.isna(distrito):
+                continue
+        
+            distrito_str = str(distrito).strip()
+        
+            # Ignorar distrito "0"
+            if distrito_str == "0":
+                continue
+        
+            # ===== VALIDAR FRECUENCIAS =====
+            frecuencias = row.iloc[1:]
+        
+            frecuencias_numericas = pd.to_numeric(
+                frecuencias,
+                errors="coerce"
+            ).fillna(0)
+        
+            # Ignorar filas donde TODO sea 0
+            if (frecuencias_numericas == 0).all():
+                continue
+        
+            # ===== CONSTRUIR FILA =====
             fila = []
+        
             for cell in row:
+        
                 if pd.isna(cell):
                     fila.append("")
+        
                 else:
-                    fila.append(str(int(cell)) if isinstance(cell, (int, float)) else str(cell))
+        
+                    if isinstance(cell, (int, float)):
+                        fila.append(str(int(cell)))
+                    else:
+                        fila.append(str(cell))
         
             tabla_p14.append(fila)
-
 
         #==================================PAGINA 15============================================================
         # =========================================
