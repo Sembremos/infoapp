@@ -1652,8 +1652,8 @@ def draw_pagina_percepcion_1(
     TITLE_Y = page_height - 110
         
     # Graficos
-    GRAFICO_WIDTH = 260
-    GRAFICO_HEIGHT = 260
+    GRAFICO_WIDTH = 230
+    GRAFICO_HEIGHT = 230
         
     GRAFICO_Y = page_height - 380
         
@@ -1683,8 +1683,8 @@ def draw_pagina_percepcion_1(
     
     # ===== GRAFICO PASTEL =====
 
-    PIE_WIDTH = 200
-    PIE_HEIGHT = 200
+    PIE_WIDTH = 250
+    PIE_HEIGHT = 250
     
     # bajar ligeramente
     PIE_Y = GRAFICO_Y + 10
