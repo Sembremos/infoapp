@@ -1086,6 +1086,210 @@ def draw_tabla_dias_distritos_p15(
     table.wrapOn(canvas, TABLE_WIDTH, 2000)
     table.drawOn(canvas, x, y - table._height)
 
+    # =========================================
+    # COMPARATIVO PERCEPCION CIUDADANA POR ZONAS
+    # NUEVA ESTRUCTURA
+    # =========================================
+    
+    # ===== FILAS COMPLETAS =====
+    fila_298 = df.iloc[297, 0:13].copy()   # A298:M298
+    fila_299 = df.iloc[298, 0:13].copy()   # A299:M299
+    
+    # ===== DATOS =====
+    datos_pc = df.iloc[299:311, 0:13].copy()   # A300:M311
+    
+    # ===== COLUMNAS QUE SI SE USAN =====
+    # A + C + E + G + I + K + M
+    columnas_indices = [0, 2, 4, 6, 8, 10, 12]
+    
+    # ===== ENCABEZADOS =====
+    encabezado_superior = []
+    encabezado_inferior = []
+    
+    for idx in columnas_indices:
+    
+        valor_sup = fila_298.iloc[idx]
+    
+        # Resolver merged cells
+        if pd.isna(valor_sup) and idx > 0:
+            valor_sup = fila_298.iloc[idx - 1]
+    
+        encabezado_superior.append(str(valor_sup).strip())
+    
+        valor_inf = fila_299.iloc[idx]
+        encabezado_inferior.append(str(valor_inf).strip())
+    
+    # ===== TABLA FINAL =====
+    tabla_percepcion_zonas = []
+    
+    tabla_percepcion_zonas.append(encabezado_superior)
+    tabla_percepcion_zonas.append(encabezado_inferior)
+    
+    # ===== FILAS =====
+    for _, row in datos_pc.iterrows():
+    
+        fila = []
+    
+        for idx in columnas_indices:
+    
+            valor = row.iloc[idx]
+    
+            if pd.isna(valor):
+                fila.append("")
+    
+            else:
+    
+                if isinstance(valor, float):
+    
+                    if valor.is_integer():
+                        fila.append(str(int(valor)))
+                    else:
+                        fila.append(str(valor))
+    
+                else:
+                    fila.append(str(valor))
+    
+        # evitar filas totalmente vacías
+        if any(str(v).strip() != "" for v in fila):
+            tabla_percepcion_zonas.append(fila)
+
+
+    # =========================================
+    # TABLA PERCEPCION CIUDADANA POR ZONAS
+    # =========================================
+    
+    def draw_tabla_percepcion_zonas(
+        canvas,
+        data,
+        titulo,
+        x,
+        y,
+        col_widths
+    ):
+    
+        from reportlab.platypus import Paragraph, Table, TableStyle
+        from reportlab.lib.styles import ParagraphStyle
+        from reportlab.lib.enums import TA_CENTER, TA_LEFT
+        from reportlab.lib import colors
+    
+        TABLE_WIDTH = sum(col_widths)
+    
+        titulo_style = ParagraphStyle(
+            name="TituloPC",
+            fontName="Helvetica-Bold",
+            fontSize=9,
+            alignment=TA_CENTER,
+            textColor=colors.white
+        )
+    
+        header_style = ParagraphStyle(
+            name="HeaderPC",
+            fontName="Helvetica-Bold",
+            fontSize=7,
+            alignment=TA_CENTER,
+            textColor=colors.white,
+            leading=8
+        )
+    
+        cell_style = ParagraphStyle(
+            name="CellPC",
+            fontName="Helvetica",
+            fontSize=7,
+            alignment=TA_CENTER,
+            leading=8
+        )
+    
+        distrito_style = ParagraphStyle(
+            name="DistritoPC",
+            fontName="Helvetica-Bold",
+            fontSize=7,
+            alignment=TA_LEFT,
+            leading=8
+        )
+    
+        table_data = []
+    
+        # TITULO
+        table_data.append(
+            [Paragraph(titulo, titulo_style)] + [""] * (len(data[0]) - 1)
+        )
+    
+        # HEADER SUPERIOR
+        fila1 = []
+    
+        for cell in data[0]:
+            fila1.append(Paragraph(str(cell), header_style))
+    
+        table_data.append(fila1)
+    
+        # HEADER INFERIOR
+        fila2 = []
+    
+        for cell in data[1]:
+            fila2.append(Paragraph(str(cell), header_style))
+    
+        table_data.append(fila2)
+    
+        # CUERPO
+        for row in data[2:]:
+    
+            nueva_fila = []
+    
+            for i, cell in enumerate(row):
+    
+                if i == 0:
+                    nueva_fila.append(
+                        Paragraph(str(cell), distrito_style)
+                    )
+    
+                else:
+                    nueva_fila.append(
+                        Paragraph(str(cell), cell_style)
+                    )
+    
+            table_data.append(nueva_fila)
+    
+        table = Table(
+            table_data,
+            colWidths=col_widths
+        )
+    
+        style = [
+    
+            # TITULO
+            ("SPAN", (0,0), (-1,0)),
+            ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#30A907")),
+            ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+    
+            # HEADER 1
+            ("BACKGROUND", (0,1), (-1,1), colors.HexColor("#013051")),
+            ("TEXTCOLOR", (0,1), (-1,1), colors.white),
+    
+            # HEADER 2
+            ("BACKGROUND", (0,2), (-1,2), colors.HexColor("#1F5D8B")),
+            ("TEXTCOLOR", (0,2), (-1,2), colors.white),
+    
+            # BODY
+            ("BACKGROUND", (0,3), (-1,-1), colors.white),
+    
+            # GRID
+            ("GRID", (0,0), (-1,-1), 0.5, colors.black),
+    
+            # ALIGN
+            ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
+    
+            # PADDING
+            ("TOPPADDING", (0,0), (-1,-1), 2),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 2),
+            ("LEFTPADDING", (0,0), (-1,-1), 2),
+            ("RIGHTPADDING", (0,0), (-1,-1), 2),
+        ]
+    
+        table.setStyle(TableStyle(style))
+    
+        table.wrapOn(canvas, TABLE_WIDTH, 2000)
+        table.drawOn(canvas, x, y - table._height)
+
 #==============================DEFINICION; LINEAS ACCION==========
 
 def normalizar_nombre(texto):
