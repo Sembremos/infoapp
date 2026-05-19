@@ -178,7 +178,7 @@ def generar_pdf(portada_path, **kwargs):
     story.append(Paragraph("Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional el Modelo Preventivo de Gestión Policial, una iniciativa estratégica destinada a fortalecer la seguridad pública a través de un enfoque proactivo y colaborativo...", style_body))
     story.append(Spacer(1, 15))
     if os.path.exists("assets/conformacion.png"):
-        story.append(Image("assets/conformacion.png", width=480, height=320, preserveAspectRatio=True))
+        story.append(Image("assets/conformacion.png", width=480, height=320))
     story.append(PageBreak())
     
     # ---------------- PAGINA 4: PORTADILLA PARTICIPACIÓN ----------------
@@ -198,22 +198,22 @@ def generar_pdf(portada_path, **kwargs):
     story.append(Spacer(1, 20))
     if kwargs.get("grafico_relacion_path") and os.path.exists(kwargs.get("grafico_relacion_path", "")):
         story.append(Paragraph("Relación del Muestreo por Distrito", style_h2))
-        story.append(Image(kwargs.get("grafico_relacion_path"), width=490, height=220, preserveAspectRatio=True))
+        story.append(Image(kwargs.get("grafico_relacion_path"), width=490, height=220))
     story.append(PageBreak())
     
-    # ---------------- PAGINA 6: DEMOGRAFÍA ----------------
+    # ---------------- PAGINA 6: DEMOGRAFÍA (EDAD, ESCOLARIDAD, GÉNERO) ----------------
     story.append(Paragraph("Variables Demográficas Recopiladas", style_h1))
     
     demo_data = []
-    # Edad
+    
+    # Bloque Edad
     if kwargs.get("grafico_edad_path") and os.path.exists(kwargs.get("grafico_edad_path", "")):
         t_edad = crear_tabla_estilizada([["Rango Edad", "%"]] + kwargs.get("tabla_edad", []), [130, 70], COLOR_SECUNDARIO, alternar_filas=False)
         demo_data.append([Image(kwargs.get("grafico_edad_path"), width=240, height=150), t_edad])
         
-    # Escolaridad
+    # Bloque Escolaridad
     if kwargs.get("grafico_escolaridad_path") and os.path.exists(kwargs.get("grafico_escolaridad_path", "")):
         t_esco = crear_tabla_estilizada([["Escolaridad", "%"]] + kwargs.get("tabla_escolaridad", []), [130, 70], COLOR_PRIMARIO, alternar_filas=False)
-        # Si ya había renglón de edad, añadimos el de escolaridad abajo de forma fluida
         if len(demo_data) == 1:
             demo_data.append([t_esco, Image(kwargs.get("grafico_escolaridad_path"), width=240, height=150)])
         else:
@@ -250,13 +250,13 @@ def generar_pdf(portada_path, **kwargs):
     story.append(Spacer(1, 25))
     if os.path.exists("assets/datos.png"):
         story.append(Paragraph("Consolidado General de Respuestas", style_h2))
-        story.append(Image("assets/datos.png", width=500, height=200, preserveAspectRatio=True))
+        story.append(Image("assets/datos.png", width=500, height=200))
     story.append(PageBreak())
     
     # ---------------- PAGINA 9: PARETO DELICTIVO Y SOCIAL ----------------
     story.append(Paragraph("Análisis de Problemáticas Prioritarias (Principio de Pareto)", style_h1))
     if os.path.exists("assets/pareto.png"):
-        story.append(Image("assets/pareto.png", width=500, height=180, preserveAspectRatio=True))
+        story.append(Image("assets/pareto.png", width=500, height=180))
         
     story.append(Spacer(1, 15))
     
@@ -274,15 +274,15 @@ def generar_pdf(portada_path, **kwargs):
     # ---------------- PAGINA 10: MATRIZ MICMAC ----------------
     story.append(Paragraph("Análisis Estructural Cruzado (Matriz MICMAC)", style_h1))
     if os.path.exists("assets/micmac.png"):
-        story.append(Image("assets/micmac.png", width=500, height=350, preserveAspectRatio=True))
+        story.append(Image("assets/micmac.png", width=500, height=350))
     story.append(PageBreak())
     
-    # ---------------- PAGINA 11: TRIÁNGULO DE LAS VIOLENCIAS ----------------
+    # ---------------- PAGINA 11: TRIÁNGULO DE LAS VIOLENCIAS E INSTITUCIONES ----------------
     story.append(Paragraph("Análisis Causal: Triángulo de las Violencias", style_h1))
     story.append(Paragraph("Bajo el modelo del sociólogo Johan Galtung, se segmentan las causas identificadas en los sectores estructurales, socioculturales y de violencia directa.", style_body))
     
     if os.path.exists("assets/triangulo.png"):
-        story.append(Image("assets/triangulo.png", width=480, height=220, preserveAspectRatio=True))
+        story.append(Image("assets/triangulo.png", width=480, height=220))
         
     story.append(Spacer(1, 15))
     t_inst = kwargs.get("tabla_instituciones", [])
@@ -291,16 +291,16 @@ def generar_pdf(portada_path, **kwargs):
         story.append(crear_tabla_estilizada([["Institución Participante", "Sector de Aporte"]] + t_inst, [300, 200], COLOR_PRIMARIO))
     story.append(PageBreak())
     
-    # ---------------- PAGINA 12: PORTADILLA ESTADÍSTICA ----------------
+    # ---------------- PAGINA 12: PORTADILLA ESTADÍSTICA (Fondo PNG) ----------------
     story.append(Spacer(1, 40))
     story.append(PageBreak())
     
-    # ---------------- PAGINA 13: DENUNCIAS JUDICIALES ----------------
+    # ---------------- PAGINA 13: DENUNCIAS JUDICIALES (OIJ) Y MAPA HORARIO ----------------
     story.append(Paragraph("Análisis Técnico Operativo de Denuncias OIJ", style_h1))
     
     if kwargs.get("grafico_denuncias_path") and os.path.exists(kwargs.get("grafico_denuncias_path", "")):
         story.append(Paragraph("Distribución de Frecuencia de Hechos por Distrito", style_h2))
-        story.append(Image(kwargs.get("grafico_denuncias_path"), width=480, height=220, preserveAspectRatio=True))
+        story.append(Image(kwargs.get("grafico_denuncias_path"), width=480, height=220))
         
     story.append(Spacer(1, 15))
     t_horario_dist = kwargs.get("tabla_horario_distrito", [])
@@ -310,10 +310,10 @@ def generar_pdf(portada_path, **kwargs):
         story.append(crear_tabla_estilizada(t_horario_dist, [c_w]*len(t_horario_dist[0]), COLOR_SECUNDARIO, font_size=7.5))
     story.append(PageBreak())
     
-    # ---------------- PAGINA 14: MODALIDADES DELICTIVAS ----------------
+    # ---------------- PAGINA 14: MODALIDADES DELICTIVAS PRIORITARIAS ----------------
     story.append(Paragraph("Análisis Técnico por Modalidad de Ejecución", style_h1))
     if kwargs.get("grafico_p14_path") and os.path.exists(kwargs.get("grafico_p14_path", "")):
-        story.append(Image(kwargs.get("grafico_p14_path"), width=490, height=220, preserveAspectRatio=True))
+        story.append(Image(kwargs.get("grafico_p14_path"), width=490, height=220))
         
     story.append(Spacer(1, 15))
     t_p14 = kwargs.get("tabla_p14", [])
@@ -322,10 +322,10 @@ def generar_pdf(portada_path, **kwargs):
         story.append(crear_tabla_estilizada(t_p14, [c_w]*len(t_p14[0]), COLOR_PRIMARIO, font_size=7.5))
     story.append(PageBreak())
     
-    # ---------------- PAGINA 15: INCIDENCIA CRONOLÓGICA ----------------
+    # ---------------- PAGINA 15: INCIDENCIA CRONOLÓGICA (DÍAS DE LA SEMANA) ----------------
     story.append(Paragraph("Comportamiento y Tendencia Cronológica", style_h1))
     if kwargs.get("grafico_p15_path") and os.path.exists(kwargs.get("grafico_p15_path", "")):
-        story.append(Image(kwargs.get("grafico_p15_path"), width=490, height=220, preserveAspectRatio=True))
+        story.append(Image(kwargs.get("grafico_p15_path"), width=490, height=220))
         
     story.append(Spacer(1, 15))
     t_p15 = kwargs.get("tabla_p15", [])
@@ -334,16 +334,16 @@ def generar_pdf(portada_path, **kwargs):
         story.append(crear_tabla_estilizada(t_p15, [c_w]*len(t_p15[0]), COLOR_SECUNDARIO, font_size=7.5))
     story.append(PageBreak())
     
-    # ---------------- PAGINA 16: PORTADILLA LÍNEAS DE ACCIÓN ----------------
+    # ---------------- PAGINA 16: PORTADILLA LÍNEAS DE ACCIÓN (Fondo PNG) ----------------
     story.append(Spacer(1, 40))
     story.append(PageBreak())
     
-    # ---------------- PAGINA 17: RESUMEN DE LÍNEAS OPERATIVAS ----------------
+    # ---------------- PAGINA 17: RESUMEN DE LÍNEAS OPERATIVAS DETECTADAS ----------------
     story.append(Paragraph("Estrategia Integral Operativa Local", style_h1))
     story.append(Paragraph("A partir de la triangulación metodológica, se definen las siguientes líneas prioritarias de articulación interinstitucional:", style_body))
     
     if os.path.exists("assets/lins.png"):
-        story.append(Image("assets/lins.png", width=500, height=260, preserveAspectRatio=True))
+        story.append(Image("assets/lins.png", width=500, height=260))
     story.append(PageBreak())
     
     # ---------------- PAGINAS 18+ : FLUJO DINÁMICO DE LÍNEAS DE ACCIÓN ----------------
@@ -361,7 +361,7 @@ def generar_pdf(portada_path, **kwargs):
         for prob in linea["problematicas"]:
             v_name = f"assets/vectores/{normalizar_nombre(prob)}.png"
             if os.path.exists(v_name):
-                iconos_flowables.append(Image(v_name, width=90, height=90, preserveAspectRatio=True))
+                iconos_flowables.append(Image(v_name, width=90, height=90))
         if iconos_flowables:
             t_iconos = Table([iconos_flowables], rowHeights=100)
             t_iconos.setStyle(TableStyle([('ALIGN', (0,0), (-1,-1), 'CENTER'), ('VALIGN', (0,0), (-1,-1), 'MIDDLE')]))
@@ -409,16 +409,16 @@ def generar_pdf(portada_path, **kwargs):
             
         story.append(PageBreak())
 
-    # ---------------- SECCIÓN FINAL: PERCEPCIÓN CIUDADANA ----------------
+    # ---------------- SECCIÓN FINAL: PERCEPCIÓN CIUDADANA Y VICTIMIZACIÓN ----------------
     story.append(Spacer(1, 40))
     story.append(PageBreak())
     
     story.append(Paragraph("Estudio de Percepción de Seguridad Local", style_h1))
     perc_data = []
     if kwargs.get("grafico_percepcion_actual_path") and os.path.exists(kwargs.get("grafico_percepcion_actual_path", "")):
-        perc_data.append(Image(kwargs.get("grafico_percepcion_actual_path"), width=240, height=220, preserveAspectRatio=True))
+        perc_data.append(Image(kwargs.get("grafico_percepcion_actual_path"), width=240, height=220))
     if kwargs.get("grafico_percepcion_comparacion_path") and os.path.exists(kwargs.get("grafico_percepcion_comparacion_path", "")):
-        perc_data.append(Image(kwargs.get("grafico_percepcion_comparacion_path"), width=240, height=220, preserveAspectRatio=True))
+        perc_data.append(Image(kwargs.get("grafico_percepcion_comparacion_path"), width=240, height=220))
     if perc_data:
         t_perc = Table([perc_data], colWidths=[250, 250])
         story.append(t_perc)
@@ -430,13 +430,13 @@ def generar_pdf(portada_path, **kwargs):
         story.append(crear_tabla_estilizada(t_per_comp, [c_w]*len(t_per_comp[0]), COLOR_SECUNDARIO))
     story.append(PageBreak())
     
-    # ---------------- VICTIMIZACIÓN Y NO DENUNCIA ----------------
+    # Sub-página Fenómeno de la No Denuncia y Cifra Negra
     story.append(Paragraph("Victimización y Fenómeno de la No Denuncia", style_h1))
     vic_data = []
     if kwargs.get("grafico_victimizacion_path") and os.path.exists(kwargs.get("grafico_victimizacion_path", "")):
-        vic_data.append(Image(kwargs.get("grafico_victimizacion_path"), width=240, height=200, preserveAspectRatio=True))
+        vic_data.append(Image(kwargs.get("grafico_victimizacion_path"), width=240, height=200))
     if kwargs.get("grafico_no_denuncia_path") and os.path.exists(kwargs.get("grafico_no_denuncia_path", "")):
-        vic_data.append(Image(kwargs.get("grafico_no_denuncia_path"), width=240, height=200, preserveAspectRatio=True))
+        vic_data.append(Image(kwargs.get("grafico_no_denuncia_path"), width=240, height=200))
     if vic_data:
         story.append(Table([vic_data], colWidths=[250, 250]))
         
@@ -450,35 +450,35 @@ def generar_pdf(portada_path, **kwargs):
     story.append(Paragraph(f"<b>Nota de campo:</b> La mayor cantidad de los encuestados que declararon ser víctimas de algún ilícito señalan que el principal motivo para la abstención de la denuncia penal es: <i>{kwargs.get('motivo_principal', 'No especificado')}</i>. Casos omitidos en este bloque: {kwargs.get('total_omitidas', 0)}.", style_body))
     story.append(PageBreak())
     
-    # ---------------- FACTORS AMBIENTALES ----------------
+    # Sub-página Percepción del Entorno y Armas
     story.append(Paragraph("Factores Ambientales del Hecho Delictivo", style_h1))
     env_data = []
     if kwargs.get("grafico_horarios_percepcion") and os.path.exists(kwargs.get("grafico_horarios_percepcion", "")):
-        env_data.append(Image(kwargs.get("grafico_horarios_percepcion"), width=240, height=200, preserveAspectRatio=True))
+        env_data.append(Image(kwargs.get("grafico_horarios_percepcion"), width=240, height=200))
     if kwargs.get("grafico_armas_percepcion") and os.path.exists(kwargs.get("grafico_armas_percepcion", "")):
-        env_data.append(Image(kwargs.get("grafico_armas_percepcion"), width=240, height=200, preserveAspectRatio=True))
+        env_data.append(Image(kwargs.get("grafico_armas_percepcion"), width=240, height=200))
     if env_data:
         story.append(Table([env_data], colWidths=[250, 250]))
     story.append(PageBreak())
     
-    # ---------------- EVALUACIÓN SERVICIO POLICIAL ----------------
+    # Sub-página Evaluación del Servicio de Fuerza Pública
     story.append(Paragraph("Evaluación de la Gestión Operativa del Servicio Policial", style_h1))
     if kwargs.get("grafico_servicio_policial") and os.path.exists(kwargs.get("grafico_servicio_policial", "")):
-        story.append(Image(kwargs.get("grafico_servicio_policial"), width=490, height=220, preserveAspectRatio=True))
+        story.append(Image(kwargs.get("grafico_servicio_policial"), width=490, height=220))
     story.append(PageBreak())
     
-    # ---------------- SECTOR COMERCIAL ----------------
+    # Sub-página Diagnóstico Sector Comercial Especializado
     story.append(Paragraph("Percepción y Enlace con el Sector Comercial", style_h1))
     com_data_1 = []
     com_data_2 = []
     if kwargs.get("grafico_comercio_seguridad") and os.path.exists(kwargs.get("grafico_comercio_seguridad", "")):
-        com_data_1.append(Image(kwargs.get("grafico_comercio_seguridad"), width=240, height=180, preserveAspectRatio=True))
+        com_data_1.append(Image(kwargs.get("grafico_comercio_seguridad"), width=240, height=180))
     if kwargs.get("grafico_comercio_programa") and os.path.exists(kwargs.get("grafico_comercio_programa", "")):
-        com_data_1.append(Image(kwargs.get("grafico_comercio_programa"), width=240, height=180, preserveAspectRatio=True))
+        com_data_1.append(Image(kwargs.get("grafico_comercio_programa"), width=240, height=180))
     if kwargs.get("grafico_comercio_inscrito") and os.path.exists(kwargs.get("grafico_comercio_inscrito", "")):
-        com_data_2.append(Image(kwargs.get("grafico_comercio_inscrito"), width=240, height=180, preserveAspectRatio=True))
+        com_data_2.append(Image(kwargs.get("grafico_comercio_inscrito"), width=240, height=180))
     if kwargs.get("grafico_comercio_contacto") and os.path.exists(kwargs.get("grafico_comercio_contacto", "")):
-        com_data_2.append(Image(kwargs.get("grafico_comercio_contacto"), width=240, height=180, preserveAspectRatio=True))
+        com_data_2.append(Image(kwargs.get("grafico_comercio_contacto"), width=240, height=180))
         
     if com_data_1:
         story.append(Table([com_data_1], colWidths=[250, 250]))
@@ -487,9 +487,10 @@ def generar_pdf(portada_path, **kwargs):
         story.append(Table([com_data_2], colWidths=[250, 250]))
     story.append(PageBreak())
     
-    # ---------------- PAGINA FINAL ----------------
+    # ---------------- PAGINA FINAL: CONTRAPORTADA ----------------
     story.append(Spacer(1, 40))
 
+    # Construcción de las capas del documento
     doc.build(
         story,
         onFirstPage=draw_background_templates,
