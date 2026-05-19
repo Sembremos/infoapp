@@ -83,7 +83,7 @@ def draw_background_templates(canvas, doc):
     # Numeración de página limpia en el Footer
     canvas.setFont("Helvetica", 9)
     canvas.setFillColor(COLOR_PRIMARIO)
-    canvas.drawRightString(page_width - 40, 30, fPágina {doc.page}")
+    canvas.drawRightString(page_width - 40, 30, f"Página {doc.page}")
 
 
 # ================= CONSTRUIDORES DE COMPONENTES DE TABLAS =================
