@@ -330,30 +330,63 @@ if archivo:
         for spine in ax_sp.spines.values(): spine.set_visible(False)
         grafico_servicio_policial = salvar_grafico_a_disco(fig_sp, "grafico_servicio_policial.png")
 
-        # Comercio Especializado
+        # =====================================================================
+        # BLOQUE DE GRÁFICOS DEL SECTOR COMERCIAL (CORREGIDO CONTRA VALORES NAN)
+        # =====================================================================
+        import numpy as np
+
+        # 1. Comercio Especializado - Seguridad
         com_s_l = df.iloc[398:400, 0].fillna("").astype(str).tolist()
         com_s_v = pd.to_numeric(df.iloc[398:400, 1], errors="coerce").fillna(0).tolist()
+        com_s_v = np.nan_to_num(np.array(com_s_v, dtype=float), nan=0.0)
+        
         fig_cs, ax_cs = plt.subplots(figsize=(4, 4))
-        ax_cs.pie(com_s_v, labels=com_s_l, autopct='%1.1f%%')
+        if len(com_s_v) > 0 and np.sum(com_s_v) > 0:
+            ax_cs.pie(com_s_v, labels=com_s_l, autopct='%1.1f%%', startangle=90)
+        else:
+            ax_cs.text(0.5, 0.5, "Sin respuestas registradas\n(Suma es 0)", ha='center', va='center', fontsize=10, color='gray', weight='bold')
+            ax_cs.axis('off')
         grafico_comercio_seguridad = salvar_grafico_a_disco(fig_cs, "grafico_comercio_seguridad.png")
 
+        # 2. Comercio Especializado - Programa
         com_p_l = df.iloc[405:407, 0].fillna("").astype(str).tolist()
         com_p_v = pd.to_numeric(df.iloc[405:407, 1], errors="coerce").fillna(0).tolist()
+        com_p_v = np.nan_to_num(np.array(com_p_v, dtype=float), nan=0.0)
+        
         fig_cp, ax_cp = plt.subplots(figsize=(4, 4))
-        ax_cp.pie(com_p_v, labels=com_p_l, autopct='%1.1f%%')
+        if len(com_p_v) > 0 and np.sum(com_p_v) > 0:
+            ax_cp.pie(com_p_v, labels=com_p_l, autopct='%1.1f%%', startangle=90)
+        else:
+            ax_cp.text(0.5, 0.5, "Sin respuestas registradas\n(Suma es 0)", ha='center', va='center', fontsize=10, color='gray', weight='bold')
+            ax_cp.axis('off')
         grafico_comercio_programa = salvar_grafico_a_disco(fig_cp, "grafico_comercio_programa.png")
 
+        # 3. Comercio Especializado - Inscrito (El que daba el error en línea 349)
         com_i_l = df.iloc[412:414, 0].fillna("").astype(str).tolist()
         com_i_v = pd.to_numeric(df.iloc[412:414, 1], errors="coerce").fillna(0).tolist()
+        com_i_v = np.nan_to_num(np.array(com_i_v, dtype=float), nan=0.0)
+        
         fig_ci, ax_ci = plt.subplots(figsize=(4, 4))
-        ax_ci.pie(com_i_v, labels=com_i_l, autopct='%1.1f%%')
+        if len(com_i_v) > 0 and np.sum(com_i_v) > 0:
+            ax_ci.pie(com_i_v, labels=com_i_l, autopct='%1.1f%%', startangle=90)
+        else:
+            ax_ci.text(0.5, 0.5, "Sin respuestas registradas\n(Suma es 0)", ha='center', va='center', fontsize=10, color='gray', weight='bold')
+            ax_ci.axis('off')
         grafico_comercio_inscrito = salvar_grafico_a_disco(fig_ci, "grafico_comercio_inscrito.png")
 
+        # 4. Comercio Especializado - Contacto
         com_c_l = df.iloc[419:421, 0].fillna("").astype(str).tolist()
         com_c_v = pd.to_numeric(df.iloc[419:421, 1], errors="coerce").fillna(0).tolist()
+        com_c_v = np.nan_to_num(np.array(com_c_v, dtype=float), nan=0.0)
+        
         fig_cc, ax_cc = plt.subplots(figsize=(4, 4))
-        ax_cc.pie(com_c_v, labels=com_c_l, autopct='%1.1f%%')
+        if len(com_c_v) > 0 and np.sum(com_c_v) > 0:
+            ax_cc.pie(com_c_v, labels=com_c_l, autopct='%1.1f%%', startangle=90)
+        else:
+            ax_cc.text(0.5, 0.5, "Sin respuestas registradas\n(Suma es 0)", ha='center', va='center', fontsize=10, color='gray', weight='bold')
+            ax_cc.axis('off')
         grafico_comercio_contacto = salvar_grafico_a_disco(fig_cc, "grafico_comercio_contacto.png")
+        # =====================================================================
 
         # Variables sueltas requeridas por firmas
         omitidas_servicio = seguro_int(df.iloc[386, 6])
