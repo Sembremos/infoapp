@@ -1333,7 +1333,10 @@ if archivo:
             if pd.isna(valor_sup) and idx > 0:
                 valor_sup = fila_298.iloc[idx - 1]
         
-            encabezado_superior.append(str(valor_sup).strip())
+            if pd.isna(valor_sup):
+                encabezado_superior.append("")
+            else:
+                encabezado_superior.append(str(valor_sup).strip())
         
             valor_inf = fila_299.iloc[idx]
         
@@ -1370,12 +1373,14 @@ if archivo:
                 else:
         
                     if isinstance(valor, float):
-        
-                        if valor.is_integer():
-                            fila.append(str(int(valor)))
+
+                        porcentaje = round(valor * 100, 1)
+                    
+                        if porcentaje.is_integer():
+                            fila.append(f"{int(porcentaje)}%")
                         else:
-                            fila.append(str(valor))
-        
+                            fila.append(f"{porcentaje}%")
+                            
                     else:
                         fila.append(str(valor))
         
