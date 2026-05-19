@@ -1728,32 +1728,113 @@ def draw_pagina_percepcion_1(
         "Comparativo Percepción Ciudadana por Zonas"
     )
 
-# ===== TABLA GRANDE =====
-    TOTAL_COLUMNAS = len(tabla_percepcion[0])
-    ANCHO_COLUMNA = TABLA_WIDTH_TOTAL / TOTAL_COLUMNAS
-        
-    from reportlab.platypus import Table, TableStyle
-        
-    tabla = Table(
-        tabla_percepcion,
-        colWidths=[ANCHO_COLUMNA] * TOTAL_COLUMNAS
+    # ===== TABLA GRANDE =====
+
+    from reportlab.platypus import Table, TableStyle, Paragraph
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER
+    
+    # =========================
+    # ESTILOS
+    # =========================
+    
+    header_style = ParagraphStyle(
+        name="PercepcionHeader",
+        fontName="Helvetica-Bold",
+        fontSize=8,
+        leading=10,
+        alignment=TA_CENTER,
+        textColor=colors.white,
+        wordWrap="CJK"
     )
-        
+    
+    cell_style = ParagraphStyle(
+        name="PercepcionCell",
+        fontName="Helvetica",
+        fontSize=8,
+        leading=9,
+        alignment=TA_CENTER,
+        wordWrap="CJK"
+    )
+    
+    # =========================
+    # CONVERTIR A PARAGRAPH
+    # =========================
+    
+    tabla_render = []
+    
+    for row_idx, row in enumerate(tabla_percepcion):
+    
+        nueva = []
+    
+        for cell in row:
+    
+            texto = str(cell)
+    
+            if row_idx <= 1:
+                nueva.append(Paragraph(texto, header_style))
+            else:
+                nueva.append(Paragraph(texto, cell_style))
+    
+        tabla_render.append(nueva)
+    
+    # =========================
+    # ANCHOS COLUMNAS
+    # =========================
+    
+    col_widths = [
+        130,
+        55,
+        55,
+        55,
+        55,
+        55,
+        55
+    ]
+    
+    tabla = Table(
+        tabla_render,
+        colWidths=col_widths,
+        repeatRows=2
+    )
+    
+    # =========================
+    # ESTILOS TABLA
+    # =========================
+    
     tabla.setStyle(TableStyle([
+    
         ("GRID", (0,0), (-1,-1), 0.5, colors.black),
-        
-        # Encabezados (filas 0 y 1)
+    
         ("BACKGROUND", (0,0), (-1,1), colors.HexColor("#30A907")),
         ("TEXTCOLOR", (0,0), (-1,1), colors.white),
-        ("FONTNAME", (0,0), (-1,1), "Helvetica-Bold"),
-        
+    
+        ("BACKGROUND", (0,2), (-1,-1), colors.white),
+    
+        ("BACKGROUND", (0,2), (0,-1), colors.HexColor("#E2F0D9")),
+        ("FONTNAME", (0,2), (0,-1), "Helvetica-Bold"),
+    
         ("ALIGN", (0,0), (-1,-1), "CENTER"),
         ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
+    
+        ("TOPPADDING", (0,0), (-1,-1), 4),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 4),
+        ("LEFTPADDING", (0,0), (-1,-1), 3),
+        ("RIGHTPADDING", (0,0), (-1,-1), 3),
     ]))
-        
-    tabla.wrapOn(canvas, TABLA_WIDTH_TOTAL, 400)
-    tabla.drawOn(canvas, TABLA_X, TABLA_Y)
-
+    
+    # =========================
+    # RENDER
+    # =========================
+    
+    tabla.wrapOn(canvas, TABLA_WIDTH_TOTAL, 500)
+    
+    tabla.drawOn(
+        canvas,
+        TABLA_X,
+        TABLA_Y - tabla._height + 180
+    )
+    
     # ===== FORZAR ENCABEZADOS =====
     if len(tabla_percepcion) >= 2:
     
