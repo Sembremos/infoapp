@@ -1,964 +1,16 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Pegado text(56).txt
-Documento
-
-Texto pegado (2)(3).txt
-Documento
-ok, para cerrar hoy necesito hacer un cambio en el informe. te voy a pasar ambos codigos completos, luego te hago la peticion
-pero trabaja sobre los codes que te doy, no supongas nada
-
-Perfecto. Ya tengo ambos códigos cargados y voy a trabajar únicamente sobre esos archivos, sin asumir estructuras ni lógica fuera de lo que enviaste. 
-
- 
-
-
-Ahora pásame exactamente:
-
-qué cambio necesitas,
-
-en qué página/sección del informe ocurre,
-
-y cómo debería quedar visual o funcionalmente.
-
-
-en la secccion de percepcion ciudadana, en la primera pagina hay una tabla con el titulo "Comparativo Percepcion Ciudadana por Zonas", en esa tabla aparecen 3 encabezados "2025"  pero arriba de esos encabezados aparece una fila completa que no tiene nada de info, necesito que esa fila no aparezca de esa manera, ya que la tabla cambió en relacion al primer code que habiamos hecho. 
-la tabla ahora abarca: A298 : M311
-pero solo vamos a colocar en el informe:
-las primeras 2 filas (298-299) completas.
-la columna A, que posee los nombres
-columnas C, E, G, I, K, M.
-
-los encabezados de estas columnas en la fila 298, estan en casillas compartidas por lo que
-B298 y C298, pertenecen a la columna C, y asi concecutivamente con el resto
-
-la tabla debe de quedar ubicada exactamente donde se ubica actualmente, pero redimencionada ya que esta tabla es mas ancha que la actual, entocnes eso se debe de tomar en cuenta
-
-dame todo el code necessario para realizar este cambio y los pasos detallados como para el mongolito que soy
-
-Perfecto. El problema es claro: la tabla actual todavía está construida con la lógica vieja y por eso aparece una fila fantasma/vacía arriba de los encabezados “2025”.
-
-Vamos a corregirlo bien desde la extracción de datos y luego desde el render en PDF.
-
-1. CAMBIO EN EL ARCHIVO STREAMLIT (archivo principal)
-Buscá la sección donde actualmente se construye la tabla de:
-
-Comparativo Percepcion Ciudadana por Zonas
-Probablemente está cerca de la parte final del archivo.
-
-TENÉS QUE ELIMINAR COMPLETAMENTE la lógica vieja de esa tabla.
-
-2. PEGÁ ESTE NUEVO BLOQUE
-Este bloque extrae EXACTAMENTE:
-
-filas 298 y 299 completas
-
-columna A
-
-columnas C,E,G,I,K,M
-
-respetando encabezados combinados
-
-sin fila vacía fantasma
-
-PEGALO donde estaba la tabla anterior.
-
-# =========================================
-# COMPARATIVO PERCEPCION CIUDADANA POR ZONAS
-# NUEVA ESTRUCTURA
-# RANGO REAL: A298:M311
-# =========================================
-
-# ===== FILAS COMPLETAS =====
-fila_298 = df.iloc[297, 0:13].copy()   # A298:M298
-fila_299 = df.iloc[298, 0:13].copy()   # A299:M299
-
-# ===== DATOS =====
-datos_pc = df.iloc[299:311, 0:13].copy()   # A300:M311
-
-# ===== COLUMNAS QUE SI SE USAN =====
-# A + C + E + G + I + K + M
-
-columnas_indices = [0, 2, 4, 6, 8, 10, 12]
-
-# ===== CREAR ENCABEZADO REAL =====
-
-encabezado_superior = []
-encabezado_inferior = []
-
-for idx in columnas_indices:
-
-    # ===== FILA 298 =====
-    valor_sup = fila_298.iloc[idx]
-
-    # Como las celdas están combinadas:
-    # B298+C298 pertenecen a C
-    # D298+E298 pertenecen a E
-    # etc
-
-    if pd.isna(valor_sup):
-
-        # tomar valor anterior
-        valor_sup = fila_298.iloc[idx - 1]
-
-    encabezado_superior.append(str(valor_sup).strip())
-
-    # ===== FILA 299 =====
-    valor_inf = fila_299.iloc[idx]
-    encabezado_inferior.append(str(valor_inf).strip())
-
-# ===== TABLA FINAL =====
-
-tabla_percepcion_zonas = []
-
-tabla_percepcion_zonas.append(encabezado_superior)
-tabla_percepcion_zonas.append(encabezado_inferior)
-
-# ===== AGREGAR FILAS =====
-
-for _, row in datos_pc.iterrows():
-
-    fila = []
-
-    for idx in columnas_indices:
-
-        valor = row.iloc[idx]
-
-        if pd.isna(valor):
-            fila.append("")
-        else:
-
-            # evitar .0
-            if isinstance(valor, float):
-
-                if valor.is_integer():
-                    fila.append(str(int(valor)))
-                else:
-                    fila.append(str(valor))
-
-            else:
-                fila.append(str(valor))
-
-    # evitar filas totalmente vacías
-    if any(str(v).strip() != "" for v in fila):
-        tabla_percepcion_zonas.append(fila)
-3. AHORA EL PDF
-Ahora vamos al archivo:
-
-pdf_generator.py
-
-
-4. BUSCÁ LA FUNCIÓN VIEJA
-Probablemente existe algo parecido a:
-
-draw_tabla_percepcion(...)
-o algo similar.
-
-NO LA MODIFIQUÉS.
-
-Más fácil:
-CREÁ UNA NUEVA FUNCIÓN.
-
-5. PEGÁ ESTA NUEVA FUNCIÓN
-Pegala cerca de las demás tablas tipo:
-
-draw_tabla_modalidades_p14
-draw_tabla_horario_distrito
-# =========================================
-# TABLA PERCEPCION CIUDADANA POR ZONAS
-# NUEVA VERSION
-# =========================================
-
-def draw_tabla_percepcion_zonas(
-    canvas,
-    data,
-    titulo,
-    x,
-    y,
-    col_widths
-):
-
-    from reportlab.platypus import Paragraph
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT
-
-    TABLE_WIDTH = sum(col_widths)
-
-    # ===============================
-    # ESTILOS
-    # ===============================
-
-    titulo_style = ParagraphStyle(
-        name="TituloPC",
-        fontName="Helvetica-Bold",
-        fontSize=9,
-        alignment=TA_CENTER,
-        leading=10,
-        textColor=colors.white
-    )
-
-    header_style = ParagraphStyle(
-        name="HeaderPC",
-        fontName="Helvetica-Bold",
-        fontSize=8,
-        alignment=TA_CENTER,
-        leading=9,
-        textColor=colors.white
-    )
-
-    cell_style = ParagraphStyle(
-        name="CellPC",
-        fontName="Helvetica",
-        fontSize=7,
-        alignment=TA_CENTER,
-        leading=8,
-        wordWrap="CJK"
-    )
-
-    distrito_style = ParagraphStyle(
-        name="DistritoPC",
-        fontName="Helvetica-Bold",
-        fontSize=7,
-        alignment=TA_LEFT,
-        leading=8,
-        wordWrap="CJK"
-    )
-
-    # ===============================
-    # CONSTRUIR TABLA
-    # ===============================
-
-    table_data = []
-
-    # TITULO
-    table_data.append(
-        [Paragraph(titulo, titulo_style)] + [""] * (len(data[0]) - 1)
-    )
-
-    # FILA 298
-    fila1 = []
-
-    for cell in data[0]:
-        fila1.append(
-            Paragraph(str(cell), header_style)
-        )
-
-    table_data.append(fila1)
-
-    # FILA 299
-    fila2 = []
-
-    for cell in data[1]:
-        fila2.append(
-            Paragraph(str(cell), header_style)
-        )
-
-    table_data.append(fila2)
-
-    # DATOS
-    for row in data[2:]:
-
-        nueva_fila = []
-
-        for i, cell in enumerate(row):
-
-            if i == 0:
-                nueva_fila.append(
-                    Paragraph(str(cell), distrito_style)
-                )
-
-            else:
-                nueva_fila.append(
-                    Paragraph(str(cell), cell_style)
-                )
-
-        table_data.append(nueva_fila)
-
-    # ===============================
-    # TABLA
-    # ===============================
-
-    table = Table(
-        table_data,
-        colWidths=col_widths
-    )
-
-    style = [
-
-        # TITULO
-        ("SPAN", (0,0), (-1,0)),
-        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#30A907")),
-        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
-
-        # HEADER 1
-        ("BACKGROUND", (0,1), (-1,1), colors.HexColor("#013051")),
-        ("TEXTCOLOR", (0,1), (-1,1), colors.white),
-
-        # HEADER 2
-        ("BACKGROUND", (0,2), (-1,2), colors.HexColor("#1F5D8B")),
-        ("TEXTCOLOR", (0,2), (-1,2), colors.white),
-
-        # CUERPO
-        ("BACKGROUND", (0,3), (-1,-1), colors.white),
-
-        # GRID
-        ("GRID", (0,0), (-1,-1), 0.5, colors.black),
-
-        # ALIGN
-        ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
-
-        # PADDING
-        ("TOPPADDING", (0,0), (-1,-1), 3),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 3),
-        ("LEFTPADDING", (0,0), (-1,-1), 3),
-        ("RIGHTPADDING", (0,0), (-1,-1), 3),
-    ]
-
-    table.setStyle(TableStyle(style))
-
-    table.wrapOn(canvas, TABLE_WIDTH, 2000)
-    table.drawOn(canvas, x, y - table._height)
-6. AHORA LLAMAR LA TABLA
-Buscá donde actualmente se dibuja la tabla vieja.
-
-Algo parecido a:
-
-draw_tabla_percepcion(...)
-o donde diga:
-
-Comparativo Percepcion Ciudadana por Zonas
-7. REEMPLAZÁ ESA LLAMADA POR ESTA
-draw_tabla_percepcion_zonas(
-    canvas,
-    tabla_percepcion_zonas,
-    "Comparativo Percepción Ciudadana por Zonas",
-    x=25,
-    y=420,
-    col_widths=[150, 55, 55, 55, 55, 55, 55]
-)
-8. ¿POR QUÉ ES MÁS ANCHA?
-Porque ahora:
-
-antes tenías menos columnas útiles
-
-ahora son 7 columnas reales
-
-y los encabezados ocupan doble fila
-
-Entonces:
-
-aumentamos ancho total
-
-reducimos tamaño de fuente
-
-dejamos primera columna más grande
-
-9. RESULTADO
-Con esto:
-
-desaparece la fila vacía fantasma
-
-los encabezados 2025 quedan correctos
-
-la tabla usa la estructura nueva
-
-queda más ancha
-
-mantiene la posición actual
-
-no rompe el PDF
-
-Y listo.
-
-
-Probablemente está cerca de la parte final del archivo.  esto es inaceptable, deme exactamente los cambios, y en cual codigo se encuentra, para eso te pase ambos codigos completos
-
-Correcto. Vamos exacto y quirúrgico.
-
-El cambio se hace en DOS lugares:
-
-En el archivo principal de Streamlit
-→ Pegado text(56).txt 
-
-
-En pdf_generator.py
-→ Texto pegado (2)(3).txt 
-
-
-PARTE 1 — STREAMLIT (archivo principal)
-ARCHIVO:
-Pegado text(56).txt
-
-PASO 1
-Buscá EXACTAMENTE este bloque:
-
-#==============================DEFINICION; LINEAS ACCION==========
-NO toqués eso.
-
-ANTES de ese bloque, pegá TODO esto:
-
-# =========================================
-# COMPARATIVO PERCEPCION CIUDADANA POR ZONAS
-# NUEVA ESTRUCTURA
-# =========================================
-
-# ===== FILAS COMPLETAS =====
-fila_298 = df.iloc[297, 0:13].copy()   # A298:M298
-fila_299 = df.iloc[298, 0:13].copy()   # A299:M299
-
-# ===== DATOS =====
-datos_pc = df.iloc[299:311, 0:13].copy()   # A300:M311
-
-# ===== COLUMNAS QUE SI SE USAN =====
-# A + C + E + G + I + K + M
-columnas_indices = [0, 2, 4, 6, 8, 10, 12]
-
-# ===== ENCABEZADOS =====
-encabezado_superior = []
-encabezado_inferior = []
-
-for idx in columnas_indices:
-
-    valor_sup = fila_298.iloc[idx]
-
-    # Resolver merged cells
-    if pd.isna(valor_sup) and idx > 0:
-        valor_sup = fila_298.iloc[idx - 1]
-
-    encabezado_superior.append(str(valor_sup).strip())
-
-    valor_inf = fila_299.iloc[idx]
-    encabezado_inferior.append(str(valor_inf).strip())
-
-# ===== TABLA FINAL =====
-tabla_percepcion_zonas = []
-
-tabla_percepcion_zonas.append(encabezado_superior)
-tabla_percepcion_zonas.append(encabezado_inferior)
-
-# ===== FILAS =====
-for _, row in datos_pc.iterrows():
-
-    fila = []
-
-    for idx in columnas_indices:
-
-        valor = row.iloc[idx]
-
-        if pd.isna(valor):
-            fila.append("")
-
-        else:
-
-            if isinstance(valor, float):
-
-                if valor.is_integer():
-                    fila.append(str(int(valor)))
-                else:
-                    fila.append(str(valor))
-
-            else:
-                fila.append(str(valor))
-
-    # evitar filas totalmente vacías
-    if any(str(v).strip() != "" for v in fila):
-        tabla_percepcion_zonas.append(fila)
-PARTE 2 — PDF GENERATOR
-ARCHIVO:
-Texto pegado (2)(3).txt
-
-PASO 2
-Buscá EXACTAMENTE esta función:
-
-def draw_tabla_dias_distritos_p15(
-
-
-NO la modifiqués.
-
-BAJO ESA FUNCIÓN COMPLETA, pegá esto:
-
-# =========================================
-# TABLA PERCEPCION CIUDADANA POR ZONAS
-# =========================================
-
-def draw_tabla_percepcion_zonas(
-    canvas,
-    data,
-    titulo,
-    x,
-    y,
-    col_widths
-):
-
-    from reportlab.platypus import Paragraph, Table, TableStyle
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT
-    from reportlab.lib import colors
-
-    TABLE_WIDTH = sum(col_widths)
-
-    titulo_style = ParagraphStyle(
-        name="TituloPC",
-        fontName="Helvetica-Bold",
-        fontSize=9,
-        alignment=TA_CENTER,
-        textColor=colors.white
-    )
-
-    header_style = ParagraphStyle(
-        name="HeaderPC",
-        fontName="Helvetica-Bold",
-        fontSize=7,
-        alignment=TA_CENTER,
-        textColor=colors.white,
-        leading=8
-    )
-
-    cell_style = ParagraphStyle(
-        name="CellPC",
-        fontName="Helvetica",
-        fontSize=7,
-        alignment=TA_CENTER,
-        leading=8
-    )
-
-    distrito_style = ParagraphStyle(
-        name="DistritoPC",
-        fontName="Helvetica-Bold",
-        fontSize=7,
-        alignment=TA_LEFT,
-        leading=8
-    )
-
-    table_data = []
-
-    # TITULO
-    table_data.append(
-        [Paragraph(titulo, titulo_style)] + [""] * (len(data[0]) - 1)
-    )
-
-    # HEADER SUPERIOR
-    fila1 = []
-
-    for cell in data[0]:
-        fila1.append(Paragraph(str(cell), header_style))
-
-    table_data.append(fila1)
-
-    # HEADER INFERIOR
-    fila2 = []
-
-    for cell in data[1]:
-        fila2.append(Paragraph(str(cell), header_style))
-
-    table_data.append(fila2)
-
-    # CUERPO
-    for row in data[2:]:
-
-        nueva_fila = []
-
-        for i, cell in enumerate(row):
-
-            if i == 0:
-                nueva_fila.append(
-                    Paragraph(str(cell), distrito_style)
-                )
-
-            else:
-                nueva_fila.append(
-                    Paragraph(str(cell), cell_style)
-                )
-
-        table_data.append(nueva_fila)
-
-    table = Table(
-        table_data,
-        colWidths=col_widths
-    )
-
-    style = [
-
-        # TITULO
-        ("SPAN", (0,0), (-1,0)),
-        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#30A907")),
-        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
-
-        # HEADER 1
-        ("BACKGROUND", (0,1), (-1,1), colors.HexColor("#013051")),
-        ("TEXTCOLOR", (0,1), (-1,1), colors.white),
-
-        # HEADER 2
-        ("BACKGROUND", (0,2), (-1,2), colors.HexColor("#1F5D8B")),
-        ("TEXTCOLOR", (0,2), (-1,2), colors.white),
-
-        # BODY
-        ("BACKGROUND", (0,3), (-1,-1), colors.white),
-
-        # GRID
-        ("GRID", (0,0), (-1,-1), 0.5, colors.black),
-
-        # ALIGN
-        ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
-
-        # PADDING
-        ("TOPPADDING", (0,0), (-1,-1), 2),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 2),
-        ("LEFTPADDING", (0,0), (-1,-1), 2),
-        ("RIGHTPADDING", (0,0), (-1,-1), 2),
-    ]
-
-    table.setStyle(TableStyle(style))
-
-    table.wrapOn(canvas, TABLE_WIDTH, 2000)
-    table.drawOn(canvas, x, y - table._height)
-PASO 3 — REEMPLAZAR LA TABLA VIEJA
-En Texto pegado (2)(3).txt
-
-buscá EXACTAMENTE:
-
-Comparativo Percepción Ciudadana por Zonas
-o:
-
-Comparativo Percepcion Ciudadana por Zonas
-Ahí vas a encontrar la llamada vieja de la tabla.
-
-BORRÁ esa llamada completa.
-
-PASO 4 — PEGAR LA NUEVA LLAMADA
-En el MISMO LUGAR donde borraste la anterior, pegá esto:
-
-draw_tabla_percepcion_zonas(
-    canvas,
-    tabla_percepcion_zonas,
-    "Comparativo Percepción Ciudadana por Zonas",
-    x=20,
-    y=430,
-    col_widths=[150, 55, 55, 55, 55, 55, 55]
-)
-RESULTADO
-Esto corrige:
-
-la fila vacía fantasma
-
-los encabezados duplicados
-
-el problema de merged cells
-
-el ancho nuevo
-
-mantiene posición
-
-usa la nueva estructura A298:M311
-
-usa únicamente A,C,E,G,I,K,M
-
-Y no toca ninguna otra parte del PDF.
-
-
-me estas dando las indicaciones muy confusas 
-
-Ok. Vamos a hacerlo SIMPLE.
-Solo son 3 cambios reales.
-
-CAMBIO 1 — ARCHIVO STREAMLIT
-Archivo:
-
-Pegado text(56).txt
-BUSCÁ ESTA LÍNEA EXACTA
-#==============================DEFINICION; LINEAS ACCION==========
-JUSTO ARRIBA PEGÁ ESTO
-# =========================================
-# COMPARATIVO PERCEPCION CIUDADANA POR ZONAS
-# =========================================
-
-fila_298 = df.iloc[297, 0:13].copy()
-fila_299 = df.iloc[298, 0:13].copy()
-
-datos_pc = df.iloc[299:311, 0:13].copy()
-
-columnas_indices = [0, 2, 4, 6, 8, 10, 12]
-
-encabezado_superior = []
-encabezado_inferior = []
-
-for idx in columnas_indices:
-
-    valor_sup = fila_298.iloc[idx]
-
-    if pd.isna(valor_sup) and idx > 0:
-        valor_sup = fila_298.iloc[idx - 1]
-
-    encabezado_superior.append(str(valor_sup).strip())
-
-    valor_inf = fila_299.iloc[idx]
-    encabezado_inferior.append(str(valor_inf).strip())
-
-tabla_percepcion_zonas = []
-
-tabla_percepcion_zonas.append(encabezado_superior)
-tabla_percepcion_zonas.append(encabezado_inferior)
-
-for _, row in datos_pc.iterrows():
-
-    fila = []
-
-    for idx in columnas_indices:
-
-        valor = row.iloc[idx]
-
-        if pd.isna(valor):
-            fila.append("")
-
-        else:
-
-            if isinstance(valor, float):
-
-                if valor.is_integer():
-                    fila.append(str(int(valor)))
-                else:
-                    fila.append(str(valor))
-
-            else:
-                fila.append(str(valor))
-
-    if any(str(v).strip() != "" for v in fila):
-        tabla_percepcion_zonas.append(fila)
-CAMBIO 2 — PDF GENERATOR
-Archivo:
-
-Texto pegado (2)(3).txt
-BUSCÁ ESTA FUNCIÓN
-def draw_tabla_dias_distritos_p15(
-BAJO ESA FUNCIÓN COMPLETA PEGÁ ESTO
-# =========================================
-# TABLA PERCEPCION CIUDADANA POR ZONAS
-# =========================================
-
-def draw_tabla_percepcion_zonas(
-    canvas,
-    data,
-    titulo,
-    x,
-    y,
-    col_widths
-):
-
-    from reportlab.platypus import Paragraph, Table, TableStyle
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT
-    from reportlab.lib import colors
-
-    TABLE_WIDTH = sum(col_widths)
-
-    titulo_style = ParagraphStyle(
-        name="TituloPC",
-        fontName="Helvetica-Bold",
-        fontSize=9,
-        alignment=TA_CENTER,
-        textColor=colors.white
-    )
-
-    header_style = ParagraphStyle(
-        name="HeaderPC",
-        fontName="Helvetica-Bold",
-        fontSize=7,
-        alignment=TA_CENTER,
-        textColor=colors.white
-    )
-
-    cell_style = ParagraphStyle(
-        name="CellPC",
-        fontName="Helvetica",
-        fontSize=7,
-        alignment=TA_CENTER
-    )
-
-    distrito_style = ParagraphStyle(
-        name="DistritoPC",
-        fontName="Helvetica-Bold",
-        fontSize=7,
-        alignment=TA_LEFT
-    )
-
-    table_data = []
-
-    table_data.append(
-        [Paragraph(titulo, titulo_style)] + [""] * (len(data[0]) - 1)
-    )
-
-    fila1 = []
-
-    for cell in data[0]:
-        fila1.append(Paragraph(str(cell), header_style))
-
-    table_data.append(fila1)
-
-    fila2 = []
-
-    for cell in data[1]:
-        fila2.append(Paragraph(str(cell), header_style))
-
-    table_data.append(fila2)
-
-    for row in data[2:]:
-
-        nueva_fila = []
-
-        for i, cell in enumerate(row):
-
-            if i == 0:
-                nueva_fila.append(
-                    Paragraph(str(cell), distrito_style)
-                )
-
-            else:
-                nueva_fila.append(
-                    Paragraph(str(cell), cell_style)
-                )
-
-        table_data.append(nueva_fila)
-
-    table = Table(
-        table_data,
-        colWidths=col_widths
-    )
-
-    style = [
-
-        ("SPAN", (0,0), (-1,0)),
-        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#30A907")),
-
-        ("BACKGROUND", (0,1), (-1,1), colors.HexColor("#013051")),
-
-        ("BACKGROUND", (0,2), (-1,2), colors.HexColor("#1F5D8B")),
-
-        ("GRID", (0,0), (-1,-1), 0.5, colors.black),
-
-        ("TEXTCOLOR", (0,0), (-1,2), colors.white),
-
-        ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
-
-        ("TOPPADDING", (0,0), (-1,-1), 2),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 2),
-    ]
-
-    table.setStyle(TableStyle(style))
-
-    table.wrapOn(canvas, TABLE_WIDTH, 2000)
-    table.drawOn(canvas, x, y - table._height)
-CAMBIO 3 — REEMPLAZAR LA TABLA VIEJA
-En el MISMO archivo:
-
-Texto pegado (2)(3).txt
-BUSCÁ ESTO
-Comparativo Percepción Ciudadana por Zonas
-VAS A VER ALGO PARECIDO A ESTO
-draw_tabla_xxxxx(
-BORRÁ ESA LLAMADA COMPLETA
-y pegá esto:
-
-draw_tabla_percepcion_zonas(
-    canvas,
-    tabla_percepcion_zonas,
-    "Comparativo Percepción Ciudadana por Zonas",
-    x=20,
-    y=430,
-    col_widths=[150, 55, 55, 55, 55, 55, 55]
-)
-Y listo.
-
-Eso elimina:
-
-la fila vacía
-
-el bug de encabezados
-
-ajusta el ancho nuevo
-
-mantiene posición
-
-usa la tabla nueva A298:M311.
-
-
-import unicodedata
-import re
-import os
-from reportlab.platypus import (
-SimpleDocTemplate,
-Paragraph,
-Image,
-PageBreak,
-Spacer,
-Table,
-TableStyle
-)
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_LEFT, TA_JUSTIFY, TA_CENTER
-from reportlab.lib import colors
-from reportlab.lib.utils import ImageReader
-from io import BytesIO
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_LEFT
+import unicodedataimport reimport osfrom reportlab.platypus import (SimpleDocTemplate,Paragraph,Image,PageBreak,Spacer,Table,TableStyle)from reportlab.lib.pagesizes import A4from reportlab.lib.styles import getSampleStyleSheet, ParagraphStylefrom reportlab.lib.enums import TA_LEFT, TA_JUSTIFY, TA_CENTERfrom reportlab.lib import colorsfrom reportlab.lib.utils import ImageReaderfrom io import BytesIOfrom reportlab.lib.styles import ParagraphStylefrom reportlab.lib.enums import TA_LEFT
 
 ===== ESTILO GLOBAL PARA TABLAS PARETO =====
-pareto_cell_style = ParagraphStyle(
-name="ParetoCell",
-fontName="Helvetica",
-fontSize=11,
-leading=13,
-alignment=TA_LEFT,
-wordWrap="CJK"
-)
+
+pareto_cell_style = ParagraphStyle(name="ParetoCell",fontName="Helvetica",fontSize=11,leading=13,alignment=TA_LEFT,wordWrap="CJK")
 
 ================= UTILIDAD FULL PAGE =================
-def FullImage(path):
-def draw(canvas, doc):
-w, h = A4
-canvas.drawImage(
-path,
-0,
-0,
-width=w,
-height=h,
-preserveAspectRatio=True,
-mask="auto"
-)
-return draw
+
+def FullImage(path):def draw(canvas, doc):w, h = A4canvas.drawImage(path,0,0,width=w,height=h,preserveAspectRatio=True,mask="auto")return draw
 
 ================= HEADER / FOOTER =================
-def header_footer(canvas, doc):
-page_width, page_height = A4
+
+def header_footer(canvas, doc):page_width, page_height = A4
 
 canvas.drawImage(
     "assets/header.png",
@@ -977,9 +29,10 @@ canvas.drawImage(
     height=60,
     mask="auto"
 )
+
 ================= GRAFICO DE EDAD =================
-def draw_grafico_edad(canvas, doc, grafico_edad_path):
-page_width, page_height = A4
+
+def draw_grafico_edad(canvas, doc, grafico_edad_path):page_width, page_height = A4
 
 img_width = 220
 img = ImageReader(grafico_edad_path)
@@ -998,9 +51,10 @@ canvas.drawImage(
     preserveAspectRatio=True,
     mask="auto"
 )
+
 ================= GRAFICO ESCOLARIDAD =================
-def draw_grafico_escolaridad(canvas, grafico_path):
-page_width, page_height = A4
+
+def draw_grafico_escolaridad(canvas, grafico_path):page_width, page_height = A4
 
 img_width = 220
 img = ImageReader(grafico_path)
@@ -1019,9 +73,10 @@ canvas.drawImage(
     preserveAspectRatio=True,
     mask="auto"
 )
+
 ================= GRAFICO GENERO =================
-def draw_grafico_genero(canvas, grafico_path):
-page_width, page_height = A4
+
+def draw_grafico_genero(canvas, grafico_path):page_width, page_height = A4
 
 img_width = 220
 img = ImageReader(grafico_path)
@@ -1040,7 +95,9 @@ canvas.drawImage(
     preserveAspectRatio=True,
     mask="auto"
 )
+
 ================= GRAFICO RELACION DISTRITO =================
+
 def draw_grafico_relacion(canvas, grafico_path):
 
 page_width, page_height = A4
@@ -1106,9 +163,10 @@ canvas.drawImage(
     preserveAspectRatio=True,
     mask="auto"
 )
+
 ================= TABLA EDAD =================
-def draw_tabla_edad(canvas, doc, tabla_edad):
-page_width, page_height = A4
+
+def draw_tabla_edad(canvas, doc, tabla_edad):page_width, page_height = A4
 
 TABLE_WIDTH = 220
 FONT_SIZE_HEADER = 12
@@ -1153,9 +211,10 @@ for i, color in enumerate(colores_filas, start=1):
 
 table.wrapOn(canvas, TABLE_WIDTH, 200)
 table.drawOn(canvas, X, Y - 200)
+
 ================= TABLA ESCOLARIDAD =================
-def draw_tabla_escolaridad(canvas, tabla_escolaridad):
-page_width, page_height = A4
+
+def draw_tabla_escolaridad(canvas, tabla_escolaridad):page_width, page_height = A4
 
 TABLE_WIDTH = 220
 FONT_SIZE_HEADER = 12
@@ -1204,9 +263,10 @@ for i, color in enumerate(colores_filas, start=1):
 
 table.wrapOn(canvas, TABLE_WIDTH, 200)
 table.drawOn(canvas, x, y - 200)
+
 ================= TABLA GENERO =================
-def draw_tabla_genero(canvas, tabla_genero):
-page_width, page_height = A4
+
+def draw_tabla_genero(canvas, tabla_genero):page_width, page_height = A4
 
 TABLE_WIDTH = 220
 FONT_SIZE_HEADER = 12
@@ -1250,20 +310,8 @@ for i, color in enumerate(colores_filas, start=1):
 
 table.wrapOn(canvas, TABLE_WIDTH, 200)
 table.drawOn(canvas, x, y - 200)
-#-----------------------Tablas de encuestas
-def draw_tabla_simple(
-canvas,
-data,
-titulo,
-x,
-y,
-col_widths,
-header_color=colors.HexColor("#013051"),
-body_color=colors.white,
-border_color=colors.black,
-font_size_header=12,
-font_size_body=12
-):
+
+#-----------------------Tablas de encuestasdef draw_tabla_simple(canvas,data,titulo,x,y,col_widths,header_color=colors.HexColor("#013051"),body_color=colors.white,border_color=colors.black,font_size_header=12,font_size_body=12):
 
 from reportlab.platypus import Table, TableStyle, Paragraph
 from reportlab.lib.styles import ParagraphStyle
@@ -1320,15 +368,8 @@ tabla.wrapOn(canvas, TABLE_WIDTH, 400)
 tabla.drawOn(canvas, x, y - tabla._height)
 
 #tabla, pagina 2 final################################################
-def draw_tabla_victimizacion(
-canvas,
-data,
-titulo,
-x,
-y,
-col_widths,
-header_color
-):
+
+def draw_tabla_victimizacion(canvas,data,titulo,x,y,col_widths,header_color):
 
 from reportlab.platypus import Table, TableStyle, Paragraph
 from reportlab.lib.styles import ParagraphStyle
@@ -1396,31 +437,10 @@ tabla.setStyle(TableStyle([
 
 tabla.wrapOn(canvas, TABLE_WIDTH, 400)
 tabla.drawOn(canvas, x, y - tabla._height)
+
 #=========================================Tabla Pareto==================
 
-def draw_tabla_pareto(
-canvas,
-titulo,
-data,
-x,
-y,
-table_width=180,
-font_title="Helvetica-Bold",
-font_size_title=14,
-header_color=colors.HexColor("#4471C4"),
-body_color=colors.white,
-text_color=colors.black
-):
-# -------- FONDO DEL TÍTULO --------
-canvas.setFillColor(header_color)
-canvas.rect(
-x,
-y + 8,
-table_width,
-24,
-stroke=0,
-fill=1
-)
+def draw_tabla_pareto(canvas,titulo,data,x,y,table_width=180,font_title="Helvetica-Bold",font_size_title=14,header_color=colors.HexColor("#4471C4"),body_color=colors.white,text_color=colors.black):# -------- FONDO DEL TÍTULO --------canvas.setFillColor(header_color)canvas.rect(x,y + 8,table_width,24,stroke=0,fill=1)
 
 # -------- TEXTO DEL TÍTULO --------
 canvas.setFont(font_title, font_size_title)
@@ -1456,51 +476,14 @@ table.setStyle(TableStyle([
 
 table.wrapOn(canvas, table_width, 400)
 table.drawOn(canvas, x, y - table._height)
-def draw_porcentaje(
-canvas,
-texto,
-x,
-y,
-font="Helvetica-Bold",
-size=18,
-color=colors.black
-):
-canvas.setFont(font, size)
-canvas.setFillColor(color)
-canvas.drawCentredString(x, y, texto)
 
-def draw_cantidad(
-canvas,
-texto,
-x,
-y,
-font="Helvetica-Bold",
-size=14,
-color=colors.black
-):
-canvas.setFont(font, size)
-canvas.setFillColor(color)
-canvas.drawCentredString(x, y, texto)
+def draw_porcentaje(canvas,texto,x,y,font="Helvetica-Bold",size=18,color=colors.black):canvas.setFont(font, size)canvas.setFillColor(color)canvas.drawCentredString(x, y, texto)
+
+def draw_cantidad(canvas,texto,x,y,font="Helvetica-Bold",size=14,color=colors.black):canvas.setFont(font, size)canvas.setFillColor(color)canvas.drawCentredString(x, y, texto)
 
 ##=============MIC-MAC_________________________
 
-def draw_micmac_lista(
-canvas,
-data,
-x,
-y,
-width=200,
-max_height=180,
-font_size=8
-):
-style = ParagraphStyle(
-name="MicmacCell",
-fontName="Helvetica",
-fontSize=font_size,
-leading=9,
-alignment=TA_LEFT,
-wordWrap="CJK"
-)
+def draw_micmac_lista(canvas,data,x,y,width=200,max_height=180,font_size=8):style = ParagraphStyle(name="MicmacCell",fontName="Helvetica",fontSize=font_size,leading=9,alignment=TA_LEFT,wordWrap="CJK")
 
 # Convertir a Paragraph y dividir en 2 columnas
 paragraphs = [Paragraph(item[0], style) for item in data]
@@ -1535,25 +518,10 @@ table.setStyle(TableStyle([
 
 table.wrapOn(canvas, width, max_height)
 table.drawOn(canvas, x, y - table._height)
+
 #==================MICMAC2=========================
 
-def draw_tabla_overlay(
-canvas,
-data,
-x,
-y,
-width=120,
-font_size=8,
-max_height=160
-):
-style = ParagraphStyle(
-name="OverlayCell",
-fontName="Helvetica",
-fontSize=font_size,
-leading=font_size + 2,
-alignment=TA_LEFT,
-wordWrap="CJK"
-)
+def draw_tabla_overlay(canvas,data,x,y,width=120,font_size=8,max_height=160):style = ParagraphStyle(name="OverlayCell",fontName="Helvetica",fontSize=font_size,leading=font_size + 2,alignment=TA_LEFT,wordWrap="CJK")
 
 table_data = [[Paragraph(row[0], style)] for row in data]
 
@@ -1572,42 +540,14 @@ table.setStyle(TableStyle([
 
 table.wrapOn(canvas, width, max_height)
 table.drawOn(canvas, x, y - table._height)
+
 #texto_________________
 
-def draw_texto_overlay(
-canvas,
-texto,
-x,
-y,
-font="Helvetica-Bold",
-size=20,
-color=colors.white
-):
-canvas.setFont(font, size)
-canvas.setFillColor(color)
-canvas.drawCentredString(x, y, str(texto))
+def draw_texto_overlay(canvas,texto,x,y,font="Helvetica-Bold",size=20,color=colors.white):canvas.setFont(font, size)canvas.setFillColor(color)canvas.drawCentredString(x, y, str(texto))
 
 #_______________________Triangulo de violes-----------------------
 
-def draw_texto_mixto(
-canvas,
-x,
-y,
-texto_antes,
-valor_1,
-texto_medio,
-valor_2,
-texto_despues,
-width=250,
-font_size=11,
-valor_size=15
-):
-normal = ParagraphStyle(
-"normal",
-fontName="Helvetica",
-fontSize=font_size,
-alignment=TA_JUSTIFY
-)
+def draw_texto_mixto(canvas,x,y,texto_antes,valor_1,texto_medio,valor_2,texto_despues,width=250,font_size=11,valor_size=15):normal = ParagraphStyle("normal",fontName="Helvetica",fontSize=font_size,alignment=TA_JUSTIFY)
 
 html = (
     f"{texto_antes} "
@@ -1620,24 +560,10 @@ html = (
 p = Paragraph(html, normal)
 p.wrapOn(canvas, width, 200)
 p.drawOn(canvas, x, y)
+
 #TABLA DE INSTIS____
 
-def draw_tabla_instituciones(
-canvas,
-data,
-titulo="Lista de Instituciones",
-x=60,
-y=250,
-table_width=480,
-header_bg=colors.HexColor("#013051"),
-header_text_color=colors.white,
-body_bg=colors.whitesmoke,
-border_color=colors.black,
-font_header=12,
-font_body=10
-):
-if not data:
-return
+def draw_tabla_instituciones(canvas,data,titulo="Lista de Instituciones",x=60,y=250,table_width=480,header_bg=colors.HexColor("#013051"),header_text_color=colors.white,body_bg=colors.whitesmoke,border_color=colors.black,font_header=12,font_body=10):if not data:return
 
 # Construir encabezado
 table_data = [[titulo, ""]]
@@ -1663,16 +589,10 @@ table.setStyle(TableStyle([
 
 table.wrapOn(canvas, table_width, 300)
 table.drawOn(canvas, x, y - table._height)
+
 #====================TABLA DE HORARIOS PAGINA 13===================
 
-def draw_tabla_horario_distrito(
-canvas,
-data,
-titulo,
-x,
-y,
-col_widths
-):
+def draw_tabla_horario_distrito(canvas,data,titulo,x,y,col_widths):
 
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
@@ -1740,16 +660,10 @@ table.setStyle(TableStyle(style))
 
 table.wrapOn(canvas, TABLE_WIDTH, 2000)
 table.drawOn(canvas, x, y - table._height)
+
 #=======================TABLA PAGINA 14============
 
-def draw_tabla_modalidades_p14(
-canvas,
-data,
-titulo,
-x,
-y,
-col_widths
-):
+def draw_tabla_modalidades_p14(canvas,data,titulo,x,y,col_widths):
 
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
@@ -1853,16 +767,10 @@ table.setStyle(TableStyle(style))
 
 table.wrapOn(canvas, TABLE_WIDTH, 2000)
 table.drawOn(canvas, x, y - table._height)
+
 #======================TABLA P15...................
 
-def draw_tabla_dias_distritos_p15(
-canvas,
-data,
-titulo,
-x,
-y,
-col_widths
-):
+def draw_tabla_dias_distritos_p15(canvas,data,titulo,x,y,col_widths):
 
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
@@ -1970,10 +878,10 @@ table.setStyle(TableStyle(style))
 
 table.wrapOn(canvas, TABLE_WIDTH, 2000)
 table.drawOn(canvas, x, y - table._height)
+
 #==============================DEFINICION; LINEAS ACCION==========
 
-def normalizar_nombre(texto):
-texto = texto.lower()
+def normalizar_nombre(texto):texto = texto.lower()
 
 texto = ''.join(
     c for c in unicodedata.normalize('NFD', texto)
@@ -1986,13 +894,10 @@ texto = texto.replace(" ", "_")
 texto = re.sub(r"[^a-z0-9_()]", "", texto)
 
 return texto
+
 #tablas_______________
 
-def construir_tabla_dinamica(titulo, items, ancho_total, estilo_header_color):
-from reportlab.platypus import Table, TableStyle, Paragraph
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_LEFT
-from reportlab.lib import colors
+def construir_tabla_dinamica(titulo, items, ancho_total, estilo_header_color):from reportlab.platypus import Table, TableStyle, Paragraphfrom reportlab.lib.styles import ParagraphStylefrom reportlab.lib.enums import TA_LEFTfrom reportlab.lib import colors
 
 # ===== DETERMINAR CANTIDAD DE COLUMNAS =====
 
@@ -2151,15 +1056,10 @@ tabla.setStyle(TableStyle([
 ]))
 
 return tabla
+
 #========================================LINEAS DE ACCION===============================
 
-def draw_pagina_linea_accion(
-canvas,
-doc,
-linea,
-vectores_path="assets/vectores"
-):
-page_width, page_height = A4
+def draw_pagina_linea_accion(canvas,doc,linea,vectores_path="assets/vectores"):page_width, page_height = A4
 
 # ================= CONFIGURABLES =================
 SUBTITULO_FONT = "Helvetica-Bold"
@@ -2291,7 +1191,9 @@ CELDA_STYLE = ParagraphStyle(
     leading=11,   # controla interlineado
     alignment=TA_LEFT
 ) 
+
 ===== TABLA CAUSAS (ARRIBA) =====
+
 tabla_c = construir_tabla_dinamica(
     "Causas Socio Culturales y Estructurales",
     linea["causas"],
@@ -2325,14 +1227,10 @@ y_tabla_p = y_tabla_c - ESPACIO_ENTRE_TABLAS - alto_tabla_p
 
 tabla_c.drawOn(canvas, 40, y_tabla_c)
 tabla_p.drawOn(canvas, 40, y_tabla_p)
+
 ##==================segunda pagina LA================
 
-def draw_pagina_linea_accion_detalle(canvas, doc, linea):
-from reportlab.platypus import Paragraph, Table, TableStyle
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_LEFT
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
+def draw_pagina_linea_accion_detalle(canvas, doc, linea):from reportlab.platypus import Paragraph, Table, TableStylefrom reportlab.lib.styles import ParagraphStylefrom reportlab.lib.enums import TA_LEFTfrom reportlab.lib import colorsfrom reportlab.lib.pagesizes import A4
 
 page_width, page_height = A4
 
@@ -2508,16 +1406,14 @@ if linea["cogestores"]:
 
     tabla_cog.wrapOn(canvas, ANCHO_UTIL, 400)
     tabla_cog.drawOn(canvas, MARGEN_X, current_y - tabla_cog._height)
+
 =========================================================
+
 ================= PERCEPCION PAGINA 1 ===================
+
 =========================================================
-def draw_pagina_percepcion_1(
-canvas,
-doc,
-grafico_actual_path,
-grafico_comparacion_path,
-tabla_percepcion
-):
+
+def draw_pagina_percepcion_1(canvas,doc,grafico_actual_path,grafico_comparacion_path,tabla_percepcion):
 
 page_width, page_height = A4
     
@@ -2606,7 +1502,9 @@ canvas.drawString(
     TABLA_Y + 220,  # ajustable
     "Comparativo Percepción Ciudadana por Zonas"
 )
+
 ===== TABLA GRANDE =====
+
 TOTAL_COLUMNAS = len(tabla_percepcion[0])
 ANCHO_COLUMNA = TABLA_WIDTH_TOTAL / TOTAL_COLUMNAS
     
@@ -2644,17 +1542,10 @@ if len(tabla_percepcion) >= 2:
     tabla_percepcion[1][1] = ""
     tabla_percepcion[1][2] = ""
     tabla_percepcion[1][3] = ""
+
 #pagina 2 final
 
-def draw_pagina_percepcion_2(
-canvas,
-doc,
-grafico_victimizacion_path,
-grafico_no_denuncia_path,
-tabla_no_denuncia,
-motivo_principal,
-total_omitidas
-):
+def draw_pagina_percepcion_2(canvas,doc,grafico_victimizacion_path,grafico_no_denuncia_path,tabla_no_denuncia,motivo_principal,total_omitidas):
 
 page_width, page_height = A4
 
@@ -2759,157 +1650,56 @@ estilo = ParagraphStyle(
 p = Paragraph(texto, estilo)
 w, h = p.wrap(page_width * 0.3, 200)
 p.drawOn(canvas, TEXTO_X, TEXTO_Y)
+
 ==================================================
+
 CONFIGURACION VISUAL - PERCEPCION PAGINA 3
+
 ==================================================
+
 ----- TITULO -----
-P3_TITULO_X = 70
-P3_TITULO_Y = 730
-P3_TITULO_SIZE = 16
-P3_TITULO_COLOR = colors.HexColor("#013051")
+
+P3_TITULO_X = 70P3_TITULO_Y = 730P3_TITULO_SIZE = 16P3_TITULO_COLOR = colors.HexColor("#013051")
 
 ----- GRAFICOS -----
+
 P3_GRAFICO_SIZE = 200
 
-P3_GRAFICO1_X = 70
-P3_GRAFICO1_Y = 480
+P3_GRAFICO1_X = 70P3_GRAFICO1_Y = 480
 
-P3_GRAFICO2_X = 340
-P3_GRAFICO2_Y = 150
+P3_GRAFICO2_X = 340P3_GRAFICO2_Y = 150
 
 ----- TABLAS -----
-P3_TABLA1_X = 330
-P3_TABLA1_Y = 490
 
-P3_TABLA2_X = 65
-P3_TABLA2_Y = 200
+P3_TABLA1_X = 330P3_TABLA1_Y = 490
+
+P3_TABLA2_X = 65P3_TABLA2_Y = 200
 
 ----- TEXTOS -----
-P3_TEXTO1_X = 270
-P3_TEXTO1_Y = 420
-P3_TEXTO_SIZE = 12
 
-P3_TEXTO2_X = 65
-P3_TEXTO2_Y = 140
+P3_TEXTO1_X = 270P3_TEXTO1_Y = 420P3_TEXTO_SIZE = 12
+
+P3_TEXTO2_X = 65P3_TEXTO2_Y = 140
 
 ==================================================
+
 COLORES GRAFICOS PERCEPCION
-==================================================
-P3_COLOR_1 = "#5b9bd5"
-P3_COLOR_2 = "#a5a5a5"
-P3_COLOR_3 = "#4472c4"
-P3_COLOR_4 = "#255e91"
-P3_COLOR_5 = "#636363"
-P3_COLOR_6 = "#264478"
-P3_COLOR_7 = "#7cafdd"
-P3_COLOR_8 = "#b7b7b7"
-P3_COLOR_9 = "#698ed0"
 
-P3_PALETA_GRAFICO = [
-P3_COLOR_1,
-P3_COLOR_2,
-P3_COLOR_3,
-P3_COLOR_4,
-P3_COLOR_5,
-P3_COLOR_6,
-P3_COLOR_7,
-P3_COLOR_8,
-P3_COLOR_9
-]
+==================================================
+
+P3_COLOR_1 = "#5b9bd5"P3_COLOR_2 = "#a5a5a5"P3_COLOR_3 = "#4472c4"P3_COLOR_4 = "#255e91"P3_COLOR_5 = "#636363"P3_COLOR_6 = "#264478"P3_COLOR_7 = "#7cafdd"P3_COLOR_8 = "#b7b7b7"P3_COLOR_9 = "#698ed0"
+
+P3_PALETA_GRAFICO = [P3_COLOR_1,P3_COLOR_2,P3_COLOR_3,P3_COLOR_4,P3_COLOR_5,P3_COLOR_6,P3_COLOR_7,P3_COLOR_8,P3_COLOR_9]
 
 ----- TITULOS DE GRAFICOS -----
-P3_TITULO_GRAFICO_SIZE = 14
-P3_TITULO_GRAFICO_COLOR = colors.HexColor("#013051")
-P3_TITULO_GRAFICO_OFFSET = 10
+
+P3_TITULO_GRAFICO_SIZE = 14P3_TITULO_GRAFICO_COLOR = colors.HexColor("#013051")P3_TITULO_GRAFICO_OFFSET = 10
 
 
 
 ================= GENERADOR PDF =================
-def generar_pdf(
-portada_path,
-grafico_relacion_path,
-grafico_edad_path,
-grafico_escolaridad_path,
-grafico_genero_path,
-delegacion,
-codigo,
-tabla_participacion,
-tabla_edad,
-tabla_escolaridad,
-tabla_genero,
-tabla_encuesta_comunidad,
-tabla_otras_encuestas,
-datos_pagina_8,
-datos_pagina_9,
-tabla_delitos,
-tabla_riesgos,
-porcentaje_delitos,
-porcentaje_riesgos,
-cantidad_delitos,
-cantidad_riesgos,
-micmac_poder,
-micmac_conflicto,
-micmac_autonomas,
-micmac_resultados,
-tabla_riesgos_micmac2,
-tabla_delitos_micmac2,
-cantidad_problematicas,
-riesgos_total,
-delitos_total,
-causas_identificadas,
-factores_micmac,
-triangulo_directa,
-triangulo_sociocultural,
-triangulo_estructural,
-tabla_instituciones,
-grafico_denuncias_path,
-tabla_denuncias,
-total_denuncias,
-grafico_horario_path,
-tabla_horario,
-total_am,
-total_pm,
-tabla_horario_distrito,
-grafico_p14_path,
-tabla_p14,
-grafico_p15_path,
-tabla_p15,
-total_lineas,
-lineas_municipalidad,
-lineas_fp,
-lineas_mixtas,
-logo_muni_path,
-lineas_accion_data,
-grafico_percepcion_actual_path,
-grafico_percepcion_comparacion_path,
-tabla_percepcion,
-grafico_victimizacion_path,
-grafico_no_denuncia_path,
-tabla_no_denuncia,
-motivo_principal,
-total_omitidas,
-grafico_horarios_percepcion,
-grafico_armas_percepcion,
-tabla_horarios_percepcion,
-tabla_armas,
-horario_mayor,
-metodo_mas_usado,
-omitidas_aportes,
-grafico_servicio_policial,
-grafico_servicio_anual,
-grafico_conoce_policia,
-grafico_conversado,
-tabla_servicio,
-tabla_servicio_anual,
-tabla_conoce,
-tabla_conversado,
-omitidas_servicio,
-total_respuestas_servicio,
-grafico_comercio_seguridad,
-grafico_comercio_programa,
-grafico_comercio_inscrito,
-grafico_comercio_contacto,
-):
+
+def generar_pdf(portada_path,grafico_relacion_path,grafico_edad_path,grafico_escolaridad_path,grafico_genero_path,delegacion,codigo,tabla_participacion,tabla_edad,tabla_escolaridad,tabla_genero,tabla_encuesta_comunidad,tabla_otras_encuestas,datos_pagina_8,datos_pagina_9,tabla_delitos,tabla_riesgos,porcentaje_delitos,porcentaje_riesgos,cantidad_delitos,cantidad_riesgos,micmac_poder,micmac_conflicto,micmac_autonomas,micmac_resultados,tabla_riesgos_micmac2,tabla_delitos_micmac2,cantidad_problematicas,riesgos_total,delitos_total,causas_identificadas,factores_micmac,triangulo_directa,triangulo_sociocultural,triangulo_estructural,tabla_instituciones,grafico_denuncias_path,tabla_denuncias,total_denuncias,grafico_horario_path,tabla_horario,total_am,total_pm,tabla_horario_distrito,grafico_p14_path,tabla_p14,grafico_p15_path,tabla_p15,total_lineas,lineas_municipalidad,lineas_fp,lineas_mixtas,logo_muni_path,lineas_accion_data,grafico_percepcion_actual_path,grafico_percepcion_comparacion_path,tabla_percepcion,grafico_victimizacion_path,grafico_no_denuncia_path,tabla_no_denuncia,motivo_principal,total_omitidas,grafico_horarios_percepcion,grafico_armas_percepcion,tabla_horarios_percepcion,tabla_armas,horario_mayor,metodo_mas_usado,omitidas_aportes,grafico_servicio_policial,grafico_servicio_anual,grafico_conoce_policia,grafico_conversado,tabla_servicio,tabla_servicio_anual,tabla_conoce,tabla_conversado,omitidas_servicio,total_respuestas_servicio,grafico_comercio_seguridad,grafico_comercio_programa,grafico_comercio_inscrito,grafico_comercio_contacto,):
 
 buffer = BytesIO()
 styles = getSampleStyleSheet()
@@ -3117,7 +1907,9 @@ story.append(Paragraph(
 "Estos líderes estratégicos aseguran que cada etapa del plan se lleve a cabo de manera efectiva y que las intervenciones estén alineadas con los objetivos planteados. Su liderazgo y supervisión continua son cruciales para el éxito de la estrategia SEMBREMOS SEGURIDAD.",
 styles["NormalJustificado"]
 ))
+
 =========================================
+
 # CREAR PAGINAS DINAMICAS DE PORTADAS
 # =========================================
 
@@ -4608,5 +3400,3 @@ doc.build(
 
 buffer.seek(0)
 return buffer
-
-Cerrar
