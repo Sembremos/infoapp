@@ -1303,66 +1303,85 @@ if archivo:
         else:
             total_omitidas = 0 # G322
 
-
         # =========================================================
         # ============== TABLA COMPARATIVA PERCEPCION =============
         # =========================================================
         
-        # ----- Validar tamaño mínimo del DataFrame -----
-        FILAS_MINIMAS = 309
-        COLUMNAS_MINIMAS = 7
+        # FILAS 298 Y 299
+        fila_298 = df.iloc[297, 0:13].copy()
+        fila_299 = df.iloc[298, 0:13].copy()
         
-        filas_actuales, columnas_actuales = df.shape
+        # DATOS
+        datos_pc = df.iloc[299:311, 0:13].copy()
         
-        # Expandir filas si faltan
-        if filas_actuales < FILAS_MINIMAS:
-            filas_extra = FILAS_MINIMAS - filas_actuales
-            df_extra = pd.DataFrame(
-                [[None] * columnas_actuales] * filas_extra
-            )
-            df = pd.concat([df, df_extra], ignore_index=True)
+        # COLUMNAS:
+        # A, C, E, G, I, K, M
+        columnas_indices = [0, 2, 4, 6, 8, 10, 12]
         
-        # Expandir columnas si faltan
-        if columnas_actuales < COLUMNAS_MINIMAS:
-            columnas_extra = COLUMNAS_MINIMAS - columnas_actuales
-            for i in range(columnas_extra):
-                df[f"_extra_{i}"] = None
+        # =========================
+        # ENCABEZADOS
+        # =========================
         
-        # ----- Extraer rango seguro -----
-        tabla_percepcion_df = df.iloc[297:309, 0:7].copy()
+        encabezado_superior = []
+        encabezado_inferior = []
         
-        # Eliminar columnas B, D y F (índices 1,3,5)
-        try:
-            tabla_percepcion_df = tabla_percepcion_df.drop(
-                tabla_percepcion_df.columns[[1,3,5]],
-                axis=1
-            )
-        except:
-            pass
+        for idx in columnas_indices:
         
-        # ----- Formatear porcentajes SOLO desde fila 300 en adelante -----
-        # (las dos primeras filas son encabezado)
-        # ===== FORMATEAR SOLO COLUMNAS PORCENTUALES =====
-        # Columnas 1,2,3 después de eliminar B,D,F
-        for col in [1, 2, 3]:
-            for fila in range(2, tabla_percepcion_df.shape[0]):
-                valor = tabla_percepcion_df.iat[fila, col]
-                if pd.notna(valor) and valor != "":
-                    try:
-                        tabla_percepcion_df.iat[fila, col] = f"{float(valor)*100:.2f}%"
-                    except:
-                        pass
+            valor_sup = fila_298.iloc[idx]
+        
+            # merged cells
+            if pd.isna(valor_sup) and idx > 0:
+                valor_sup = fila_298.iloc[idx - 1]
+        
+            encabezado_superior.append(str(valor_sup).strip())
+        
+            valor_inf = fila_299.iloc[idx]
+        
+            if pd.isna(valor_inf):
+                valor_inf = ""
+        
+            encabezado_inferior.append(str(valor_inf).strip())
+        
+        # =========================
+        # TABLA FINAL
+        # =========================
+        
+        tabla_percepcion = []
+        
+        tabla_percepcion.append(encabezado_superior)
+        tabla_percepcion.append(encabezado_inferior)
+        
+        # =========================
+        # FILAS DATOS
+        # =========================
+        
+        for _, row in datos_pc.iterrows():
+        
+            fila = []
+        
+            for idx in columnas_indices:
+        
+                valor = row.iloc[idx]
+        
+                if pd.isna(valor):
+        
+                    fila.append("")
+        
                 else:
-                    tabla_percepcion_df.iat[fila, col] = ""
         
-        # ----- Limpiar nulos -----
-        tabla_percepcion = (
-            tabla_percepcion_df
-            .fillna("")
-            .astype(str)
-            .values
-            .tolist()
-        )
+                    if isinstance(valor, float):
+        
+                        if valor.is_integer():
+                            fila.append(str(int(valor)))
+                        else:
+                            fila.append(str(valor))
+        
+                    else:
+                        fila.append(str(valor))
+        
+            if any(str(v).strip() != "" for v in fila):
+                tabla_percepcion.append(fila)
+
         
         
         # =========================================
