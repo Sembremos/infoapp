@@ -1,4 +1,13 @@
-import unicodedataimport reimport osfrom reportlab.platypus import (SimpleDocTemplate,Paragraph,Image,PageBreak,Spacer,Table,TableStyle)from reportlab.lib.pagesizes import A4from reportlab.lib.styles import getSampleStyleSheet, ParagraphStylefrom reportlab.lib.enums import TA_LEFT, TA_JUSTIFY, TA_CENTERfrom reportlab.lib import colorsfrom reportlab.lib.utils import ImageReaderfrom io import BytesIOfrom reportlab.lib.styles import ParagraphStylefrom reportlab.lib.enums import TA_LEFT
+import unicodedataimport reimport osfrom reportlab.platypus 
+import (SimpleDocTemplate,Paragraph,Image,PageBreak,Spacer,Table,TableStyle)from reportlab.lib.pagesizes 
+import A4from reportlab.lib.styles 
+import getSampleStyleSheet, ParagraphStylefrom reportlab.lib.enums 
+import TA_LEFT, TA_JUSTIFY, TA_CENTERfrom reportlab.lib 
+import colorsfrom reportlab.lib.utils 
+import ImageReaderfrom io 
+import BytesIOfrom reportlab.lib.styles 
+import ParagraphStylefrom reportlab.lib.enums 
+import TA_LEFT
 
 ===== ESTILO GLOBAL PARA TABLAS PARETO =====
 
