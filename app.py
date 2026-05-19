@@ -5,6 +5,7 @@ from io import BytesIO
 from pathlib import Path
 from openpyxl import load_workbook
 import numpy as np
+import os
 
 # Forzar backend seguro para no-interactivos en hilos web
 plt.switch_backend('Agg')
