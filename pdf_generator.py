@@ -3500,10 +3500,10 @@ def generar_pdf(
             TABLA2_X = 60
             TABLA2_Y = 120
         
-            TABLA3_X = 520
+            TABLA3_X = 495
             TABLA3_Y = 340
         
-            TABLA4_X = 520
+            TABLA4_X = 495
             TABLA4_Y = 150
         
         
@@ -3637,13 +3637,43 @@ def generar_pdf(
                 PIE_PEQUE_SIZE
             )
         
-            tabla3 = Table(tabla_conoce)
+            
+            style_tabla = ParagraphStyle(
+                name="TablaServicio",
+                fontName="Helvetica",
+                fontSize=8,
+                leading=10,
+                textColor=colors.white,
+                wordWrap="CJK"
+            )
+            
+            tabla3_data = []
+            
+            for row in tabla_conoce:
+            
+                nueva = []
+            
+                for cell in row:
+                    nueva.append(
+                        Paragraph(str(cell), style_tabla)
+                    )
+            
+                tabla3_data.append(nueva)
+            
+            tabla3 = Table(
+                tabla3_data,
+                colWidths=[70, 35]
+            )
             
             estilo_tabla3 = [
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
                 ("FONTSIZE",(0,0),(-1,-1),9),
-                ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
+                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
+                ("LEFTPADDING",(0,0),(-1,-1),3),
+                ("RIGHTPADDING",(0,0),(-1,-1),3),
+                ("TOPPADDING",(0,0),(-1,-1),2),
+                ("BOTTOMPADDING",(0,0),(-1,-1),2),
             ]
             
             for i, color in enumerate(TABLA_COLORES_SERVICIO[:2]):
@@ -3681,13 +3711,33 @@ def generar_pdf(
                 PIE_PEQUE_SIZE
             )
         
-            tabla4 = Table(tabla_conversado)
+            tabla4_data = []
+
+            for row in tabla_conversado:
+            
+                nueva = []
+            
+                for cell in row:
+                    nueva.append(
+                        Paragraph(str(cell), style_tabla)
+                    )
+            
+                tabla4_data.append(nueva)
+            
+            tabla4 = Table(
+                tabla4_data,
+                colWidths=[70, 35]
+            )
             
             estilo_tabla4 = [
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
                 ("FONTSIZE",(0,0),(-1,-1),9),
-                ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
+                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
+                ("LEFTPADDING",(0,0),(-1,-1),3),
+                ("RIGHTPADDING",(0,0),(-1,-1),3),
+                ("TOPPADDING",(0,0),(-1,-1),2),
+                ("BOTTOMPADDING",(0,0),(-1,-1),2),
             ]
             
             for i, color in enumerate(TABLA_COLORES_SERVICIO[:2]):
