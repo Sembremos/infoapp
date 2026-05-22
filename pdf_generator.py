@@ -539,14 +539,14 @@ def draw_tabla_pareto(
 
     elif total_filas <= 15:
 
-        font_size = 9
+        font_size = 10
         leading = 11
         top_padding = 2
         bottom_padding = 2
 
     else:
 
-        font_size = 7
+        font_size = 9
         leading = 8
         top_padding = 1
         bottom_padding = 1
