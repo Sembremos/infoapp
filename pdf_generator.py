@@ -511,7 +511,7 @@ def draw_tabla_pareto(
     x,
     y,
     table_width=180,
-    table_height_max=230,   # 👈 NUEVO
+    table_height_max=280,   # 👈 NUEVO
     font_title="Helvetica-Bold",
     font_size_title=14,
     header_color=colors.HexColor("#4471C4"),
@@ -629,35 +629,15 @@ def draw_tabla_pareto(
 
     table.wrapOn(canvas, table_width, table_height_max)
 
+   # ==================================================
+    # DIBUJAR TABLA NORMAL
     # ==================================================
-    # SI LA TABLA QUEDA MUY ALTA -> ESCALAR
-    # ==================================================
-
-    if table._height > table_height_max:
-
-        scale = table_height_max / table._height
-
-        canvas.saveState()
-
-        canvas.translate(x, y)
-
-        canvas.scale(1, scale)
-
-        table.drawOn(
-            canvas,
-            0,
-            -table._height
-        )
-
-        canvas.restoreState()
-
-    else:
-
-        table.drawOn(
-            canvas,
-            x,
-            y - table._height
-        )
+    
+    table.drawOn(
+        canvas,
+        x,
+        y - table._height
+    )
 
 
 def draw_porcentaje(
