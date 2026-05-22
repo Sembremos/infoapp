@@ -531,25 +531,32 @@ def draw_tabla_pareto(
     # ===== CONFIGURACION DINAMICA =====
 
     if total_filas <= 10:
-
+    
         font_size = 11
+        leading = 15
+        top_padding = 5
+        bottom_padding = 5
+    
+    elif total_filas <= 15:
+    
+        font_size = 10
         leading = 13
         top_padding = 4
         bottom_padding = 4
-
-    elif total_filas <= 15:
-
-        font_size = 10
+    
+    elif total_filas <= 20:
+    
+        font_size = 9
+        leading = 12
+        top_padding = 3
+        bottom_padding = 3
+    
+    else:
+    
+        font_size = 8
         leading = 11
         top_padding = 2
         bottom_padding = 2
-
-    else:
-
-        font_size = 9
-        leading = 8
-        top_padding = 1
-        bottom_padding = 1
 
     # ==================================================
     # ESTILO CELDAS
