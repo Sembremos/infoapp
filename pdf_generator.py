@@ -511,14 +511,65 @@ def draw_tabla_pareto(
     x,
     y,
     table_width=180,
+    table_height_max=230,   # 👈 NUEVO
     font_title="Helvetica-Bold",
     font_size_title=14,
     header_color=colors.HexColor("#4471C4"),
     body_color=colors.white,
     text_color=colors.black
 ):
-    # -------- FONDO DEL TÍTULO --------
+
+    from reportlab.platypus import Paragraph
+    from reportlab.lib.styles import ParagraphStyle
+
+    # ==================================================
+    # AJUSTE DINAMICO SEGUN CANTIDAD DE FILAS
+    # ==================================================
+
+    total_filas = len(data)
+
+    # ===== CONFIGURACION DINAMICA =====
+
+    if total_filas <= 10:
+
+        font_size = 11
+        leading = 13
+        top_padding = 4
+        bottom_padding = 4
+
+    elif total_filas <= 15:
+
+        font_size = 9
+        leading = 11
+        top_padding = 2
+        bottom_padding = 2
+
+    else:
+
+        font_size = 7
+        leading = 8
+        top_padding = 1
+        bottom_padding = 1
+
+    # ==================================================
+    # ESTILO CELDAS
+    # ==================================================
+
+    dynamic_style = ParagraphStyle(
+        name="ParetoDynamic",
+        fontName="Helvetica",
+        fontSize=font_size,
+        leading=leading,
+        alignment=TA_LEFT,
+        wordWrap="CJK"
+    )
+
+    # ==================================================
+    # FONDO TITULO
+    # ==================================================
+
     canvas.setFillColor(header_color)
+
     canvas.rect(
         x,
         y + 8,
@@ -527,41 +578,86 @@ def draw_tabla_pareto(
         stroke=0,
         fill=1
     )
-    
-    # -------- TEXTO DEL TÍTULO --------
+
+    # ==================================================
+    # TEXTO TITULO
+    # ==================================================
+
     canvas.setFont(font_title, font_size_title)
     canvas.setFillColor(text_color)
+
     canvas.drawCentredString(
         x + table_width / 2,
         y + 14,
         titulo
     )
-    
 
-    # -------- PREPARAR DATOS CON PARAGRAPH --------
+    # ==================================================
+    # CONSTRUIR TABLA
+    # ==================================================
+
     wrapped_data = [
-        [Paragraph(str(row[0]), pareto_cell_style)]
+        [Paragraph(str(row[0]), dynamic_style)]
         for row in data
     ]
 
     table = Table(
         wrapped_data,
         colWidths=[table_width],
-        rowHeights=None  # 👈 auto height
+        rowHeights=None
     )
 
     table.setStyle(TableStyle([
+
         ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+
         ("BACKGROUND", (0, 0), (-1, -1), body_color),
+
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("LEFTPADDING", (0, 0), (-1, -1), 6),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+
+        ("TOPPADDING", (0, 0), (-1, -1), top_padding),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), bottom_padding),
+
     ]))
 
-    table.wrapOn(canvas, table_width, 400)
-    table.drawOn(canvas, x, y - table._height)
+    # ==================================================
+    # WRAP
+    # ==================================================
+
+    table.wrapOn(canvas, table_width, table_height_max)
+
+    # ==================================================
+    # SI LA TABLA QUEDA MUY ALTA -> ESCALAR
+    # ==================================================
+
+    if table._height > table_height_max:
+
+        scale = table_height_max / table._height
+
+        canvas.saveState()
+
+        canvas.translate(x, y)
+
+        canvas.scale(1, scale)
+
+        table.drawOn(
+            canvas,
+            0,
+            -table._height
+        )
+
+        canvas.restoreState()
+
+    else:
+
+        table.drawOn(
+            canvas,
+            x,
+            y - table._height
+        )
 
 
 def draw_porcentaje(
