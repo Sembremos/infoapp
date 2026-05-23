@@ -3450,141 +3450,196 @@ def generar_pdf(
         elif doc.page == percepcion_inicio + 4:
 
             header_footer(canvas, doc)
-        
+
             page_width, page_height = A4
-        
-        
+
             # =====================================================
             # VARIABLES EDITABLES PAGINA
             # =====================================================
-        
+
             TITULO_X = 60
             TITULO_Y = 740
             TITULO_SIZE = 18
+
             TITULO_COLOR = colors.HexColor("#013051")
 
-            # COLORES TABLAS SERVICIO POLICIAL
+            # =====================================================
+            # COLORES TABLAS
+            # =====================================================
+
             TABLA_COLORES_SERVICIO = [
                 colors.HexColor("#5b9bd5"),
                 colors.HexColor("#a5a5a5"),
                 colors.HexColor("#4472c4"),
                 colors.HexColor("#255e91"),
-                colors.HexColor("#636363")
+                colors.HexColor("#636363"),
+                colors.HexColor("#70ad47"),
+                colors.HexColor("#264478")
             ]
-        
-        
-            BARRA_X = 50
-            BARRA_Y = 500
-            BARRA_WIDTH = 400
-            BARRA_HEIGHT = 200
-        
-            TITULO_BARRA_SIZE = 12
-        
+
+            # =====================================================
+            # POSICIONES GRAFICO PRINCIPAL
+            # =====================================================
+
+            GRAFICO_PRINCIPAL_X = 40
+            GRAFICO_PRINCIPAL_Y = 470
+
+            GRAFICO_PRINCIPAL_W = 320
+            GRAFICO_PRINCIPAL_H = 220
+
             TABLA1_X = 460
             TABLA1_Y = 575
 
-            TABLA2_X = 60
-            TABLA2_Y = 220
-            
-            PIE1_X = 70
-            PIE1_Y = 250
+            # =====================================================
+            # PIE CHARTS
+            # =====================================================
 
-            PIE2_X = 320
-            PIE2_Y = 250
+            PIE_SIZE = 145
 
-            PIE_SIZE = 140
+            PIE1_X = 55
+            PIE1_Y = 235
 
-            TABLA2_X = 60
-            TABLA2_Y = 220
+            PIE2_X = 305
+            PIE2_Y = 235
 
-            TABLA3_X = 310
-            TABLA3_Y = 220
+            PIE_TITLE_SIZE = 10
 
-            ATENCION_X = 40
-            ATENCION_Y = 40
+            TABLA2_X = 45
+            TABLA2_Y = 205
 
-            ATENCION_WIDTH = 320
-            ATENCION_HEIGHT = 160
+            TABLA3_X = 295
+            TABLA3_Y = 205
+
+            # =====================================================
+            # NUEVO GRAFICO ATENCION
+            # =====================================================
+
+            ATENCION_X = 35
+            ATENCION_Y = 25
+
+            ATENCION_W = 330
+            ATENCION_H = 150
 
             TABLA4_X = 390
-            TABLA4_Y = 180
-        
-        
-            OMITIDAS_X = 350
-            OMITIDAS_Y = 60
-            OMITIDAS_WIDTH = 250
-            OMITIDAS_HEIGHT = 40
-        
-            OMITIDAS_COLOR = colors.HexColor("#30A907")
-        
+            TABLA4_Y = 90
+
             # =====================================================
-            # TITULO PAGINA
+            # RESPUESTAS OMITIDAS
             # =====================================================
-        
-            canvas.setFont("Helvetica-Bold", TITULO_SIZE)
-            canvas.setFillColor(TITULO_COLOR)
+
+            OMITIDAS_X = 390
+            OMITIDAS_Y = 35
+
+            # =====================================================
+            # TITULO
+            # =====================================================
+
+            canvas.setFont(
+                "Helvetica-Bold",
+                TITULO_SIZE
+            )
+
+            canvas.setFillColor(
+                TITULO_COLOR
+            )
+
             canvas.drawString(
                 TITULO_X,
                 TITULO_Y,
                 "Percepción del Servicio Policial"
             )
-        
-        
+
             # =====================================================
-            # GRAFICO BARRAS
+            # GRAFICO PRINCIPAL
             # =====================================================
-        
-            canvas.setFont("Helvetica-Bold", TITULO_BARRA_SIZE)
-        
-            canvas.drawString(
-                BARRA_X,
-                BARRA_Y + BARRA_HEIGHT + 14,
-                "¿Cómo califica el servicio de Fuerza Pública en su comunidad?"
-            )
-        
+
             canvas.drawImage(
                 grafico_servicio_policial,
-                BARRA_X,
-                BARRA_Y,
-                BARRA_WIDTH,
-                BARRA_HEIGHT
+                GRAFICO_PRINCIPAL_X,
+                GRAFICO_PRINCIPAL_Y,
+                width=GRAFICO_PRINCIPAL_W,
+                height=GRAFICO_PRINCIPAL_H,
+                preserveAspectRatio=True,
+                mask='auto'
             )
-        
-        
-            tabla1 = Table(tabla_servicio)
-            
-            estilo_tabla = [
+
+            # =====================================================
+            # TABLA PRINCIPAL
+            # =====================================================
+
+            tabla1 = Table(
+                tabla_servicio,
+                colWidths=[95,45]
+            )
+
+            estilo_tabla1 = [
+
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
+
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
+
                 ("FONTSIZE",(0,0),(-1,-1),9),
-                ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
+
+                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
+
+                ("LEFTPADDING",(0,0),(-1,-1),3),
+
+                ("RIGHTPADDING",(0,0),(-1,-1),3),
+
+                ("TOPPADDING",(0,0),(-1,-1),2),
+
+                ("BOTTOMPADDING",(0,0),(-1,-1),2),
             ]
-            
-            for i, color in enumerate(TABLA_COLORES_SERVICIO):
-                estilo_tabla.append(
+
+            for i, color in enumerate(TABLA_COLORES_SERVICIO[:5]):
+
+                estilo_tabla1.append(
                     ("BACKGROUND",(0,i),(-1,i),color)
                 )
-            
-            tabla1.setStyle(TableStyle(estilo_tabla))
-        
+
+            tabla1.setStyle(
+                TableStyle(estilo_tabla1)
+            )
+
             tabla1.wrapOn(canvas,0,0)
-            tabla1.drawOn(canvas,TABLA1_X,TABLA1_Y)
+
+            tabla1.drawOn(
+                canvas,
+                TABLA1_X,
+                TABLA1_Y
+            )
 
             # =====================================================
-            # PIE 1 - SERVICIO ULTIMOS DOS AÑOS
+            # ESTILO TABLAS
             # =====================================================
 
-            canvas.setFont("Helvetica-Bold",11)
+            style_tabla = ParagraphStyle(
+                name="TablaServicio",
+                fontName="Helvetica",
+                fontSize=8,
+                leading=10,
+                textColor=colors.white,
+                wordWrap="CJK"
+            )
+
+            # =====================================================
+            # PIE 1
+            # =====================================================
+
+            canvas.setFont(
+                "Helvetica-Bold",
+                PIE_TITLE_SIZE
+            )
 
             canvas.drawString(
                 PIE1_X,
-                PIE1_Y + PIE_SIZE + 20,
+                PIE1_Y + PIE_SIZE + 18,
                 "Calificación del servicio policial"
             )
 
             canvas.drawString(
                 PIE1_X,
-                PIE1_Y + PIE_SIZE + 8,
+                PIE1_Y + PIE_SIZE + 6,
                 "de los últimos dos años"
             )
 
@@ -3592,17 +3647,48 @@ def generar_pdf(
                 grafico_servicio_anual,
                 PIE1_X,
                 PIE1_Y,
-                PIE_SIZE,
-                PIE_SIZE
+                width=PIE_SIZE,
+                height=PIE_SIZE,
+                preserveAspectRatio=True,
+                mask='auto'
             )
 
-            tabla2 = Table(tabla_servicio_anual)
+            tabla2_data = []
+
+            for row in tabla_servicio_anual:
+
+                nueva = []
+
+                for cell in row:
+
+                    nueva.append(
+                        Paragraph(str(cell), style_tabla)
+                    )
+
+                tabla2_data.append(nueva)
+
+            tabla2 = Table(
+                tabla2_data,
+                colWidths=[70,35]
+            )
 
             estilo_tabla2 = [
+
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
+
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
+
                 ("FONTSIZE",(0,0),(-1,-1),8),
-                ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
+
+                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
+
+                ("LEFTPADDING",(0,0),(-1,-1),3),
+
+                ("RIGHTPADDING",(0,0),(-1,-1),3),
+
+                ("TOPPADDING",(0,0),(-1,-1),2),
+
+                ("BOTTOMPADDING",(0,0),(-1,-1),2),
             ]
 
             for i, color in enumerate(TABLA_COLORES_SERVICIO[:3]):
@@ -3622,24 +3708,106 @@ def generar_pdf(
                 TABLA2_X,
                 TABLA2_Y
             )
-            
-            style_tabla = ParagraphStyle(
-                name="TablaServicio",
-                fontName="Helvetica",
-                fontSize=8,
-                leading=10,
-                textColor=colors.white,
-                wordWrap="CJK"
-            )
+
             # =====================================================
-            # GRAFICO BARRAS ATENCION
+            # PIE 2
             # =====================================================
 
-            canvas.setFont("Helvetica-Bold",12)
+            canvas.setFont(
+                "Helvetica-Bold",
+                PIE_TITLE_SIZE
+            )
+
+            canvas.drawString(
+                PIE2_X,
+                PIE2_Y + PIE_SIZE + 18,
+                "¿Conoce usted a los policías"
+            )
+
+            canvas.drawString(
+                PIE2_X,
+                PIE2_Y + PIE_SIZE + 6,
+                "de la Fuerza Pública de su comunidad?"
+            )
+
+            canvas.drawImage(
+                grafico_conoce_policia,
+                PIE2_X,
+                PIE2_Y,
+                width=PIE_SIZE,
+                height=PIE_SIZE,
+                preserveAspectRatio=True,
+                mask='auto'
+            )
+
+            tabla3_data = []
+
+            for row in tabla_conoce:
+
+                nueva = []
+
+                for cell in row:
+
+                    nueva.append(
+                        Paragraph(str(cell), style_tabla)
+                    )
+
+                tabla3_data.append(nueva)
+
+            tabla3 = Table(
+                tabla3_data,
+                colWidths=[70,35]
+            )
+
+            estilo_tabla3 = [
+
+                ("GRID",(0,0),(-1,-1),0.5,colors.black),
+
+                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
+
+                ("FONTSIZE",(0,0),(-1,-1),8),
+
+                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
+
+                ("LEFTPADDING",(0,0),(-1,-1),3),
+
+                ("RIGHTPADDING",(0,0),(-1,-1),3),
+
+                ("TOPPADDING",(0,0),(-1,-1),2),
+
+                ("BOTTOMPADDING",(0,0),(-1,-1),2),
+            ]
+
+            for i, color in enumerate(TABLA_COLORES_SERVICIO[:3]):
+
+                estilo_tabla3.append(
+                    ("BACKGROUND",(0,i),(-1,i),color)
+                )
+
+            tabla3.setStyle(
+                TableStyle(estilo_tabla3)
+            )
+
+            tabla3.wrapOn(canvas,0,0)
+
+            tabla3.drawOn(
+                canvas,
+                TABLA3_X,
+                TABLA3_Y
+            )
+
+            # =====================================================
+            # NUEVO GRAFICO ATENCION
+            # =====================================================
+
+            canvas.setFont(
+                "Helvetica-Bold",
+                11
+            )
 
             canvas.drawString(
                 ATENCION_X,
-                ATENCION_Y + ATENCION_HEIGHT + 20,
+                ATENCION_Y + ATENCION_H + 12,
                 "Qué tipo de atención ha recibido"
             )
 
@@ -3647,10 +3815,10 @@ def generar_pdf(
                 grafico_atencion,
                 ATENCION_X,
                 ATENCION_Y,
-                width=ATENCION_WIDTH,
-                height=ATENCION_HEIGHT,
+                width=ATENCION_W,
+                height=ATENCION_H,
                 preserveAspectRatio=True,
-                mask="auto"
+                mask='auto'
             )
 
             # =====================================================
@@ -3712,34 +3880,35 @@ def generar_pdf(
                 TABLA4_X,
                 TABLA4_Y
             )
+
             # =====================================================
-            # CUADRO OMITIDAS
+            # RESPUESTAS OMITIDAS
             # =====================================================
-        
-            canvas.setFillColor(OMITIDAS_COLOR)
-        
-            canvas.rect(
+
+            canvas.setFont(
+                "Helvetica-Bold",
+                11
+            )
+
+            canvas.setFillColor(
+                colors.black
+            )
+
+            canvas.drawString(
+                OMITIDAS_X,
+                OMITIDAS_Y + 18,
+                "Respuestas omitidas"
+            )
+
+            canvas.setFont(
+                "Helvetica",
+                11
+            )
+
+            canvas.drawString(
                 OMITIDAS_X,
                 OMITIDAS_Y,
-                OMITIDAS_WIDTH,
-                OMITIDAS_HEIGHT,
-                fill=1,
-                stroke=0
-            )
-        
-            canvas.setFillColor(colors.white)
-            canvas.setFont("Helvetica-Bold",10)
-        
-            canvas.drawCentredString(
-                OMITIDAS_X + OMITIDAS_WIDTH/2,
-                OMITIDAS_Y + 22,
-                f"Cantidad de respuestas omitidas {omitidas_servicio}"
-            )
-            
-            canvas.drawCentredString(
-                OMITIDAS_X + OMITIDAS_WIDTH/2,
-                OMITIDAS_Y + 8,
-                f"de un total de {total_respuestas_servicio}"
+                str(omitidas_servicio)
             )
             
         elif doc.page == percepcion_inicio + 5:
