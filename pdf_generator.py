@@ -2190,11 +2190,11 @@ def generar_pdf(
     grafico_servicio_policial,
     grafico_servicio_anual,
     grafico_conoce_policia,
-    grafico_conversado,
+    grafico_atencion,
     tabla_servicio,
     tabla_servicio_anual,
     tabla_conoce,
-    tabla_conversado,
+    tabla_atencion,
     omitidas_servicio,
     total_respuestas_servicio,
     grafico_comercio_seguridad,
@@ -3481,30 +3481,28 @@ def generar_pdf(
             TITULO_BARRA_SIZE = 12
         
         
-            PIE_GRANDE_X = 60
-            PIE_GRANDE_Y = 180
-            PIE_GRANDE_SIZE = 220
-        
-        
-            PIE_DER1_X = 350
-            PIE_DER1_Y = 330
-            PIE_PEQUE_SIZE = 130
-        
-            PIE_DER2_X = 350
-            PIE_DER2_Y = 140
-        
-        
-            TABLA1_X = 460
-            TABLA1_Y = 575
-        
+            PIE1_X = 70
+            PIE1_Y = 250
+
+            PIE2_X = 320
+            PIE2_Y = 250
+
+            PIE_SIZE = 140
+
             TABLA2_X = 60
-            TABLA2_Y = 120
-        
-            TABLA3_X = 495
-            TABLA3_Y = 340
-        
-            TABLA4_X = 495
-            TABLA4_Y = 150
+            TABLA2_Y = 220
+
+            TABLA3_X = 310
+            TABLA3_Y = 220
+
+            ATENCION_X = 40
+            ATENCION_Y = 40
+
+            ATENCION_WIDTH = 320
+            ATENCION_HEIGHT = 160
+
+            TABLA4_X = 390
+            TABLA4_Y = 180
         
         
             OMITIDAS_X = 350
@@ -3687,68 +3685,88 @@ def generar_pdf(
             tabla3.drawOn(canvas,TABLA3_X,TABLA3_Y)
         
         
-            # =====================================================
-            # PIE DERECHO 2
-            # =====================================================
         
+            # =====================================================
+            # GRAFICO BARRAS ATENCION
+            # =====================================================
+
+            canvas.setFont("Helvetica-Bold",12)
+
             canvas.drawString(
-                PIE_DER2_X,
-                PIE_DER2_Y + PIE_PEQUE_SIZE + 22,
-                "¿Ha conversado con ellos"
+                ATENCION_X,
+                ATENCION_Y + ATENCION_HEIGHT + 20,
+                "Qué tipo de atención ha recibido"
             )
-            
-            canvas.drawString(
-                PIE_DER2_X,
-                PIE_DER2_Y + PIE_PEQUE_SIZE + 10,
-                "sobre temas de seguridad?"
-            )
-        
+
             canvas.drawImage(
-                grafico_conversado,
-                PIE_DER2_X,
-                PIE_DER2_Y,
-                PIE_PEQUE_SIZE,
-                PIE_PEQUE_SIZE
+                grafico_atencion,
+                ATENCION_X,
+                ATENCION_Y,
+                width=ATENCION_WIDTH,
+                height=ATENCION_HEIGHT,
+                preserveAspectRatio=True,
+                mask="auto"
             )
-        
+
+            # =====================================================
+            # TABLA ATENCION
+            # =====================================================
+
             tabla4_data = []
 
-            for row in tabla_conversado:
-            
+            for row in tabla_atencion:
+
                 nueva = []
-            
+
                 for cell in row:
+
                     nueva.append(
                         Paragraph(str(cell), style_tabla)
                     )
-            
+
                 tabla4_data.append(nueva)
-            
+
             tabla4 = Table(
                 tabla4_data,
-                colWidths=[70, 35]
+                colWidths=[110,45,45]
             )
-            
+
             estilo_tabla4 = [
+
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
+
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-                ("FONTSIZE",(0,0),(-1,-1),9),
+
+                ("FONTSIZE",(0,0),(-1,-1),8),
+
                 ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
+
                 ("LEFTPADDING",(0,0),(-1,-1),3),
+
                 ("RIGHTPADDING",(0,0),(-1,-1),3),
+
                 ("TOPPADDING",(0,0),(-1,-1),2),
+
                 ("BOTTOMPADDING",(0,0),(-1,-1),2),
             ]
-            
-            for i, color in enumerate(TABLA_COLORES_SERVICIO[:2]):
+
+            for i, color in enumerate(TABLA_COLORES_SERVICIO):
+
                 estilo_tabla4.append(
                     ("BACKGROUND",(0,i),(-1,i),color)
                 )
-            
-            tabla4.setStyle(TableStyle(estilo_tabla4))
-            
+
+            tabla4.setStyle(
+                TableStyle(estilo_tabla4)
+            )
+
             tabla4.wrapOn(canvas,0,0)
-            tabla4.drawOn(canvas,TABLA4_X,TABLA4_Y)
+
+            tabla4.drawOn(
+                canvas,
+                TABLA4_X,
+                TABLA4_Y
+            )
             # =====================================================
             # CUADRO OMITIDAS
             # =====================================================
