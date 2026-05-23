@@ -3623,6 +3623,14 @@ def generar_pdf(
                 TABLA2_Y
             )
             
+            style_tabla = ParagraphStyle(
+                name="TablaServicio",
+                fontName="Helvetica",
+                fontSize=8,
+                leading=10,
+                textColor=colors.white,
+                wordWrap="CJK"
+            )
             # =====================================================
             # GRAFICO BARRAS ATENCION
             # =====================================================
