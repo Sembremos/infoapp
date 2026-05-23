@@ -3482,6 +3482,9 @@ def generar_pdf(
         
             TABLA1_X = 460
             TABLA1_Y = 575
+
+            TABLA2_X = 60
+            TABLA2_Y = 220
             
             PIE1_X = 70
             PIE1_Y = 250
@@ -3566,128 +3569,60 @@ def generar_pdf(
         
             tabla1.wrapOn(canvas,0,0)
             tabla1.drawOn(canvas,TABLA1_X,TABLA1_Y)
-        
-        
+
             # =====================================================
-            # PIE GRANDE
+            # PIE 1 - SERVICIO ULTIMOS DOS AÑOS
             # =====================================================
-        
+
+            canvas.setFont("Helvetica-Bold",11)
+
             canvas.drawString(
-                PIE_GRANDE_X,
-                PIE_GRANDE_Y + PIE_GRANDE_SIZE + 22,
+                PIE1_X,
+                PIE1_Y + PIE_SIZE + 20,
                 "Calificación del servicio policial"
             )
-            
+
             canvas.drawString(
-                PIE_GRANDE_X,
-                PIE_GRANDE_Y + PIE_GRANDE_SIZE + 10,
+                PIE1_X,
+                PIE1_Y + PIE_SIZE + 8,
                 "de los últimos dos años"
             )
-        
+
             canvas.drawImage(
                 grafico_servicio_anual,
-                PIE_GRANDE_X,
-                PIE_GRANDE_Y,
-                PIE_GRANDE_SIZE,
-                PIE_GRANDE_SIZE
+                PIE1_X,
+                PIE1_Y,
+                PIE_SIZE,
+                PIE_SIZE
             )
-        
-        
+
             tabla2 = Table(tabla_servicio_anual)
-            
+
             estilo_tabla2 = [
                 ("GRID",(0,0),(-1,-1),0.5,colors.black),
                 ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-                ("FONTSIZE",(0,0),(-1,-1),9),
+                ("FONTSIZE",(0,0),(-1,-1),8),
                 ("TEXTCOLOR",(0,0),(-1,-1),colors.white)
             ]
-            
+
             for i, color in enumerate(TABLA_COLORES_SERVICIO[:3]):
+
                 estilo_tabla2.append(
                     ("BACKGROUND",(0,i),(-1,i),color)
                 )
-            
-            tabla2.setStyle(TableStyle(estilo_tabla2))
-            
+
+            tabla2.setStyle(
+                TableStyle(estilo_tabla2)
+            )
+
             tabla2.wrapOn(canvas,0,0)
-            tabla2.drawOn(canvas,TABLA2_X,TABLA2_Y)
-        
-        
-            # =====================================================
-            # PIE DERECHO 1
-            # =====================================================
-        
-            canvas.drawString(
-                PIE_DER1_X,
-                PIE_DER1_Y + PIE_PEQUE_SIZE + 22,
-                "¿Conoce usted a los policías"
+
+            tabla2.drawOn(
+                canvas,
+                TABLA2_X,
+                TABLA2_Y
             )
             
-            canvas.drawString(
-                PIE_DER1_X,
-                PIE_DER1_Y + PIE_PEQUE_SIZE + 10,
-                "de la Fuerza Pública de su comunidad?"
-            )
-        
-            canvas.drawImage(
-                grafico_conoce_policia,
-                PIE_DER1_X,
-                PIE_DER1_Y,
-                PIE_PEQUE_SIZE,
-                PIE_PEQUE_SIZE
-            )
-        
-            
-            style_tabla = ParagraphStyle(
-                name="TablaServicio",
-                fontName="Helvetica",
-                fontSize=8,
-                leading=10,
-                textColor=colors.white,
-                wordWrap="CJK"
-            )
-            
-            tabla3_data = []
-            
-            for row in tabla_conoce:
-            
-                nueva = []
-            
-                for cell in row:
-                    nueva.append(
-                        Paragraph(str(cell), style_tabla)
-                    )
-            
-                tabla3_data.append(nueva)
-            
-            tabla3 = Table(
-                tabla3_data,
-                colWidths=[70, 35]
-            )
-            
-            estilo_tabla3 = [
-                ("GRID",(0,0),(-1,-1),0.5,colors.black),
-                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-                ("FONTSIZE",(0,0),(-1,-1),9),
-                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
-                ("LEFTPADDING",(0,0),(-1,-1),3),
-                ("RIGHTPADDING",(0,0),(-1,-1),3),
-                ("TOPPADDING",(0,0),(-1,-1),2),
-                ("BOTTOMPADDING",(0,0),(-1,-1),2),
-            ]
-            
-            for i, color in enumerate(TABLA_COLORES_SERVICIO[:2]):
-                estilo_tabla3.append(
-                    ("BACKGROUND",(0,i),(-1,i),color)
-                )
-            
-            tabla3.setStyle(TableStyle(estilo_tabla3))
-            
-            tabla3.wrapOn(canvas,0,0)
-            tabla3.drawOn(canvas,TABLA3_X,TABLA3_Y)
-        
-        
-        
             # =====================================================
             # GRAFICO BARRAS ATENCION
             # =====================================================
