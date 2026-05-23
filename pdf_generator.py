@@ -3480,7 +3480,9 @@ def generar_pdf(
         
             TITULO_BARRA_SIZE = 12
         
-        
+            TABLA1_X = 460
+            TABLA1_Y = 575
+            
             PIE1_X = 70
             PIE1_Y = 250
 
