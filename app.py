@@ -2127,12 +2127,134 @@ if archivo:
             texto_size=22
         )
         
-        grafico_conversado = generar_pie_servicio(
-            labels_conversado,
-            valores_conversado,
-            "grafico_conversado.png",
-            texto_size=22
+        # =====================================================
+        # NUEVO GRAFICO BARRAS - TIPO DE ATENCION
+        # =====================================================
+
+        atencion_df = df.iloc[385:392, [0,1,2]].copy()
+
+        atencion_df.columns = [
+            "categoria",
+            "porcentaje",
+            "frecuencia"
+        ]
+
+        atencion_df = atencion_df.dropna(how="all")
+
+        atencion_df["porcentaje"] = (
+            atencion_df["porcentaje"]
+            .astype(str)
+            .str.replace("%","")
+            .str.replace(",",".")
         )
+
+        atencion_df["porcentaje"] = pd.to_numeric(
+            atencion_df["porcentaje"],
+            errors="coerce"
+        ).fillna(0)
+
+        atencion_df["frecuencia"] = pd.to_numeric(
+            atencion_df["frecuencia"],
+            errors="coerce"
+        ).fillna(0)
+
+        labels_atencion = (
+            atencion_df["categoria"]
+            .astype(str)
+            .tolist()
+        )
+
+        porcentajes_atencion = (
+            atencion_df["porcentaje"]
+            .tolist()
+        )
+
+        frecuencias_atencion = (
+            atencion_df["frecuencia"]
+            .astype(int)
+            .tolist()
+        )
+
+        # =====================================================
+        # TABLA PDF
+        # =====================================================
+
+        tabla_atencion = []
+
+        for l, p, f in zip(
+            labels_atencion,
+            porcentajes_atencion,
+            frecuencias_atencion
+        ):
+
+            tabla_atencion.append([
+                l,
+                f"{p:.2f}%",
+                str(f)
+            ])
+
+        # =====================================================
+        # GRAFICO BARRAS HORIZONTAL
+        # =====================================================
+
+        def generar_grafico_atencion():
+
+            COLOR_BARRAS = "#4472C4"
+            COLOR_TEXTO = "#013051"
+
+            FIG_WIDTH = 8
+            FIG_HEIGHT = 4
+
+            fig, ax = plt.subplots(
+                figsize=(FIG_WIDTH, FIG_HEIGHT)
+            )
+
+            barras = ax.barh(
+                labels_atencion,
+                porcentajes_atencion,
+                color=COLOR_BARRAS
+            )
+
+            ax.set_xlim(0, 100)
+
+            for bar, valor in zip(
+                barras,
+                porcentajes_atencion
+            ):
+
+                ax.text(
+                    valor + 1,
+                    bar.get_y() + bar.get_height()/2,
+                    f"{valor:.2f}%",
+                    va="center",
+                    fontsize=10,
+                    color=COLOR_TEXTO
+                )
+
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+
+            ax.tick_params(
+                left=False,
+                bottom=False
+            )
+
+            plt.tight_layout()
+
+            ruta = ASSETS_DIR / "grafico_atencion.png"
+
+            plt.savefig(
+                ruta,
+                dpi=300,
+                bbox_inches="tight",
+                transparent=True
+            )
+
+            plt.close()
+
+            return ruta
+
+        grafico_atencion = generar_grafico_atencion()
                 
         
 
@@ -2212,11 +2334,11 @@ if archivo:
                 grafico_servicio_policial=grafico_servicio_policial,
                 grafico_servicio_anual=grafico_servicio_anual,
                 grafico_conoce_policia=grafico_conoce_policia,
-                grafico_conversado=grafico_conversado,
+                grafico_atencion=grafico_atencion,
                 tabla_servicio=tabla_servicio,
                 tabla_servicio_anual=tabla_servicio_anual,
                 tabla_conoce=tabla_conoce,
-                tabla_conversado=tabla_conversado, 
+                tabla_atencion=tabla_atencion,
                 omitidas_servicio=omitidas_servicio,
                 total_respuestas_servicio=total_respuestas_servicio,
                 grafico_comercio_seguridad=grafico_comercio_seguridad,
