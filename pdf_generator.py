@@ -3479,14 +3479,14 @@ def generar_pdf(
             # POSICIONES GRAFICO PRINCIPAL
             # =====================================================
 
-            GRAFICO_PRINCIPAL_X = 40 
-            GRAFICO_PRINCIPAL_Y = 500 #470
+            GRAFICO_PRINCIPAL_X = 55 
+            GRAFICO_PRINCIPAL_Y = 495 #470
 
             GRAFICO_PRINCIPAL_W = 320
             GRAFICO_PRINCIPAL_H = 220
 
-            TABLA1_X = 400 #460
-            TABLA1_Y = 575
+            TABLA1_X = 430 #460
+            TABLA1_Y = 560
 
             # =====================================================
             # PIE CHARTS
@@ -3494,39 +3494,39 @@ def generar_pdf(
 
             PIE_SIZE = 145
 
-            PIE1_X = 55
-            PIE1_Y = 315 #235
+            PIE1_X = 90
+            PIE1_Y = 305 #235
 
-            PIE2_X = 335
-            PIE2_Y = 315 #235
+            PIE2_X = 360
+            PIE2_Y = 305 #235
 
             PIE_TITLE_SIZE = 10
 
-            TABLA2_X = 45
-            TABLA2_Y = 275 #205
+            TABLA2_X = 80
+            TABLA2_Y = 260 #205
 
-            TABLA3_X = 315
-            TABLA3_Y = 275 #205
+            TABLA3_X = 350
+            TABLA3_Y = 260 #205
 
             # =====================================================
             # NUEVO GRAFICO ATENCION
             # =====================================================
 
-            ATENCION_X = 35
+            ATENCION_X = 40
             ATENCION_Y = 55
             
-            ATENCION_W = 330
-            ATENCION_H = 170
+            ATENCION_W = 320
+            ATENCION_H = 150
             
-            TABLA4_X = 370
+            TABLA4_X = 380
             TABLA4_Y = 115
 
             # =====================================================
             # RESPUESTAS OMITIDAS
             # =====================================================
 
-            OMITIDAS_X = 390
-            OMITIDAS_Y = 45
+            OMITIDAS_X = 470
+            OMITIDAS_Y = 40
 
             # =====================================================
             # TITULO
