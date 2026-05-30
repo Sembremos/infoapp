@@ -3513,20 +3513,20 @@ def generar_pdf(
             # =====================================================
 
             ATENCION_X = 35
-            ATENCION_Y = 25
-
+            ATENCION_Y = 55
+            
             ATENCION_W = 330
-            ATENCION_H = 150
-
+            ATENCION_H = 170
+            
             TABLA4_X = 390
-            TABLA4_Y = 90
+            TABLA4_Y = 115
 
             # =====================================================
             # RESPUESTAS OMITIDAS
             # =====================================================
 
             OMITIDAS_X = 390
-            OMITIDAS_Y = 35
+            OMITIDAS_Y = 45
 
             # =====================================================
             # TITULO
