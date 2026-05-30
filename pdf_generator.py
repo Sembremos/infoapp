@@ -3480,7 +3480,7 @@ def generar_pdf(
             # =====================================================
 
             GRAFICO_PRINCIPAL_X = 40 
-            GRAFICO_PRINCIPAL_Y = 480 #470
+            GRAFICO_PRINCIPAL_Y = 495 #470
 
             GRAFICO_PRINCIPAL_W = 320
             GRAFICO_PRINCIPAL_H = 220
@@ -3495,18 +3495,18 @@ def generar_pdf(
             PIE_SIZE = 145
 
             PIE1_X = 55
-            PIE1_Y = 250 #235
+            PIE1_Y = 265 #235
 
             PIE2_X = 305
-            PIE2_Y = 250 #235
+            PIE2_Y = 265 #235
 
             PIE_TITLE_SIZE = 10
 
             TABLA2_X = 45
-            TABLA2_Y = 215 #205
+            TABLA2_Y = 225 #205
 
             TABLA3_X = 295
-            TABLA3_Y = 215 #205
+            TABLA3_Y = 225 #205
 
             # =====================================================
             # NUEVO GRAFICO ATENCION
