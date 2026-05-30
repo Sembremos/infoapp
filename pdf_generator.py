@@ -3839,7 +3839,7 @@ def generar_pdf(
 
             tabla4 = Table(
                 tabla4_data,
-                colWidths=[110,45,45]
+                colWidths=[155,50]
             )
 
             estilo_tabla4 = [
