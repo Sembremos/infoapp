@@ -2114,16 +2114,6 @@ P3_TITULO_GRAFICO_COLOR = colors.HexColor("#013051")
 P3_TITULO_GRAFICO_OFFSET = 10
 
 
-#)))))))))))))))))))))))))))borrar
-st.write("Grafico atención:", grafico_atencion)
-
-from pathlib import Path
-
-st.write(
-    "Existe:",
-    Path(grafico_atencion).exists()
-)
-
 # ================= GENERADOR PDF =================
 def generar_pdf(
     portada_path,
