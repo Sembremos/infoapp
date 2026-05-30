@@ -3495,10 +3495,10 @@ def generar_pdf(
             PIE_SIZE = 145
 
             PIE1_X = 55
-            PIE1_Y = 265 #235
+            PIE1_Y = 285 #235
 
             PIE2_X = 305
-            PIE2_Y = 265 #235
+            PIE2_Y = 285 #235
 
             PIE_TITLE_SIZE = 10
 
