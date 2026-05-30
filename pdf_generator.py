@@ -3495,18 +3495,18 @@ def generar_pdf(
             PIE_SIZE = 145
 
             PIE1_X = 55
-            PIE1_Y = 285 #235
+            PIE1_Y = 300 #235
 
             PIE2_X = 305
-            PIE2_Y = 285 #235
+            PIE2_Y = 300 #235
 
             PIE_TITLE_SIZE = 10
 
             TABLA2_X = 45
-            TABLA2_Y = 225 #205
+            TABLA2_Y = 275 #205
 
             TABLA3_X = 295
-            TABLA3_Y = 225 #205
+            TABLA3_Y = 275 #205
 
             # =====================================================
             # NUEVO GRAFICO ATENCION
