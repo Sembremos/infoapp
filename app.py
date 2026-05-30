@@ -2152,6 +2152,10 @@ if archivo:
             atencion_df["porcentaje"],
             errors="coerce"
         ).fillna(0)
+        
+        # Excel almacena porcentajes como 0.2561 aunque muestre 25.61%
+        if atencion_df["porcentaje"].max() <= 1:
+            atencion_df["porcentaje"] = atencion_df["porcentaje"] * 100
 
         atencion_df["frecuencia"] = pd.to_numeric(
             atencion_df["frecuencia"],
