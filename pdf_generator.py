@@ -3503,10 +3503,10 @@ def generar_pdf(
             PIE_TITLE_SIZE = 10
 
             TABLA2_X = 45
-            TABLA2_Y = 275 #205
+            TABLA2_Y = 265 #205
 
             TABLA3_X = 295
-            TABLA3_Y = 275 #205
+            TABLA3_Y = 265 #205
 
             # =====================================================
             # NUEVO GRAFICO ATENCION
