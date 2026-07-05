@@ -3480,13 +3480,13 @@ def generar_pdf(
             # =====================================================
 
             GRAFICO_PRINCIPAL_X = 55 
-            GRAFICO_PRINCIPAL_Y = 500 #470
+            GRAFICO_PRINCIPAL_Y = 515 #470
 
-            GRAFICO_PRINCIPAL_W = 320
+            GRAFICO_PRINCIPAL_W = 340
             GRAFICO_PRINCIPAL_H = 220
 
             TABLA1_X = 430 #460
-            TABLA1_Y = 570
+            TABLA1_Y = 585
 
             # =====================================================
             # PIE CHARTS
@@ -3495,25 +3495,25 @@ def generar_pdf(
             PIE_SIZE = 145
 
             PIE1_X = 90
-            PIE1_Y = 315 #235
+            PIE1_Y = 330 #235
 
             PIE2_X = 360
-            PIE2_Y = 315 #235
+            PIE2_Y = 330 #235
 
             PIE_TITLE_SIZE = 10
 
             TABLA2_X = 80
-            TABLA2_Y = 270 #205
+            TABLA2_Y = 285 #205
 
             TABLA3_X = 350
-            TABLA3_Y = 270 #205
+            TABLA3_Y = 285 #205
 
             # =====================================================
             # NUEVO GRAFICO ATENCION
             # =====================================================
 
             ATENCION_X = 40
-            ATENCION_Y = 65
+            ATENCION_Y = 80
             
             ATENCION_W = 320
             ATENCION_H = 150
