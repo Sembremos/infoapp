@@ -2524,7 +2524,7 @@ def generar_pdf(
             # TOTAL DE DATOS (más grande)
             canvas.setFont("Helvetica-Bold", 28)
             canvas.setFillColor(colors.HexColor("#FFFFFF"))
-            canvas.drawString(260, 150, str(datos_pagina_8["total_datos"]))
+            canvas.drawString(270, 140, str(datos_pagina_8["total_datos"]))
             
         elif doc.page == 9:
             header_footer(canvas, doc)
