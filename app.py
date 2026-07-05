@@ -2041,7 +2041,7 @@ if archivo:
                 "#636363"
             ]
         
-            plt.figure(figsize=(8,5))
+            plt.figure(figsize=(11,6))
 
             ax = plt.gca()
 
