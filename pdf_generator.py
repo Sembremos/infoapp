@@ -3482,7 +3482,7 @@ def generar_pdf(
             GRAFICO_PRINCIPAL_X = 55 
             GRAFICO_PRINCIPAL_Y = 515 #470
 
-            GRAFICO_PRINCIPAL_W = 400
+            GRAFICO_PRINCIPAL_W = 360
             GRAFICO_PRINCIPAL_H = 220
 
             TABLA1_X = 430 #460
