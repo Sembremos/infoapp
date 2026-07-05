@@ -101,7 +101,7 @@ def draw_grafico_escolaridad(canvas, grafico_path):
     img_height = img_width * img_h / img_w
 
     x = page_width / 2 + 10
-    y = page_height - img_height - 340
+    y = page_height - img_height - 360
 
     canvas.drawImage(
         grafico_path,
@@ -262,7 +262,7 @@ def draw_tabla_escolaridad(canvas, tabla_escolaridad):
     FONT_SIZE_BODY = 11
 
     x = 20
-    y = page_height - 340
+    y = page_height - 360
 
     data = [["Participación por Escolaridad", ""]]
     data.extend(tabla_escolaridad)
