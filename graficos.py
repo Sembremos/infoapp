@@ -1,6 +1,16 @@
+"""
+==============================================================
+GRAFICOS.PY
+
+Librería de gráficos para el Generador de Informes
+Programa Sembremos Seguridad
+
+Toda la apariencia de los gráficos se controla desde este archivo.
+==============================================================
+"""
+
 # ==========================================================
-# GRAFICOS.PY
-# Librería de gráficos del Generador de Informes
+# IMPORTS
 # ==========================================================
 
 from pathlib import Path
@@ -14,7 +24,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as pe
-from matplotlib.ticker import MaxNLocator
+
 # ==========================================================
 # RUTAS
 # ==========================================================
@@ -23,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
 
 # ==========================================================
-# CONFIGURACIÓN GENERAL
+# CONFIGURACION GENERAL
 # ==========================================================
 
 DPI = 300
@@ -43,10 +53,6 @@ AZUL = "#013051"
 
 VERDE = "#30A907"
 
-GRIS = "#808080"
-
-GRIS_CLARO = "#D9D9D9"
-
 AZUL_CLARO = "#4472C4"
 
 AZUL_MEDIO = "#5B9BD5"
@@ -57,21 +63,25 @@ CELESTE = "#9DC3E6"
 
 VERDE_CLARO = "#70AD47"
 
-GRIS_MEDIO = "#A5A5A5"
+GRIS = "#A5A5A5"
 
 GRIS_OSCURO = "#636363"
+
+BLANCO = "#FFFFFF"
+
+# ==========================================================
+# PALETA GENERAL
+# ==========================================================
 
 PALETA = [
 
     AZUL_MEDIO,
 
-    GRIS_MEDIO,
+    GRIS,
 
     AZUL_CLARO,
 
     AZUL_OSCURO,
-
-    GRIS_OSCURO,
 
     VERDE,
 
@@ -79,59 +89,153 @@ PALETA = [
 
     CELESTE,
 
+    GRIS_OSCURO
+
 ]
 
 # ==========================================================
-# CONFIGURACIÓN DE BARRAS
+# ESTILOS
 # ==========================================================
 
-FIG_BARRAS = (10,6)
+# ----------------------------------------------------------
+# BARRAS PEQUEÑAS
+# ----------------------------------------------------------
 
-ANCHO_BARRA = 0.60
+BARRAS_S = {
 
-COLOR_BARRAS = VERDE
+    "figsize": (6,4),
 
-COLOR_TEXTO = AZUL
+    "fontsize_labels": 9,
 
-MOSTRAR_EJE_Y = False
+    "fontsize_valores": 8,
 
-MOSTRAR_GRID = False
+    "fontsize_titulo": 11,
 
-# ==========================================================
-# CONFIGURACIÓN DE PASTELES
-# ==========================================================
+    "ancho_barra": .55,
 
-FIG_PASTEL = (6,6)
+    "mostrar_grid": False,
 
-STARTANGLE = 90
+    "mostrar_eje_y": False,
 
-LABEL_DISTANCE = 1.08
+    "rotacion": 0,
 
-PCT_DISTANCE = 0.72
+    "colores": [VERDE]
 
-# ==========================================================
-# TIPOGRAFÍAS
-# ==========================================================
+}
 
-FONT_TITULO = 16
+# ----------------------------------------------------------
+# BARRAS MEDIANAS
+# ----------------------------------------------------------
 
-FONT_LABEL = 12
+BARRAS_M = {
 
-FONT_PORCENTAJE = 13
+    "figsize": (8,5),
 
-FONT_VALOR = 12
+    "fontsize_labels": 11,
 
-# ==========================================================
-# MÁRGENES
-# ==========================================================
+    "fontsize_valores": 10,
 
-BOTTOM_SPACE = 0.20
+    "fontsize_titulo": 13,
 
-TOP_SPACE = 0.95
+    "ancho_barra": .60,
 
-LEFT_SPACE = 0.08
+    "mostrar_grid": False,
 
-RIGHT_SPACE = 0.92
+    "mostrar_eje_y": False,
+
+    "rotacion": 0,
+
+    "colores": [VERDE]
+
+}
+
+# ----------------------------------------------------------
+# BARRAS GRANDES
+# ----------------------------------------------------------
+
+BARRAS_L = {
+
+    "figsize": (10,6),
+
+    "fontsize_labels": 13,
+
+    "fontsize_valores": 12,
+
+    "fontsize_titulo": 15,
+
+    "ancho_barra": .65,
+
+    "mostrar_grid": False,
+
+    "mostrar_eje_y": False,
+
+    "rotacion": 0,
+
+    "colores": [VERDE]
+
+}
+
+# ----------------------------------------------------------
+# PASTEL PEQUEÑO
+# ----------------------------------------------------------
+
+PASTEL_S = {
+
+    "figsize": (5,5),
+
+    "fontsize_labels": 10,
+
+    "fontsize_porcentajes": 10,
+
+    "startangle":90,
+
+    "labeldistance":1.10,
+
+    "pctdistance":0.65
+
+}
+
+# ----------------------------------------------------------
+# PASTEL MEDIANO
+# ----------------------------------------------------------
+
+PASTEL_M = {
+
+    "figsize": (7,7),
+
+    "fontsize_labels": 14,
+
+    "fontsize_porcentajes": 16,
+
+    "startangle":90,
+
+    "labeldistance":1.15,
+
+    "pctdistance":0.65
+
+}
+
+# ----------------------------------------------------------
+# GRAFICO DE LINEA
+# ----------------------------------------------------------
+
+LINEA = {
+
+    "figsize": (10,5),
+
+    "linewidth":3,
+
+    "marker":"o",
+
+    "markersize":7,
+
+    "fontsize_labels":11,
+
+    "fontsize_titulo":14,
+
+    "mostrar_grid":True
+
+}
 
 
 # ==========================================================
@@ -140,15 +244,16 @@ RIGHT_SPACE = 0.92
 
 def guardar_figura(fig, nombre_archivo):
     """
-    Guarda una figura de matplotlib dentro de la carpeta assets.
+    Guarda una figura en la carpeta assets y devuelve la ruta.
     """
 
     ruta = ASSETS_DIR / nombre_archivo
 
+    fig.tight_layout()
+
     fig.savefig(
         ruta,
         dpi=DPI,
-        bbox_inches="tight",
         transparent=True
     )
 
@@ -159,65 +264,68 @@ def guardar_figura(fig, nombre_archivo):
 
 # ----------------------------------------------------------
 
-def limpiar_porcentajes(valores):
+def envolver_texto(labels, ancho=18):
     """
-    Convierte porcentajes provenientes de Excel a float.
-
-    Acepta:
-        25%
-        25,5%
-        25.5
-        25
+    Divide etiquetas largas en varias líneas.
     """
 
     resultado = []
 
-    for valor in valores:
+    for texto in labels:
 
-        if pd.isna(valor):
-            resultado.append(0)
-            continue
+        texto = str(texto).replace("_", " ").title()
 
-        texto = str(valor)
+        texto = "\n".join(
+            textwrap.wrap(texto, width=ancho)
+        )
 
-        texto = texto.replace("%", "")
-        texto = texto.replace(",", ".")
-
-        try:
-            resultado.append(float(texto))
-        except:
-            resultado.append(0)
+        resultado.append(texto)
 
     return resultado
 
+
+# ----------------------------------------------------------
+
+def obtener_colores(cantidad, estilo):
+
+    colores = estilo["colores"]
+
+    if len(colores) == 1:
+
+        return colores * cantidad
+
+    if cantidad <= len(colores):
+
+        return colores[:cantidad]
+
+    salida = []
+
+    while len(salida) < cantidad:
+
+        salida.extend(colores)
+
+    return salida[:cantidad]
 
 
 # ----------------------------------------------------------
 
 def escribir_valores(
-
     ax,
-
     barras,
-
-    porcentaje=True,
-
-    color=COLOR_TEXTO,
-
-    fontsize=FONT_VALOR
-
+    porcentaje,
+    fontsize,
 ):
-    """
-    Escribe el valor encima de cada barra.
-    """
 
     for barra in barras:
 
         valor = barra.get_height()
 
         if porcentaje:
-            texto = f"{valor:.2f}%"
+
+            texto = f"{valor:.0f}%"
+
         else:
+
             texto = f"{valor:.0f}"
 
         ax.text(
@@ -236,7 +344,7 @@ def escribir_valores(
 
             fontweight="bold",
 
-            color=color,
+            color=AZUL,
 
             path_effects=[
 
@@ -255,121 +363,58 @@ def escribir_valores(
 
 # ----------------------------------------------------------
 
-def envolver_texto(labels, ancho=18):
+def normalizar_estilo(estilo):
+
     """
-    Divide etiquetas largas en varias líneas.
+    Completa cualquier propiedad faltante del estilo.
     """
 
-    nuevas = []
+    base = {
 
-    for texto in labels:
+        "figsize": (8,5),
 
-        nuevas.append(
+        "fontsize_labels":11,
 
-            "\n".join(
+        "fontsize_valores":10,
 
-                textwrap.wrap(
+        "fontsize_titulo":13,
 
-                    str(texto),
+        "fontsize_porcentajes":12,
 
-                    width=ancho
+        "ancho_barra":0.60,
 
-                )
+        "mostrar_grid":False,
 
-            )
+        "mostrar_eje_y":False,
 
-        )
+        "rotacion":0,
 
-    return nuevas
+        "labeldistance":1.10,
+
+        "pctdistance":0.65,
+
+        "startangle":90,
+
+        "linewidth":2,
+
+        "marker":"o",
+
+        "markersize":6,
+
+        "colores":[VERDE]
+
+    }
+
+    copia = base.copy()
+
+    copia.update(estilo)
+
+    return copia
 
 
 # ----------------------------------------------------------
 
-def obtener_paleta(cantidad):
-    """
-    Devuelve la cantidad de colores necesarios.
-    """
-
-    if cantidad <= len(PALETA):
-
-        return PALETA[:cantidad]
-
-    colores = []
-
-    while len(colores) < cantidad:
-
-        colores.extend(PALETA)
-
-    return colores[:cantidad]
-
-
-# ==========================================================
-# FUNCIÓN MAESTRA - BARRAS VERTICALES
-# ==========================================================
-
-
-def crear_barras(
-    labels,
-    valores,
-    nombre_archivo,
-    colores=None,
-    titulo=None,
-    porcentaje=True,
-    figsize=FIG_BARRAS,
-    ancho_barra=ANCHO_BARRA,
-    fontsize_labels=FONT_LABEL,
-    fontsize_valores=FONT_VALOR,
-    fontsize_titulo=FONT_TITULO,
-    rotacion=0,
-    ylim_extra=0.10,
-    mostrar_grid=MOSTRAR_GRID,
-    mostrar_eje_y=MOSTRAR_EJE_Y,
-):
-
-    # ---------------------------------------------
-    # Datos
-    # ---------------------------------------------
-
-    labels = envolver_texto(labels, ancho=15)
-
-    valores = [float(v) for v in valores]
-
-    if colores is None:
-        colores = obtener_paleta(len(labels))
-
-    # ---------------------------------------------
-    # Figura
-    # ---------------------------------------------
-
-    fig, ax = plt.subplots(figsize=figsize)
-
-    fig.patch.set_alpha(0)
-
-    ax.set_facecolor("none")
-
-    # ---------------------------------------------
-    # Barras
-    # ---------------------------------------------
-
-    barras = ax.bar(
-
-        labels,
-
-        valores,
-
-        color=colores,
-
-        width=ancho_barra,
-
-        edgecolor="white",
-
-        linewidth=1.2
-
-    )
-
-    # ---------------------------------------------
-    # Estilo
-    # ---------------------------------------------
+def aplicar_estilo_barras(ax, estilo):
 
     ax.spines["top"].set_visible(False)
 
@@ -377,13 +422,31 @@ def crear_barras(
 
     ax.spines["left"].set_visible(False)
 
-    if not mostrar_eje_y:
-
-        ax.set_yticks([])
+    if not estilo["mostrar_eje_y"]:
 
         ax.spines["bottom"].set_visible(False)
 
-    if mostrar_grid:
+        ax.set_yticks([])
+
+    ax.tick_params(
+
+        axis="x",
+
+        labelsize=estilo["fontsize_labels"],
+
+        length=0
+
+    )
+
+    ax.tick_params(
+
+        axis="y",
+
+        length=0
+
+    )
+
+    if estilo["mostrar_grid"]:
 
         ax.grid(
 
@@ -391,25 +454,132 @@ def crear_barras(
 
             linestyle="--",
 
-            alpha=0.25
+            alpha=.25
 
         )
 
-    ax.tick_params(
+# ==========================================================
+# GRAFICO DE BARRAS
+# ==========================================================
 
-        axis="x",
+def crear_barras(
+    labels,
+    valores,
+    nombre_archivo,
+    estilo=BARRAS_M,
+    titulo=None,
+    porcentaje=False
+):
 
-        labelsize=fontsize_labels,
+    # ------------------------------------------
+    # Estilo
+    # ------------------------------------------
 
-        length=0
+    estilo = normalizar_estilo(estilo)
+
+    labels = envolver_texto(labels)
+
+    valores = [float(v) for v in valores]
+
+    colores = obtener_colores(
+
+        len(labels),
+
+        estilo
 
     )
 
-    plt.xticks(rotation=rotacion)
+    # ------------------------------------------
+    # Figura
+    # ------------------------------------------
 
-    # ---------------------------------------------
+    fig, ax = plt.subplots(
+
+        figsize=estilo["figsize"]
+
+    )
+
+    fig.patch.set_alpha(0)
+
+    ax.set_facecolor("none")
+
+    # ------------------------------------------
+    # Barras
+    # ------------------------------------------
+
+    barras = ax.bar(
+
+        labels,
+
+        valores,
+
+        width=estilo["ancho_barra"],
+
+        color=colores,
+
+        edgecolor="white",
+
+        linewidth=1.2,
+
+        zorder=3
+
+    )
+
+    # ------------------------------------------
+    # Estilo del eje
+    # ------------------------------------------
+
+    aplicar_estilo_barras(
+
+        ax,
+
+        estilo
+
+    )
+
+    # ------------------------------------------
+    # Rotación
+    # ------------------------------------------
+
+    plt.xticks(
+
+        rotation=estilo["rotacion"]
+
+    )
+
+    # ------------------------------------------
+    # Limite superior
+    # ------------------------------------------
+
+    maximo = max(valores)
+
+    ax.set_ylim(
+
+        0,
+
+        maximo * 1.15
+
+    )
+
+    # ------------------------------------------
+    # Valores
+    # ------------------------------------------
+
+    escribir_valores(
+
+        ax,
+
+        barras,
+
+        porcentaje,
+
+        estilo["fontsize_valores"]
+
+    )
+
+    # ------------------------------------------
     # Título
-    # ---------------------------------------------
+    # ------------------------------------------
 
     if titulo:
 
@@ -417,7 +587,7 @@ def crear_barras(
 
             titulo,
 
-            fontsize=fontsize_titulo,
+            fontsize=estilo["fontsize_titulo"],
 
             color=AZUL,
 
@@ -427,57 +597,25 @@ def crear_barras(
 
         )
 
-    # ---------------------------------------------
-    # Altura máxima
-    # ---------------------------------------------
-
-    maximo = max(valores)
-
-    ax.set_ylim(
-
-        0,
-
-        maximo * (1 + ylim_extra)
-
-    )
-
-    # ---------------------------------------------
-    # Valores sobre barras
-    # ---------------------------------------------
-
-    escribir_valores(
-
-        ax,
-
-        barras,
-
-        porcentaje=porcentaje,
-
-        fontsize=fontsize_valores
-
-    )
-
-    # ---------------------------------------------
+    # ------------------------------------------
     # Márgenes
-    # ---------------------------------------------
+    # ------------------------------------------
 
     plt.subplots_adjust(
 
-        left=LEFT_SPACE,
+        left=.08,
 
-        right=RIGHT_SPACE,
+        right=.97,
 
-        top=TOP_SPACE,
+        bottom=.18,
 
-        bottom=BOTTOM_SPACE
+        top=.92
 
     )
 
-    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-    
-    # ---------------------------------------------
+    # ------------------------------------------
     # Guardar
-    # ---------------------------------------------
+    # ------------------------------------------
 
     return guardar_figura(
 
@@ -487,36 +625,54 @@ def crear_barras(
 
     )
 
+
 # ==========================================================
-# FUNCIÓN MAESTRA - PASTEL
+# GRAFICO DE PASTEL
 # ==========================================================
 
 def crear_pastel(
     labels,
     valores,
     nombre_archivo,
-    colores=None,
-    figsize=FIG_PASTEL,
-    mostrar_labels=True,
-    porcentaje_size=FONT_PORCENTAJE,
-    label_size=FONT_LABEL,
-    startangle=STARTANGLE,
-    pctdistance=PCT_DISTANCE,
-    labeldistance=LABEL_DISTANCE,
+    estilo=PASTEL_M,
+    mostrar_labels=True
 ):
+
+    # ------------------------------------------
+    # Estilo
+    # ------------------------------------------
+
+    estilo = normalizar_estilo(estilo)
 
     labels = envolver_texto(labels)
 
     valores = [float(v) for v in valores]
 
-    if colores is None:
-        colores = obtener_paleta(len(labels))
+    colores = obtener_colores(
 
-    fig, ax = plt.subplots(figsize=figsize)
+        len(labels),
+
+        estilo
+
+    )
+
+    # ------------------------------------------
+    # Figura
+    # ------------------------------------------
+
+    fig, ax = plt.subplots(
+
+        figsize=estilo["figsize"]
+
+    )
 
     fig.patch.set_alpha(0)
 
     ax.set_facecolor("none")
+
+    # ------------------------------------------
+    # Pastel
+    # ------------------------------------------
 
     wedges, texts, autotexts = ax.pie(
 
@@ -526,24 +682,53 @@ def crear_pastel(
 
         colors=colores,
 
-        startangle=startangle,
+        startangle=estilo["startangle"],
 
-        autopct=lambda p: f"{p:.2f}%",
+        autopct=lambda p: f"{p:.0f}%",
 
-        pctdistance=pctdistance,
+        labeldistance=estilo["labeldistance"],
 
-        labeldistance=labeldistance,
+        pctdistance=estilo["pctdistance"],
 
         wedgeprops=dict(
+
             edgecolor="white",
-            linewidth=1
+
+            linewidth=1.5
+
         )
 
     )
 
+    # ------------------------------------------
+    # Etiquetas
+    # ------------------------------------------
+
+    if mostrar_labels:
+
+        for texto in texts:
+
+            texto.set_fontsize(
+
+                estilo["fontsize_labels"]
+
+            )
+
+            texto.set_color(AZUL)
+
+            texto.set_fontweight("bold")
+
+    # ------------------------------------------
+    # Porcentajes
+    # ------------------------------------------
+
     for texto in autotexts:
 
-        texto.set_fontsize(porcentaje_size)
+        texto.set_fontsize(
+
+            estilo["fontsize_porcentajes"]
+
+        )
 
         texto.set_fontweight("bold")
 
@@ -561,15 +746,15 @@ def crear_pastel(
 
         ])
 
-    if mostrar_labels:
-
-        for texto in texts:
-
-            texto.set_fontsize(label_size)
-
-            texto.set_color(AZUL)
+    # ------------------------------------------
+    # Mantener círculo perfecto
+    # ------------------------------------------
 
     ax.axis("equal")
+
+    # ------------------------------------------
+    # Guardar
+    # ------------------------------------------
 
     return guardar_figura(
 
@@ -581,106 +766,287 @@ def crear_pastel(
 
 
 # ==========================================================
-# FUNCIÓN MAESTRA - PASTEL CON ETIQUETAS EXTERNAS
+# GRAFICO DE LINEA
 # ==========================================================
 
-def crear_pastel_labels(
-
+def crear_linea(
     labels,
-
     valores,
-
     nombre_archivo,
-
-    colores=None,
-
-    figsize=FIG_PASTEL,
-
-    porcentaje_size=FONT_PORCENTAJE,
-
-    label_size=FONT_LABEL,
-
-    startangle=STARTANGLE
-
+    estilo=LINEA,
+    titulo=None
 ):
+
+    # ------------------------------------------
+    # Estilo
+    # ------------------------------------------
+
+    estilo = normalizar_estilo(estilo)
+
+    labels = envolver_texto(labels)
 
     valores = [float(v) for v in valores]
 
-    if colores is None:
+    # ------------------------------------------
+    # Figura
+    # ------------------------------------------
 
-        colores = obtener_paleta(len(labels))
-
-    fig, ax = plt.subplots(figsize=figsize)
+    fig, ax = plt.subplots(
+        figsize=estilo["figsize"]
+    )
 
     fig.patch.set_alpha(0)
 
     ax.set_facecolor("none")
 
-    wedges, _, autotexts = ax.pie(
+    # ------------------------------------------
+    # Línea
+    # ------------------------------------------
+
+    ax.plot(
+
+        labels,
 
         valores,
 
-        labels=None,
+        color=AZUL,
 
-        colors=colores,
+        linewidth=estilo["linewidth"],
 
-        startangle=startangle,
+        marker=estilo["marker"],
 
-        autopct=lambda p: f"{p:.2f}%",
+        markersize=estilo["markersize"],
 
-        pctdistance=.70,
+        markerfacecolor=VERDE,
 
-        wedgeprops=dict(
+        markeredgecolor=AZUL,
 
-            edgecolor="white",
-
-            linewidth=1
-
-        )
+        zorder=3
 
     )
 
-    for texto in autotexts:
+    # ------------------------------------------
+    # Valores
+    # ------------------------------------------
 
-        texto.set_fontsize(porcentaje_size)
-
-        texto.set_fontweight("bold")
-
-        texto.set_color("white")
-
-        texto.set_path_effects([
-
-            pe.withStroke(
-
-                linewidth=2,
-
-                foreground="black"
-
-            )
-
-        ])
-
-    for i, wedge in enumerate(wedges):
-
-        angulo = (wedge.theta1 + wedge.theta2) / 2
-
-        x = np.cos(np.deg2rad(angulo))
-
-        y = np.sin(np.deg2rad(angulo))
+    for x, y in zip(labels, valores):
 
         ax.text(
 
-            x * 1.25,
+            x,
 
-            y * 1.25,
+            y,
 
-            "\n".join(textwrap.wrap(str(labels[i]),18)),
+            f"{y:.0f}",
+
+            fontsize=estilo["fontsize_labels"],
+
+            fontweight="bold",
 
             ha="center",
 
+            va="bottom",
+
+            color=AZUL,
+
+            path_effects=[
+
+                pe.withStroke(
+
+                    linewidth=2,
+
+                    foreground="white"
+
+                )
+
+            ]
+
+        )
+
+    # ------------------------------------------
+    # Grid
+    # ------------------------------------------
+
+    if estilo["mostrar_grid"]:
+
+        ax.grid(
+
+            linestyle="--",
+
+            alpha=.30
+
+        )
+
+    # ------------------------------------------
+    # Ejes
+    # ------------------------------------------
+
+    ax.spines["top"].set_visible(False)
+
+    ax.spines["right"].set_visible(False)
+
+    ax.tick_params(
+
+        axis="x",
+
+        labelsize=estilo["fontsize_labels"]
+
+    )
+
+    ax.tick_params(
+
+        axis="y",
+
+        labelsize=estilo["fontsize_labels"]
+
+    )
+
+    # ------------------------------------------
+    # Título
+    # ------------------------------------------
+
+    if titulo:
+
+        ax.set_title(
+
+            titulo,
+
+            fontsize=estilo["fontsize_titulo"],
+
+            fontweight="bold",
+
+            color=AZUL,
+
+            pad=18
+
+        )
+
+    # ------------------------------------------
+    # Guardar
+    # ------------------------------------------
+
+    return guardar_figura(
+
+        fig,
+
+        nombre_archivo
+
+    )
+
+
+# ==========================================================
+# GRAFICO DE BARRAS HORIZONTALES
+# ==========================================================
+
+def crear_barras_horizontal(
+    labels,
+    valores,
+    nombre_archivo,
+    estilo=BARRAS_M,
+    titulo=None
+):
+
+    estilo = normalizar_estilo(estilo)
+
+    labels = envolver_texto(labels)
+
+    valores = [float(v) for v in valores]
+
+    colores = obtener_colores(
+
+        len(labels),
+
+        estilo
+
+    )
+
+    fig, ax = plt.subplots(
+
+        figsize=estilo["figsize"]
+
+    )
+
+    fig.patch.set_alpha(0)
+
+    ax.set_facecolor("none")
+
+    barras = ax.barh(
+
+        labels,
+
+        valores,
+
+        color=colores,
+
+        edgecolor="white",
+
+        linewidth=1.2
+
+    )
+
+    ax.spines["top"].set_visible(False)
+
+    ax.spines["right"].set_visible(False)
+
+    ax.spines["left"].set_visible(False)
+
+    ax.spines["bottom"].set_visible(False)
+
+    ax.tick_params(
+
+        axis="y",
+
+        labelsize=estilo["fontsize_labels"],
+
+        length=0
+
+    )
+
+    ax.set_xticks([])
+
+    for barra in barras:
+
+        valor = barra.get_width()
+
+        ax.text(
+
+            valor,
+
+            barra.get_y()+barra.get_height()/2,
+
+            f"{valor:.0f}",
+
             va="center",
 
-            fontsize=label_size,
+            ha="left",
+
+            fontsize=estilo["fontsize_valores"],
+
+            fontweight="bold",
+
+            color=AZUL,
+
+            path_effects=[
+
+                pe.withStroke(
+
+                    linewidth=2,
+
+                    foreground="white"
+
+                )
+
+            ]
+
+        )
+
+    if titulo:
+
+        ax.set_title(
+
+            titulo,
+
+            fontsize=estilo["fontsize_titulo"],
 
             color=AZUL,
 
@@ -688,8 +1054,6 @@ def crear_pastel_labels(
 
         )
 
-    ax.axis("equal")
-
     return guardar_figura(
 
         fig,
@@ -700,193 +1064,19 @@ def crear_pastel_labels(
 
 
 # ==========================================================
-# FUNCIÓN MAESTRA - BARRAS HORIZONTALES
-# ==========================================================
-
-def crear_barras_horizontal(
-    labels,
-    valores,
-    nombre_archivo,
-    colores=None,
-    figsize=(10,6),
-    porcentaje=False,
-    fontsize_labels=FONT_LABEL,
-    fontsize_valores=FONT_VALOR,
-    titulo=None,
-):
-
-    labels = envolver_texto(labels)
-
-    valores = [float(v) for v in valores]
-
-    if colores is None:
-        colores = obtener_paleta(len(labels))
-
-    fig, ax = plt.subplots(figsize=figsize)
-
-    fig.patch.set_alpha(0)
-    ax.set_facecolor("none")
-
-    barras = ax.barh(
-        labels,
-        valores,
-        color=colores,
-        edgecolor="white",
-        linewidth=1.2
-    )
-
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_visible(False)
-    ax.spines["bottom"].set_visible(False)
-
-    ax.set_xticks([])
-
-    ax.tick_params(
-        axis="y",
-        labelsize=fontsize_labels,
-        length=0
-    )
-
-    if titulo:
-
-        ax.set_title(
-            titulo,
-            fontsize=FONT_TITULO,
-            fontweight="bold",
-            color=AZUL,
-            pad=18
-        )
-
-    for barra in barras:
-
-        valor = barra.get_width()
-
-        if porcentaje:
-            texto = f"{valor:.2f}%"
-        else:
-            texto = f"{valor:.0f}"
-
-        ax.text(
-            valor,
-            barra.get_y()+barra.get_height()/2,
-            texto,
-            va="center",
-            ha="left",
-            fontsize=fontsize_valores,
-            fontweight="bold",
-            color=AZUL
-        )
-
-    plt.subplots_adjust(
-        left=.20,
-        right=.96,
-        top=.93,
-        bottom=.08
-    )
-
-    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-        
-    return guardar_figura(
-        fig,
-        nombre_archivo
-    )
-
-
-# ==========================================================
-# GRÁFICO TIPO DONA
-# ==========================================================
-
-def crear_dona(
-    labels,
-    valores,
-    nombre_archivo,
-    colores=None,
-    figsize=(6,6),
-    ancho=.45
-):
-
-    valores=[float(v) for v in valores]
-
-    if colores is None:
-        colores=obtener_paleta(len(labels))
-
-    fig,ax=plt.subplots(figsize=figsize)
-
-    fig.patch.set_alpha(0)
-
-    ax.set_facecolor("none")
-
-    wedges,texts,autotexts=ax.pie(
-
-        valores,
-
-        labels=labels,
-
-        colors=colores,
-
-        autopct=lambda p:f"{p:.1f}%",
-
-        startangle=90,
-
-        wedgeprops=dict(
-            width=ancho,
-            edgecolor="white"
-        )
-
-    )
-
-    for t in texts:
-
-        t.set_fontsize(FONT_LABEL)
-
-        t.set_color(AZUL)
-
-    for t in autotexts:
-
-        t.set_fontsize(FONT_PORCENTAJE)
-
-        t.set_fontweight("bold")
-
-        t.set_color("white")
-
-    centro=plt.Circle(
-
-        (0,0),
-
-        1-ancho,
-
-        fc="white"
-
-    )
-
-    ax.add_artist(centro)
-
-    ax.axis("equal")
-
-    return guardar_figura(
-        fig,
-        nombre_archivo
-    )
-
-
-# ==========================================================
-# LIMPIAR FIGURAS
-# ==========================================================
-
-def cerrar_figuras():
-    """
-    Cierra todas las figuras abiertas.
-    """
-
-    plt.close("all")
-
-
-# ==========================================================
-# EXPORTACIÓN
+# EXPORTACIONES
 # ==========================================================
 
 __all__ = [
+
+    "BARRAS_S",
+    "BARRAS_M",
+    "BARRAS_L",
+
+    "PASTEL_S",
+    "PASTEL_M",
+
+    "LINEA",
 
     "crear_barras",
 
@@ -894,38 +1084,6 @@ __all__ = [
 
     "crear_pastel",
 
-    "crear_pastel_labels",
-
-    "crear_dona",
-
-    "guardar_figura",
-
-    "limpiar_porcentajes",
-
-    "aplicar_estilo",
-
-    "escribir_valores",
-
-    "envolver_texto",
-
-    "obtener_paleta",
-
-    "cerrar_figuras",
+    "crear_linea",
 
 ]
-
-
-def colores_verde(cantidad):
-    return [VERDE] * cantidad
-
-
-def colores_azul(cantidad):
-    return [AZUL] * cantidad
-
-
-def colores_paleta(cantidad):
-    return obtener_paleta(cantidad)
-    
-    
-
-    
