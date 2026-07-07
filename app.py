@@ -2045,37 +2045,14 @@ if archivo:
         # FUNCION PIE GENERICA
         # =====================================================
         
-        def generar_pie_servicio(labels, valores, nombre, texto_size=14):
+        def generar_pie_servicio(labels, valores, nombre_archivo, texto_size=14):
 
-            import matplotlib.pyplot as plt
-        
-            colores = [
-                "#5b9bd5",
-                "#a5a5a5",
-                "#4472c4",
-                "#255e91",
-                "#636363"
-            ]
-        
-            plt.figure(figsize=(6,6))
-        
-            plt.pie(
+            return crear_pastel(
+                labels,
                 valores,
-                labels=None,
-                colors=colores,
-                autopct=lambda p: f"{p:.2f}%",
-                pctdistance=0.7,
-                textprops={'fontsize': texto_size}
+                nombre_archivo,
+                estilo=PASTEL_M
             )
-        
-            plt.axis("equal")
-        
-            ruta = ASSETS_DIR / nombre
-        
-            plt.savefig(ruta, dpi=300, bbox_inches="tight")
-            plt.close()
-        
-            return ruta
 
 
         #======================================================
