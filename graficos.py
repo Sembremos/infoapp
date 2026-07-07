@@ -191,7 +191,7 @@ PASTEL_S = {
 
     "labeldistance":1.10,
 
-    "pctdistance":0.65
+    "pctdistance":0.65,
 
     "colores": [
         "#5B9BD5",
@@ -222,7 +222,7 @@ PASTEL_M = {
 
     "labeldistance":1.15,
 
-    "pctdistance":0.65
+    "pctdistance":0.65,
 
     "colores": [
         "#5B9BD5",
