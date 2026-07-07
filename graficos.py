@@ -193,6 +193,17 @@ PASTEL_S = {
 
     "pctdistance":0.65
 
+    "colores": [
+        "#5B9BD5",
+        "#A5A5A5",
+        "#4472C4",
+        "#255E91",
+        "#30A907",
+        "#70AD47",
+        "#9DC3E6",
+        "#636363"
+    ]
+
 }
 
 # ----------------------------------------------------------
@@ -212,6 +223,17 @@ PASTEL_M = {
     "labeldistance":1.15,
 
     "pctdistance":0.65
+
+    "colores": [
+        "#5B9BD5",
+        "#A5A5A5",
+        "#4472C4",
+        "#255E91",
+        "#30A907",
+        "#70AD47",
+        "#9DC3E6",
+        "#636363"
+    ]
 
 }
 
@@ -251,10 +273,11 @@ def guardar_figura(fig, nombre_archivo):
 
     fig.tight_layout()
 
-    fig.savefig(
+        fig.savefig(
         ruta,
         dpi=DPI,
-        transparent=True
+        transparent=True,
+        bbox_inches=None
     )
 
     plt.close(fig)
@@ -751,6 +774,13 @@ def crear_pastel(
     # ------------------------------------------
 
     ax.axis("equal")
+
+    plt.subplots_adjust(
+        left=0.05,
+        right=0.95,
+        top=0.95,
+        bottom=0.05
+    )
 
     # ------------------------------------------
     # Guardar
