@@ -6,10 +6,9 @@ from pathlib import Path
 import base64
 from openpyxl import load_workbook
 import numpy as np
-from graficos import *
+
 from pdf_generator import P3_PALETA_GRAFICO
 from pdf_generator import generar_pdf
-
 
 
 
@@ -2031,28 +2030,79 @@ if archivo:
         # =====================================================
         
         def generar_grafico_servicio_policial(labels, valores):
+        
+            import matplotlib.pyplot as plt
+        
+            colores = [
+                "#5b9bd5",
+                "#a5a5a5",
+                "#4472c4",
+                "#255e91",
+                "#636363"
+            ]
+        
+            plt.figure(figsize=(11,6))
 
-            return crear_barras(
-                labels,
-                valores,
-                "grafico_servicio_policial.png",
-                estilo=BARRAS_L,
-                porcentaje=True
-            )
+            ax = plt.gca()
+
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+            
+            ax.set_yticks([])
+
+            ax.tick_params(left=False) #ne se que hace eso
+                    
+            barras = plt.bar(labels,valores,color=colores)
+        
+            for i,v in enumerate(valores):
+                plt.text(i,v+0.01,f"{v:.2f}%",ha="center",fontsize=14)
+        
+            plt.ylim(0,max(valores)*1.05)
+        
+            ruta = ASSETS_DIR / "grafico_servicio_policial.png"
+        
+            plt.savefig(ruta,dpi=300,bbox_inches="tight")
+            plt.close()
+        
+            return ruta
 
 
         # =====================================================
         # FUNCION PIE GENERICA
         # =====================================================
         
-        def generar_pie_servicio(labels, valores, nombre_archivo, texto_size=14):
+        def generar_pie_servicio(labels, valores, nombre, texto_size=14):
 
-            return crear_pastel(
-                labels,
+            import matplotlib.pyplot as plt
+        
+            colores = [
+                "#5b9bd5",
+                "#a5a5a5",
+                "#4472c4",
+                "#255e91",
+                "#636363"
+            ]
+        
+            plt.figure(figsize=(6,6))
+        
+            plt.pie(
                 valores,
-                nombre_archivo,
-                estilo=PASTEL_M
+                labels=None,
+                colors=colores,
+                autopct=lambda p: f"{p:.2f}%",
+                pctdistance=0.7,
+                textprops={'fontsize': texto_size}
             )
+        
+            plt.axis("equal")
+        
+            ruta = ASSETS_DIR / nombre
+        
+            plt.savefig(ruta, dpi=300, bbox_inches="tight")
+            plt.close()
+        
+            return ruta
 
 
         #======================================================
