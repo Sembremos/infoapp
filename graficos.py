@@ -107,7 +107,7 @@ BARRAS_S = {
 
     "fontsize_labels": 9,
 
-    "fontsize_valores": 8,
+    "fontsize_valores": 13,
 
     "fontsize_titulo": 11,
 
@@ -133,7 +133,7 @@ BARRAS_M = {
 
     "fontsize_labels": 11,
 
-    "fontsize_valores": 10,
+    "fontsize_valores": 13,
 
     "fontsize_titulo": 13,
 
@@ -159,7 +159,7 @@ BARRAS_L = {
 
     "fontsize_labels": 13,
 
-    "fontsize_valores": 12,
+    "fontsize_valores": 13,
 
     "fontsize_titulo": 15,
 
@@ -183,9 +183,9 @@ PASTEL_S = {
 
     "figsize": (5,5),
 
-    "fontsize_labels": 10,
+    "fontsize_labels": 13,
 
-    "fontsize_porcentajes": 10,
+    "fontsize_porcentajes": 13,
 
     "startangle":90,
 
