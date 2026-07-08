@@ -181,7 +181,7 @@ BARRAS_L = {
 
 PASTEL_S = {
 
-    "figsize": (5,5),
+    "figsize": (8,5),
 
     "fontsize_labels": 13,
 
@@ -212,7 +212,7 @@ PASTEL_S = {
 
 PASTEL_M = {
 
-    "figsize": (7,7),
+    "figsize": (10,6),
 
     "fontsize_labels": 14,
 
@@ -696,27 +696,29 @@ def crear_pastel(
     wedges, texts, autotexts = ax.pie(
 
         valores,
-
+    
         labels=labels if mostrar_labels else None,
-
+    
         colors=colores,
-
+    
         startangle=estilo["startangle"],
-
-        autopct=lambda p: f"{p:.0f}%",
-
-        labeldistance=estilo["labeldistance"],
-
-        pctdistance=estilo["pctdistance"],
-
-        wedgeprops=dict(
-
-            edgecolor="white",
-
-            linewidth=1.5
-
-        )
-
+    
+        autopct="%1.0f%%",
+    
+        labeldistance=1.20,
+    
+        pctdistance=0.72,
+    
+        textprops={
+            "fontsize": estilo["fontsize_labels"],
+            "fontweight": "bold"
+        },
+    
+        wedgeprops={
+            "edgecolor": "white",
+            "linewidth": 2
+        }
+    
     )
 
     # ------------------------------------------
@@ -743,15 +745,17 @@ def crear_pastel(
 
     for texto in autotexts:
 
-        texto.set_fontsize(
-
-            estilo["fontsize_porcentajes"]
-
-        )
-
+        texto.set_fontsize(estilo["fontsize_porcentajes"])
+    
         texto.set_fontweight("bold")
-
+    
         texto.set_color("white")
+    
+        texto.set_bbox(dict(
+            facecolor="none",
+            edgecolor="none",
+            pad=0.2
+        ))
 
         texto.set_path_effects([
 
