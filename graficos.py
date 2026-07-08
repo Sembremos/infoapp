@@ -693,33 +693,49 @@ def crear_pastel(
     # Pastel
     # ------------------------------------------
 
+    w    # ------------------------------------------
+    # Pastel
+    # ------------------------------------------
+
     wedges, texts, autotexts = ax.pie(
 
-        valores,
+            valores,
     
-        labels=labels if mostrar_labels else None,
+            labels=labels if mostrar_labels else None,
     
-        colors=colores,
+            colors=colores,
     
-        startangle=estilo["startangle"],
+            radius=1.20,
     
-        autopct="%1.0f%%",
+            startangle=90,
     
-        labeldistance=1.20,
+            counterclock=False,
     
-        pctdistance=0.72,
+            autopct="%1.0f%%",
     
-        textprops={
-            "fontsize": estilo["fontsize_labels"],
-            "fontweight": "bold"
-        },
+            pctdistance=0.68,
     
-        wedgeprops={
-            "edgecolor": "white",
-            "linewidth": 2
-        }
+            labeldistance=1.18,
     
-    )
+            textprops={
+    
+                "fontsize": estilo["fontsize_labels"],
+    
+                "fontweight": "bold",
+    
+                "color": AZUL
+    
+            },
+    
+            wedgeprops={
+    
+                "edgecolor":"white",
+    
+                "linewidth":2
+    
+            }
+    
+        )
 
     # ------------------------------------------
     # Etiquetas
@@ -729,16 +745,15 @@ def crear_pastel(
 
         for texto in texts:
 
-            texto.set_fontsize(
-
-                estilo["fontsize_labels"]
-
-            )
-
-            texto.set_color(AZUL)
+            texto.set_fontsize(estilo["fontsize_labels"])
 
             texto.set_fontweight("bold")
 
+            texto.set_color(AZUL)
+
+            texto.set_path_effects([])
+
+            texto.set_ha("center")
     # ------------------------------------------
     # Porcentajes
     # ------------------------------------------
@@ -746,34 +761,27 @@ def crear_pastel(
     for texto in autotexts:
 
         texto.set_fontsize(estilo["fontsize_porcentajes"])
-    
+
         texto.set_fontweight("bold")
-    
+
         texto.set_color("white")
-    
-        texto.set_bbox(dict(
-            facecolor="none",
-            edgecolor="none",
-            pad=0.2
-        ))
 
         texto.set_path_effects([
-
             pe.withStroke(
-
-                linewidth=2,
-
+                linewidth=3,
                 foreground="black"
-
             )
-
         ])
 
     # ------------------------------------------
     # Mantener círculo perfecto
     # ------------------------------------------
 
-    ax.axis("equal")
+    ax.set_aspect("equal")
+
+    ax.set_xlim(-1.45, 1.45)
+    
+    ax.set_ylim(-1.35, 1.35)
 
     plt.subplots_adjust(
         left=0.05,
