@@ -682,9 +682,7 @@ def crear_pastel(
     # ------------------------------------------
 
     fig, ax = plt.subplots(
-
-        figsize=estilo["figsize"]
-
+        figsize=(12,12)
     )
 
     fig.patch.set_alpha(0)
