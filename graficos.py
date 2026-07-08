@@ -271,9 +271,7 @@ def guardar_figura(fig, nombre_archivo):
 
     ruta = ASSETS_DIR / nombre_archivo
 
-    fig.tight_layout()
-
-        fig.savefig(
+    fig.savefig(
         ruta,
         dpi=DPI,
         transparent=True,
