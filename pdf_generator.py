@@ -1086,7 +1086,7 @@ def generar_pdf(
             draw_texto_overlay(canvas, riesgos_total, x_centro + 155, y_centro + 80, size=18)
             draw_texto_overlay(canvas, delitos_total, x_centro + 290, y_centro + 80, size=18)
 
-         elif doc.page == 11:
+        elif doc.page == 11:
             header_footer(canvas, doc)
             draw_texto_mixto(canvas, 45, A4[1] - 210, "Frente a lo anterior, esta metodología permitió la identificación de", causas_identificadas, "causas, directamente relacionadas con los", factores_micmac, "factores priorizados en la Mic-Mac.")
             
