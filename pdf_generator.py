@@ -123,13 +123,13 @@ def draw_grafico_genero(canvas, grafico_path):
 
 def draw_grafico_relacion(canvas, grafico_path):
     TITULO_X = 40
-    TITULO_Y = 380
+    TITULO_Y = 360
     CAJA_X = 35
-    CAJA_Y = 110
+    CAJA_Y = 80
     CAJA_WIDTH = 520
     CAJA_HEIGHT = 250
     GRAFICO_X = 60
-    GRAFICO_Y = 50
+    GRAFICO_Y = 90
     GRAFICO_WIDTH = 470
     GRAFICO_HEIGHT = 220
 
