@@ -194,7 +194,7 @@ def draw_tabla_escolaridad(canvas, tabla_escolaridad):
     colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4", "#255E91", "#B7B7B7", "#9DC3E6", "#8FAADC", "#424e69"]]
     
     # Parámetros de posición
-    pos_x = 30
+    pos_x = 50
     pos_y = page_height - 340  # Ajustado para alinear con el gráfico de escolaridad
     
     generar_tabla_estilizada(canvas, tabla_escolaridad, "Participación por Escolaridad", pos_x, pos_y, 185, colores)
