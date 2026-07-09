@@ -688,6 +688,7 @@ if archivo:
         columnas_lider = [9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75]
         columnas_acciones = [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74]
         columnas_cogestores = [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74]
+        columnas_corresponsable_idx = [9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75]
         
         lineas_accion_data = []
         for i in range(int(total_lineas)):
@@ -725,8 +726,8 @@ if archivo:
                 
             col_lider = columnas_lider[i]
             lider_estrategico = df.iloc[245, col_lider]
-            col_corresponsable = columnas_corresponsable[i]
-            corresponsable = df.iloc[245, col_corresponsable]
+            col_lider = columnas_lider[i]
+            lider_estrategico = df.iloc[245, col_lider]
             
             corresponsable = str(corresponsable).strip() if pd.notna(corresponsable) else ""
             lider_estrategico = str(lider_estrategico).strip() if pd.notna(lider_estrategico) else ""
