@@ -6,34 +6,83 @@ from pathlib import Path
 import base64
 from openpyxl import load_workbook
 import numpy as np
+import textwrap
 
 from pdf_generator import P3_PALETA_GRAFICO
 from pdf_generator import generar_pdf
 
-# ================= ESTILO GLOBAL GRAFICOS =================
+# =====================================================================
+# CONFIGURACIÓN GLOBAL (ESTILOS, COLORES, FUENTES Y TAMAÑOS)
+# =====================================================================
 
-FONT_TITULO = 13
-FONT_EJES = 10
-FONT_TICKS = 10
-FONT_DATOS = 11
-FONT_PORCENTAJES = 14
+# 1. COLORES INSTITUCIONALES Y PALETAS
+COLOR_PRIMARIO = "#30A907"      # Verde institucional
+COLOR_SECUNDARIO = "#013051"    # Azul institucional
+COLOR_TEXTO = "#013051"         # Color del texto en gráficos
+COLOR_GRILLA = "#E0E0E0"        # Color de las líneas de cuadrícula
 
-DPI_GRAFICOS = 300
+# Paleta completa para gráficos de pastel o múltiples barras
+PALETA_COMPLETA = [
+    "#4472C4", "#5B9BD5", "#A5A5A5", "#70AD47", "#255E91", 
+    "#B7B7B7", "#9DC3E6", "#8FAADC", "#D9E1F2", "#264478",
+    "#30A907", "#636363"
+]
+
+# Paletas específicas (Mantiene la identidad de tu app original)
+PALETA_COMERCIO_1 = ["#5b9bd5", "#a5a5a5"]
+PALETA_COMERCIO_2 = ["#4472c4", "#9dc3e6"]
+PALETA_SERVICIO = ["#5b9bd5", "#a5a5a5", "#4472c4", "#255e91", "#636363"]
+
+# 2. TAMAÑOS DE GRÁFICOS (Ancho, Alto)
+SIZE_GRAFICO_BARRAS = (9, 6)
+SIZE_GRAFICO_PASTEL = (7, 7)
+SIZE_GRAFICO_PASTEL_PEQUENO = (6, 6)
+SIZE_GRAFICO_PASTEL_MEDIANO = (5, 5)
+SIZE_GRAFICO_LINEAL = (8, 5)
+SIZE_GRAFICO_ATENCION = (8, 4)
+SIZE_GRAFICO_SERVICIO_POLICIAL = (11, 6)
+DPI_ESTANDAR = 300 # o 200 si prefieres menos peso
+
+# 3. FUENTES Y TEXTOS PARA GRÁFICOS
+FONT_SIZE_TITULOS = 18
+FONT_SIZE_EJES = 14
+FONT_SIZE_ETIQUETAS = 12
+FONT_SIZE_PORCENTAJES_PASTEL = 25
+FONT_SIZE_BARRAS_VALORES = 10
+FONT_SIZE_TEXTO_DESTACADO = 20
+
+# Configurar Matplotlib para usar estas fuentes globalmente
+plt.rcParams.update({
+    'font.size': FONT_SIZE_EJES,
+    'axes.titlesize': FONT_SIZE_TITULOS,
+    'axes.labelsize': FONT_SIZE_EJES,
+    'xtick.labelsize': FONT_SIZE_EJES,
+    'ytick.labelsize': FONT_SIZE_EJES,
+    'text.color': COLOR_TEXTO,
+    'axes.labelcolor': COLOR_TEXTO,
+    'xtick.color': COLOR_TEXTO,
+    'ytick.color': COLOR_TEXTO
+})
+
+# 4. FUENTES DE TABLAS (Variables para enviar a pdf_generator.py)
+TABLA_FONT_FAMILY = "Helvetica"
+TABLA_FONT_SIZE_HEADER = 12
+TABLA_FONT_SIZE_BODY = 10
+TABLA_COLOR_HEADER = COLOR_SECUNDARIO
+TABLA_COLOR_TEXTO = "#000000"
 
 # ================= STREAMLIT =================
 st.set_page_config(page_title="Generador de PDF", layout="centered")
 st.title("Generador de Informes SS")
 
-
-# ================= RUTAS =================
+# ================= RUTAS =====================
 BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
+ASSETS_DIR.mkdir(parents=True, exist_ok=True)
 
-
-# ================= UTILIDADES =================
+# ================== UTILIDADES ===============
 def limpiar_series(labels, values):
     df = pd.DataFrame({"label": labels, "value": values})
-
     df["value"] = (
         df["value"]
         .astype(str)
@@ -41,45 +90,27 @@ def limpiar_series(labels, values):
         .str.replace(",", ".", regex=False)
         .str.strip()
     )
-
     df["value"] = pd.to_numeric(df["value"], errors="coerce")
     df = df.dropna()
-
     return df["label"].astype(str), df["value"]
 
-
-#graficosssssssssssssssssssssssssssssssssssssssssssssssss
 def crear_grafico(labels, values):
-    fig, ax = plt.subplots()
-
-    ax.bar(labels, values)
-
+    fig, ax = plt.subplots(figsize=SIZE_GRAFICO_BARRAS)
+    ax.bar(labels, values, color=COLOR_PRIMARIO)
     ax.set_ylim(0, 100)
-
-    # tamaño de etiqueta eje Y
-    ax.set_ylabel("%", fontsize=FONT_EJES)
-
-    # tamaño etiquetas eje X
-    ax.tick_params(axis='x', labelsize=14)
-
-    # tamaño números eje Y
-    ax.tick_params(axis='y', labelsize=14)
-
-    # opcional: título del gráfico
-    ax.set_title("Relación por distrito", fontsize=FONT_TITULO)
-
-    return fig
-
+    ax.set_ylabel("%", fontsize=FONT_SIZE_EJES)
+    ax.tick_params(axis='x', labelsize=FONT_SIZE_EJES)
+    ax.tick_params(axis='y', labelsize=FONT_SIZE_EJES)
+    ax.set_title("Relación por distrito", fontsize=FONT_SIZE_TITULOS)
+    
     for i, v in enumerate(values):
-        ax.text(i, v + 1, f"{v:.0f}%", ha="center", fontsize=FONT_PORCENTAJES)
-
+        ax.text(i, v + 1, f"{v:.0f}%", ha="center", fontsize=FONT_SIZE_ETIQUETAS)
+    
     buf = BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight", dpi=200)
+    fig.savefig(buf, format="png", bbox_inches="tight", dpi=DPI_ESTANDAR)
     plt.close(fig)
     buf.seek(0)
     return buf
-
-#####=============valores vacios
 
 def seguro_int(valor, default=0):
     if pd.isna(valor):
@@ -88,32 +119,6 @@ def seguro_int(valor, default=0):
         return int(float(valor))
     except:
         return default
-
-
-#=======================estilo===========================
-
-def aplicar_estilo(ax):
-
-    ax.set_facecolor("none")
-
-    ax.grid(
-        axis="y",
-        linestyle="--",
-        linewidth=0.5,
-        alpha=0.25
-    )
-
-    ax.set_axisbelow(True)
-
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-
-    ax.spines["left"].set_color("#D0D0D0")
-    ax.spines["bottom"].set_color("#D0D0D0")
-
-    ax.tick_params(axis="x", labelsize=10)
-    ax.tick_params(axis="y", labelsize=10)
-
 
 # ================= APP =================
 archivo = st.file_uploader(
@@ -126,34 +131,26 @@ if archivo:
         # Lectura del excel
         wb = load_workbook(archivo, data_only=True)
         ws = wb["Hoja1"]
-        # ================= CORRESPONSABLES DESDE EXCEL =================
 
-        columnas_corresponsable = [
-            "J", "P", "V", "AB", "AH", "AN",
-            "AT", "AZ", "BF", "BL", "BR", "BX"
-        ]
-        
+        # ================= CORRESPONSABLES DESDE EXCEL ============
+        columnas_corresponsable = ["J", "P", "V", "AB", "AH", "AN", "AT", "AZ", "BF", "BL", "BR", "BX"]
         corresponsables_excel = []
-        
         for col in columnas_corresponsable:
             valor = ws[f"{col}246"].value
-        
             if valor:
                 corresponsables_excel.append(str(valor).strip())
             else:
                 corresponsables_excel.append("")
+                
         df = pd.DataFrame(ws.values)
 
-        # ================= DATOS BASE =================
-        delegacion = str(df.iloc[1, 1])  # B2
-        codigo = str(df.iloc[2, 1])      # B3
+        # ================= DATOS BASE ========
+        delegacion = str(df.iloc[1, 1]) #B2
+        codigo = str(df.iloc[2, 1]) #B3
 
         # ================= TABLA PARTICIPACIÓN =================
         tabla_df = df.iloc[6:23, 0:3].dropna(how="all")
-
-        tabla_df = tabla_df[
-            ~(tabla_df.iloc[:, 1:].fillna(0).astype(str) == "0").all(axis=1)
-        ]
+        tabla_df = tabla_df[~(tabla_df.iloc[:, 1:].fillna(0).astype(str) == "0").all(axis=1)]
 
         def formatear(v):
             if isinstance(v, (int, float)):
@@ -168,44 +165,24 @@ if archivo:
         ]
 
         # ================= GRÁFICO RELACIÓN =================
-        # Nombres (G8:G11)
         rel_labels = df.iloc[7:11, 6].astype(str)
-
-        # Valores reales base (I8:I11)
         rel_base_values = pd.to_numeric(df.iloc[7:11, 8], errors="coerce")
+        rel_percent_labels = df.iloc[7:11, 7].astype(str).str.replace(",", "", regex=False)
 
-        # Porcentajes literales visibles (H8:H11)
-        rel_percent_labels = (
-            df.iloc[7:11, 7]
-            .astype(str)
-            .str.replace(",", ".", regex=False)
-        )
-
-        # Filtrar filas válidas
         mask = rel_base_values.notna()
         rel_labels = rel_labels[mask]
         rel_base_values = rel_base_values[mask]
         rel_percent_labels = rel_percent_labels[mask]
 
-        # Crear gráfico
-        fig, ax = plt.subplots(figsize=(9, 6))
-
-        ax.bar(rel_labels, rel_base_values, color="#30a907")
+        fig, ax = plt.subplots(figsize=SIZE_GRAFICO_BARRAS)
+        ax.bar(rel_labels, rel_base_values, color=COLOR_PRIMARIO)
         ax.set_ylabel("Cantidad")
-        ax.set_title("")
-
-        # CAMBIO ÚNICO APLICADO
         ax.margins(y=0.1)
 
-        # Borrar marcos
         for spine in ax.spines.values():
             spine.set_visible(False)
-
-        # Quitar líneas de ticks
         ax.tick_params(left=False, bottom=False)
-
-        # Fondo transparente (clave para PDF)
-        aplicar_estilo(ax)
+        ax.set_facecolor("none")
         fig.patch.set_alpha(0)
 
         for i in range(len(rel_percent_labels)):
@@ -216,133 +193,78 @@ if archivo:
                 f"{porcentaje:.2f}%",
                 ha="center",
                 va="bottom",
-                fontsize=FONT_PORCENTAJES
+                fontsize=FONT_SIZE_ETIQUETAS,
+                color=COLOR_TEXTO
             )
 
         buf_rel = BytesIO()
-        fig.savefig(
-            buf_rel,
-            format="png",
-            bbox_inches="tight",
-            pad_inches=0,
-            dpi=200,
-            transparent=True
-        )
-
+        fig.savefig(buf_rel, format="png", bbox_inches="tight", pad_inches=0, dpi=DPI_ESTANDAR, transparent=True)
         plt.close(fig)
         buf_rel.seek(0)
-
         grafico_rel_path = BASE_DIR / "grafico_relacion.png"
         with open(grafico_rel_path, "wb") as f:
             f.write(buf_rel.getbuffer())
 
         # ================= PARTICIPACIÓN POR EDAD =================
-        # Intervalos de edad (A29:A33)
         edad_labels = df.iloc[28:33, 0].astype(str)
-
-        # Porcentajes (B29:B33)
         edad_percent_values = (
             df.iloc[28:33, 1]
             .astype(str)
             .str.replace("%", "", regex=False)
             .str.replace(",", ".", regex=False)
         )
-
         edad_percent_values = pd.to_numeric(edad_percent_values, errors="coerce")
-
-        # Filtrar filas válidas
         mask = edad_percent_values.notna()
         edad_labels = edad_labels[mask]
         edad_percent_values = edad_percent_values[mask]
 
-        fig_edad, ax_edad = plt.subplots(figsize=(7, 7))
-
-        colores = [
-            "#5B9BD5",
-            "#A5A5A5",
-            "#4472C4",
-            "#255E91",
-            "#B7B7B7"
-        ]
-
+        fig_edad, ax_edad = plt.subplots(figsize=SIZE_GRAFICO_PASTEL)
         wedges, texts, autotexts = ax_edad.pie(
             edad_percent_values,
             labels=None,
             autopct=lambda p: f"{p:.0f}%",
-            pctdistance=0.65,     # ⬅️ porcentajes más centrados
-            labeldistance=1.15,  # ⬅️ etiquetas más cerca del círculo
+            pctdistance=0.65,
+            labeldistance=1.15,
             startangle=90,
-            colors=colores,
-            textprops={"fontsize": FONT_PORCENTAJES}
+            colors=PALETA_COMPLETA[:5],
+            textprops={"fontsize": FONT_SIZE_ETIQUETAS}
         )
-
-
         ax_edad.axis("equal")
-
-
-        # Tamaño de porcentajes
         for autotext in autotexts:
-            autotext.set_fontsize(25)
-
-        # Fondo transparente
-        aplicar_estilo(ax_edad)
+            autotext.set_fontsize(FONT_SIZE_PORCENTAJES_PASTEL)
+        
+        ax_edad.set_facecolor("none")
         fig_edad.patch.set_alpha(0)
 
         buf_edad = BytesIO()
-        fig_edad.savefig(
-            buf_edad,
-            format="png",
-            dpi=200,
-            transparent=True
-        )
-
+        fig_edad.savefig(buf_edad, format="png", dpi=DPI_ESTANDAR, transparent=True)
         plt.close(fig_edad)
         buf_edad.seek(0)
-
         grafico_edad_path = BASE_DIR / "grafico_participacion_edad.png"
         with open(grafico_edad_path, "wb") as f:
             f.write(buf_edad.getbuffer())
 
-
-        ## TAbla EDAD==============S=S=S=S===========S=S=
+        # Tabla Edad
         tabla_edad_df = df.iloc[28:33, 0:2].copy()
-        tabla_edad_df.iloc[:, 1] = tabla_edad_df.iloc[:, 1].apply(lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x)
+        tabla_edad_df.iloc[:, 1] = tabla_edad_df.iloc[:, 1].apply(
+            lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
+        )
         tabla_edad = tabla_edad_df.fillna("").values.tolist()
 
-        #####________________________________BLOQUE ESCOLARIDAD___________________________________
-
-        # Intervalos / niveles (A39:A46)
+        # ================= ESCOLARIDAD =================
         escolaridad_labels = df.iloc[38:46, 0].astype(str)
-
-        # Porcentajes (B39:B46)
         escolaridad_percent_values = (
             df.iloc[38:46, 1]
             .astype(str)
             .str.replace("%", "", regex=False)
             .str.replace(",", ".", regex=False)
         )
-
         escolaridad_percent_values = pd.to_numeric(escolaridad_percent_values, errors="coerce")
-
-        # Filtrar filas válidas
         mask = escolaridad_percent_values.notna()
         escolaridad_labels = escolaridad_labels[mask]
         escolaridad_percent_values = escolaridad_percent_values[mask]
 
-        # -------- GRÁFICO --------
-        fig_esco, ax_esco = plt.subplots(figsize=(7, 7))
-
-        colores_esco = [
-            "#5B9BD5",
-            "#A5A5A5",
-            "#4472C4",
-            "#255E91",
-            "#B7B7B7",
-            "#9DC3E6",
-            "#8FAADC",
-            "#D9E1F2"
-        ]
-
+        fig_esco, ax_esco = plt.subplots(figsize=SIZE_GRAFICO_PASTEL)
         wedges, texts, autotexts = ax_esco.pie(
             escolaridad_percent_values,
             labels=None,
@@ -350,74 +272,43 @@ if archivo:
             pctdistance=0.65,
             labeldistance=1.15,
             startangle=90,
-            colors=colores_esco,
-            textprops={"fontsize": FONT_PORCENTAJES}
+            colors=PALETA_COMPLETA[:8],
+            textprops={"fontsize": FONT_SIZE_ETIQUETAS}
         )
-
         ax_esco.axis("equal")
-
-        # Tamaño de porcentajes
         for autotext in autotexts:
-            autotext.set_fontsize(25)
-
-        # Fondo transparente
-        aplicar_estilo(ax_esco)
+            autotext.set_fontsize(FONT_SIZE_PORCENTAJES_PASTEL)
+        ax_esco.set_facecolor("none")
         fig_esco.patch.set_alpha(0)
 
-    
         buf_esco = BytesIO()
-        fig_esco.savefig(
-            buf_esco,
-            format="png",
-            dpi=200,
-            transparent=True
-        )
-
+        fig_esco.savefig(buf_esco, format="png", dpi=DPI_ESTANDAR, transparent=True)
         plt.close(fig_esco)
         buf_esco.seek(0)
-
         grafico_escolaridad_path = BASE_DIR / "grafico_participacion_escolaridad.png"
         with open(grafico_escolaridad_path, "wb") as f:
             f.write(buf_esco.getbuffer())
 
-        # -------- TABLA --------
         tabla_escolaridad_df = df.iloc[38:46, 0:2].copy()
-
         tabla_escolaridad_df.iloc[:, 1] = tabla_escolaridad_df.iloc[:, 1].apply(
             lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
         )
-
         tabla_escolaridad = tabla_escolaridad_df.fillna("").values.tolist()
 
-        # ------------------------------------- Bloque de participación por género -----------------------------------------
-        # Etiquetas (A52:A54)
+        # ================= PARTICIPACIÓN POR GÉNERO =================
         genero_labels = df.iloc[51:54, 0].astype(str)
-
-        # Porcentajes (B52:B54)
         genero_percent_values = (
             df.iloc[51:54, 1]
             .astype(str)
             .str.replace("%", "", regex=False)
             .str.replace(",", ".", regex=False)
         )
-
         genero_percent_values = pd.to_numeric(genero_percent_values, errors="coerce")
-
-        # Filtrar válidos
         mask = genero_percent_values.notna()
         genero_labels = genero_labels[mask]
         genero_percent_values = genero_percent_values[mask]
 
-        # -------- GRÁFICO --------
-        fig_gen, ax_gen = plt.subplots(figsize=(7, 7))
-
-        # mismos colores que edad/escolaridad
-        colores_genero = [
-            "#5B9BD5",
-            "#A5A5A5",
-            "#4472C4"
-        ]
-
+        fig_gen, ax_gen = plt.subplots(figsize=SIZE_GRAFICO_PASTEL)
         wedges, texts, autotexts = ax_gen.pie(
             genero_percent_values,
             labels=None,
@@ -425,374 +316,229 @@ if archivo:
             pctdistance=0.65,
             labeldistance=1.15,
             startangle=90,
-            colors=colores_genero,
-            textprops={"fontsize": FONT_PORCENTAJES}
+            colors=PALETA_COMPLETA[:3],
+            textprops={"fontsize": FONT_SIZE_ETIQUETAS}
         )
-
         ax_gen.axis("equal")
-
         for autotext in autotexts:
-            autotext.set_fontsize(25)
-
-        aplicar_estilo(ax_gen)
+            autotext.set_fontsize(FONT_SIZE_PORCENTAJES_PASTEL)
+        ax_gen.set_facecolor("none")
         fig_gen.patch.set_alpha(0)
 
         buf_gen = BytesIO()
-        fig_gen.savefig(
-            buf_gen,
-            format="png",
-            dpi=200,
-            transparent=True
-        )
-
+        fig_gen.savefig(buf_gen, format="png", dpi=DPI_ESTANDAR, transparent=True)
         plt.close(fig_gen)
         buf_gen.seek(0)
-
         grafico_genero_path = BASE_DIR / "grafico_participacion_genero.png"
         with open(grafico_genero_path, "wb") as f:
             f.write(buf_gen.getbuffer())
 
-        # -------- TABLA --------
         tabla_genero_df = df.iloc[51:54, 0:2].copy()
         tabla_genero_df.iloc[:, 1] = tabla_genero_df.iloc[:, 1].apply(
             lambda x: f"{x*100:.0f}%" if isinstance(x, (int, float)) else x
         )
+        tabla_genero = tabla_genero_df.fillna("").values.tolist()
 
-        tabla_genero = tabla_genero_df.fillna("").values.tolist() 
-
-        #__________________-----------------------_______________TAblas de encuestas
-        #ENCUESTAS COMUNIDAD
+        # ================= TABLAS ENCUESTAS =================
         tabla_encuesta_comunidad_df = df.iloc[58:60, 0:4].copy()
         tabla_encuesta_comunidad = tabla_encuesta_comunidad_df.fillna("").values.tolist()
 
-        #OTRAS ENCUESTAS
         tabla_otras_encuestas_df = df.iloc[62:65, 6:10].copy()
         tabla_otras_encuestas = tabla_otras_encuestas_df.fillna("").values.tolist()
 
-        ## imagen datos
         datos_pagina_8 = {
-            "encuesta_comunidad": seguro_int(df.iloc[82, 1]),   # B83
-            "encuesta_policial": seguro_int(df.iloc[83, 1]),    # B84
-            "encuesta_comercio": seguro_int(df.iloc[84, 1]),    # B85
-            "estadistica": seguro_int(df.iloc[86, 2]),          # C86
-            "total_datos": seguro_int(df.iloc[87, 1])           # B88
+            "encuesta_comunidad": seguro_int(df.iloc[82, 1]),
+            "encuesta_policial": seguro_int(df.iloc[83, 1]),
+            "encuesta_comercio": seguro_int(df.iloc[84, 1]),
+            "estadistica": seguro_int(df.iloc[86, 2]),
+            "total_datos": seguro_int(df.iloc[87, 1])
         }
 
-        ##==============================PARETO===================================
         datos_pagina_9 = {
-            "lado_izquierdo": str(df.iloc[92, 0]),   # A93
-            "derecha_superior": str(df.iloc[92, 1]), # B93
-            "derecha_inferior": str(df.iloc[92, 2])  # C93
+            "lado_izquierdo": str(df.iloc[92, 0]),
+            "derecha_superior": str(df.iloc[92, 1]),
+            "derecha_inferior": str(df.iloc[92, 2])
         }
-        #=========================LISTAS PERETO================================
-        # ================= DELITOS =================
-        tabla_delitos_raw = df.iloc[96:117, 1]  # B97:B117
 
+        # ================= PARETO / DELITOS =================
+        tabla_delitos_raw = df.iloc[96:117, 1]
         tabla_delitos = [
-            [str(v)]
-            for v in tabla_delitos_raw
+            [str(v)] for v in tabla_delitos_raw
             if pd.notna(v) and str(v) != "0"
         ]
 
-        # =================RIESGOS SOCIALES =================
-        tabla_riesgos_raw = df.iloc[96:117, 2]  # C97:C117
-
+        tabla_riesgos_raw = df.iloc[96:117, 2]
         tabla_riesgos = [
-            [str(v)]
-            for v in tabla_riesgos_raw
+            [str(v)] for v in tabla_riesgos_raw
             if pd.notna(v) and str(v) != "0"
         ]
 
-        # ================= PORCENTAJES PARETO =================
         valor_delitos = df.iloc[118, 1]
         valor_riesgos = df.iloc[118, 2]
-        
         porcentaje_delitos = f"{valor_delitos * 100:.2f}%" if pd.notna(valor_delitos) else "0.00%"
         porcentaje_riesgos = f"{valor_riesgos * 100:.2f}%" if pd.notna(valor_riesgos) else "0.00%"
 
+        cantidad_delitos = int(pd.to_numeric(df.iloc[117, 1], errors="coerce"))
+        cantidad_riesgos = int(pd.to_numeric(df.iloc[117, 2], errors="coerce"))
 
-        # ================= CANTIDAD DELITOS / riesgos PARETOS =================
-        cantidad_delitos = int(
-            pd.to_numeric(df.iloc[117, 1], errors="coerce")
-        )
-        
-        cantidad_riesgos = int(
-            pd.to_numeric(df.iloc[117, 2], errors="coerce")
-        )
-       # ================= MICMAC =================
-
+        # ================= MICMAC =================
         def limpiar_lista(col):
-            return [
-                [str(v)]
-                for v in col
-                if pd.notna(v) and str(v).strip() != ""
-            ]
-        
-        # Poder
-        micmac_poder = limpiar_lista(df.iloc[123:140, 1])      # B124:B125
-        # Conflicto
-        micmac_conflicto = limpiar_lista(df.iloc[123:140, 2])  # C124:C125
-        # Autónomas
-        micmac_autonomas = limpiar_lista(df.iloc[123:140, 3])  # D124:D125
-        # Resultados
-        micmac_resultados = limpiar_lista(df.iloc[123:140, 4]) # E124:E125
+            return [[str(v)] for v in col if pd.notna(v) and str(v).strip() != ""]
 
-        #_________________________micmac2_______________________________
-        
+        micmac_poder = limpiar_lista(df.iloc[123:140, 1])
+        micmac_conflicto = limpiar_lista(df.iloc[123:140, 2])
+        micmac_autonomas = limpiar_lista(df.iloc[123:140, 3])
+        micmac_resultados = limpiar_lista(df.iloc[123:140, 4])
+
         def limpiar_lista_simple(col):
-            return [
-                [str(v)]
-                for v in col
-                if pd.notna(v) and str(v).strip() != ""
-            ]
-        
-        # ===== TABLAS MICMAC 2 =====
-        tabla_riesgos_micmac2 = limpiar_lista_simple(df.iloc[123:140, 10])  # K124:K140
-        tabla_delitos_micmac2 = limpiar_lista_simple(df.iloc[123:140, 11])  # L124:L140
-        
-        # ===== DATOS SUELTOS =====
-        cantidad_problematicas = int(df.iloc[140, 12])  # M141
-        riesgos_total = int(df.iloc[140, 10])           # K141
-        delitos_total = int(df.iloc[140, 11])           # L141
+            return [[str(v)] for v in col if pd.notna(v) and str(v).strip() != ""]
 
-        #_________________________Triangulo de violes______________________
-        
-        causas_identificadas = int(df.iloc[117, 3])   # D118
-        factores_micmac = int(df.iloc[140, 12])       # M141
-        
-        triangulo_directa = int(df.iloc[146, 0])      # A147
-        triangulo_sociocultural = int(df.iloc[146, 1])# B147
-        triangulo_estructural = int(df.iloc[146, 2])  # C147
+        tabla_riesgos_micmac2 = limpiar_lista_simple(df.iloc[123:140, 10])
+        tabla_delitos_micmac2 = limpiar_lista_simple(df.iloc[123:140, 11])
 
-        #______________________LISTA DE INSTIS_____-------_-------___-
-        
-        tabla_instituciones_df = df.iloc[149:159, 1:3].copy()  # B150:C160
-        
-        # Eliminar filas completamente vacías
+        cantidad_problematicas = int(df.iloc[140, 12])
+        riesgos_total = int(df.iloc[140, 10])
+        delitos_total = int(df.iloc[140, 11])
+
+        causas_identificadas = int(df.iloc[117, 3])
+        factores_micmac = int(df.iloc[140, 12])
+        triangulo_directa = int(df.iloc[146, 0])
+        triangulo_sociocultural = int(df.iloc[146, 1])
+        triangulo_estructural = int(df.iloc[146, 2])
+
+        # ================= INSTITUCIONES =================
+        tabla_instituciones_df = df.iloc[149:159, 1:3].copy()
         tabla_instituciones_df = tabla_instituciones_df.dropna(how="all")
-        
         tabla_instituciones = []
         for _, row in tabla_instituciones_df.iterrows():
             col1 = str(row.iloc[0]).strip() if pd.notna(row.iloc[0]) else ""
             col2 = str(row.iloc[1]).strip() if pd.notna(row.iloc[1]) else ""
-        
-            if col1 or col2:  # al menos una columna con contenido
+            if col1 or col2:
                 tabla_instituciones.append([col1, col2])
-        
-        
-        #_______________________________PAGINA ESTADISTICA_______________________________
-        
+
+        # ================= ESTADÍSTICA =================
         df_grafico_denuncias = df.iloc[165:176, [0, 2]].copy()
         df_grafico_denuncias.columns = ["categoria", "porcentaje"]
-        
         df_grafico_denuncias["porcentaje"] = (
             df_grafico_denuncias["porcentaje"]
             .astype(str)
             .str.replace("%", "", regex=False)
             .str.replace(",", ".", regex=False)
         )
-        
-        df_grafico_denuncias["porcentaje"] = pd.to_numeric(
-            df_grafico_denuncias["porcentaje"],
-            errors="coerce"
-        )
-        
+        df_grafico_denuncias["porcentaje"] = pd.to_numeric(df_grafico_denuncias["porcentaje"], errors="coerce")
         df_grafico_denuncias = df_grafico_denuncias.dropna()
-        
-        # ----- DATOS PARA TABLA (A y B) -----
+
         df_tabla_denuncias = df.iloc[165:176, [0, 1]].copy()
         df_tabla_denuncias.columns = ["categoria", "cantidad"]
-        
         df_tabla_denuncias = df_tabla_denuncias.dropna(how="all")
-        
         tabla_denuncias = [
             [str(row["categoria"]), str(int(row["cantidad"]))]
             for _, row in df_tabla_denuncias.iterrows()
             if pd.notna(row["categoria"]) and pd.notna(row["cantidad"])
         ]
-        
-        # ----- TOTAL DENUNCIAS (B178) -----
         total_denuncias = int(df.iloc[177, 1])
 
-       
-# ================== GRÁFICO CIRCULAR DENUNCIAS ==================
-        
         def generar_grafico_denuncias(df):
-            colores = [
-                "#4472C4", "#5B9BD5", "#A5A5A5", "#70AD47",
-                "#255E91", "#9DC3E6", "#264478", "#B7B7B7",
-                "#30A907", "#8FAADC", "#D9E1F2"
-            ]
-        
-            fig, ax = plt.subplots(figsize=(6, 6))
-        
+            fig, ax = plt.subplots(figsize=SIZE_GRAFICO_PASTEL_PEQUENO)
             ax.pie(
                 df["porcentaje"],
                 labels=df["categoria"],
                 autopct="%1.0f%%",
                 startangle=90,
-                colors=colores[:len(df)]
+                colors=PALETA_COMPLETA[:len(df)],
+                textprops={'fontsize': FONT_SIZE_ETIQUETAS}
             )
-        
             ax.axis("equal")
             plt.tight_layout()
-            plt.savefig(ASSETS_DIR / "grafico_denuncias.png", dpi=300)
+            plt.savefig(ASSETS_DIR / "grafico_denuncias.png", dpi=DPI_ESTANDAR)
             plt.close()
-        
-        
-        # execute
+
         generar_grafico_denuncias(df_grafico_denuncias)
 
-
-        #====================================HORARIOS DE DELITOS=============================================
-
-        # ----- GRAFICO PASTEL (A y C) -----
+        # ================= HORARIOS =================
         df_grafico_horario = df.iloc[179:188, [0, 2]].copy()
         df_grafico_horario.columns = ["horario", "porcentaje"]
-        
         df_grafico_horario["porcentaje"] = (
             df_grafico_horario["porcentaje"]
             .astype(str)
             .str.replace("%", "", regex=False)
             .str.replace(",", ".", regex=False)
         )
-        
-        df_grafico_horario["porcentaje"] = pd.to_numeric(
-            df_grafico_horario["porcentaje"],
-            errors="coerce"
-        )
-        
+        df_grafico_horario["porcentaje"] = pd.to_numeric(df_grafico_horario["porcentaje"], errors="coerce")
         df_grafico_horario = df_grafico_horario.dropna()
 
-        # ----- TABLA GRAFICO (A y B) -----
         df_tabla_horario = df.iloc[179:188, [0, 1]].copy()
         df_tabla_horario.columns = ["horario", "cantidad"]
-        
         tabla_horario = [
             [str(row["horario"]), str(row["cantidad"])]
             for _, row in df_tabla_horario.iterrows()
             if pd.notna(row["horario"])
         ]
 
-        # ----- CUADROS AM / PM -----
-        total_am = df.iloc[179, 3]  # D180
-        total_pm = df.iloc[179, 4]  # E180
-        
-        def formatear_porcentaje(valor):
-            if isinstance(valor, (int, float)):
-                return f"{valor * 100:.2f}%"
-            return str(valor)
-        
-        total_am = formatear_porcentaje(total_am)
-        total_pm = formatear_porcentaje(total_pm)
+        total_am = df.iloc[179, 3]
+        total_pm = df.iloc[179, 4]
 
-        # ----- TABLA GRANDE POR DISTRITO (FORMATEADA CORRECTAMENTE) -----
-
-        # 1️⃣ Tomar encabezados (fila 179)
-        encabezados = df.iloc[178, 0:17].copy()
-        
-        # 2️⃣ Tomar datos (A180 a Q188)
-        tabla_datos = df.iloc[179:188, 0:17].copy()
-        
-        # 3️⃣ Eliminar columnas D y E (índices 3 y 4)
-        columnas_a_eliminar = [3, 4]
-        encabezados = encabezados.drop(encabezados.index[columnas_a_eliminar])
-        tabla_datos = tabla_datos.drop(tabla_datos.columns[columnas_a_eliminar], axis=1)
-        
-        # 4️⃣ Formatear porcentajes columna C (ahora índice 2)
         def formatear_porcentaje(valor):
             if pd.notna(valor):
                 try:
                     return f"{float(valor) * 100:.2f}%"
                 except:
-                    return valor
+                    return str(valor)
             return ""
-        
+
+        total_am = formatear_porcentaje(total_am)
+        total_pm = formatear_porcentaje(total_pm)
+
+        encabezados = df.iloc[178, 0:17].copy()
+        tabla_datos = df.iloc[179:188, 0:17].copy()
+        columnas_a_eliminar = [3, 4]
+        encabezados = encabezados.drop(encabezados.index[columnas_a_eliminar])
+        tabla_datos = tabla_datos.drop(tabla_datos.columns[columnas_a_eliminar], axis=1)
+
         tabla_datos.iloc[:, 2] = tabla_datos.iloc[:, 2].apply(formatear_porcentaje)
-        
-        # 5️⃣ Respetar celdas vacías pero eliminar columnas completamente vacías
         tabla_datos = tabla_datos.loc[:, ~(tabla_datos.isna().all())]
         
-        # 6️⃣ Unir encabezados + datos
         tabla_horario_distrito = [
             encabezados.loc[tabla_datos.columns].fillna("").astype(str).tolist()
         ]
-        
         tabla_horario_distrito += tabla_datos.fillna("").astype(str).values.tolist()
 
-        #-----------------------------GRAFICO-------------
         def generar_grafico_horario(df):
-            colores = [
-                "#4472C4", "#5B9BD5", "#A5A5A5", "#70AD47",
-                "#255E91", "#9DC3E6", "#264478", "#B7B7B7",
-                "#30A907"
-            ]
-        
-            fig, ax = plt.subplots(figsize=(6, 6))
-        
+            fig, ax = plt.subplots(figsize=SIZE_GRAFICO_PASTEL_PEQUENO)
             ax.pie(
                 df["porcentaje"],
                 labels=df["horario"],
                 autopct="%1.0f%%",
                 startangle=90,
-                colors=colores[:len(df)]
+                colors=PALETA_COMPLETA[:len(df)],
+                textprops={'fontsize': FONT_SIZE_ETIQUETAS}
             )
-        
             ax.axis("equal")
             plt.tight_layout()
-            plt.savefig(ASSETS_DIR / "grafico_horario.png", dpi=300, transparent=True)
+            plt.savefig(ASSETS_DIR / "grafico_horario.png", dpi=DPI_ESTANDAR, transparent=True)
             plt.close()
 
         generar_grafico_horario(df_grafico_horario)
 
-        # =========================================
-        # GRAFICO BARRAS PAGINA 14
-        # =========================================
-        
-        # Datos desde A196:B204
+        # ================= GRÁFICO BARRAS PÁGINA 14 =================
         df_grafico_p14 = df.iloc[195:204, [0, 1]].copy()
         df_grafico_p14.columns = ["categoria", "valor"]
-        
         df_grafico_p14 = df_grafico_p14.dropna()
-        
-        df_grafico_p14["valor"] = pd.to_numeric(
-            df_grafico_p14["valor"],
-            errors="coerce"
-        )
-        
+        df_grafico_p14["valor"] = pd.to_numeric(df_grafico_p14["valor"], errors="coerce")
         df_grafico_p14 = df_grafico_p14.dropna()
-        
+
         def generar_grafico_p14(df):
-        
-            # ===== VARIABLES CONFIGURABLES =====
-            COLOR_BARRAS = "#30A907"      # Verde institucional
-            COLOR_TEXTO = "#013051"       # Azul institucional
-            FIG_WIDTH = 8
-            FIG_HEIGHT = 5
-            DPI = 300
-            # ===================================
-        
-            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
-        
-            barras = ax.bar(
-                df["categoria"],
-                df["valor"],
-                color=COLOR_BARRAS
-            )
-        
+            fig, ax = plt.subplots(figsize=SIZE_GRAFICO_LINEAL)
+            barras = ax.bar(df["categoria"], df["valor"], color=COLOR_PRIMARIO)
             ax.set_ylabel("")
             ax.set_xlabel("")
             ax.set_title("")
-        
-            ax.tick_params(axis="x", rotation=45)
-        
-            # Quitar marcos
+            ax.tick_params(axis="x", rotation=45, labelsize=FONT_SIZE_EJES)
+            
             for spine in ax.spines.values():
                 spine.set_visible(False)
-        
             ax.tick_params(left=False, bottom=False)
-        
-            # Etiquetas encima de barras
+
             for bar in barras:
                 height = bar.get_height()
                 ax.text(
@@ -801,712 +547,173 @@ if archivo:
                     f"{int(height)}",
                     ha="center",
                     va="bottom",
-                    fontsize=FONT_DATOS,
+                    fontsize=FONT_SIZE_BARRAS_VALORES,
                     color=COLOR_TEXTO
                 )
-        
             plt.tight_layout()
-        
-            plt.savefig(
-                ASSETS_DIR / "grafico_p14.png",
-                dpi=DPI,
-                transparent=True
-            )
-        
+            plt.savefig(ASSETS_DIR / "grafico_p14.png", dpi=DPI_ESTANDAR, transparent=True)
             plt.close()
-        
-        # Ejecutar
+
         generar_grafico_p14(df_grafico_p14)
 
-        
-        # =========================================
-        # TABLA PAGINA 14 (MODALIDADES POR DISTRITO)
-        # =========================================
-        
-        # Encabezados (Fila 207 → índice 206)
+        # ================= TABLA P14 =================
         encabezados_p14 = df.iloc[206, 0:9].copy()
-        
-        # Datos (A208:I219 → índices 207:219)
         tabla_p14_raw = df.iloc[207:219, 0:9].copy()
-        
-        # Eliminar filas completamente vacías
         tabla_p14_raw = tabla_p14_raw.dropna(how="all")
         
-        # Mantener celdas vacías individuales
         tabla_p14 = []
-        
-        # Agregar encabezados primero
         tabla_p14.append(encabezados_p14.fillna("").astype(str).tolist())
         
-        # Agregar filas válidas
         for _, row in tabla_p14_raw.iterrows():
-        
-            # ===== VALIDAR DISTRITO =====
             distrito = row.iloc[0]
-        
-            # Ignorar distrito vacío
             if pd.isna(distrito):
                 continue
-        
             distrito_str = str(distrito).strip()
-        
-            # Ignorar distrito "0"
             if distrito_str == "0":
                 continue
-        
-            # ===== VALIDAR FRECUENCIAS =====
+            
             frecuencias = row.iloc[1:]
-        
-            frecuencias_numericas = pd.to_numeric(
-                frecuencias,
-                errors="coerce"
-            ).fillna(0)
-        
-            # Ignorar filas donde TODO sea 0
+            frecuencias_numericas = pd.to_numeric(frecuencias, errors="coerce").fillna(0)
             if (frecuencias_numericas == 0).all():
                 continue
-        
-            # ===== CONSTRUIR FILA =====
+                
             fila = []
-        
             for cell in row:
-        
                 if pd.isna(cell):
                     fila.append("")
-        
                 else:
-        
                     if isinstance(cell, (int, float)):
                         fila.append(str(int(cell)))
                     else:
                         fila.append(str(cell))
-        
             tabla_p14.append(fila)
 
-        #==================================PAGINA 15============================================================
-        # =========================================
-        # GRAFICO LINEAL PAGINA 15 (DIAS SEMANA)
-        # RANGO: A223:C229
-        # =========================================
-        
+        # ================= GRÁFICO LINEAL PÁGINA 15 =================
         df_grafico_p15 = df.iloc[222:229, 0:3].copy()
         df_grafico_p15.columns = ["dia", "frecuencia", "porcentaje"]
-        
         df_grafico_p15 = df_grafico_p15.dropna(how="all")
-        
-        # Formatear frecuencia
-        df_grafico_p15["frecuencia"] = pd.to_numeric(
-            df_grafico_p15["frecuencia"],
-            errors="coerce"
-        )
-        
-        # Formatear porcentaje
+        df_grafico_p15["frecuencia"] = pd.to_numeric(df_grafico_p15["frecuencia"], errors="coerce")
         df_grafico_p15["porcentaje"] = (
             df_grafico_p15["porcentaje"]
             .astype(str)
             .str.replace("%", "", regex=False)
             .str.replace(",", ".", regex=False)
         )
-        
-        df_grafico_p15["porcentaje"] = pd.to_numeric(
-            df_grafico_p15["porcentaje"],
-            errors="coerce"
-        )
-        
+        df_grafico_p15["porcentaje"] = pd.to_numeric(df_grafico_p15["porcentaje"], errors="coerce")
         df_grafico_p15 = df_grafico_p15.dropna()
-        
+
         def generar_grafico_p15(df):
-        
-            # ===== VARIABLES CONFIGURABLES =====
-            COLOR_LINEA = "#013051"
-            COLOR_PUNTOS = "#30A907"
-            COLOR_RELLENO = "#30A907"
-            COLOR_TEXTO = "#013051"
-            COLOR_GRILLA = "#E0E0E0"
-        
-            FIG_WIDTH = 8
-            FIG_HEIGHT = 5
-            DPI = 300
-            # ===================================
-        
-            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
-        
-            # Convertir eje X a numérico para mayor control
-            x = range(len(df))
-        
-            # Línea principal
-            ax.plot(
-                x,
-                df["frecuencia"],
-                marker="o",
-                linewidth=3,
-                markersize=8,
-                color=COLOR_LINEA
-            )
-        
-            # Relleno inferior
-            ax.fill_between(
-                x,
-                df["frecuencia"],
-                color=COLOR_RELLENO,
-                alpha=0.15
-            )
-        
-            # Grilla horizontal
-            ax.grid(axis="y", linestyle="--", alpha=0.4, color=COLOR_GRILLA)
-        
-            # Etiquetas frecuencia
+            fig, ax = plt.subplots(figsize=SIZE_GRAFICO_LINEAL)
+            x_vals = range(len(df))
+            
+            ax.plot(x_vals, df["frecuencia"], marker="o", linewidth=3, markersize=8, color=COLOR_SECUNDARIO)
+            ax.fill_between(x_vals, df["frecuencia"], color=COLOR_PRIMARIO, alpha=0.15)
+            ax.grid(axis='y', linestyle='--', alpha=0.4, color=COLOR_GRILLA)
+
             for i, row in enumerate(df.itertuples()):
                 ax.text(
-                    i,
-                    row.frecuencia,
-                    f"{int(row.frecuencia)}",
-                    ha="center",
-                    va="bottom",
-                    fontsize=FONT_PORCENTAJES,
-                    fontweight="bold",
-                    color=COLOR_TEXTO
+                    i, row.frecuencia, f"{int(row.frecuencia)}",
+                    ha="center", va="bottom", fontsize=FONT_SIZE_BARRAS_VALORES,
+                    fontweight="bold", color=COLOR_TEXTO
                 )
-        
-            # Ajuste eje Y
+
             ax.set_ylim(0, df["frecuencia"].max() * 1.25)
-        
-            # Porcentajes debajo del punto
             offset = df["frecuencia"].max() * 0.08
-        
+            
             for i, row in enumerate(df.itertuples()):
                 ax.text(
-                    i,
-                    row.frecuencia - offset,
-                    f"{row.porcentaje * 100:.2f}%",
-                    ha="center",
-                    va="top",
-                    fontsize=FONT_PORCENTAJES,
-                    color=COLOR_TEXTO
+                    i, row.frecuencia - offset, f"{row.porcentaje * 100:.2f}%",
+                    ha="center", va="top", fontsize=FONT_SIZE_BARRAS_VALORES, color=COLOR_TEXTO
                 )
-        
-            # Etiquetas del eje X (días)
-            ax.set_xticks(x)
-            ax.set_xticklabels(df["dia"])
-        
-            # Quitar bordes
+
+            ax.set_xticks(x_vals)
+            ax.set_xticklabels(df["dia"], fontsize=FONT_SIZE_EJES)
+            
             for spine in ax.spines.values():
                 spine.set_visible(False)
-        
             ax.tick_params(left=False, bottom=False)
-        
             ax.set_ylabel("")
             ax.set_xlabel("")
             ax.set_title("")
-        
+            
             plt.tight_layout()
-        
-            plt.savefig(
-                ASSETS_DIR / "grafico_p15.png",
-                dpi=DPI,
-                transparent=True
-            )
-        
+            plt.savefig(ASSETS_DIR / "grafico_p15.png", dpi=DPI_ESTANDAR, transparent=True)
             plt.close()
 
         generar_grafico_p15(df_grafico_p15)
 
-       #========tabla p15
-        # =========================================
-        # TABLA PAGINA 15 (FRECUENCIA POR DISTRITO Y DIA)
-        # RANGO: A222:O229
-        # IGNORAR COLUMNAS B y C
-        # =========================================
-        
-        # Encabezados (Dias) → Columna A (A223:A229)
+        # ================= TABLA P15 =================
         dias_p15 = df.iloc[222:229, 0].copy().astype(str).tolist()
-        
-        # Distritos → Fila 222 (D222:O222)
         distritos_p15 = df.iloc[221, 3:15].copy().astype(str).tolist()
-        
-        # Frecuencias → D223:O229
         valores_p15_raw = df.iloc[222:229, 3:15].copy()
         
         tabla_p15 = []
-        
-        # Primera fila → encabezados (vacío + días)
         tabla_p15.append(["Distrito"] + dias_p15)
         
-        # Construir filas
         for i, distrito in enumerate(distritos_p15):
-        
             fila = [distrito]
-        
             for valor in valores_p15_raw.iloc[:, i]:
-        
                 if pd.isna(valor):
                     fila.append("")
                 else:
                     fila.append(str(int(valor)) if isinstance(valor, (int, float)) else str(valor))
-        
-            # Ignorar fila si completamente vacía (excepto nombre distrito)
             if all(v == "" for v in fila[1:]):
                 continue
-        
             tabla_p15.append(fila)
 
-        # =========================================
-        # DATOS LINEAS DE ACCION (PAGINA 17)
-        # =========================================
-        
-        # Región (D2)
-        region_numero = seguro_int(df.iloc[1, 3])  # D2
-        
-        # Delegación (B3) → formato "D-28"
-        delegacion_codigo = str(df.iloc[2, 1])  # B3
-        
-        # Extraer número 28 de "D-28"
+        # ================= LÍNEAS DE ACCIÓN =================
+        region_numero = seguro_int(df.iloc[1, 3])
+        delegacion_codigo = str(df.iloc[2, 1])
         numero_delegacion = int(delegacion_codigo.replace("D-", "").replace("D", "").strip())
-        
-        # Totales líneas
-        # ================= SAFE INT =================
+
         def safe_int(value):
-            if pd.isna(value) or value == "":
+            if pd.isna(value) or str(value).strip() == "":
                 return 0
             return int(value)
-        
-        # Totales líneas
-        lineas_municipalidad = seguro_int(df.iloc[238, 0])  # A239
-        lineas_fp = seguro_int(df.iloc[238, 1])             # B239
-        lineas_mixtas = safe_int(df.iloc[238, 2])         # C239
-        total_lineas = seguro_int(df.iloc[238, 3])          # D239
-        
-        # Si mixtas es 0 no se muestra
+
+        lineas_municipalidad = seguro_int(df.iloc[238, 0])
+        lineas_fp = seguro_int(df.iloc[238, 1])
+        lineas_mixtas = safe_int(df.iloc[238, 2])
+        total_lineas = seguro_int(df.iloc[238, 3])
+
         if lineas_mixtas == 0:
             lineas_mixtas = None
-                
-        # Construcción automática del path del logo municipal
-        logo_muni_path = (
-            ASSETS_DIR /
-            "Municipalidades" /
-            str(region_numero) /
-            f"{numero_delegacion}.png"
-        )
 
+        logo_muni_path = ASSETS_DIR / "Municipalidades" / str(region_numero) / f"{numero_delegacion}.png"
 
-        # =========================================================
-        # ================= PERCEPCION CIUDADANA ==================
-        # =========================================================
-        
-        st.write("Filas del DataFrame:", df.shape[0])
-        st.write("Columnas del DataFrame:", df.shape[1])
-        # ================= PREGUNTA ACTUAL =================
-        df_percepcion_actual = df.iloc[283:285, 0:2].copy()
-        df_percepcion_actual.columns = ["respuesta", "porcentaje"]
-        
-        df_percepcion_actual["porcentaje"] = (
-            df_percepcion_actual["porcentaje"]
-            .astype(str)
-            .str.replace("%", "", regex=False)
-            .str.replace(",", ".", regex=False)
-        )
-        
-        df_percepcion_actual["porcentaje"] = pd.to_numeric(
-            df_percepcion_actual["porcentaje"],
-            errors="coerce"
-        )
-        
-        df_percepcion_actual = df_percepcion_actual.dropna()
-        
-        # ===== GRAFICO PASTEL =====
-        def generar_grafico_percepcion_actual(df):
-        
-            FIG_WIDTH = 11
-            FIG_HEIGHT = 11
-            DPI = 300
-        
-            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
-        
-            COLORES_PERCEPCION = [
-                "#30A907",  # Verde institucional
-                "#013051",  # Azul institucional
-                "#A5A5A5"   # Gris (si hubiera tercera categoría)
-            ]
-        
-            wedges, texts, autotexts = ax.pie(
-                df["porcentaje"],
-            
-                # SIN LABELS EXTERNOS
-                labels=None,
-            
-                autopct=lambda p: f"{p:.2f}%",
-            
-                startangle=90,
-            
-                colors=COLORES_PERCEPCION[:len(df)],
-            
-                # HACER EL CIRCULO MÁS GRANDE
-                radius=1.25,
-            
-                # PORCENTAJES MÁS CENTRADOS
-                pctdistance=0.62,
-            
-                textprops={
-                    "fontsize": 11,
-                    "fontweight": "bold"
-                }
-            )
-        
-
-            # ===== ESTILO PORCENTAJES =====
-            for autotext in autotexts:
-                autotext.set_fontsize(12)
-                autotext.set_fontweight("bold")
-                autotext.set_color("white")
-
-            # ===== LABELS MANUALES =====
-
-            labels = df["respuesta"].tolist()
-            
-            ax.legend(
-                wedges,
-                labels,
-            
-                loc="center left",
-            
-                bbox_to_anchor=(0.95, 0.5),
-            
-                fontsize=FONT_PORCENTAJES,
-            
-                frameon=False
-            )
-                    
-            ax.axis("equal")
-        
-            plt.tight_layout()
-        
-            plt.savefig(
-                ASSETS_DIR / "grafico_percepcion_actual.png",
-            
-                dpi=DPI,
-            
-                transparent=True,
-            
-                # MARGEN MÍNIMO
-                pad_inches=0.03
-            )
-        
-            plt.close()
-        
-        generar_grafico_percepcion_actual(df_percepcion_actual)
-        
-        
-        # ================= COMPARACION AÑO ANTERIOR =================
-        df_percepcion_comparacion = df.iloc[290:293, 0:2].copy()
-        df_percepcion_comparacion.columns = ["categoria", "porcentaje"]
-        
-        df_percepcion_comparacion["porcentaje"] = (
-            df_percepcion_comparacion["porcentaje"]
-            .astype(str)
-            .str.replace("%", "", regex=False)
-            .str.replace(",", ".", regex=False)
-        )
-        
-        df_percepcion_comparacion["porcentaje"] = pd.to_numeric(
-            df_percepcion_comparacion["porcentaje"],
-            errors="coerce"
-        )
-        
-        df_percepcion_comparacion = df_percepcion_comparacion.dropna()
-        
-        # ===== GRAFICO BARRAS =====
-        def generar_grafico_percepcion_comparacion(df):
-        
-            FIG_WIDTH = 6
-            FIG_HEIGHT = 5
-            DPI = 300
-            COLOR_BARRAS = "#30A907"
-        
-            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
-        
-            barras = ax.bar(
-                df["categoria"],
-                df["porcentaje"],
-                color=COLOR_BARRAS
-            )
-        
-            ax.set_ylim(0, df["porcentaje"].max() * 1.25)
-        
-            for bar in barras:
-                height = bar.get_height()
-                ax.text(
-                    bar.get_x() + bar.get_width()/2,
-                    height,
-                    f"{height:.2f}%",
-                    ha="center",
-                    va="bottom",
-                    fontsize=FONT_PORCENTAJES
-                )
-        
-            ax.tick_params(axis="x", rotation=45)
-            ax.tick_params(axis="x", labelsize=14)
-            ax.tick_params(axis="y", labelsize=14)
-        
-            for spine in ax.spines.values():
-                spine.set_visible(False)
-        
-            plt.tight_layout()
-        
-            plt.savefig(
-                ASSETS_DIR / "grafico_percepcion_comparacion.png",
-                dpi=DPI,
-                transparent=True
-            )
-        
-            plt.close()
-        
-        generar_grafico_percepcion_comparacion(df_percepcion_comparacion)
-
-        
-        # =========================================================
-        # ================= VICTIMIZACION CIUDADANA PAGINA " PARTE FINAL===============
-        # =========================================================
-        
-        # ----- GRAFICO 1 (A314:B316) -----
-        df_victimizacion = df.iloc[313:316, 0:2].copy()
-        df_victimizacion.columns = ["categoria", "porcentaje"]
-        
-        df_victimizacion["porcentaje"] = (
-            df_victimizacion["porcentaje"]
-            .astype(str)
-            .str.replace("%", "", regex=False)
-            .str.replace(",", ".", regex=False)
-        )
-        
-        df_victimizacion["porcentaje"] = pd.to_numeric(
-            df_victimizacion["porcentaje"],
-            errors="coerce"
-        )
-        
-        df_victimizacion = df_victimizacion.dropna()
-
-
-        # ----- GRAFICO 2 (A323:B330) -----
-        df_no_denuncia = df.iloc[322:330, 0:2].copy()
-        df_no_denuncia.columns = ["categoria", "porcentaje"]
-        
-        df_no_denuncia["porcentaje"] = (
-            df_no_denuncia["porcentaje"]
-            .astype(str)
-            .str.replace("%", "", regex=False)
-            .str.replace(",", ".", regex=False)
-        )
-        
-        df_no_denuncia["porcentaje"] = pd.to_numeric(
-            df_no_denuncia["porcentaje"],
-            errors="coerce"
-        )
-        
-        df_no_denuncia = df_no_denuncia.dropna()
-       
-       # ----- TABLA INFERIOR (A323:C330 ignorando B) -----
-
-        tabla_no_denuncia_df = df.iloc[322:330, [0, 2]].copy()
-        tabla_no_denuncia_df = tabla_no_denuncia_df.dropna(how="all")
-        
-        ## TABLA
-        tabla_no_denuncia = []
-
-        for _, row in tabla_no_denuncia_df.iterrows():
-        
-            categoria = row.iloc[0] if len(row) > 0 else None
-            valor = row.iloc[1] if len(row) > 1 else None
-        
-            if pd.notna(categoria) and pd.notna(valor):
-                tabla_no_denuncia.append([
-                    str(categoria),
-                    int(valor)
-                ])
-
-        ## mayor frecuencia
-
-        # Obtener motivo con mayor frecuencia
-        if not df_no_denuncia.empty and df_no_denuncia["porcentaje"].notna().any():
-            fila_max = df_no_denuncia.loc[df_no_denuncia["porcentaje"].idxmax()]
-            motivo_principal = str(fila_max["categoria"])
-        else:
-            motivo_principal = "No especificado"
-            
-        if df.shape[0] > 321 and df.shape[1] > 6:
-            total_omitidas = seguro_int(df.iloc[321, 6])
-        else:
-            total_omitidas = 0 # G322
-
-        # =========================================================
-        # ============== TABLA COMPARATIVA PERCEPCION =============
-        # =========================================================
-        
-        # FILAS 298 Y 299
-        fila_298 = df.iloc[297, 0:13].copy()
-        fila_299 = df.iloc[298, 0:13].copy()
-        
-        # DATOS
-        datos_pc = df.iloc[299:311, 0:13].copy()
-        
-        # COLUMNAS:
-        # A, C, E, G, I, K, M
-        columnas_indices = [0, 2, 4, 6, 8, 10, 12]
-        
-        # =========================
-        # ENCABEZADOS
-        # =========================
-        
-        encabezado_superior = []
-        encabezado_inferior = []
-        
-        for idx in columnas_indices:
-        
-            valor_sup = fila_298.iloc[idx]
-        
-            # merged cells
-            if pd.isna(valor_sup) and idx > 0:
-                valor_sup = fila_298.iloc[idx - 1]
-        
-            if pd.isna(valor_sup):
-                encabezado_superior.append("")
-            else:
-                encabezado_superior.append(str(valor_sup).strip())
-        
-            valor_inf = fila_299.iloc[idx]
-        
-            if pd.isna(valor_inf):
-                valor_inf = ""
-        
-            encabezado_inferior.append(str(valor_inf).strip())
-        
-        # =========================
-        # TABLA FINAL
-        # =========================
-        
-        tabla_percepcion = []
-        
-        tabla_percepcion.append(encabezado_superior)
-        tabla_percepcion.append(encabezado_inferior)
-        
-        # =========================
-        # FILAS DATOS
-        # =========================
-        
-        for _, row in datos_pc.iterrows():
-        
-            fila = []
-        
-            for idx in columnas_indices:
-        
-                valor = row.iloc[idx]
-        
-                if pd.isna(valor):
-        
-                    fila.append("")
-        
-                else:
-        
-                    if isinstance(valor, float):
-
-                        porcentaje = round(valor * 100, 1)
-                    
-                        if porcentaje.is_integer():
-                            fila.append(f"{int(porcentaje)}%")
-                        else:
-                            fila.append(f"{porcentaje}%")
-                            
-                    else:
-                        fila.append(str(valor))
-        
-            if any(str(v).strip() != "" for v in fila):
-                tabla_percepcion.append(fila)
-
-        
-        
-        # =========================================
-        # LINEAS DE ACCION DINAMICAS PORTADAS
-        # =========================================
-        
-        import string
-        
-        # Columnas donde están los corresponsables
-        columnas_corresponsables = [
-            9,   # J246
-            15,  # P246
-            21,  # V246
-            27,  # AB246
-            33,  # AH246
-            39,  # AN246
-            45,  # AT246
-            51,  # AZ246
-            57,  # BF246
-            63,  # BL246
-            69,  # BR246
-            75   # BX246
-        ]
-
-        # Columnas porcentaje total (fila 242)
-        columnas_total_porcentaje = [
-            9,   # J242
-            15,  # P242
-            21,  # V242
-            27,  # AB242
-            33,  # AH242
-            39,  # AN242
-            45,  # AT242
-            51,  # AZ242
-            57,  # BF242
-            63,  # BL242
-            69,  # BR242
-            75   # BX242
-        ]
-
-        
-
-        # ================= COLUMNAS DINAMICAS LINEAS DE ACCION =================
-
+        # Llenar datos de líneas
+        columnas_total_porcentaje = [9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75]
         columnas_causas = [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71]
         columnas_problemas = [6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72]
         columnas_lider = [9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75]
         columnas_acciones = [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74]
         columnas_cogestores = [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74]
-        columnas_corresponsable = [9,15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75]
-
-        lineas_accion_data = []
-
-        for i in range(int(total_lineas)):
-
-            fila_problematicas = 241 + i  # B242 empieza en índice 241
         
-            # ===== PROBLEMATICAS =====
+        lineas_accion_data = []
+        for i in range(int(total_lineas)):
+            fila_problematicas = 241 + i
             problematicas = []
-            for col in [1, 2, 3]:  # B, C, D
+            for col in [1, 2, 3]:
                 valor = df.iloc[fila_problematicas, col]
                 if pd.notna(valor) and str(valor).strip() != "":
                     problematicas.append(str(valor).strip())
-        
-            # ===== CAUSAS =====
+            
             col_causa = columnas_causas[i]
             causas = []
-        
-            for fila in range(246, 276):  # F247 a F276
+            for fila in range(246, 276):
                 valor = df.iloc[fila, col_causa]
                 if pd.notna(valor) and str(valor).strip() != "":
                     causas.append([str(valor).strip()])
-        
-            # ===== PROBLEMAS INFLUYENTES =====
+                    
             col_problema = columnas_problemas[i]
             problemas = []
-        
             for fila in range(246, 276):
                 valor = df.iloc[fila, col_problema]
                 if pd.notna(valor) and str(valor).strip() != "":
                     problemas.append([str(valor).strip()])
-        
-            # ===== PORCENTAJE TOTAL =====
+                    
             col_total = columnas_total_porcentaje[i]
-            valor_total = df.iloc[241, col_total]  # Fila 242
-        
+            valor_total = df.iloc[241, col_total]
             if pd.notna(valor_total):
                 try:
                     total_porcentaje = float(valor_total) * 100
@@ -1515,47 +722,32 @@ if archivo:
                     total_porcentaje = "0.00%"
             else:
                 total_porcentaje = "0.00%"
-        
-            # ===== LIDER ESTRATEGICO =====
+                
             col_lider = columnas_lider[i]
             lider_estrategico = df.iloc[245, col_lider]
-
-            # ===== CORRESPONSABLE =====
             col_corresponsable = columnas_corresponsable[i]
             corresponsable = df.iloc[245, col_corresponsable]
             
-            if pd.notna(corresponsable):
-                corresponsable = str(corresponsable).strip()
-            else:
-                corresponsable = ""
-        
-            if pd.notna(lider_estrategico):
-                lider_estrategico = str(lider_estrategico).strip()
-            else:
-                lider_estrategico = ""
-        
-            # ===== ACCIONES ESTRATEGICAS =====
+            corresponsable = str(corresponsable).strip() if pd.notna(corresponsable) else ""
+            lider_estrategico = str(lider_estrategico).strip() if pd.notna(lider_estrategico) else ""
+            
             col_acciones = columnas_acciones[i]
             acciones = []
-        
-            for fila in range(248, 257):  # I249 a I257
+            for fila in range(248, 257):
                 valor = df.iloc[fila, col_acciones]
                 if pd.notna(valor) and str(valor).strip() != "":
                     acciones.append(str(valor).strip())
-        
-            # ===== COGESTORES =====
+                    
             col_cogestores = columnas_cogestores[i]
             cogestores = []
-        
-            for fila in range(261, 263):  # I262 a I263
+            for fila in range(261, 263):
                 valor = df.iloc[fila, col_cogestores]
                 if pd.notna(valor) and str(valor).strip() != "":
                     partes = str(valor).split(",")
                     for p in partes:
                         if p.strip():
                             cogestores.append(p.strip())
-        
-            # ===== APPEND FINAL =====
+                            
             lineas_accion_data.append({
                 "numero": i + 1,
                 "problematicas": problematicas,
@@ -1565,736 +757,430 @@ if archivo:
                 "lider_estrategico": lider_estrategico,
                 "acciones": acciones,
                 "cogestores": cogestores,
-                "corresponsable": corresponsable  # 👈 NUEVO
+                "corresponsable": corresponsable
             })
-                
-        st.write("Cantidad de lineas detectadas:", len(lineas_accion_data)) ###debugging
 
+        st.write("Cantidad de lineas detectadas:", len(lineas_accion_data))
 
-        ##==================== graficos pagina 2===========
+        # ================= PERCEPCION ACTUAL =================
+        df_percepcion_actual = df.iloc[283:285, 0:2].copy()
+        df_percepcion_actual.columns = ["respuesta", "porcentaje"]
+        df_percepcion_actual["porcentaje"] = (
+            df_percepcion_actual["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        df_percepcion_actual["porcentaje"] = pd.to_numeric(df_percepcion_actual["porcentaje"], errors="coerce")
+        df_percepcion_actual = df_percepcion_actual.dropna()
 
-        
-        import numpy as np
-        import textwrap
-        
-        def generar_grafico_victimizacion(df, nombre_archivo):
-        
-            if df.empty:
-                return
-        
-            COLOR_BARRAS = "#30A907"
-            COLOR_TEXTO = "#013051"
-        
-            FIG_WIDTH = max(18, len(df) * 3)
-            FIG_HEIGHT = 6
-            DPI = 300
-        
-            fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
-            fig.patch.set_facecolor("none")
-        
-            # =============================
-            # Ajustes dinámicos por gráfico
-            # =============================
-            if "no_denuncia" in nombre_archivo:
-                ancho_wrap = 16        # texto más comprimido
-                max_lineas = 3
-                fontsize_xticks = 20
-                bottom_space = 0.42
-            else:
-                ancho_wrap = 22
-                max_lineas = 2
-                fontsize_xticks = 20
-                bottom_space = 0.30
-        
-            # =============================
-            # Crear etiquetas envueltas SIN modificar df
-            # =============================
-            def dividir_texto(texto):
-                lineas = textwrap.wrap(str(texto), width=ancho_wrap)
-                return "\n".join(lineas[:max_lineas])
-        
-            categorias_wrapped = df["categoria"].apply(dividir_texto)
-        
-            # =============================
-            # Crear barras
-            # =============================
-            x = np.arange(len(df))
-        
-            barras = ax.bar(
-                x,
+        def generar_grafico_percepcion_actual(df):
+            fig, ax = plt.subplots(figsize=SIZE_GRAFICO_PASTEL_MEDIANO)
+            COLORES_PERCEPCION = [COLOR_PRIMARIO, COLOR_SECUNDARIO, "#A5A5A5"]
+            
+            wedges, texts, autotexts = ax.pie(
                 df["porcentaje"],
-                color=COLOR_BARRAS,
-                width=0.5
+                labels=None,
+                autopct=lambda p: f"{p:.2f}%",
+                startangle=90,
+                colors=COLORES_PERCEPCION[:len(df)],
+                radius=1.25,
+                pctdistance=0.62,
+                textprops={"fontsize": 11, "fontweight": "bold"}
             )
-        
+            for autotext in autotexts:
+                autotext.set_fontsize(FONT_SIZE_ETIQUETAS)
+                autotext.set_fontweight("bold")
+                autotext.set_color("white")
+                
+            labels = df["respuesta"].tolist()
+            ax.legend(
+                wedges, labels, loc="center left", bbox_to_anchor=(0.95, 0.5),
+                fontsize=FONT_SIZE_BARRAS_VALORES, frameon=False
+            )
+            ax.axis("equal")
+            plt.tight_layout()
+            plt.savefig(ASSETS_DIR / "grafico_percepcion_actual.png", dpi=DPI_ESTANDAR, transparent=True, pad_inches=0.03)
+            plt.close()
+
+        generar_grafico_percepcion_actual(df_percepcion_actual)
+
+        # ================= PERCEPCION COMPARACION =================
+        df_percepcion_comparacion = df.iloc[290:293, 0:2].copy()
+        df_percepcion_comparacion.columns = ["categoria", "porcentaje"]
+        df_percepcion_comparacion["porcentaje"] = (
+            df_percepcion_comparacion["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        df_percepcion_comparacion["porcentaje"] = pd.to_numeric(df_percepcion_comparacion["porcentaje"], errors="coerce")
+        df_percepcion_comparacion = df_percepcion_comparacion.dropna()
+
+        def generar_grafico_percepcion_comparacion(df):
+            fig, ax = plt.subplots(figsize=SIZE_GRAFICO_LINEAL)
+            barras = ax.bar(df["categoria"], df["porcentaje"], color=COLOR_PRIMARIO)
             ax.set_ylim(0, df["porcentaje"].max() * 1.25)
-        
-            ax.set_xticks(x)
-            ax.set_xticklabels(
-                categorias_wrapped,
-                rotation=0,
-                ha="center",
-                fontsize=fontsize_xticks
-            )
-        
-            plt.subplots_adjust(bottom=bottom_space)
-        
-            # =============================
-            # Etiquetas de porcentaje arriba
-            # =============================
+            
             for bar in barras:
                 height = bar.get_height()
                 ax.text(
                     bar.get_x() + bar.get_width()/2,
-                    height,
-                    f"{height:.2f}%",
-                    ha="center",
-                    va="bottom",
-                    fontsize=FONT_PORCENTAJES, #fuente etiquetas
-                    color=COLOR_TEXTO
+                    height, f"{height:.2f}%",
+                    ha="center", va="bottom", fontsize=FONT_SIZE_EJES
                 )
-        
-            # Quitar bordes
+            ax.tick_params(axis="x", rotation=45, labelsize=FONT_SIZE_EJES)
+            ax.tick_params(axis="y", labelsize=FONT_SIZE_EJES)
             for spine in ax.spines.values():
                 spine.set_visible(False)
-        
-            plt.tight_layout(rect=[0, 0.1, 1, 1])
-        
-            plt.savefig(
-                ASSETS_DIR / nombre_archivo,
-                dpi=DPI,
-                transparent=True
-            )
-        
-            plt.close()
                 
+            plt.tight_layout()
+            plt.savefig(ASSETS_DIR / "grafico_percepcion_comparacion.png", dpi=DPI_ESTANDAR, transparent=True)
+            plt.close()
+
+        generar_grafico_percepcion_comparacion(df_percepcion_comparacion)
+
+        # ================= VICTIMIZACIÓN Y NO DENUNCIA =================
+        df_victimizacion = df.iloc[313:316, 0:2].copy()
+        df_victimizacion.columns = ["categoria", "porcentaje"]
+        df_victimizacion["porcentaje"] = (
+            df_victimizacion["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        df_victimizacion["porcentaje"] = pd.to_numeric(df_victimizacion["porcentaje"], errors="coerce")
+        df_victimizacion = df_victimizacion.dropna()
+
+        df_no_denuncia = df.iloc[322:330, 0:2].copy()
+        df_no_denuncia.columns = ["categoria", "porcentaje"]
+        df_no_denuncia["porcentaje"] = (
+            df_no_denuncia["porcentaje"]
+            .astype(str)
+            .str.replace("%", "", regex=False)
+            .str.replace(",", ".", regex=False)
+        )
+        df_no_denuncia["porcentaje"] = pd.to_numeric(df_no_denuncia["porcentaje"], errors="coerce")
+        df_no_denuncia = df_no_denuncia.dropna()
+
+        tabla_no_denuncia_df = df.iloc[322:330, [0, 2]].copy()
+        tabla_no_denuncia_df = tabla_no_denuncia_df.dropna(how="all")
+        tabla_no_denuncia = []
+        for _, row in tabla_no_denuncia_df.iterrows():
+            categoria = row.iloc[0] if len(row) > 0 else None
+            valor = row.iloc[1] if len(row) > 1 else None
+            if pd.notna(categoria) and pd.notna(valor):
+                tabla_no_denuncia.append([str(categoria), int(valor)])
+
+        if not df_no_denuncia.empty and df_no_denuncia["porcentaje"].notna().any():
+            fila_max = df_no_denuncia.loc[df_no_denuncia["porcentaje"].idxmax()]
+            motivo_principal = str(fila_max["categoria"])
+        else:
+            motivo_principal = "No especificado"
+            
+        if df.shape[0] > 321 and df.shape[1] > 6:
+            total_omitidas = seguro_int(df.iloc[321, 6])
+        else:
+            total_omitidas = 0
+
+        # TABLA COMPARATIVA PERCEPCIÓN
+        fila_298 = df.iloc[297, 0:13].copy()
+        fila_299 = df.iloc[298, 0:13].copy()
+        datos_pc = df.iloc[299:311, 0:13].copy()
+        columnas_indices = [0, 2, 4, 6, 8, 10, 12]
+
+        encabezado_superior = []
+        encabezado_inferior = []
+        for idx in columnas_indices:
+            valor_sup = fila_298.iloc[idx]
+            if pd.isna(valor_sup) and idx > 0:
+                valor_sup = fila_298.iloc[idx - 1]
+            encabezado_superior.append(str(valor_sup).strip() if not pd.isna(valor_sup) else "")
+            valor_inf = fila_299.iloc[idx]
+            encabezado_inferior.append(str(valor_inf).strip() if not pd.isna(valor_inf) else "")
+
+        tabla_percepcion = [encabezado_superior, encabezado_inferior]
+        for _, row in datos_pc.iterrows():
+            fila = []
+            for idx in columnas_indices:
+                valor = row.iloc[idx]
+                if pd.isna(valor):
+                    fila.append("")
+                else:
+                    if isinstance(valor, float):
+                        porcentaje = round(valor * 100, 1)
+                        fila.append(f"{int(porcentaje)}%" if porcentaje.is_integer() else f"{porcentaje}%")
+                    else:
+                        fila.append(str(valor))
+            if any(str(v).strip() != "" for v in fila):
+                tabla_percepcion.append(fila)
+
+        def generar_grafico_victimizacion(df, nombre_archivo):
+            if df.empty: return
+            FIG_WIDTH = max(18, len(df) * 3)
+            
+            fig, ax = plt.subplots(figsize=(FIG_WIDTH, SIZE_GRAFICO_BARRAS[1]))
+            fig.patch.set_facecolor("none")
+
+            if "no_denuncia" in nombre_archivo:
+                ancho_wrap = 16
+                max_lineas = 3
+                bottom_space = 0.42
+            else:
+                ancho_wrap = 22
+                max_lineas = 2
+                bottom_space = 0.30
+
+            def dividir_texto(texto):
+                lineas = textwrap.wrap(str(texto), width=ancho_wrap)
+                return "\n".join(lineas[:max_lineas])
+
+            categorias_wrapped = df["categoria"].apply(dividir_texto)
+            x = np.arange(len(df))
+            barras = ax.bar(x, df["porcentaje"], color=COLOR_PRIMARIO, width=0.5)
+            
+            ax.set_ylim(0, df["porcentaje"].max() * 1.25)
+            ax.set_xticks(x)
+            ax.set_xticklabels(categorias_wrapped, rotation=0, ha="center", fontsize=FONT_SIZE_TEXTO_DESTACADO)
+            plt.subplots_adjust(bottom=bottom_space)
+
+            for bar in barras:
+                height = bar.get_height()
+                ax.text(
+                    bar.get_x() + bar.get_width()/2,
+                    height, f"{height:.2f}%",
+                    ha="center", va="bottom", fontsize=FONT_SIZE_TEXTO_DESTACADO, color=COLOR_TEXTO
+                )
+
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+                
+            plt.tight_layout(rect=[0, 0.1, 1, 1])
+            plt.savefig(ASSETS_DIR / nombre_archivo, dpi=DPI_ESTANDAR, transparent=True)
+            plt.close()
+
         generar_grafico_victimizacion(df_victimizacion, "grafico_victimizacion.png")
         generar_grafico_victimizacion(df_no_denuncia, "grafico_no_denuncia.png")
 
-        #pagina 3_____________________________________________________
-
+        # ================= PÁGINA 3 =================
         def generar_grafico_horarios_percepcion(labels, valores):
-
-            import matplotlib.pyplot as plt
-        
-            plt.figure(figsize=(6,6))
-        
+            plt.figure(figsize=SIZE_GRAFICO_PASTEL_PEQUENO)
             plt.pie(
-                valores,
-                labels=None,
-                colors=P3_PALETA_GRAFICO,
-                autopct=lambda p: f"{p:.2f}%",
-                startangle=90,
-                textprops={'fontsize':14},
+                valores, labels=None, colors=P3_PALETA_GRAFICO, 
+                autopct=lambda p: f"{p:.2f}%", startangle=90, textprops={'fontsize': FONT_SIZE_EJES}
             )
-        
             plt.axis("equal")
-        
             ruta = ASSETS_DIR / "grafico_horarios_percepcion.png"
-        
-            plt.savefig(ruta, dpi=300, bbox_inches="tight")
-        
+            plt.savefig(ruta, dpi=DPI_ESTANDAR, bbox_inches="tight")
             plt.close()
-        
             return ruta
 
         def generar_grafico_armas_percepcion(labels, valores):
-        
-            import matplotlib.pyplot as plt
-        
-            plt.figure(figsize=(6,6))
-        
+            plt.figure(figsize=SIZE_GRAFICO_PASTEL_PEQUENO)
             plt.pie(
-                valores,
-                labels=None,
-                colors=P3_PALETA_GRAFICO,
-                autopct=lambda p: f"{p:.2f}%",
-                startangle=90,
-                textprops={'fontsize':14},
+                valores, labels=None, colors=P3_PALETA_GRAFICO, 
+                autopct=lambda p: f"{p:.2f}%", startangle=90, textprops={'fontsize': FONT_SIZE_EJES}
             )
-        
             plt.axis("equal")
-        
             ruta = ASSETS_DIR / "grafico_armas_percepcion.png"
-        
-            plt.savefig(ruta, dpi=300, bbox_inches="tight")
-        
+            plt.savefig(ruta, dpi=DPI_ESTANDAR, bbox_inches="tight")
             plt.close()
-        
             return ruta
 
-
-        # ==========================================================
-        # GRAFICO PERCEPCION COMERCIO
-        # ==========================================================
-        
         def generar_grafico_pastel_comercio(labels, valores, nombre_archivo, colores):
-
-            import matplotlib.pyplot as plt
-        
-            # ================= VARIABLES EDITABLES =================
-        
-            FIG_SIZE_X = 6
-            FIG_SIZE_Y = 6
-        
-            PORCENTAJE_SIZE = 14
-        
-            START_ANGLE = 90
-        
-            # =======================================================
-        
-            fig, ax = plt.subplots(
-                figsize=(FIG_SIZE_X, FIG_SIZE_Y)
-            )
-
-            fig.subplots_adjust(
-                left=0.08,
-                right=0.92,
-                top=0.92,
-                bottom=0.08
-            )
-        
+            fig, ax = plt.subplots(figsize=SIZE_GRAFICO_PASTEL_PEQUENO)
+            fig.subplots_adjust(left=0.08, right=0.92, top=0.92, bottom=0.08)
+            
             wedges, texts, autotexts = ax.pie(
-                valores,
-        
-                labels=None,
-        
-                colors=colores[:len(valores)],
-        
-                autopct=lambda p: f"{p:.2f}%",
-        
-                startangle=START_ANGLE,
-        
-                # DISTANCIA LABELS
-                labeldistance=1.08,
-        
-                # DISTANCIA PORCENTAJES
-                pctdistance=0.72,
-        
-                textprops={
-                    'fontsize': PORCENTAJE_SIZE
-                }
+                valores, labels=None, colors=colores[:len(valores)],
+                autopct=lambda p: f"{p:.2f}%", startangle=90, labeldistance=1.08, 
+                pctdistance=0.72, textprops={'fontsize': FONT_SIZE_EJES}
             )
-
-            # ===== LABELS MANUALES =====
-
+            
             for i, wedge in enumerate(wedges):
-            
                 angulo = (wedge.theta2 + wedge.theta1) / 2
-            
                 x = np.cos(np.deg2rad(angulo))
                 y = np.sin(np.deg2rad(angulo))
-            
-                ax.text(
-                    x * 1.18,
-                    y * 1.18,
-            
-                    labels[i],
-            
-                    ha='center',
-                    va='center',
-            
-                    fontsize=FONT_PORCENTAJES
-                    
-                )
-        
-            # ===== FORZAR CIRCULO PERFECTO =====
+                ax.text(x * 1.18, y * 1.18, labels[i], ha='center', va='center', fontsize=FONT_SIZE_EJES)
+                
             ax.set_aspect('equal', adjustable='box')
-        
             ruta = ASSETS_DIR / nombre_archivo
-        
-            plt.savefig(
-                ruta,
-                dpi=300,
-        
-                # RECORTAR MARGENES
-                bbox_inches="tight",
-        
-                transparent=True
-            )
-        
+            plt.savefig(ruta, dpi=DPI_ESTANDAR, bbox_inches="tight", transparent=True)
             plt.close()
-        
             return ruta
 
-
-        # ---------------------------------------------------------
-        # PERCEPCION CIUDADANA - PAGINA 3
-        # ---------------------------------------------------------
-        
-        # ---------- GRAFICO 1: HORARIO DELICTIVO ----------
-        tabla_horarios_percepcion_df = df.iloc[335:344, [0,1,2]].copy()
-        tabla_horarios_percepcion_df = tabla_horarios_percepcion_df.dropna(how="all")
-        
-        # Datos grafico
+        # Datos Gráficos Página 3
+        tabla_horarios_percepcion_df = df.iloc[335:344, [0,1,2]].copy().dropna(how="all")
         horarios_labels = tabla_horarios_percepcion_df.iloc[:,0].astype(str).tolist()
         horarios_porcentajes = (
-            tabla_horarios_percepcion_df.iloc[:,1]
-            .astype(str)
-            .str.replace("%","")
-            .str.replace(",",".")
+            tabla_horarios_percepcion_df.iloc[:,1].astype(str).str.replace("%","").str.replace(",","")
         )
-        
         horarios_porcentajes = pd.to_numeric(horarios_porcentajes, errors="coerce").fillna(0)
         
-        # Datos tabla (ignorar columna B)
         tabla_horarios_percepcion = []
-        
         for _, row in tabla_horarios_percepcion_df.iterrows():
-        
             categoria = row.iloc[0]
             frecuencia = row.iloc[2]
-        
             if pd.notna(categoria) and pd.notna(frecuencia):
                 tabla_horarios_percepcion.append([str(categoria), int(frecuencia)])
-        
-        
-        # obtener horario mayor frecuencia
+                
         if not tabla_horarios_percepcion_df.empty:
-
-            frecuencias = pd.to_numeric(
-                tabla_horarios_percepcion_df.iloc[:,2],
-                errors="coerce"
-            ).fillna(0)
-        
+            frecuencias = pd.to_numeric(tabla_horarios_percepcion_df.iloc[:,2], errors="coerce").fillna(0)
             idx_max = frecuencias.idxmax()
-        
             horario_mayor = str(tabla_horarios_percepcion_df.loc[idx_max].iloc[0])
-        
         else:
-        
             horario_mayor = "No disponible"
-        
-        
-        # ---------- GRAFICO 2: ARMAS DELICTIVAS ----------
-        
-        tabla_armas_df = df.iloc[349:357, [0,1,2]].copy()
-        tabla_armas_df = tabla_armas_df.dropna(how="all")
-        
+
+        tabla_armas_df = df.iloc[349:357, [0,1,2]].copy().dropna(how="all")
         armas_labels = tabla_armas_df.iloc[:,0].astype(str).tolist()
-        
-        armas_porcentajes = (
-            tabla_armas_df.iloc[:,1]
-            .astype(str)
-            .str.replace("%","")
-            .str.replace(",",".")
-        )
-        
+        armas_porcentajes = tabla_armas_df.iloc[:,1].astype(str).str.replace("%","").str.replace(",","")
         armas_porcentajes = pd.to_numeric(armas_porcentajes, errors="coerce").fillna(0)
         
         tabla_armas = []
-        
         for _, row in tabla_armas_df.iterrows():
-        
             categoria = row.iloc[0]
             frecuencia = row.iloc[2]
-        
             if pd.notna(categoria) and pd.notna(frecuencia):
                 tabla_armas.append([str(categoria), int(frecuencia)])
-        
-        # metodo mayor frecuencia
-        if not tabla_armas_df.empty:
-        
-            frecuencias_armas = pd.to_numeric(
-                tabla_armas_df.iloc[:,2],
-                errors="coerce"
-            ).fillna(0)
-        
-            idx_max_armas = frecuencias_armas.idxmax()
-        
-            metodo_mas_usado = str(tabla_armas_df.loc[idx_max_armas].iloc[0])
-        
-        else:
-        
-            metodo_mas_usado = "No disponible"
                 
-        
-        # respuestas omitidas
+        if not tabla_armas_df.empty:
+            frecuencias_armas = pd.to_numeric(tabla_armas_df.iloc[:,2], errors="coerce").fillna(0)
+            idx_max_armas = frecuencias_armas.idxmax()
+            metodo_mas_usado = str(tabla_armas_df.loc[idx_max_armas].iloc[0])
+        else:
+            metodo_mas_usado = "No disponible"
+
         omitidas_aportes = ws["G322"].value
+        grafico_horarios_percepcion = generar_grafico_horarios_percepcion(horarios_labels, horarios_porcentajes)
+        grafico_armas_percepcion = generar_grafico_armas_percepcion(armas_labels, armas_porcentajes)
 
-        grafico_horarios_percepcion = generar_grafico_horarios_percepcion(
-            horarios_labels,
-            horarios_porcentajes
-        )
-        
-        grafico_armas_percepcion = generar_grafico_armas_percepcion(
-            armas_labels,
-            armas_porcentajes
-        )
-
-
-        # =====================================================
-        # PERCEPCION SERVICIO POLICIAL - DATOS
-        # =====================================================
-        
-        # ----- GRAFICO 1 (BARRAS) -----
+        # ================= SERVICIO POLICIAL Y COMERCIO =================
         labels_servicio = df.iloc[362:367,0].tolist()
         valores_servicio = (df.iloc[362:367,1].astype(float) * 100).tolist()
-        
-        tabla_servicio = list(zip(
-            df.iloc[362:367,0],
-            df.iloc[362:367,2]
-        ))
-        
-        # ----- GRAFICO 2 (PASTEL GRANDE) -----
+        tabla_servicio = list(zip(df.iloc[362:367,0], df.iloc[362:367,2]))
+
         labels_servicio_anual = df.iloc[372:375,0].tolist()
         valores_servicio_anual = df.iloc[372:375,1].astype(float).tolist()
-        
-        tabla_servicio_anual = list(zip(
-            df.iloc[372:375,0],
-            df.iloc[372:375,2]
-        ))
-        
-        # ----- GRAFICO 3 -----
+        tabla_servicio_anual = list(zip(df.iloc[372:375,0], df.iloc[372:375,2]))
+
         labels_conoce = df.iloc[380:382,0].tolist()
         valores_conoce = df.iloc[380:382,1].astype(float).tolist()
-        
-        tabla_conoce = list(zip(
-            df.iloc[380:382,0],
-            df.iloc[380:382,2]
-        ))
-        
-        # ----- GRAFICO 4 -----
+        tabla_conoce = list(zip(df.iloc[380:382,0], df.iloc[380:382,2]))
+
         labels_conversado = df.iloc[387:389,0].tolist()
         valores_conversado = df.iloc[387:389,1].astype(float).tolist()
-        
-        tabla_conversado = list(zip(
-            df.iloc[387:389,0],
-            df.iloc[387:389,2]
-        ))
-        
-        # ----- OMITIDAS -----
+        tabla_conversado = list(zip(df.iloc[387:389,0], df.iloc[387:389,2]))
+
         omitidas_servicio = int(df.iloc[386,6])
         total_respuestas_servicio = int(df.iloc[382,2])
 
-
-        # ==========================================================
-        # DATOS PERCEPCION SECTOR COMERCIAL
-        # ==========================================================
-        
-        # ----- GRAFICO 1 -----
-        labels_comercio_seguridad = df.iloc[398:400,0].tolist()
-        
-        labels_comercio_seguridad = [
-            label.replace(
-                "Ni seguro ni inseguro",
-                "Ni seguro\nni inseguro"
-            )
-            for label in labels_comercio_seguridad
-        ]
-        
+        # Sector Comercial
+        labels_comercio_seguridad = [lbl.replace("Ni seguro ni inseguro", "Ni seguro\nni inseguro") for lbl in df.iloc[398:400,0].tolist()]
         valores_comercio_seguridad = df.iloc[398:400,1].astype(float).tolist()
-        
         grafico_comercio_seguridad = generar_grafico_pastel_comercio(
-            labels_comercio_seguridad,
-            valores_comercio_seguridad,
-            "grafico_comercio_seguridad.png",
-            ["#5b9bd5", "#a5a5a5"]
+            labels_comercio_seguridad, valores_comercio_seguridad, "grafico_comercio_seguridad.png", PALETA_COMERCIO_1
         )
-        
-        # ----- GRAFICO 2 -----
+
         labels_comercio_programa = df.iloc[405:407,0].tolist()
         valores_comercio_programa = df.iloc[405:407,1].astype(float).tolist()
-        
         grafico_comercio_programa = generar_grafico_pastel_comercio(
-            labels_comercio_programa,
-            valores_comercio_programa,
-            "grafico_comercio_programa.png",
-            ["#4472c4", "#9dc3e6"]
+            labels_comercio_programa, valores_comercio_programa, "grafico_comercio_programa.png", PALETA_COMERCIO_2
         )
-        
-        # ----- GRAFICO 3 -----
-        labels_comercio_inscrito = df.iloc[412:414,0].tolist()
-        # Labels del gráfico
-        labels_comercio_inscrito = (
-            df.iloc[412:414, 0]
-            .astype(str)
-            .str.strip()
-            .tolist()
-        )
-        
-        # Valores originales
+
+        labels_comercio_inscrito = df.iloc[412:414, 0].astype(str).str.strip().tolist()
         serie_comercio = df.iloc[412:414, 1]
-        
-        # Detectar errores #DIV/0!
         if serie_comercio.astype(str).str.contains("#DIV/0!").any():
-        
-            valores_comercio_inscrito = []
-        
-            for label in labels_comercio_inscrito:
-        
-                if label.upper() == "NO":
-                    valores_comercio_inscrito.append(100.0)
-        
-                else:
-                    valores_comercio_inscrito.append(0.0)
-        
+            valores_comercio_inscrito = [100.0 if lbl.upper() == "NO" else 0.0 for lbl in labels_comercio_inscrito]
         else:
-        
-            valores_comercio_inscrito = (
-                pd.to_numeric(
-                    serie_comercio,
-                    errors="coerce"
-                )
-                .fillna(0)
-                .tolist()
-            )
-        
+            valores_comercio_inscrito = pd.to_numeric(serie_comercio, errors="coerce").fillna(0).tolist()
+            
         grafico_comercio_inscrito = generar_grafico_pastel_comercio(
-            labels_comercio_inscrito,
-            valores_comercio_inscrito,
-            "grafico_comercio_inscrito.png",
-            ["#5b9bd5", "#a5a5a5"]
+            labels_comercio_inscrito, valores_comercio_inscrito, "grafico_comercio_inscrito.png", PALETA_COMERCIO_1
         )
-        
-        # ----- GRAFICO 4 -----
+
         labels_comercio_contacto = df.iloc[419:421,0].tolist()
         valores_comercio_contacto = df.iloc[419:421,1].astype(float).tolist()
-        
         grafico_comercio_contacto = generar_grafico_pastel_comercio(
-            labels_comercio_contacto,
-            valores_comercio_contacto,
-            "grafico_comercio_contacto.png",
-            ["#4472c4", "#9dc3e6"]
+            labels_comercio_contacto, valores_comercio_contacto, "grafico_comercio_contacto.png", PALETA_COMERCIO_2
         )
 
-
-        # =====================================================
-        # GRAFICO BARRAS SERVICIO POLICIAL
-        # =====================================================
-        
         def generar_grafico_servicio_policial(labels, valores):
-        
-            import matplotlib.pyplot as plt
-        
-            colores = [
-                "#5b9bd5",
-                "#a5a5a5",
-                "#4472c4",
-                "#255e91",
-                "#636363"
-            ]
-        
-            plt.figure(figsize=(11,6))
-
+            plt.figure(figsize=SIZE_GRAFICO_SERVICIO_POLICIAL)
             ax = plt.gca()
-
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
             ax.spines['left'].set_visible(False)
-            
             ax.set_yticks([])
-
-            ax.tick_params(left=False) #ne se que hace eso
-                    
-            barras = plt.bar(labels,valores,color=colores)
-        
-            for i,v in enumerate(valores):
-                plt.text(i,v+0.01,f"{v:.2f}%",ha="center",fontsize=14)
-        
-            plt.ylim(0,max(valores)*1.05)
-        
+            ax.tick_params(left=False)
+            
+            plt.bar(labels, valores, color=PALETA_SERVICIO)
+            for i, v in enumerate(valores):
+                plt.text(i, v + 0.01, f"{v:.2f}%", ha="center", fontsize=FONT_SIZE_EJES)
+                
+            plt.ylim(0, max(valores) * 1.05)
             ruta = ASSETS_DIR / "grafico_servicio_policial.png"
-        
-            plt.savefig(ruta,dpi=300,bbox_inches="tight")
+            plt.savefig(ruta, dpi=DPI_ESTANDAR, bbox_inches="tight")
             plt.close()
-        
             return ruta
 
-
-        # =====================================================
-        # FUNCION PIE GENERICA
-        # =====================================================
-        
-        def generar_pie_servicio(labels, valores, nombre, texto_size=14):
-
-            import matplotlib.pyplot as plt
-        
-            colores = [
-                "#5b9bd5",
-                "#a5a5a5",
-                "#4472c4",
-                "#255e91",
-                "#636363"
-            ]
-        
-            plt.figure(figsize=(6,6))
-        
+        def generar_pie_servicio(labels, valores, nombre, texto_size=FONT_SIZE_EJES):
+            plt.figure(figsize=SIZE_GRAFICO_PASTEL_PEQUENO)
             plt.pie(
-                valores,
-                labels=None,
-                colors=colores,
-                autopct=lambda p: f"{p:.2f}%",
-                pctdistance=0.7,
-                textprops={'fontsize': texto_size}
+                valores, labels=None, colors=PALETA_SERVICIO,
+                autopct=lambda p: f"{p:.2f}%", pctdistance=0.7, textprops={'fontsize': texto_size}
             )
-        
             plt.axis("equal")
-        
             ruta = ASSETS_DIR / nombre
-        
-            plt.savefig(ruta, dpi=300, bbox_inches="tight")
+            plt.savefig(ruta, dpi=DPI_ESTANDAR, bbox_inches="tight")
             plt.close()
-        
             return ruta
 
+        grafico_servicio_policial = generar_grafico_servicio_policial(labels_servicio, valores_servicio)
+        grafico_servicio_anual = generar_pie_servicio(labels_servicio_anual, valores_servicio_anual, "grafico_servicio_anual.png")
+        grafico_conoce_policia = generar_pie_servicio(labels_conoce, valores_conoce, "grafico_conoce.png", texto_size=FONT_SIZE_TEXTO_DESTACADO)
 
-        #======================================================
-        #Generar graficos p4
-
-        grafico_servicio_policial = generar_grafico_servicio_policial(
-            labels_servicio,
-            valores_servicio
-        )
+        # ================= GRÁFICO ATENCIÓN (BARRAS HORIZONTALES) =================
+        atencion_df = df.iloc[385:392, [0,1,2]].copy().dropna(how="all")
+        atencion_df.columns = ["categoria", "porcentaje", "frecuencia"]
+        atencion_df["porcentaje"] = atencion_df["porcentaje"].astype(str).str.replace("%","").str.replace(",",".")
+        atencion_df["porcentaje"] = pd.to_numeric(atencion_df["porcentaje"], errors="coerce").fillna(0)
         
-        grafico_servicio_anual = generar_pie_servicio(
-            labels_servicio_anual,
-            valores_servicio_anual,
-            "grafico_servicio_anual.png",
-            texto_size=14
-        )
-        
-        grafico_conoce_policia = generar_pie_servicio(
-            labels_conoce,
-            valores_conoce,
-            "grafico_conoce.png",
-            texto_size=22
-        )
-        
-        # =====================================================
-        # NUEVO GRAFICO BARRAS - TIPO DE ATENCION
-        # =====================================================
-
-        atencion_df = df.iloc[385:392, [0,1,2]].copy()
-
-        atencion_df.columns = [
-            "categoria",
-            "porcentaje",
-            "frecuencia"
-        ]
-
-        atencion_df = atencion_df.dropna(how="all")
-
-        atencion_df["porcentaje"] = (
-            atencion_df["porcentaje"]
-            .astype(str)
-            .str.replace("%","")
-            .str.replace(",",".")
-        )
-
-        atencion_df["porcentaje"] = pd.to_numeric(
-            atencion_df["porcentaje"],
-            errors="coerce"
-        ).fillna(0)
-        
-        # Excel almacena porcentajes como 0.2561 aunque muestre 25.61%
         if atencion_df["porcentaje"].max() <= 1:
             atencion_df["porcentaje"] = atencion_df["porcentaje"] * 100
-
-        atencion_df["frecuencia"] = pd.to_numeric(
-            atencion_df["frecuencia"],
-            errors="coerce"
-        ).fillna(0)
-
-        labels_atencion = (
-            atencion_df["categoria"]
-            .astype(str)
-            .tolist()
-        )
-
-        porcentajes_atencion = (
-            atencion_df["porcentaje"]
-            .tolist()
-        )
-
-        frecuencias_atencion = (
-            atencion_df["frecuencia"]
-            .astype(int)
-            .tolist()
-        )
-
-        # =====================================================
-        # TABLA PDF
-        # =====================================================
+            
+        atencion_df["frecuencia"] = pd.to_numeric(atencion_df["frecuencia"], errors="coerce").fillna(0)
+        
+        labels_atencion = atencion_df["categoria"].astype(str).tolist()
+        porcentajes_atencion = atencion_df["porcentaje"].tolist()
+        frecuencias_atencion = atencion_df["frecuencia"].astype(int).tolist()
 
         tabla_atencion = []
-
-        for l, p, f in zip(
-            labels_atencion,
-            porcentajes_atencion,
-            frecuencias_atencion
-        ):
-
-            tabla_atencion.append([
-                l,
-                str(f)
-            ])
-        # =====================================================
-        # GRAFICO BARRAS HORIZONTAL
-        # =====================================================
+        for l, p, f in zip(labels_atencion, porcentajes_atencion, frecuencias_atencion):
+            tabla_atencion.append([l, str(f)])
 
         def generar_grafico_atencion():
-
-            COLOR_BARRAS = "#4472C4"
-            COLOR_TEXTO = "#013051"
-
-            FIG_WIDTH = 8
-            FIG_HEIGHT = 4
-
-            fig, ax = plt.subplots(
-                figsize=(FIG_WIDTH, FIG_HEIGHT)
-            )
-
-            barras = ax.barh(
-                labels_atencion,
-                porcentajes_atencion,
-                color=COLOR_BARRAS
-            )
-
+            fig, ax = plt.subplots(figsize=SIZE_GRAFICO_ATENCION)
+            # Usando un azul de la paleta principal
+            barras = ax.barh(labels_atencion, porcentajes_atencion, color=PALETA_COMPLETA[2])
             ax.set_xlim(0, 100)
-
-            for bar, valor in zip(
-                barras,
-                porcentajes_atencion
-            ):
-
+            
+            for bar, valor in zip(barras, porcentajes_atencion):
                 ax.text(
-                    valor + 1,
-                    bar.get_y() + bar.get_height()/2,
-                    f"{valor:.2f}%",
-                    va="center",
-                    fontsize=FONT_PORCENTAJES,
-                    color=COLOR_TEXTO
+                    valor + 1, bar.get_y() + bar.get_height()/2,
+                    f"{valor:.2f}%", va="center", fontsize=FONT_SIZE_BARRAS_VALORES, color=COLOR_TEXTO
                 )
-
+                
             for spine in ax.spines.values():
                 spine.set_visible(False)
-
-            ax.tick_params(
-                left=False,
-                bottom=False
-            )
-
+            ax.tick_params(left=False, bottom=False)
             plt.tight_layout()
-
             ruta = ASSETS_DIR / "grafico_atencion.png"
-
-            plt.savefig(
-                ruta,
-                dpi=300,
-                bbox_inches="tight",
-                transparent=True
-            )
-
+            plt.savefig(ruta, dpi=DPI_ESTANDAR, bbox_inches="tight", transparent=True)
             plt.close()
-
             return ruta
 
         grafico_atencion = generar_grafico_atencion()
-                
-        
 
-        #______________________________________________________________________________________________________
         # ================= GENERAR PDF =================
         if st.button("HACER INFORME TERRITORIAL"):
             pdf_buffer = generar_pdf(
@@ -2381,19 +1267,17 @@ if archivo:
                 grafico_comercio_programa=grafico_comercio_programa,
                 grafico_comercio_inscrito=grafico_comercio_inscrito,
                 grafico_comercio_contacto=grafico_comercio_contacto,
-             )
-
+            )
+            
             pdf_bytes = pdf_buffer.getvalue()
-
             st.subheader("Informe generado correctamente")
-
             st.download_button(
-                label="⬇️ Descargar PDF",
+                label="Descargar PDF",
                 data=pdf_bytes,
                 file_name="informe.pdf",
                 mime="application/pdf"
             )
-    
+
     except Exception as e:
         import traceback
         st.error("ERROR DETALLADO:")
