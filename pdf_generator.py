@@ -129,7 +129,7 @@ def draw_grafico_relacion(canvas, grafico_path):
     CAJA_WIDTH = 520
     CAJA_HEIGHT = 250
     GRAFICO_X = 60
-    GRAFICO_Y = 125
+    GRAFICO_Y = 110
     GRAFICO_WIDTH = 470
     GRAFICO_HEIGHT = 220
 
