@@ -724,11 +724,18 @@ if archivo:
             else:
                 total_porcentaje = "0.00%"
                 
-            col_lider = columnas_lider[i]
-            lider_estrategico = df.iloc[245, col_lider]
+            # ===== LÍDER ESTRATÉGICO =====
             col_lider = columnas_lider[i]
             lider_estrategico = df.iloc[245, col_lider]
             
+            # ===== CORRESPONSABLE =====
+            # Aquí usamos la nueva variable con el sufijo _idx
+            col_corresponsable = columnas_corresponsable_idx[i]
+            # Aquí CREAMOS la variable corresponsable extrayendo el dato del Excel
+            corresponsable = df.iloc[245, col_corresponsable]
+            
+            # ===== LIMPIEZA DE DATOS =====
+            # Ahora sí podemos limpiar las variables sin que dé error
             corresponsable = str(corresponsable).strip() if pd.notna(corresponsable) else ""
             lider_estrategico = str(lider_estrategico).strip() if pd.notna(lider_estrategico) else ""
             
