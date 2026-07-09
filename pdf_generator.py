@@ -1038,7 +1038,7 @@ def generar_pdf(
             canvas.setFont(FONT_NAME_BOLD, 20)
             canvas.setFillColor(colors.white)
             canvas.drawString(img_x + 150, img_y + img_height - 155, datos_pagina_9.get("lado_izquierdo", ""))
-            canvas.drawString(img_x + img_width - 120, img_y + img_height - 115, datos_pagina_9.get("derecha_superior", ""))
+            canvas.drawString(img_x + img_width - 140, img_y + img_height - 115, datos_pagina_9.get("derecha_superior", ""))
             canvas.drawString(img_x + img_width - 120, img_y + 105, datos_pagina_9.get("derecha_inferior", ""))
             
             x_izq, x_der = 60, A4[0] / 2 + 20
