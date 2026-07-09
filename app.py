@@ -81,6 +81,32 @@ def seguro_int(valor, default=0):
     except:
         return default
 
+
+#=======================estilo===========================
+
+def aplicar_estilo(ax):
+
+    ax.set_facecolor("none")
+
+    ax.grid(
+        axis="y",
+        linestyle="--",
+        linewidth=0.5,
+        alpha=0.25
+    )
+
+    ax.set_axisbelow(True)
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    ax.spines["left"].set_color("#D0D0D0")
+    ax.spines["bottom"].set_color("#D0D0D0")
+
+    ax.tick_params(axis="x", labelsize=10)
+    ax.tick_params(axis="y", labelsize=10)
+
+
 # ================= APP =================
 archivo = st.file_uploader(
     "Aquí suba o arrastre el ENGINE de la Delegación correspondiente",
