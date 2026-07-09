@@ -182,7 +182,7 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
     
     # Parámetros de posición
     pos_x = (page_width / 2) + 10
-    pos_y = page_height - 120  # Ajustado para alinear con el gráfico de edad
+    pos_y = page_height - 140  # Ajustado para alinear con el gráfico de edad
     
     generar_tabla_estilizada(canvas, tabla_edad, "Participación por Edad", pos_x, pos_y, 220, colores)
 
@@ -204,7 +204,7 @@ def draw_tabla_genero(canvas, tabla_genero):
     
     # Parámetros de posición
     pos_x = (page_width / 2) + 10
-    pos_y = page_height - 540  # Ajustado para alinear con el gráfico de género
+    pos_y = page_height - 580  # Ajustado para alinear con el gráfico de género
     
     generar_tabla_estilizada(canvas, tabla_genero, "Participación por Género", pos_x, pos_y, 220, colores)
 
