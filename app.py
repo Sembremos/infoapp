@@ -10,7 +10,15 @@ import numpy as np
 from pdf_generator import P3_PALETA_GRAFICO
 from pdf_generator import generar_pdf
 
+# ================= ESTILO GLOBAL GRAFICOS =================
 
+FONT_TITULO = 13
+FONT_EJES = 10
+FONT_TICKS = 10
+FONT_DATOS = 11
+FONT_PORCENTAJES = 14
+
+DPI_GRAFICOS = 300
 
 # ================= STREAMLIT =================
 st.set_page_config(page_title="Generador de PDF", layout="centered")
@@ -49,7 +57,7 @@ def crear_grafico(labels, values):
     ax.set_ylim(0, 100)
 
     # tamaño de etiqueta eje Y
-    ax.set_ylabel("%", fontsize=18)
+    ax.set_ylabel("%", fontsize=FONT_EJES)
 
     # tamaño etiquetas eje X
     ax.tick_params(axis='x', labelsize=14)
@@ -58,12 +66,12 @@ def crear_grafico(labels, values):
     ax.tick_params(axis='y', labelsize=14)
 
     # opcional: título del gráfico
-    ax.set_title("Relación por distrito", fontsize=18)
+    ax.set_title("Relación por distrito", fontsize=FONT_TITULO)
 
     return fig
 
     for i, v in enumerate(values):
-        ax.text(i, v + 1, f"{v:.0f}%", ha="center", fontsize=9)
+        ax.text(i, v + 1, f"{v:.0f}%", ha="center", fontsize=FONT_PORCENTAJES)
 
     buf = BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight", dpi=200)
@@ -208,7 +216,7 @@ if archivo:
                 f"{porcentaje:.2f}%",
                 ha="center",
                 va="bottom",
-                fontsize=12
+                fontsize=FONT_PORCENTAJES
             )
 
         buf_rel = BytesIO()
@@ -265,7 +273,7 @@ if archivo:
             labeldistance=1.15,  # ⬅️ etiquetas más cerca del círculo
             startangle=90,
             colors=colores,
-            textprops={"fontsize": 20}
+            textprops={"fontsize": FONT_PORCENTAJES}
         )
 
 
@@ -343,7 +351,7 @@ if archivo:
             labeldistance=1.15,
             startangle=90,
             colors=colores_esco,
-            textprops={"fontsize": 20}
+            textprops={"fontsize": FONT_PORCENTAJES}
         )
 
         ax_esco.axis("equal")
@@ -418,7 +426,7 @@ if archivo:
             labeldistance=1.15,
             startangle=90,
             colors=colores_genero,
-            textprops={"fontsize": 20}
+            textprops={"fontsize": FONT_PORCENTAJES}
         )
 
         ax_gen.axis("equal")
@@ -793,7 +801,7 @@ if archivo:
                     f"{int(height)}",
                     ha="center",
                     va="bottom",
-                    fontsize=10,
+                    fontsize=FONT_DATOS,
                     color=COLOR_TEXTO
                 )
         
@@ -955,7 +963,7 @@ if archivo:
                     f"{int(row.frecuencia)}",
                     ha="center",
                     va="bottom",
-                    fontsize=10,
+                    fontsize=FONT_PORCENTAJES,
                     fontweight="bold",
                     color=COLOR_TEXTO
                 )
@@ -973,7 +981,7 @@ if archivo:
                     f"{row.porcentaje * 100:.2f}%",
                     ha="center",
                     va="top",
-                    fontsize=9,
+                    fontsize=FONT_PORCENTAJES,
                     color=COLOR_TEXTO
                 )
         
@@ -1139,7 +1147,7 @@ if archivo:
                 pctdistance=0.62,
             
                 textprops={
-                    "fontsize": 11,
+                    "fontsize": FONT_PORCENTAJES,
                     "fontweight": "bold"
                 }
             )
@@ -1163,7 +1171,7 @@ if archivo:
             
                 bbox_to_anchor=(0.95, 0.5),
             
-                fontsize=10,
+                fontsize=FONT_PORCENTAJES,
             
                 frameon=False
             )
@@ -1232,7 +1240,7 @@ if archivo:
                     f"{height:.2f}%",
                     ha="center",
                     va="bottom",
-                    fontsize=16
+                    fontsize=FONT_PORCENTAJES
                 )
         
             ax.tick_params(axis="x", rotation=45)
@@ -1642,7 +1650,7 @@ if archivo:
                     f"{height:.2f}%",
                     ha="center",
                     va="bottom",
-                    fontsize=20, #fuente etiquetas
+                    fontsize=FONT_PORCENTAJES, #fuente etiquetas
                     color=COLOR_TEXTO
                 )
         
@@ -1786,7 +1794,7 @@ if archivo:
                     ha='center',
                     va='center',
             
-                    fontsize=15
+                    fontsize=FONT_PORCENTAJES
                     
                 )
         
@@ -2255,7 +2263,7 @@ if archivo:
                     bar.get_y() + bar.get_height()/2,
                     f"{valor:.2f}%",
                     va="center",
-                    fontsize=10,
+                    fontsize=FONT_PORCENTAJES,
                     color=COLOR_TEXTO
                 )
 
