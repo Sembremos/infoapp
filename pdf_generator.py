@@ -1,6 +1,8 @@
 import unicodedata
 import re
 import os
+from io import BytesIO
+
 from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
@@ -15,21 +17,57 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_JUSTIFY, TA_CENTER
 from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
-from io import BytesIO
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_LEFT
 
-# ===== ESTILO GLOBAL PARA TABLAS PARETO =====
+# =====================================================================
+# CONFIGURACIÓN GLOBAL ESTÉTICA (COLORES, FUENTES, ESTILOS)
+# =====================================================================
+COLOR_PRIMARIO = colors.HexColor("#30A907")      # Verde Institucional
+COLOR_SECUNDARIO = colors.HexColor("#013051")    # Azul Institucional
+COLOR_HEADER_TABLA = colors.HexColor("#DEEBF7")
+COLOR_FILA_ALTERNA = colors.HexColor("#F2F2F2")
+COLOR_BORDE = colors.HexColor("#A0A0A0")         # Borde gris elegante
+COLOR_TEXTO_OSCURO = colors.HexColor("#222222")
+
+FONT_NAME_BOLD = "Helvetica-Bold"
+FONT_NAME_REGULAR = "Helvetica"
+
+# Paleta exportada para uso en app.py (Página 3 y general)
+P3_PALETA_GRAFICO = [
+    "#5b9bd5", "#a5a5a5", "#4472c4", "#255e91", "#636363",
+    "#264478", "#7cafdd", "#b7b7b7", "#698ed0"
+]
+
+# Estilo global para tablas de Pareto
 pareto_cell_style = ParagraphStyle(
     name="ParetoCell",
-    fontName="Helvetica",
-    fontSize=11,
-    leading=13,
+    fontName=FONT_NAME_REGULAR,
+    fontSize=10,
+    leading=12,
     alignment=TA_LEFT,
     wordWrap="CJK"
 )
 
-# ================= UTILIDAD FULL PAGE =================
+# Estilo base para tablas estandarizadas
+def obtener_estilo_tabla_base(header_bg=COLOR_SECUNDARIO, header_fg=colors.white, body_bg=colors.white):
+    return TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), header_bg),
+        ("TEXTCOLOR", (0, 0), (-1, 0), header_fg),
+        ("FONTNAME", (0, 0), (-1, 0), FONT_NAME_BOLD),
+        ("FONTSIZE", (0, 0), (-1, 0), 11),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("BACKGROUND", (0, 1), (-1, -1), body_bg),
+        ("FONTNAME", (0, 1), (-1, -1), FONT_NAME_REGULAR),
+        ("FONTSIZE", (0, 1), (-1, -1), 10),
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+    ])
+
+
+# ================= UTILIDADES DE RENDERIZADO =================
 def FullImage(path):
     def draw(canvas, doc):
         w, h = A4
@@ -44,678 +82,235 @@ def FullImage(path):
         )
     return draw
 
-
-# ================= HEADER / FOOTER =================
 def header_footer(canvas, doc):
     page_width, page_height = A4
-
-    canvas.drawImage(
-        "assets/header.png",
-        0,
-        page_height - 80,
-        width=page_width,
-        height=60,
-        mask="auto"
-    )
-
-    canvas.drawImage(
-        "assets/footer.png",
-        0,
-        0,
-        width=page_width,
-        height=60,
-        mask="auto"
-    )
+    if os.path.exists("assets/header.png"):
+        canvas.drawImage("assets/header.png", 0, page_height - 80, width=page_width, height=60, mask="auto")
+    if os.path.exists("assets/footer.png"):
+        canvas.drawImage("assets/footer.png", 0, 0, width=page_width, height=60, mask="auto")
 
 
-# ================= GRAFICO DE EDAD =================
+# ================= DIBUJO DE GRÁFICOS Y TABLAS (PÁGINA 6) =================
 def draw_grafico_edad(canvas, doc, grafico_edad_path):
     page_width, page_height = A4
-
     img_width = 220
     img = ImageReader(grafico_edad_path)
     img_w, img_h = img.getSize()
     img_height = img_width * img_h / img_w
-
     x = 40
     y = page_height - img_height - 120
+    canvas.drawImage(grafico_edad_path, x, y, width=img_width, height=img_height, preserveAspectRatio=True, mask="auto")
 
-    canvas.drawImage(
-        grafico_edad_path,
-        x,
-        y,
-        width=img_width,
-        height=img_height,
-        preserveAspectRatio=True,
-        mask="auto"
-    )
-
-
-# ================= GRAFICO ESCOLARIDAD =================
 def draw_grafico_escolaridad(canvas, grafico_path):
     page_width, page_height = A4
-
     img_width = 220
     img = ImageReader(grafico_path)
     img_w, img_h = img.getSize()
     img_height = img_width * img_h / img_w
-
     x = page_width / 2 + 10
     y = page_height - img_height - 320
+    canvas.drawImage(grafico_path, x, y, width=img_width, height=img_height, preserveAspectRatio=True, mask="auto")
 
-    canvas.drawImage(
-        grafico_path,
-        x,
-        y,
-        width=img_width,
-        height=img_height,
-        preserveAspectRatio=True,
-        mask="auto"
-    )
-
-
-# ================= GRAFICO GENERO =================
 def draw_grafico_genero(canvas, grafico_path):
     page_width, page_height = A4
-
     img_width = 220
     img = ImageReader(grafico_path)
     img_w, img_h = img.getSize()
     img_height = img_width * img_h / img_w
-
     x = 40
     y = page_height - img_height - 540
-
-    canvas.drawImage(
-        grafico_path,
-        x,
-        y,
-        width=img_width,
-        height=img_height,
-        preserveAspectRatio=True,
-        mask="auto"
-    )
-
-# ================= GRAFICO RELACION DISTRITO =================
+    canvas.drawImage(grafico_path, x, y, width=img_width, height=img_height, preserveAspectRatio=True, mask="auto")
 
 def draw_grafico_relacion(canvas, grafico_path):
-
-    page_width, page_height = A4
-
-    # =========================
-    # CONFIGURABLES
-    # =========================
-
     TITULO_X = 40
     TITULO_Y = 380
-
     CAJA_X = 35
     CAJA_Y = 110
-
     CAJA_WIDTH = 520
     CAJA_HEIGHT = 250
-
     GRAFICO_X = 60
     GRAFICO_Y = 125
-
     GRAFICO_WIDTH = 470
     GRAFICO_HEIGHT = 220
 
-    # =========================
-    # TITULO
-    # =========================
-
-    canvas.setFont("Helvetica-Bold", 16)
-    canvas.setFillColor(colors.HexColor("#013051"))
-
-    canvas.drawString(
-        TITULO_X,
-        TITULO_Y,
-        "Relación por distrito"
-    )
-
-    # =========================
-    # FONDO
-    # =========================
+    canvas.setFont(FONT_NAME_BOLD, 16)
+    canvas.setFillColor(COLOR_SECUNDARIO)
+    canvas.drawString(TITULO_X, TITULO_Y, "Relación por distrito")
 
     canvas.setFillColor(colors.HexColor("#F7F9FC"))
+    canvas.roundRect(CAJA_X, CAJA_Y, CAJA_WIDTH, CAJA_HEIGHT, 12, stroke=0, fill=1)
+    canvas.drawImage(grafico_path, GRAFICO_X, GRAFICO_Y, width=GRAFICO_WIDTH, height=GRAFICO_HEIGHT, preserveAspectRatio=True, mask="auto")
 
-    canvas.roundRect(
-        CAJA_X,
-        CAJA_Y,
-        CAJA_WIDTH,
-        CAJA_HEIGHT,
-        12,
-        stroke=0,
-        fill=1
-    )
 
-    # =========================
-    # GRAFICO
-    # =========================
+# ================= FUNCIONES DE TABLAS ESTANDARIZADAS =================
+def generar_tabla_estilizada(canvas, data, titulo, x, y, table_width, colores_filas):
+    font_size_header = 11
+    font_size_body = 10
+    
+    table_data = [[titulo, ""]]
+    table_data.extend(data)
+    
+    table = Table(table_data, colWidths=[table_width * 0.6, table_width * 0.4])
+    
+    estilo = TableStyle([
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), COLOR_HEADER_TABLA),
+        ("TEXTCOLOR", (0, 0), (-1, 0), COLOR_TEXTO_OSCURO),
+        ("FONTNAME", (0, 0), (-1, 0), FONT_NAME_BOLD),
+        ("FONTSIZE", (0, 0), (-1, 0), font_size_header),
+        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("FONTSIZE", (0, 1), (-1, -1), font_size_body),
+        ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+    ])
+    
+    for i, color in enumerate(colores_filas, start=1):
+        if i < len(table_data):
+            estilo.add("BACKGROUND", (0, i), (-1, i), color)
+            estilo.add("TEXTCOLOR", (0, i), (-1, i), colors.white)
+            
+    table.setStyle(estilo)
+    table.wrapOn(canvas, table_width, 200)
+    table.drawOn(canvas, x, y - table._height)
 
-    canvas.drawImage(
-        grafico_path,
-        GRAFICO_X,
-        GRAFICO_Y,
-        width=GRAFICO_WIDTH,
-        height=GRAFICO_HEIGHT,
-        preserveAspectRatio=True,
-        mask="auto"
-    )
-
-# ================= TABLA EDAD =================
 def draw_tabla_edad(canvas, doc, tabla_edad):
     page_width, page_height = A4
+    colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4", "#255E91", "#B7B7B7"]]
+    generar_tabla_estilizada(canvas, tabla_edad, "Participación por Edad", page_width / 2 + 10, page_height - 60 - 200, 220, colores)
 
-    TABLE_WIDTH = 220
-    FONT_SIZE_HEADER = 12
-    FONT_SIZE_BODY = 11
-    X = page_width / 2 + 10
-    Y = page_height - 60
-
-    data = [["Participación por Edad", ""]]
-    data.extend(tabla_edad)
-
-    table = Table(
-        data,
-        colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
-    )
-
-    table.setStyle(TableStyle([
-        ("SPAN", (0, 0), (0, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor(0x000000)),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
-        ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
-        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
-        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
-    ]))
-
-    colores_filas = [
-        colors.HexColor("#5B9BD5"),
-        colors.HexColor("#A5A5A5"),
-        colors.HexColor("#4472C4"),
-        colors.HexColor("#255E91"),
-        colors.HexColor("#B7B7B7")
-    ]
-
-    for i, color in enumerate(colores_filas, start=1):
-        table.setStyle([
-            ("BACKGROUND", (0, i), (-1, i), color),
-            ("TEXTCOLOR", (0, i), (-1, i), colors.white)
-        ])
-
-    table.wrapOn(canvas, TABLE_WIDTH, 200)
-    table.drawOn(canvas, X, Y - 200)
-
-
-# ================= TABLA ESCOLARIDAD =================
 def draw_tabla_escolaridad(canvas, tabla_escolaridad):
     page_width, page_height = A4
+    colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4", "#255E91", "#B7B7B7", "#9DC3E6", "#8FAADC", "#D9E1F2"]]
+    generar_tabla_estilizada(canvas, tabla_escolaridad, "Participación por Escolaridad", 20, page_height - 320 - 200, 220, colores)
 
-    TABLE_WIDTH = 220
-    FONT_SIZE_HEADER = 12
-    FONT_SIZE_BODY = 11
-
-    x = 20
-    y = page_height - 320
-
-    data = [["Participación por Escolaridad", ""]]
-    data.extend(tabla_escolaridad)
-
-    table = Table(
-        data,
-        colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
-    )
-
-    table.setStyle(TableStyle([
-        ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
-        ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
-        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
-        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
-    ]))
-
-    colores_filas = [
-        colors.HexColor("#5B9BD5"),
-        colors.HexColor("#A5A5A5"),
-        colors.HexColor("#4472C4"),
-        colors.HexColor("#255E91"),
-        colors.HexColor("#B7B7B7"),
-        colors.HexColor("#9DC3E6"),
-        colors.HexColor("#8FAADC"),
-        colors.HexColor("#D9E1F2")
-    ]
-
-    for i, color in enumerate(colores_filas, start=1):
-        table.setStyle([
-            ("BACKGROUND", (0, i), (-1, i), color),
-            ("TEXTCOLOR", (0, i), (-1, i), colors.white)
-        ])
-
-    table.wrapOn(canvas, TABLE_WIDTH, 200)
-    table.drawOn(canvas, x, y - 200)
-
-
-# ================= TABLA GENERO =================
 def draw_tabla_genero(canvas, tabla_genero):
     page_width, page_height = A4
-
-    TABLE_WIDTH = 220
-    FONT_SIZE_HEADER = 12
-    FONT_SIZE_BODY = 11
-
-    x = page_width / 2 + 10
-    y = page_height - 510
-
-    data = [["Participación por Género", ""]]
-    data.extend(tabla_genero)
-
-    table = Table(
-        data,
-        colWidths=[TABLE_WIDTH * 0.6, TABLE_WIDTH * 0.4]
-    )
-
-    table.setStyle(TableStyle([
-        ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DEEBF7")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, 0), FONT_SIZE_HEADER),
-        ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
-        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("FONTSIZE", (0, 1), (-1, -1), FONT_SIZE_BODY),
-        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#FFFFFF")),
-    ]))
-
-    colores_filas = [
-        colors.HexColor("#5B9BD5"),
-        colors.HexColor("#A5A5A5"),
-        colors.HexColor("#4472C4")
-    ]
-
-    for i, color in enumerate(colores_filas, start=1):
-        table.setStyle([
-            ("BACKGROUND", (0, i), (-1, i), color),
-            ("TEXTCOLOR", (0, i), (-1, i), colors.white)
-        ])
-
-    table.wrapOn(canvas, TABLE_WIDTH, 200)
-    table.drawOn(canvas, x, y - 200)
+    colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4"]]
+    generar_tabla_estilizada(canvas, tabla_genero, "Participación por Género", page_width / 2 + 10, page_height - 510 - 200, 220, colores)
 
 
-#-------------*-*-*-*-*-*-*-*-*-*-Tablas de encuestas
-def draw_tabla_simple(
-    canvas,
-    data,
-    titulo,
-    x,
-    y,
-    col_widths,
-    header_color=colors.HexColor("#013051"),
-    body_color=colors.white,
-    border_color=colors.black,
-    font_size_header=12,
-    font_size_body=12
-):
-
-    from reportlab.platypus import Table, TableStyle, Paragraph
-    from reportlab.lib.styles import ParagraphStyle
-
+def draw_tabla_simple(canvas, data, titulo, x, y, col_widths, header_color=COLOR_SECUNDARIO, font_size_header=11, font_size_body=10):
     TABLE_WIDTH = sum(col_widths)
-
-    header_style = ParagraphStyle(
-        name="HeaderSimple",
-        fontName="Helvetica-Bold",
-        fontSize=font_size_header,
-        textColor=colors.white
-    )
-
-    cell_style = ParagraphStyle(
-        name="CellSimple",
-        fontName="Helvetica",
-        fontSize=font_size_body
-    )
-
+    header_style = ParagraphStyle(name="HeaderSimple", fontName=FONT_NAME_BOLD, fontSize=font_size_header, textColor=colors.white)
+    cell_style = ParagraphStyle(name="CellSimple", fontName=FONT_NAME_REGULAR, fontSize=font_size_body)
+    
     table_data = []
-
-    # titulo
-    table_data.append(
-        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
-    )
-
-    # contenido
+    table_data.append([Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1))
+    
     for row in data:
-        nueva_fila = []
-        for cell in row:
-            nueva_fila.append(Paragraph(str(cell), cell_style))
+        nueva_fila = [Paragraph(str(cell), cell_style) for cell in row]
         table_data.append(nueva_fila)
-
+        
     tabla = Table(table_data, colWidths=col_widths)
-
     tabla.setStyle(TableStyle([
-
-        ("SPAN",(0,0),(-1,0)),
-        ("BACKGROUND",(0,0),(-1,0),header_color),
-
-        ("GRID",(0,0),(-1,-1),0.5,border_color),
-
-        ("BACKGROUND",(0,1),(-1,-1),body_color),
-
-        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
-
-        ("LEFTPADDING",(0,0),(-1,-1),6),
-        ("RIGHTPADDING",(0,0),(-1,-1),6),
-        ("TOPPADDING",(0,0),(-1,-1),4),
-        ("BOTTOMPADDING",(0,0),(-1,-1),4),
-    ]))
-
-    tabla.wrapOn(canvas, TABLE_WIDTH, 400)
-    tabla.drawOn(canvas, x, y - tabla._height)
-
-    #tabla, pagina 2 final################################################
-
-def draw_tabla_victimizacion(
-    canvas,
-    data,
-    titulo,
-    x,
-    y,
-    col_widths,
-    header_color
-):
-
-    from reportlab.platypus import Table, TableStyle, Paragraph
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_LEFT
-    from reportlab.lib import colors
-
-    FONT_SIZE_HEADER = 10
-    FONT_SIZE_BODY = 9
-
-    TABLE_WIDTH = sum(col_widths)
-
-    # ===== ESTILOS =====
-    header_style = ParagraphStyle(
-        name="HeaderVict",
-        fontName="Helvetica-Bold",
-        fontSize=FONT_SIZE_HEADER,
-        alignment=TA_LEFT,
-        textColor=colors.white
-    )
-
-    cell_style = ParagraphStyle(
-        name="CellVict",
-        fontName="Helvetica",
-        fontSize=FONT_SIZE_BODY,
-        leading=FONT_SIZE_BODY + 3,
-        alignment=TA_LEFT,
-        wordWrap="CJK"
-    )
-
-    # ===== CONSTRUIR TABLA =====
-    table_data = []
-
-    # Título combinado
-    table_data.append(
-        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
-    )
-
-    # Encabezado real + cuerpo
-    for row in data:
-        nueva_fila = []
-        for cell in row:
-            nueva_fila.append(Paragraph(str(cell), cell_style))
-        table_data.append(nueva_fila)
-
-    tabla = Table(table_data, colWidths=col_widths)
-
-    tabla.setStyle(TableStyle([
-
-        # Combinar título
         ("SPAN", (0, 0), (-1, 0)),
         ("BACKGROUND", (0, 0), (-1, 0), header_color),
-
-        # Grid
-        ("GRID", (0, 0), (-1, -1), 0.6, colors.black),
-
-        # Padding
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+        ("BACKGROUND", (0, 1), (-1, -1), colors.white),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("LEFTPADDING", (0, 0), (-1, -1), 6),
         ("RIGHTPADDING", (0, 0), (-1, -1), 6),
         ("TOPPADDING", (0, 0), (-1, -1), 5),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-
-        # Alineación vertical
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
     ]))
-
+    
     tabla.wrapOn(canvas, TABLE_WIDTH, 400)
     tabla.drawOn(canvas, x, y - tabla._height)
 
-#=========================================Tabla Pareto==================
 
-def draw_tabla_pareto(
-    canvas,
-    titulo,
-    data,
-    x,
-    y,
-    table_width=180,
-    table_height_max=280,   # 👈 NUEVO
-    font_title="Helvetica-Bold",
-    font_size_title=14,
-    header_color=colors.HexColor("#4471C4"),
-    body_color=colors.white,
-    text_color=colors.black
-):
+def draw_tabla_victimizacion(canvas, data, titulo, x, y, col_widths, header_color):
+    TABLE_WIDTH = sum(col_widths)
+    header_style = ParagraphStyle(name="HeaderVict", fontName=FONT_NAME_BOLD, fontSize=10, alignment=TA_LEFT, textColor=colors.white)
+    cell_style = ParagraphStyle(name="CellVict", fontName=FONT_NAME_REGULAR, fontSize=9, leading=11, alignment=TA_LEFT, wordWrap="CJK")
+    
+    table_data = []
+    table_data.append([Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1))
+    for row in data:
+        table_data.append([Paragraph(str(cell), cell_style) for cell in row])
+        
+    tabla = Table(table_data, colWidths=col_widths)
+    tabla.setStyle(TableStyle([
+        ("SPAN", (0, 0), (-1, 0)),
+        ("BACKGROUND", (0, 0), (-1, 0), header_color),
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+    ]))
+    tabla.wrapOn(canvas, TABLE_WIDTH, 400)
+    tabla.drawOn(canvas, x, y - tabla._height)
 
-    from reportlab.platypus import Paragraph
-    from reportlab.lib.styles import ParagraphStyle
 
-    # ==================================================
-    # AJUSTE DINAMICO SEGUN CANTIDAD DE FILAS
-    # ==================================================
-
+def draw_tabla_pareto(canvas, titulo, data, x, y, table_width=180, table_height_max=280, font_title=FONT_NAME_BOLD, font_size_title=13, header_color=COLOR_SECUNDARIO, body_color=colors.white, text_color=colors.black):
     total_filas = len(data)
-
-    # ===== CONFIGURACION DINAMICA =====
-
+    
     if total_filas <= 10:
-    
-        font_size = 11
-        leading = 15
-        top_padding = 5
-        bottom_padding = 5
-    
+        font_size, leading, pad = 11, 14, 5
     elif total_filas <= 15:
-    
-        font_size = 10
-        leading = 13
-        top_padding = 4
-        bottom_padding = 4
-    
+        font_size, leading, pad = 10, 12, 4
     elif total_filas <= 20:
-    
-        font_size = 9
-        leading = 12
-        top_padding = 3
-        bottom_padding = 3
-    
+        font_size, leading, pad = 9, 11, 3
     else:
+        font_size, leading, pad = 8, 10, 2
+        
+    dynamic_style = ParagraphStyle(name="ParetoDynamic", fontName=FONT_NAME_REGULAR, fontSize=font_size, leading=leading, alignment=TA_LEFT, wordWrap="CJK")
     
-        font_size = 8
-        leading = 11
-        top_padding = 2
-        bottom_padding = 2
-
-    # ==================================================
-    # ESTILO CELDAS
-    # ==================================================
-
-    dynamic_style = ParagraphStyle(
-        name="ParetoDynamic",
-        fontName="Helvetica",
-        fontSize=font_size,
-        leading=leading,
-        alignment=TA_LEFT,
-        wordWrap="CJK"
-    )
-
-    # ==================================================
-    # FONDO TITULO
-    # ==================================================
-
+    # Fondo y Título
     canvas.setFillColor(header_color)
-
-    canvas.rect(
-        x,
-        y + 8,
-        table_width,
-        24,
-        stroke=0,
-        fill=1
-    )
-
-    # ==================================================
-    # TEXTO TITULO
-    # ==================================================
-
+    canvas.rect(x, y + 8, table_width, 24, stroke=0, fill=1)
     canvas.setFont(font_title, font_size_title)
     canvas.setFillColor(text_color)
-
-    canvas.drawCentredString(
-        x + table_width / 2,
-        y + 14,
-        titulo
-    )
-
-    # ==================================================
-    # CONSTRUIR TABLA
-    # ==================================================
-
-    wrapped_data = [
-        [Paragraph(str(row[0]), dynamic_style)]
-        for row in data
-    ]
-
-    table = Table(
-        wrapped_data,
-        colWidths=[table_width],
-        rowHeights=None
-    )
-
-    table.setStyle(TableStyle([
-
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
-
-        ("BACKGROUND", (0, 0), (-1, -1), body_color),
-
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-
-        ("LEFTPADDING", (0, 0), (-1, -1), 4),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-
-        ("TOPPADDING", (0, 0), (-1, -1), top_padding),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), bottom_padding),
-
-    ]))
-
-    # ==================================================
-    # WRAP
-    # ==================================================
-
-    table.wrapOn(canvas, table_width, table_height_max)
-
-   # ==================================================
-    # DIBUJAR TABLA NORMAL
-    # ==================================================
+    canvas.drawCentredString(x + table_width / 2, y + 14, titulo)
     
-    table.drawOn(
-        canvas,
-        x,
-        y - table._height
-    )
+    # Tabla
+    wrapped_data = [[Paragraph(str(row[0]), dynamic_style)] for row in data]
+    table = Table(wrapped_data, colWidths=[table_width], rowHeights=None)
+    table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+        ("BACKGROUND", (0, 0), (-1, -1), body_color),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 5),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+        ("TOPPADDING", (0, 0), (-1, -1), pad),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), pad),
+    ]))
+    table.wrapOn(canvas, table_width, table_height_max)
+    table.drawOn(canvas, x, y - table._height)
 
 
-def draw_porcentaje(
-    canvas,
-    texto,
-    x,
-    y,
-    font="Helvetica-Bold",
-    size=18,
-    color=colors.black
-):
+def draw_porcentaje(canvas, texto, x, y, font=FONT_NAME_BOLD, size=18, color=colors.black):
     canvas.setFont(font, size)
     canvas.setFillColor(color)
     canvas.drawCentredString(x, y, texto)
 
-def draw_cantidad(
-    canvas,
-    texto,
-    x,
-    y,
-    font="Helvetica-Bold",
-    size=14,
-    color=colors.black
-):
+def draw_cantidad(canvas, texto, x, y, font=FONT_NAME_BOLD, size=14, color=colors.black):
     canvas.setFont(font, size)
     canvas.setFillColor(color)
     canvas.drawCentredString(x, y, texto)
 
-##=============MIC-MAC_________________________
 
-def draw_micmac_lista(
-    canvas,
-    data,
-    x,
-    y,
-    width=200,
-    max_height=180,
-    font_size=8
-):
-    style = ParagraphStyle(
-        name="MicmacCell",
-        fontName="Helvetica",
-        fontSize=font_size,
-        leading=9,
-        alignment=TA_LEFT,
-        wordWrap="CJK"
-    )
-
-    # Convertir a Paragraph y dividir en 2 columnas
+# ================= MICMAC Y TRIÁNGULO =================
+def draw_micmac_lista(canvas, data, x, y, width=200, max_height=180, font_size=8):
+    style = ParagraphStyle(name="MicmacCell", fontName=FONT_NAME_REGULAR, fontSize=font_size, leading=10, alignment=TA_LEFT, wordWrap="CJK")
     paragraphs = [Paragraph(item[0], style) for item in data]
-
     cols = [[], []]
     for i, p in enumerate(paragraphs):
         cols[i % 2].append(p)
-
+        
     max_rows = max(len(cols[0]), len(cols[1]))
     table_data = []
-
     for i in range(max_rows):
         row = [
             cols[0][i] if i < len(cols[0]) else "",
             cols[1][i] if i < len(cols[1]) else ""
         ]
         table_data.append(row)
-
-    table = Table(
-        table_data,
-        colWidths=[width / 2, width / 2],
-        rowHeights=None
-    )
-
+        
+    table = Table(table_data, colWidths=[width / 2, width / 2], rowHeights=None)
     table.setStyle(TableStyle([
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("LEFTPADDING", (0, 0), (-1, -1), 4),
@@ -723,37 +318,16 @@ def draw_micmac_lista(
         ("TOPPADDING", (0, 0), (-1, -1), 2),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
     ]))
-
     table.wrapOn(canvas, width, max_height)
     table.drawOn(canvas, x, y - table._height)
 
-#==================MICMAC2=========================
-
-def draw_tabla_overlay(
-    canvas,
-    data,
-    x,
-    y,
-    width=120,
-    font_size=8,
-    max_height=160
-):
-    style = ParagraphStyle(
-        name="OverlayCell",
-        fontName="Helvetica",
-        fontSize=font_size,
-        leading=font_size + 2,
-        alignment=TA_LEFT,
-        wordWrap="CJK"
-    )
-
+def draw_tabla_overlay(canvas, data, x, y, width=120, font_size=8, max_height=160):
+    style = ParagraphStyle(name="OverlayCell", fontName=FONT_NAME_REGULAR, fontSize=font_size, leading=font_size + 2, alignment=TA_LEFT, wordWrap="CJK")
     table_data = [[Paragraph(row[0], style)] for row in data]
-
     if not table_data:
         return
-
+        
     table = Table(table_data, colWidths=[width])
-
     table.setStyle(TableStyle([
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("LEFTPADDING", (0, 0), (-1, -1), 4),
@@ -761,47 +335,16 @@ def draw_tabla_overlay(
         ("TOPPADDING", (0, 0), (-1, -1), 2),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
     ]))
-
     table.wrapOn(canvas, width, max_height)
     table.drawOn(canvas, x, y - table._height)
 
-#_____texto______________________
-    
-def draw_texto_overlay(
-    canvas,
-    texto,
-    x,
-    y,
-    font="Helvetica-Bold",
-    size=20,
-    color=colors.white
-):
+def draw_texto_overlay(canvas, texto, x, y, font=FONT_NAME_BOLD, size=20, color=colors.white):
     canvas.setFont(font, size)
     canvas.setFillColor(color)
     canvas.drawCentredString(x, y, str(texto))
 
-#_______________________Triangulo de violes-----------------------
-
-def draw_texto_mixto(
-    canvas,
-    x,
-    y,
-    texto_antes,
-    valor_1,
-    texto_medio,
-    valor_2,
-    texto_despues,
-    width=250,
-    font_size=11,
-    valor_size=15
-):
-    normal = ParagraphStyle(
-        "normal",
-        fontName="Helvetica",
-        fontSize=font_size,
-        alignment=TA_JUSTIFY
-    )
-
+def draw_texto_mixto(canvas, x, y, texto_antes, valor_1, texto_medio, valor_2, texto_despues, width=250, font_size=11, valor_size=15):
+    normal = ParagraphStyle("normal", fontName=FONT_NAME_REGULAR, fontSize=font_size, leading=14, alignment=TA_JUSTIFY)
     html = (
         f"{texto_antes} "
         f"<b><font size='{valor_size}'>{valor_1}</font></b> "
@@ -809,201 +352,78 @@ def draw_texto_mixto(
         f"<b><font size='{valor_size}'>{valor_2}</font></b> "
         f"{texto_despues}"
     )
-
     p = Paragraph(html, normal)
     p.wrapOn(canvas, width, 200)
     p.drawOn(canvas, x, y)
 
-#_________________________________TABLA DE INSTIS_____________________________________
-
-
-def draw_tabla_instituciones(
-    canvas,
-    data,
-    titulo="Lista de Instituciones",
-    x=60,
-    y=250,
-    table_width=480,
-    header_bg=colors.HexColor("#013051"),
-    header_text_color=colors.white,
-    body_bg=colors.whitesmoke,
-    border_color=colors.black,
-    font_header=12,
-    font_body=10
-):
+def draw_tabla_instituciones(canvas, data, titulo="Lista de Instituciones", x=60, y=250, table_width=480, header_bg=COLOR_SECUNDARIO, header_text_color=colors.white, body_bg=COLOR_FILA_ALTERNA, border_color=COLOR_BORDE, font_header=12, font_body=10):
     if not data:
         return
-
-    # Construir encabezado
     table_data = [[titulo, ""]]
     table_data.extend(data)
-
     col_widths = [table_width * 0.6, table_width * 0.4]
-
+    
     table = Table(table_data, colWidths=col_widths)
-
     table.setStyle(TableStyle([
         ("SPAN", (0, 0), (-1, 0)),
         ("BACKGROUND", (0, 0), (-1, 0), header_bg),
         ("TEXTCOLOR", (0, 0), (-1, 0), header_text_color),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTNAME", (0, 0), (-1, 0), FONT_NAME_BOLD),
         ("FONTSIZE", (0, 0), (-1, 0), font_header),
-
         ("GRID", (0, 1), (-1, -1), 0.5, border_color),
         ("BACKGROUND", (0, 1), (-1, -1), body_bg),
-        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("FONTNAME", (0, 1), (-1, -1), FONT_NAME_REGULAR),
         ("FONTSIZE", (0, 1), (-1, -1), font_body),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
     ]))
-
     table.wrapOn(canvas, table_width, 300)
     table.drawOn(canvas, x, y - table._height)
 
-#====================TABLA DE HORARIOS PAGINA 13===================
 
-def draw_tabla_horario_distrito(
-    canvas,
-    data,
-    titulo,
-    x,
-    y,
-    col_widths
-):
-
-    from reportlab.platypus import Paragraph
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER
-
+# ================= TABLAS DE HORARIOS Y MODALIDADES =================
+def draw_tabla_horario_distrito(canvas, data, titulo, x, y, col_widths):
     TABLE_WIDTH = sum(col_widths)
-
-    header_style = ParagraphStyle(
-        name="HorarioHeader",
-        fontName="Helvetica-Bold",
-        fontSize=9,
-        alignment=TA_CENTER,
-        leading=11
-    )
-
-    cell_style = ParagraphStyle(
-        name="HorarioCell",
-        fontName="Helvetica",
-        fontSize=8,
-        alignment=TA_CENTER,
-        leading=9,
-        wordWrap="CJK"
-    )
-
+    header_style = ParagraphStyle(name="HorarioHeader", fontName=FONT_NAME_BOLD, fontSize=9, alignment=TA_CENTER, leading=11)
+    cell_style = ParagraphStyle(name="HorarioCell", fontName=FONT_NAME_REGULAR, fontSize=8, alignment=TA_CENTER, leading=10, wordWrap="CJK")
+    
     table_data = []
-
-    # Título
-    table_data.append(
-        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
-    )
-
-    # Encabezados + datos
+    table_data.append([Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1))
+    
     for row in data:
-        nueva_fila = []
-        for cell in row:
-            nueva_fila.append(Paragraph(str(cell), cell_style))
-        table_data.append(nueva_fila)
-
+        table_data.append([Paragraph(str(cell), cell_style) for cell in row])
+        
     table = Table(table_data, colWidths=col_widths)
-
-    style = [
+    table.setStyle(TableStyle([
         ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#30a907")),
+        ("BACKGROUND", (0, 0), (-1, 0), COLOR_PRIMARIO),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-
-        # Encabezado real
         ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#E2F0D9")),
-        ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold"),
-
-        # Bordes
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
-
-        # Centrado
+        ("FONTNAME", (0, 1), (-1, 1), FONT_NAME_BOLD),
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-
-        # Compactar altura
-        ("TOPPADDING", (0, 0), (-1, -1), 1),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
-        ("LEFTPADDING", (0, 0), (-1, -1), 1),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 1),
-    ]
-
-    table.setStyle(TableStyle(style))
-
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("LEFTPADDING", (0, 0), (-1, -1), 2),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 2),
+    ]))
     table.wrapOn(canvas, TABLE_WIDTH, 2000)
     table.drawOn(canvas, x, y - table._height)
 
-#=======================TABLA PAGINA 14============
+def draw_tabla_modalidades_p14(canvas, data, titulo, x, y, col_widths):
+    TABLE_WIDTH = sum(col_widths)
+    header_style = ParagraphStyle(name="HeaderStyleP14", fontName=FONT_NAME_BOLD, fontSize=8, alignment=TA_CENTER, leading=10)
+    distrito_style = ParagraphStyle(name="DistritoStyleP14", fontName=FONT_NAME_BOLD, fontSize=8, alignment=TA_LEFT, leading=9)
+    cell_style = ParagraphStyle(name="CellStyleP14", fontName=FONT_NAME_REGULAR, fontSize=8, alignment=TA_CENTER, leading=9, wordWrap="CJK")
     
-def draw_tabla_modalidades_p14(
-    canvas,
-    data,
-    titulo,
-    x,
-    y,
-    col_widths
-):
-
-    from reportlab.platypus import Paragraph
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT
-
-    TABLE_WIDTH = sum(col_widths)
-
-    # ===== VARIABLES EDITABLES =====
-    COLOR_TITULO = colors.HexColor("#30a907")
-    COLOR_HEADER = colors.HexColor("#E2Fdd9")
-    COLOR_BODY = colors.white
-    COLOR_BORDER = colors.black
-
-    FONT_HEADER = 8
-    FONT_BODY = 8
-
-    # ===============================
-
-    header_style = ParagraphStyle(
-        name="HeaderStyleP14",
-        fontName="Helvetica-Bold",
-        fontSize=FONT_HEADER,
-        alignment=TA_CENTER,
-        leading=10
-    )
-
-    distrito_style = ParagraphStyle(
-        name="DistritoStyleP14",
-        fontName="Helvetica-Bold",
-        fontSize=FONT_BODY,
-        alignment=TA_LEFT,
-        leading=9
-    )
-
-    cell_style = ParagraphStyle(
-        name="CellStyleP14",
-        fontName="Helvetica",
-        fontSize=FONT_BODY,
-        alignment=TA_CENTER,
-        leading=9,
-        wordWrap="CJK"
-    )
-
     table_data = []
-
-    # Título
-    table_data.append(
-        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
-    )
-
-    # Encabezados
-    header_row = []
-    for cell in data[0]:
-        header_row.append(Paragraph(str(cell), header_style))
-    table_data.append(header_row)
-
-    # Datos
+    table_data.append([Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1))
+    table_data.append([Paragraph(str(cell), header_style) for cell in data[0]])
+    
     for row in data[1:]:
         nueva_fila = []
         for i, cell in enumerate(row):
@@ -1012,407 +432,155 @@ def draw_tabla_modalidades_p14(
             else:
                 nueva_fila.append(Paragraph(str(cell), cell_style))
         table_data.append(nueva_fila)
-
+        
     table = Table(table_data, colWidths=col_widths)
-
-    style = [
-        # Título
+    table.setStyle(TableStyle([
         ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), COLOR_TITULO),
+        ("BACKGROUND", (0, 0), (-1, 0), COLOR_PRIMARIO),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-
-        # Encabezado modalidades
-        ("BACKGROUND", (0, 1), (-1, 1), COLOR_HEADER),
-        ("TEXTCOLOR", (0, 1), (-1, 1), colors.white),
-
-        # Columna Distritos
-        ("BACKGROUND", (0, 2), (0, -1), COLOR_HEADER),
-        ("TEXTCOLOR", (0, 2), (0, -1), colors.white),
-
-        # Cuerpo
-        ("BACKGROUND", (1, 2), (-1, -1), COLOR_BODY),
-
-        # Bordes
-        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDER),
-
-        # Centrado general
+        ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#E2FDD9")),
+        ("TEXTCOLOR", (0, 1), (-1, 1), COLOR_TEXTO_OSCURO),
+        ("BACKGROUND", (0, 2), (0, -1), colors.HexColor("#E2FDD9")),
+        ("TEXTCOLOR", (0, 2), (0, -1), COLOR_TEXTO_OSCURO),
+        ("BACKGROUND", (1, 2), (-1, -1), colors.white),
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
         ("ALIGN", (1, 2), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-
-        # Compacto
-        ("TOPPADDING", (0, 0), (-1, -1), 3),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-        ("LEFTPADDING", (0, 0), (-1, -1), 3),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 3),
-    ]
-
-    table.setStyle(TableStyle(style))
-
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+    ]))
     table.wrapOn(canvas, TABLE_WIDTH, 2000)
     table.drawOn(canvas, x, y - table._height)
 
-#======================TABLA P15...................
-
-def draw_tabla_dias_distritos_p15(
-    canvas,
-    data,
-    titulo,
-    x,
-    y,
-    col_widths
-):
-
-    from reportlab.platypus import Paragraph
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT
-
+def draw_tabla_dias_distritos_p15(canvas, data, titulo, x, y, col_widths):
     TABLE_WIDTH = sum(col_widths)
-
-    # ===== VARIABLES EDITABLES =====
-    COLOR_TITULO = colors.HexColor("#30a907")
-    COLOR_HEADER = colors.HexColor("#E2Fdd9")
-    COLOR_BODY = colors.white
-    COLOR_BORDER = colors.black
-
-    FONT_HEADER = 8
-    FONT_BODY = 7
-    # =================================
-
-    header_style = ParagraphStyle(
-        name="HeaderStyleP15",
-        fontName="Helvetica-Bold",
-        fontSize=FONT_HEADER,
-        alignment=TA_CENTER,
-        leading=10
-    )
-
-    distrito_style = ParagraphStyle(
-        name="DistritoStyleP15",
-        fontName="Helvetica-Bold",
-        fontSize=FONT_BODY,
-        alignment=TA_LEFT,
-        leading=9
-    )
-
-    cell_style = ParagraphStyle(
-        name="CellStyleP15",
-        fontName="Helvetica",
-        fontSize=FONT_BODY,
-        alignment=TA_CENTER,
-        leading=9,
-        wordWrap="CJK"
-    )
-
+    header_style = ParagraphStyle(name="HeaderStyleP15", fontName=FONT_NAME_BOLD, fontSize=8, alignment=TA_CENTER, leading=10)
+    distrito_style = ParagraphStyle(name="DistritoStyleP15", fontName=FONT_NAME_BOLD, fontSize=7, alignment=TA_LEFT, leading=9)
+    cell_style = ParagraphStyle(name="CellStyleP15", fontName=FONT_NAME_REGULAR, fontSize=7, alignment=TA_CENTER, leading=9, wordWrap="CJK")
+    
     table_data = []
-
-    # Título
-    table_data.append(
-        [Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1)
-    )
-
-    # Encabezado (dias)
-    header_row = []
-    for cell in data[0]:
-        header_row.append(Paragraph(str(cell), header_style))
-    table_data.append(header_row)
-
-    # Datos
+    table_data.append([Paragraph(titulo, header_style)] + [""] * (len(data[0]) - 1))
+    table_data.append([Paragraph(str(cell), header_style) for cell in data[0]])
+    
     for row in data[1:]:
-
         nueva_fila = []
-
         for i, cell in enumerate(row):
-
             if i == 0:
                 nueva_fila.append(Paragraph(str(cell), distrito_style))
             else:
                 nueva_fila.append(Paragraph(str(cell), cell_style))
-
         table_data.append(nueva_fila)
-
+        
     table = Table(table_data, colWidths=col_widths)
-
-    style = [
-
-        # Título
+    table.setStyle(TableStyle([
         ("SPAN", (0, 0), (-1, 0)),
-        ("BACKGROUND", (0, 0), (-1, 0), COLOR_TITULO),
+        ("BACKGROUND", (0, 0), (-1, 0), COLOR_PRIMARIO),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-
-        # Encabezado dias
-        ("BACKGROUND", (0, 1), (-1, 1), COLOR_HEADER),
-        ("TEXTCOLOR", (0, 1), (-1, 1), colors.white),
-
-        # Columna distrito
-        ("BACKGROUND", (0, 2), (0, -1), COLOR_HEADER),
-        ("TEXTCOLOR", (0, 2), (0, -1), colors.white),
-
-        # Cuerpo
-        ("BACKGROUND", (1, 2), (-1, -1), COLOR_BODY),
-
-        # Bordes
-        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDER),
-
-        # Centrado
+        ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#E2FDD9")),
+        ("TEXTCOLOR", (0, 1), (-1, 1), COLOR_TEXTO_OSCURO),
+        ("BACKGROUND", (0, 2), (0, -1), colors.HexColor("#E2FDD9")),
+        ("TEXTCOLOR", (0, 2), (0, -1), COLOR_TEXTO_OSCURO),
+        ("BACKGROUND", (1, 2), (-1, -1), colors.white),
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
         ("ALIGN", (1, 2), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-
-        # Compacto
-        ("TOPPADDING", (0, 0), (-1, -1), 3),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-        ("LEFTPADDING", (0, 0), (-1, -1), 3),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 3),
-    ]
-
-    table.setStyle(TableStyle(style))
-
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+    ]))
     table.wrapOn(canvas, TABLE_WIDTH, 2000)
     table.drawOn(canvas, x, y - table._height)
 
-#==============================DEFINICION; LINEAS ACCION==========
 
+# ================= LÍNEAS DE ACCIÓN =================
 def normalizar_nombre(texto):
     texto = texto.lower()
-
-    texto = ''.join(
-        c for c in unicodedata.normalize('NFD', texto)
-        if unicodedata.category(c) != 'Mn'
-    )
-
+    texto = "".join(c for c in unicodedata.normalize('NFD', texto) if unicodedata.category(c) != 'Mn')
     texto = texto.replace(" ", "_")
-
-    # 🔥 IMPORTANTE: NO quitamos paréntesis ahora
     texto = re.sub(r"[^a-z0-9_()]", "", texto)
-
     return texto
-#_________tablas________________________
 
 def construir_tabla_dinamica(titulo, items, ancho_total, estilo_header_color):
-    from reportlab.platypus import Table, TableStyle, Paragraph
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_LEFT
-    from reportlab.lib import colors
-
-    # ===== DETERMINAR CANTIDAD DE COLUMNAS =====
-
     total_items = len(items)
-    
     if total_items <= 10:
-        columnas = 1
-        font_size = 9
-        leading_size = 11
-    
+        columnas, font_size, leading_size = 1, 10, 12
     elif total_items <= 18:
-        columnas = 2
-        font_size = 9
-        leading_size = 10
-    
+        columnas, font_size, leading_size = 2, 9, 11
     else:
-        columnas = 3
-        font_size = 8
-        leading_size = 9
+        columnas, font_size, leading_size = 3, 8, 10
+
+    CELDA_STYLE = ParagraphStyle(name="CeldaTabla", fontName=FONT_NAME_REGULAR, fontSize=font_size, leading=leading_size, alignment=TA_LEFT, wordWrap="CJK")
     
-    
-    # ===== ESTILO CELDAS =====
-    
-    CELDA_STYLE = ParagraphStyle(
-        name="CeldaTabla",
-        fontName="Helvetica",
-        fontSize=font_size,
-        leading=leading_size,
-        alignment=TA_LEFT,
-        wordWrap="CJK"
-    )
-
-    data = []
-
-    # HEADER
-    data.append([titulo])
-
-    # UNA SOLA COLUMNA
-
-    # =====================================================
-    # ================= 1 COLUMNA =========================
-    # =====================================================
+    data = [[titulo] + [""] * (columnas - 1) if columnas > 1 else [titulo]]
     
     if columnas == 1:
-    
         for item in items:
             data.append([Paragraph(item[0], CELDA_STYLE)])
-    
-        tabla = Table(
-            data,
-            colWidths=[ancho_total]
-        )
-    
-    
-    # =====================================================
-    # ================= 2 COLUMNAS ========================
-    # =====================================================
-    
+        col_widths = [ancho_total]
+        
     elif columnas == 2:
-    
         mitad = (len(items) + 1) // 2
-    
         col1 = items[:mitad]
         col2 = items[mitad:]
-    
         while len(col2) < len(col1):
             col2.append([""])
-    
-        data = [[titulo, ""]]
-    
         for i in range(len(col1)):
-    
             p1 = Paragraph(col1[i][0], CELDA_STYLE) if col1[i][0] else ""
             p2 = Paragraph(col2[i][0], CELDA_STYLE) if col2[i][0] else ""
-    
             data.append([p1, p2])
-    
-        tabla = Table(
-            data,
-            colWidths=[
-                ancho_total / 2,
-                ancho_total / 2
-            ]
-        )
-    
-    
-    # =====================================================
-    # ================= 3 COLUMNAS ========================
-    # =====================================================
-    
+        col_widths = [ancho_total / 2, ancho_total / 2]
+        
     else:
-    
         tercio = (len(items) + 2) // 3
-    
         col1 = items[:tercio]
         col2 = items[tercio:tercio * 2]
         col3 = items[tercio * 2:]
-    
-        while len(col2) < len(col1):
-            col2.append([""])
-    
-        while len(col3) < len(col1):
-            col3.append([""])
-    
-        data = [[titulo, "", ""]]
-    
+        while len(col2) < len(col1): col2.append([""])
+        while len(col3) < len(col1): col3.append([""])
         for i in range(len(col1)):
-    
             p1 = Paragraph(col1[i][0], CELDA_STYLE) if col1[i][0] else ""
             p2 = Paragraph(col2[i][0], CELDA_STYLE) if col2[i][0] else ""
             p3 = Paragraph(col3[i][0], CELDA_STYLE) if col3[i][0] else ""
-    
             data.append([p1, p2, p3])
-    
-        tabla = Table(
-            data,
-            colWidths=[
-                ancho_total / 3,
-                ancho_total / 3,
-                ancho_total / 3
-            ]
-        )
-        
-    tabla.setStyle(TableStyle([
+        col_widths = [ancho_total / 3, ancho_total / 3, ancho_total / 3]
 
-        # HEADER
+    tabla = Table(data, colWidths=col_widths)
+    tabla.setStyle(TableStyle([
         ("SPAN", (0, 0), (-1, 0)),
         ("BACKGROUND", (0, 0), (-1, 0), estilo_header_color),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0,0), (-1,0), 13),
-    
-        # BODY
+        ("FONTNAME", (0, 0), (-1, 0), FONT_NAME_BOLD),
+        ("FONTSIZE", (0, 0), (-1, 0), 12),
         ("BACKGROUND", (0, 1), (-1, -1), colors.white),
-        ("TEXTCOLOR", (0, 1), (-1, -1), colors.HexColor("#222222")),
-        ("FONTSIZE", (0,1), (-1,-1), 11),
-    
-        # ALINEACION
+        ("TEXTCOLOR", (0, 1), (-1, -1), COLOR_TEXTO_OSCURO),
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-    
-        # GRID SUAVE
-        ("LINEBELOW", (0,0), (-1,-1), 0.3, colors.HexColor("#D9D9D9")),
-    
-        # PADDING
-        ("TOPPADDING", (0,0), (-1,-1), 8),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 8),
-        ("LEFTPADDING", (0,0), (-1,-1), 6),
-        ("RIGHTPADDING", (0,0), (-1,-1), 6),
-    
-        # ZEBRA ROWS
-        ("ROWBACKGROUNDS", (0,1), (-1,-1), [
-            colors.white,
-            colors.HexColor("#F7F9FC")
-        ]),
+        ("LINEBELOW", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, COLOR_FILA_ALTERNA]),
     ]))
-
     return tabla
 
-#========================================LINEAS DE ACCION===============================
 
-def draw_pagina_linea_accion(
-    canvas,
-    doc,
-    linea,
-    vectores_path="assets/vectores"
-):
+def draw_pagina_linea_accion(canvas, doc, linea, vectores_path="assets/vectores"):
     page_width, page_height = A4
-
-    # ================= CONFIGURABLES =================
-    SUBTITULO_FONT = "Helvetica-Bold"
+    SUBTITULO_FONT = FONT_NAME_BOLD
     SUBTITULO_SIZE = 14
-    SUBTITULO_COLOR = colors.HexColor("#013051")
-    SUBTITULO_X = 80
-    SUBTITULO_Y = page_height - 70
-
-    TITULO_FONT = "Helvetica-Bold"
+    SUBTITULO_COLOR = COLOR_SECUNDARIO
+    TITULO_FONT = FONT_NAME_BOLD
     TITULO_SIZE = 13
-    TITULO_COLOR = colors.HexColor("#013051")
-    TITULO_WIDTH = page_width * 0.90
-    TITULO_X = 30
-    TITULO_Y = page_height - 78
+    TITULO_COLOR = COLOR_SECUNDARIO
 
-    VECTOR_WIDTH = 150
-    VECTOR_HEIGHT = 150
-    VECTOR_Y = page_height - 280
-    VECTOR_SPACING = 30
-
-    TABLA_C_X = 40
-    TABLA_C_Y = page_height - 270
-    TABLA_C_WIDTH = page_width * 0.45
-
-    TABLA_P_X = page_width / 2 + 10
-    TABLA_P_Y = page_height - 270
-    TABLA_P_WIDTH = page_width * 0.45
-
-    # ===== TOTAL CIRCULO CONFIG =====
-    TOTAL_IMAGE_PATH = "assets/total.png"
-    
-    TOTAL_WIDTH = 90
-    TOTAL_HEIGHT = 90
-    
-    TOTAL_X = page_width - TOTAL_WIDTH - 40
-    TOTAL_Y = page_height - 170 #altura de la bolita we
-    
-    TOTAL_FONT = "Helvetica-Bold"
-    TOTAL_FONT_SIZE = 16
-    TOTAL_FONT_COLOR = colors.white
-        
-    # =================================================
-
-    # ===== SUBTITULO =====
     canvas.setFont(SUBTITULO_FONT, SUBTITULO_SIZE)
     canvas.setFillColor(SUBTITULO_COLOR)
-    canvas.drawString(SUBTITULO_X, SUBTITULO_Y, "Líneas de Acción")
-
-    # ===== TITULO =====
-    from reportlab.platypus import Paragraph
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER
-
+    canvas.drawString(80, page_height - 70, "Líneas de Acción")
+    
     titulo_style = ParagraphStyle(
         name="TituloLineaInterna",
         fontName=TITULO_FONT,
@@ -1422,1036 +590,401 @@ def draw_pagina_linea_accion(
         alignment=0,
         wordWrap="CJK"
     )
-
+    
     texto_titulo = "<br/>".join(linea["problematicas"])
     p = Paragraph(texto_titulo, titulo_style)
-    w, h = p.wrap(TITULO_WIDTH, 150) # tamaño fuente de titulos
+    w, h = p.wrap(page_width * 0.90, 150)
     
-
-    # ===== VECTORES =====
+    VECTOR_WIDTH = 150
+    VECTOR_HEIGHT = 150
+    VECTOR_Y = page_height - 280
+    VECTOR_SPACING = 30
     total_vectores = len(linea["problematicas"])
+    
     if total_vectores > 0:
         total_width = total_vectores * VECTOR_WIDTH + (total_vectores - 1) * VECTOR_SPACING
         start_x = (page_width - total_width) / 2
-
         for i, problema in enumerate(linea["problematicas"]):
             nombre = normalizar_nombre(problema) + ".png"
             ruta = os.path.join(vectores_path, nombre)
-
             if os.path.exists(ruta):
-                canvas.drawImage(
-                    ruta,
-                    start_x + i * (VECTOR_WIDTH + VECTOR_SPACING),
-                    VECTOR_Y,
-                    width=VECTOR_WIDTH,
-                    height=VECTOR_HEIGHT,
-                    preserveAspectRatio=True,
-                    mask="auto"
-                )
+                canvas.drawImage(ruta, start_x + i * (VECTOR_WIDTH + VECTOR_SPACING), VECTOR_Y, width=VECTOR_WIDTH, height=VECTOR_HEIGHT, preserveAspectRatio=True, mask="auto")
+                
+    p.drawOn(canvas, 30, page_height - 78 - h)
+    
+    TOTAL_WIDTH = 90
+    TOTAL_HEIGHT = 90
+    TOTAL_X = page_width - TOTAL_WIDTH - 40
+    TOTAL_Y = page_height - 170
+    if os.path.exists("assets/total.png"):
+        canvas.drawImage("assets/total.png", TOTAL_X, TOTAL_Y, width=TOTAL_WIDTH, height=TOTAL_HEIGHT, preserveAspectRatio=True, mask="auto")
+        
+    canvas.setFont(FONT_NAME_BOLD, 16)
+    canvas.setFillColor(colors.white)
+    texto_total = linea.get("total_porcentaje", "0.00%")
+    text_width = canvas.stringWidth(texto_total, FONT_NAME_BOLD, 16)
+    canvas.drawString(TOTAL_X + (TOTAL_WIDTH - text_width) / 2, TOTAL_Y + TOTAL_HEIGHT / 2 - 8 + 10, texto_total)
 
-    # ===== DIBUJAR TITULO ENCIMA DE LOS VECTORES =====
-    p.drawOn(
-        canvas,
-        TITULO_X,
-        TITULO_Y - h
-    )
-
-    # ===== IMAGEN TOTAL =====
-    if os.path.exists(TOTAL_IMAGE_PATH):
-        canvas.drawImage(
-            TOTAL_IMAGE_PATH,
-            TOTAL_X,
-            TOTAL_Y,
-            width=TOTAL_WIDTH,
-            height=TOTAL_HEIGHT,
-            preserveAspectRatio=True,
-            mask="auto"
-        )
-    
-        # ===== TEXTO DENTRO DEL CIRCULO =====
-        canvas.setFont(TOTAL_FONT, TOTAL_FONT_SIZE)
-        canvas.setFillColor(TOTAL_FONT_COLOR)
-    
-        texto_total = linea.get("total_porcentaje", "0.00%")
-    
-        text_width = canvas.stringWidth(texto_total, TOTAL_FONT, TOTAL_FONT_SIZE)
-    
-        canvas.drawString(
-            TOTAL_X + (TOTAL_WIDTH - text_width) / 2,
-            TOTAL_Y + TOTAL_HEIGHT / 2 - (TOTAL_FONT_SIZE / 2)+10,
-            texto_total
-        )
-
-
-    #FORMATO DE CELDAS
-    CELDA_STYLE = ParagraphStyle(
-        name="CeldaTabla",
-        fontName="Helvetica",
-        fontSize=9,
-        leading=11,   # controla interlineado
-        alignment=TA_LEFT
-    ) 
-   # ===== TABLA CAUSAS (ARRIBA) =====
-    tabla_c = construir_tabla_dinamica(
-        "Causas Socio Culturales y Estructurales",
-        linea["causas"],
-        page_width - 80,
-        colors.HexColor("#30A907")
-    )
-    
+    tabla_c = construir_tabla_dinamica("Causas Socio Culturales y Estructurales", linea["causas"], page_width - 80, COLOR_PRIMARIO)
     tabla_c.wrapOn(canvas, page_width - 80, 400)
-    alto_tabla_c = tabla_c._height  # 🔥 ahora sí existe
     
-    
-    # ===== TABLA PROBLEMAS (ABAJO) =====
-    tabla_p = construir_tabla_dinamica(
-        "Problematicas Influyentes",
-        linea["problemas_influyentes"],
-        page_width - 80,
-        colors.HexColor("#013051")
-    )
-    
+    tabla_p = construir_tabla_dinamica("Problemáticas Influyentes", linea["problemas_influyentes"], page_width - 80, COLOR_SECUNDARIO)
     tabla_p.wrapOn(canvas, page_width - 80, 400)
-    alto_tabla_p = tabla_p._height  # 🔥 ahora sí existe
     
-    
-    # ===== POSICIONAMIENTO CONTROLADO =====
-    BASE_TABLA_Y = page_height - 280
-    ESPACIO_ENTRE_TABLAS = 20
-    
-    y_tabla_c = BASE_TABLA_Y - alto_tabla_c
-    y_tabla_p = y_tabla_c - ESPACIO_ENTRE_TABLAS - alto_tabla_p
-    
-    
+    y_tabla_c = page_height - 280 - tabla_c._height
+    y_tabla_p = y_tabla_c - 20 - tabla_p._height
     tabla_c.drawOn(canvas, 40, y_tabla_c)
     tabla_p.drawOn(canvas, 40, y_tabla_p)
 
-##==================segunda pagina LA================
 
 def draw_pagina_linea_accion_detalle(canvas, doc, linea):
-    from reportlab.platypus import Paragraph, Table, TableStyle
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_LEFT
-    from reportlab.lib import colors
-    from reportlab.lib.pagesizes import A4
-
     page_width, page_height = A4
-
-    # ================= CONFIGURABLES =================
-
     MARGEN_X = 40
     ANCHO_UTIL = page_width - 80
-
-    OBJ_TITULO_FONT = "Helvetica-Bold"
-    OBJ_TITULO_SIZE = 14
-    OBJ_TEXTO_SIZE = 11
-
     OBJ_Y = page_height - 120
-
-    LIDER_Y = page_height - 240 ### este de 200
-    LIDER_HEIGHT = 35
-
-    BLOQUE_Y = page_height - 260
-
     ESPACIO_BLOQUES = 30
-
-    COLOR_AZUL_1 = colors.HexColor("#9DC3E6")
-    COLOR_AZUL_2 = colors.HexColor("#D9E1F2")
-
-    COLOR_TITULO_TABLA = colors.HexColor("#013051")
-    COLOR_HEADER_TABLA = colors.HexColor("#30A907")
-
-    # =================================================
-
-    # ===== OBJETIVO GENERAL =====
-
-    canvas.setFont(OBJ_TITULO_FONT, OBJ_TITULO_SIZE)
+    
+    canvas.setFont(FONT_NAME_BOLD, 14)
+    canvas.setFillColor(COLOR_SECUNDARIO)
     canvas.drawString(MARGEN_X, OBJ_Y, "Objetivo general de la intervención:")
-
+    
     objetivo_texto = "Optimizar la identificación y respuesta a reincidentes en situación de calle, mejorando la eficacia policial y reduciendo los delitos para aumentar la seguridad comunitaria."
-
-    estilo_obj = ParagraphStyle(
-        name="objetivo",
-        fontName="Helvetica",
-        fontSize=OBJ_TEXTO_SIZE,
-        leading=15,
-        alignment=TA_LEFT
-    )
-
+    estilo_obj = ParagraphStyle(name="objetivo", fontName=FONT_NAME_REGULAR, fontSize=11, leading=15, alignment=TA_LEFT)
     p_obj = Paragraph(objetivo_texto, estilo_obj)
     w, h = p_obj.wrap(ANCHO_UTIL, 200)
     p_obj.drawOn(canvas, MARGEN_X, OBJ_Y - 20 - h)
+    
     current_y = OBJ_Y - 20 - h - ESPACIO_BLOQUES
     
-
-    # ===== LIDER ESTRATEGICO =====
-
     if linea["lider_estrategico"]:
-    
-        estilo_lider = ParagraphStyle(
-            name="LiderCell",
-            fontName="Helvetica-Bold",
-            fontSize=18,
-            leading=20,
-            alignment=TA_LEFT,
-            wordWrap="CJK"
-        )
-    
-        data_lider = [
-            [
-                Paragraph("Líder Estratégico", estilo_lider),
-                Paragraph(linea["lider_estrategico"], estilo_lider)
-            ]
-        ]
-    
-        tabla_lider = Table(
-            data_lider,
-            colWidths=[ANCHO_UTIL * 0.4, ANCHO_UTIL * 0.6]
-        )
-    
-        # ===== COLORES DEL LIDER =====
-        COLOR_LIDER_LABEL = colors.HexColor("#30A907")   # verde fuerte
-        COLOR_LIDER_VALUE = colors.HexColor("#E2FDD9")   # verde claro
-        
+        estilo_lider = ParagraphStyle(name="LiderCell", fontName=FONT_NAME_BOLD, fontSize=16, leading=18, alignment=TA_LEFT, wordWrap="CJK")
+        data_lider = [[Paragraph("Líder Estratégico", estilo_lider), Paragraph(linea["lider_estrategico"], estilo_lider)]]
+        tabla_lider = Table(data_lider, colWidths=[ANCHO_UTIL * 0.4, ANCHO_UTIL * 0.6])
         tabla_lider.setStyle(TableStyle([
-            ("BACKGROUND", (0, 0), (0, 0), COLOR_LIDER_LABEL),
-            ("BACKGROUND", (1, 0), (1, 0), COLOR_LIDER_VALUE),
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#013051")),
+            ("BACKGROUND", (0, 0), (0, 0), COLOR_PRIMARIO),
+            ("BACKGROUND", (1, 0), (1, 0), colors.HexColor("#E2FDD9")),
+            ("GRID", (0, 0), (-1, -1), 0.5, COLOR_SECUNDARIO),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ("LEFTPADDING", (0, 0), (-1, -1), 6),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-            ("TOPPADDING", (0, 0), (-1, -1), 4),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ("LEFTPADDING", (0, 0), (-1, -1), 8),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
         ]))
-    
         tabla_lider.wrapOn(canvas, ANCHO_UTIL, 200)
         tabla_lider.drawOn(canvas, MARGEN_X, current_y - tabla_lider._height)
-    
         current_y = current_y - tabla_lider._height - ESPACIO_BLOQUES
-
-
-    # ===== ACCIONES ESTRATEGICAS =====
-    
+        
     if linea["acciones"]:
-    
-        estilo_header = ParagraphStyle(
-            name="HeaderAcciones",
-            fontName="Helvetica-Bold",
-            fontSize=11,
-            textColor=colors.white
-        )
-    
-        estilo_celda = ParagraphStyle(
-            name="CeldaAcciones",
-            fontName="Helvetica",
-            fontSize=10,
-            leading=13,
-            alignment=TA_LEFT,
-            wordWrap="CJK"
-        )
-    
-        acciones_data = [
-            [Paragraph("Acciones estratégicas", estilo_header)]
-        ]
-    
+        estilo_header = ParagraphStyle(name="HeaderAcciones", fontName=FONT_NAME_BOLD, fontSize=11, textColor=colors.white)
+        estilo_celda = ParagraphStyle(name="CeldaAcciones", fontName=FONT_NAME_REGULAR, fontSize=10, leading=13, alignment=TA_LEFT, wordWrap="CJK")
+        acciones_data = [[Paragraph("Acciones estratégicas", estilo_header)]]
         for a in linea["acciones"]:
-            acciones_data.append(
-                [Paragraph("• " + a, estilo_celda)]
-            )
-    
-        tabla_acciones = Table(
-            acciones_data,
-            colWidths=[ANCHO_UTIL]
-        )
-    
+            acciones_data.append([Paragraph("• " + a, estilo_celda)])
+            
+        tabla_acciones = Table(acciones_data, colWidths=[ANCHO_UTIL])
         tabla_acciones.setStyle(TableStyle([
-            ("BACKGROUND", (0, 0), (-1, 0), COLOR_HEADER_TABLA),
-            ("GRID", (0, 0), (-1, -1), 0.3, colors.grey),
-            ("LEFTPADDING", (0, 0), (-1, -1), 6),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-            ("TOPPADDING", (0, 0), (-1, -1), 4),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ("BACKGROUND", (0, 0), (-1, 0), COLOR_PRIMARIO),
+            ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+            ("LEFTPADDING", (0, 0), (-1, -1), 8),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
         ]))
-    
         tabla_acciones.wrapOn(canvas, ANCHO_UTIL, 400)
         tabla_acciones.drawOn(canvas, MARGEN_X, current_y - tabla_acciones._height)
-    
         current_y = current_y - tabla_acciones._height - ESPACIO_BLOQUES
-
-    # ===== COGESTORES =====
-
+        
     if linea["cogestores"]:
-
         mitad = len(linea["cogestores"]) // 2
         col1 = linea["cogestores"][:mitad]
         col2 = linea["cogestores"][mitad:]
-
         filas = [["Cogestores", ""]]
-
         max_len = max(len(col1), len(col2))
-
         for i in range(max_len):
-            c1 = "• " + col1[i] if i < len(col1) else ""
-            c2 = "• " + col2[i] if i < len(col2) else ""
+            c1 = "• " + str(col1[i]) if i < len(col1) else ""
+            c2 = "• " + str(col2[i]) if i < len(col2) else ""
             filas.append([c1, c2])
-
-        tabla_cog = Table(
-            filas,
-            colWidths=[ANCHO_UTIL / 2, ANCHO_UTIL / 2]
-        )
-
+            
+        tabla_cog = Table(filas, colWidths=[ANCHO_UTIL / 2, ANCHO_UTIL / 2])
         tabla_cog.setStyle(TableStyle([
             ("SPAN", (0, 0), (-1, 0)),
-            ("BACKGROUND", (0, 0), (-1, 0), COLOR_TITULO_TABLA),
+            ("BACKGROUND", (0, 0), (-1, 0), COLOR_SECUNDARIO),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-            ("GRID", (0, 0), (-1, -1), 0.3, colors.grey),
+            ("FONTNAME", (0, 0), (-1, 0), FONT_NAME_BOLD),
+            ("FONTSIZE", (0, 0), (-1, 0), 11),
+            ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+            ("LEFTPADDING", (0, 0), (-1, -1), 8),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
         ]))
-
         tabla_cog.wrapOn(canvas, ANCHO_UTIL, 400)
         tabla_cog.drawOn(canvas, MARGEN_X, current_y - tabla_cog._height)
 
 
-# =========================================================
-# ================= PERCEPCION PAGINA 1 ===================
-# =========================================================
-        
-def draw_pagina_percepcion_1(
-    canvas,
-    doc,
-    grafico_actual_path,
-    grafico_comparacion_path,
-    tabla_percepcion
-):
-        
+# ================= PERCEPCIÓN CIUDADANA =================
+def draw_pagina_percepcion_1(canvas, doc, grafico_actual_path, grafico_comparacion_path, tabla_percepcion):
     page_width, page_height = A4
-        
-    # ================= CONFIGURABLES =================
-    TITLE_FONT = "Helvetica-Bold"
-    TITLE_SIZE = 18
-    TITLE_COLOR = colors.HexColor("#013051")
-    TITLE_X = 40
-    TITLE_Y = page_height - 110
-        
-    # Graficos
-    GRAFICO_WIDTH = 230
-    GRAFICO_HEIGHT = 230
-        
+    canvas.setFont(FONT_NAME_BOLD, 18)
+    canvas.setFillColor(COLOR_SECUNDARIO)
+    canvas.drawString(40, page_height - 110, "¿Se siente seguro en su comunidad?")
+    
     GRAFICO_Y = page_height - 380
-        
-    GRAFICO_IZQ_X = 40
-    GRAFICO_DER_X = page_width - GRAFICO_WIDTH - 40
-        
-    # Tabla
-    TABLA_X = 40
-    TABLA_Y = 200
-    TABLA_WIDTH_TOTAL = page_width - 80
-        
-    # =================================================
-        
-    # ===== TITULO PRINCIPAL =====
-    canvas.setFont(TITLE_FONT, TITLE_SIZE)
-    canvas.setFillColor(TITLE_COLOR)
-    canvas.drawString(
-        TITLE_X,
-        TITLE_Y,
-        "¿Se siente seguro en su comunidad?"
-    )
-        
-    # ===== TITULO GRAFICO ACTUAL =====
-    canvas.setFont("Helvetica-Bold", 14)
-    canvas.setFillColor(colors.HexColor("#013051"))
-    canvas.drawString(GRAFICO_IZQ_X, GRAFICO_Y + GRAFICO_HEIGHT + 10, "Actualmente")
+    GRAFICO_WIDTH = 230
     
-    # ===== GRAFICO PASTEL =====
-
-    PIE_WIDTH = 250
-    PIE_HEIGHT = 250
+    canvas.setFont(FONT_NAME_BOLD, 14)
+    canvas.drawString(40, GRAFICO_Y + 230 + 10, "Actualmente")
+    canvas.drawImage(grafico_actual_path, 50, GRAFICO_Y + 10, width=250, height=250, preserveAspectRatio=True, mask="auto")
     
-    # bajar ligeramente
-    PIE_Y = GRAFICO_Y + 10
+    canvas.drawString(page_width - GRAFICO_WIDTH - 40, GRAFICO_Y + 230 + 10, "Comparación año anterior")
+    canvas.drawImage(grafico_comparacion_path, page_width - GRAFICO_WIDTH - 40, GRAFICO_Y, width=GRAFICO_WIDTH, height=230, preserveAspectRatio=True, mask="auto")
     
-    canvas.drawImage(
-        grafico_actual_path,
+    canvas.setFont(FONT_NAME_BOLD, 16)
+    canvas.drawString(40, 420, "Comparativo Percepción Ciudadana por Zonas")
     
-        # mover un poco a la izquierda
-        GRAFICO_IZQ_X + 10,
-    
-        PIE_Y,
-    
-        width=PIE_WIDTH,
-        height=PIE_HEIGHT,
-    
-        preserveAspectRatio=True,
-        mask="auto"
-    )
-        
-    # ===== TITULO GRAFICO COMPARACION =====
-    canvas.drawString(
-        GRAFICO_DER_X,
-        GRAFICO_Y + GRAFICO_HEIGHT + 10,
-        "Comparación con el año anterior (2025)"
-    )
-    # ===== GRAFICO BARRAS =====
-    canvas.drawImage(
-        grafico_comparacion_path,
-        GRAFICO_DER_X,
-        GRAFICO_Y,
-        width=GRAFICO_WIDTH,
-        height=GRAFICO_HEIGHT,
-        preserveAspectRatio=True,
-        mask="auto"
-    )
-        
-    # ===== TITULO TABLA =====
-    canvas.setFont("Helvetica-Bold", 16)
-    canvas.setFillColor(colors.HexColor("#013051"))
-    canvas.drawString(
-        TABLA_X,
-        TABLA_Y + 220,  # ajustable
-        "Comparativo Percepción Ciudadana por Zonas"
-    )
-
-    # ===== TABLA GRANDE =====
-
-    from reportlab.platypus import Table, TableStyle, Paragraph
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER
-    
-    # =========================
-    # ESTILOS
-    # =========================
-    
-    header_style = ParagraphStyle(
-        name="PercepcionHeader",
-        fontName="Helvetica-Bold",
-        fontSize=8,
-        leading=10,
-        alignment=TA_CENTER,
-        textColor=colors.white,
-        wordWrap="CJK"
-    )
-    
-    cell_style = ParagraphStyle(
-        name="PercepcionCell",
-        fontName="Helvetica",
-        fontSize=8,
-        leading=9,
-        alignment=TA_CENTER,
-        wordWrap="CJK"
-    )
-    
-    # =========================
-    # CONVERTIR A PARAGRAPH
-    # =========================
+    header_style = ParagraphStyle(name="PercepcionHeader", fontName=FONT_NAME_BOLD, fontSize=9, alignment=TA_CENTER, textColor=colors.white, wordWrap="CJK")
+    cell_style = ParagraphStyle(name="PercepcionCell", fontName=FONT_NAME_REGULAR, fontSize=9, alignment=TA_CENTER, wordWrap="CJK")
     
     tabla_render = []
-    
     for row_idx, row in enumerate(tabla_percepcion):
-    
-        nueva = []
-    
-        for cell in row:
-    
-            texto = str(cell)
-    
-            if row_idx <= 1:
-                nueva.append(Paragraph(texto, header_style))
-            else:
-                nueva.append(Paragraph(texto, cell_style))
-    
+        nueva = [Paragraph(str(cell), header_style) if row_idx <= 1 else Paragraph(str(cell), cell_style) for cell in row]
         tabla_render.append(nueva)
-    
-    # =========================
-    # ANCHOS COLUMNAS
-    # =========================
-    
-    col_widths = [
-        130,
-        55,
-        55,
-        55,
-        55,
-        55,
-        55
-    ]
-    
-    tabla = Table(
-        tabla_render,
-        colWidths=col_widths,
-        repeatRows=2
-    )
-    
-    # =========================
-    # ESTILOS TABLA
-    # =========================
-    
+        
+    tabla = Table(tabla_render, colWidths=[130, 55, 55, 55, 55, 55, 55], repeatRows=2)
     tabla.setStyle(TableStyle([
-    
-        ("GRID", (0,0), (-1,-1), 0.5, colors.black),
-    
-        ("BACKGROUND", (0,0), (-1,1), colors.HexColor("#30A907")),
-        ("TEXTCOLOR", (0,0), (-1,1), colors.white),
-    
-        ("BACKGROUND", (0,2), (-1,-1), colors.white),
-    
-        ("BACKGROUND", (0,2), (0,-1), colors.HexColor("#E2F0D9")),
-        ("FONTNAME", (0,2), (0,-1), "Helvetica-Bold"),
-    
-        ("ALIGN", (0,0), (-1,-1), "CENTER"),
-        ("VALIGN", (0,0), (-1,-1), "MIDDLE"),
-    
-        ("TOPPADDING", (0,0), (-1,-1), 4),
-        ("BOTTOMPADDING", (0,0), (-1,-1), 4),
-        ("LEFTPADDING", (0,0), (-1,-1), 3),
-        ("RIGHTPADDING", (0,0), (-1,-1), 3),
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+        ("BACKGROUND", (0, 0), (-1, 1), COLOR_PRIMARIO),
+        ("BACKGROUND", (0, 2), (-1, -1), colors.white),
+        ("BACKGROUND", (0, 2), (0, -1), colors.HexColor("#E2F0D9")),
+        ("FONTNAME", (0, 2), (0, -1), FONT_NAME_BOLD),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
     ]))
     
-    # =========================
-    # RENDER
-    # =========================
-    
-    tabla.wrapOn(canvas, TABLA_WIDTH_TOTAL, 500)
-    
-    tabla.drawOn(
-        canvas,
-        TABLA_X,
-        TABLA_Y - tabla._height + 180
-    )
-    
-    # ===== FORZAR ENCABEZADOS =====
     if len(tabla_percepcion) >= 2:
-    
-        # Fila 298 (índice 0)
         tabla_percepcion[0][1] = "Seguro"
         tabla_percepcion[0][2] = "Inseguro"
         tabla_percepcion[0][3] = "No existe"
-    
-        # Fila 299 (índice 1)
         tabla_percepcion[1][1] = ""
         tabla_percepcion[1][2] = ""
         tabla_percepcion[1][3] = ""
+        
+    tabla.wrapOn(canvas, page_width - 80, 500)
+    tabla.drawOn(canvas, 40, 420 - tabla._height - 10)
 
-#pagina 2 final
 
-def draw_pagina_percepcion_2(
-    canvas,
-    doc,
-    grafico_victimizacion_path,
-    grafico_no_denuncia_path,
-    tabla_no_denuncia,
-    motivo_principal,
-    total_omitidas
-):
-
+def draw_pagina_percepcion_2(canvas, doc, grafico_victimizacion_path, grafico_no_denuncia_path, tabla_no_denuncia, motivo_principal, total_omitidas):
     page_width, page_height = A4
-
-    # ================= CONFIGURABLES =================
-
-    TITLE_FONT = "Helvetica-Bold"
-    TITLE_SIZE = 20
-    TITLE_COLOR = colors.HexColor("#013051")
-    TITLE_X = 40
-    TITLE_Y = page_height - 100
-
-    BLOQUE_ALTURA = page_height / 3
-
-    GRAFICO_WIDTH = page_width - 80 # ancho de grafico
-    GRAFICO_HEIGHT = 350
-    GRAFICO_X = 40
-
-    TABLA_X = 60
-    TABLA_Y = 320
-    TABLA_WIDTH = page_width * 0.55
-
-    TEXTO_X = 350
-    TEXTO_Y = 200
-
-    # =================================================
-
-    # ===== TITULO PAGINA =====
-    canvas.setFont(TITLE_FONT, TITLE_SIZE)
-    canvas.setFillColor(TITLE_COLOR)
-    canvas.drawString(TITLE_X, TITLE_Y, "Victimización Ciudadana")
-
-    # ===== TITULO GRAFICO 1 =====
-    canvas.setFont("Helvetica-Bold", 14)
-    canvas.drawString(
-        GRAFICO_X,
-        page_height - 140,
-        "¿Usted ha sido víctima de algún delito en los últimos 12 meses?"
-    )
-    canvas.drawString(
-        GRAFICO_X,
-        page_height - 160,
-        "¿Denunció ante el O.I.J?"
-    )
-
-    canvas.drawImage(
-        grafico_victimizacion_path,
-        GRAFICO_X,
-        page_height - 420,  #posiscion g1
-        width=GRAFICO_WIDTH,
-        height=GRAFICO_HEIGHT,
-        preserveAspectRatio=True,
-        mask="auto"
-    )
-
-    # ===== TITULO GRAFICO 2 =====
-    canvas.setFont("Helvetica-Bold", 14)
-    canvas.drawString(
-        GRAFICO_X,
-        page_height - 350,
-        "¿Por qué la población que ha sido víctima no denuncia?"
-    )
-
-    canvas.drawImage(
-        grafico_no_denuncia_path,
-        GRAFICO_X,
-        page_height - 600, #pocicion a meno, mas arriba
-        width=GRAFICO_WIDTH,
-        height=GRAFICO_HEIGHT,
-        preserveAspectRatio=True,
-        mask="auto"
-    )
-
-    # ===== TABLA INFERIOR =====
+    canvas.setFont(FONT_NAME_BOLD, 20)
+    canvas.setFillColor(COLOR_SECUNDARIO)
+    canvas.drawString(40, page_height - 100, "Victimización Ciudadana")
     
-    draw_tabla_victimizacion(
-        canvas=canvas,
-        data=tabla_no_denuncia,
-        titulo="Detalle motivos de no denuncia",
-        x=TABLA_X,
-        y=TABLA_Y,
-        col_widths=[170, 70],
-        header_color=colors.HexColor("#30A907")
-    )
-
-    # ===== TEXTO DINAMICO =====
-    canvas.setFont("Helvetica", 11)
-    texto = (
-        f"La mayor cantidad de los encuestados que fueron víctimas de algún delito, "
-        f"señalan que no denuncian, debido a {motivo_principal}. "
-        f"Total respuestas omitidas: {total_omitidas}."
-    )
-
-    from reportlab.platypus import Paragraph
-    estilo = ParagraphStyle(
-        name="textoVict",
-        fontName="Helvetica",
-        fontSize=11,
-        leading=14,
-        alignment=TA_JUSTIFY
-    )
-
+    canvas.setFont(FONT_NAME_BOLD, 14)
+    canvas.drawString(40, page_height - 140, "¿Usted ha sido víctima de algún delito en los últimos 12 meses?")
+    canvas.drawString(40, page_height - 160, "¿Denunció ante el O.I.J?")
+    canvas.drawImage(grafico_victimizacion_path, 40, page_height - 420, width=page_width - 80, height=250, preserveAspectRatio=True, mask="auto")
+    
+    canvas.setFont(FONT_NAME_BOLD, 14)
+    canvas.drawString(40, page_height - 460, "¿Por qué la población que ha sido víctima no denuncia?")
+    canvas.drawImage(grafico_no_denuncia_path, 40, page_height - 700, width=page_width - 80, height=230, preserveAspectRatio=True, mask="auto")
+    
+    draw_tabla_victimizacion(canvas, tabla_no_denuncia, "Detalle motivos de no denuncia", 60, 120, [170, 70], COLOR_PRIMARIO)
+    
+    texto = f"La mayor cantidad de los encuestados que fueron víctimas de algún delito, señalan que no denuncian, debido a {motivo_principal}. Total respuestas omitidas: {total_omitidas}."
+    estilo = ParagraphStyle(name="textoVict", fontName=FONT_NAME_REGULAR, fontSize=11, leading=14, alignment=TA_JUSTIFY)
     p = Paragraph(texto, estilo)
-    w, h = p.wrap(page_width * 0.3, 200)
-    p.drawOn(canvas, TEXTO_X, TEXTO_Y)
-
-# ==================================================
-# CONFIGURACION VISUAL - PERCEPCION PAGINA 3
-# ==================================================
-
-# ----- TITULO -----
-P3_TITULO_X = 70
-P3_TITULO_Y = 730
-P3_TITULO_SIZE = 16
-P3_TITULO_COLOR = colors.HexColor("#013051")
-
-# ----- GRAFICOS -----
-P3_GRAFICO_SIZE = 200
-
-P3_GRAFICO1_X = 70
-P3_GRAFICO1_Y = 480
-
-P3_GRAFICO2_X = 340
-P3_GRAFICO2_Y = 150
-
-# ----- TABLAS -----
-P3_TABLA1_X = 430
-P3_TABLA1_Y = 490
-
-P3_TABLA2_X = 65
-P3_TABLA2_Y = 200
-
-# ----- TEXTOS -----
-P3_TEXTO1_X = 330
-P3_TEXTO1_Y = 420
-P3_TEXTO_SIZE = 12
-
-P3_TEXTO2_X = 65
-P3_TEXTO2_Y = 140
-
-# ==================================================
-# COLORES GRAFICOS PERCEPCION
-# ==================================================
-
-P3_COLOR_1 = "#5b9bd5"
-P3_COLOR_2 = "#a5a5a5"
-P3_COLOR_3 = "#4472c4"
-P3_COLOR_4 = "#255e91"
-P3_COLOR_5 = "#636363"
-P3_COLOR_6 = "#264478"
-P3_COLOR_7 = "#7cafdd"
-P3_COLOR_8 = "#b7b7b7"
-P3_COLOR_9 = "#698ed0"
-
-P3_PALETA_GRAFICO = [
-    P3_COLOR_1,
-    P3_COLOR_2,
-    P3_COLOR_3,
-    P3_COLOR_4,
-    P3_COLOR_5,
-    P3_COLOR_6,
-    P3_COLOR_7,
-    P3_COLOR_8,
-    P3_COLOR_9
-]
-
-# ----- TITULOS DE GRAFICOS -----
-
-P3_TITULO_GRAFICO_SIZE = 14
-P3_TITULO_GRAFICO_COLOR = colors.HexColor("#013051")
-P3_TITULO_GRAFICO_OFFSET = 10
+    p.wrapOn(canvas, page_width * 0.4, 200)
+    p.drawOn(canvas, 300, 70)
 
 
-# ================= GENERADOR PDF =================
+# ================= GENERADOR PRINCIPAL (Mantiene comportamiento exacto) =================
 def generar_pdf(
-    portada_path,
-    grafico_relacion_path,
-    grafico_edad_path,
-    grafico_escolaridad_path,
-    grafico_genero_path,
-    delegacion,
-    codigo,
-    tabla_participacion,
-    tabla_edad,
-    tabla_escolaridad,
-    tabla_genero,
-    tabla_encuesta_comunidad, 
-    tabla_otras_encuestas,
-    datos_pagina_8,
-    datos_pagina_9,
-    tabla_delitos,
-    tabla_riesgos,
-    porcentaje_delitos,
-    porcentaje_riesgos,
-    cantidad_delitos,
-    cantidad_riesgos,
-    micmac_poder,
-    micmac_conflicto,
-    micmac_autonomas,
-    micmac_resultados,
-    tabla_riesgos_micmac2,
-    tabla_delitos_micmac2,
-    cantidad_problematicas,
-    riesgos_total,
-    delitos_total,
-    causas_identificadas,
-    factores_micmac,
-    triangulo_directa,
-    triangulo_sociocultural,
-    triangulo_estructural,
-    tabla_instituciones,
-    grafico_denuncias_path,
-    tabla_denuncias,
-    total_denuncias,
-    grafico_horario_path,
-    tabla_horario,
-    total_am,
-    total_pm,
-    tabla_horario_distrito,
-    grafico_p14_path,
-    tabla_p14,
-    grafico_p15_path,
-    tabla_p15,
-    total_lineas,
-    lineas_municipalidad,
-    lineas_fp,
-    lineas_mixtas,
-    logo_muni_path,
-    lineas_accion_data,
-    grafico_percepcion_actual_path,
-    grafico_percepcion_comparacion_path,
-    tabla_percepcion,
-    grafico_victimizacion_path,
-    grafico_no_denuncia_path,
-    tabla_no_denuncia,
-    motivo_principal,
-    total_omitidas,
-    grafico_horarios_percepcion,
-    grafico_armas_percepcion,
-    tabla_horarios_percepcion,
-    tabla_armas,
-    horario_mayor,
-    metodo_mas_usado,
-    omitidas_aportes,
-    grafico_servicio_policial,
-    grafico_servicio_anual,
-    grafico_conoce_policia,
-    grafico_atencion,
-    tabla_servicio,
-    tabla_servicio_anual,
-    tabla_conoce,
-    tabla_atencion,
-    omitidas_servicio,
-    total_respuestas_servicio,
-    grafico_comercio_seguridad,
-    grafico_comercio_programa,
-    grafico_comercio_inscrito,
+    portada_path, grafico_relacion_path, grafico_edad_path, grafico_escolaridad_path,
+    grafico_genero_path, delegacion, codigo, tabla_participacion, tabla_edad,
+    tabla_escolaridad, tabla_genero, tabla_encuesta_comunidad, tabla_otras_encuestas,
+    datos_pagina_8, datos_pagina_9, tabla_delitos, tabla_riesgos, porcentaje_delitos,
+    porcentaje_riesgos, cantidad_delitos, cantidad_riesgos, micmac_poder,
+    micmac_conflicto, micmac_autonomas, micmac_resultados, tabla_riesgos_micmac2,
+    tabla_delitos_micmac2, cantidad_problematicas, riesgos_total, delitos_total,
+    causas_identificadas, factores_micmac, triangulo_directa, triangulo_sociocultural,
+    triangulo_estructural, tabla_instituciones, grafico_denuncias_path,
+    tabla_denuncias, total_denuncias, grafico_horario_path, tabla_horario, total_am,
+    total_pm, tabla_horario_distrito, grafico_p14_path, tabla_p14, grafico_p15_path,
+    tabla_p15, total_lineas, lineas_municipalidad, lineas_fp, lineas_mixtas,
+    logo_muni_path, lineas_accion_data, grafico_percepcion_actual_path,
+    grafico_percepcion_comparacion_path, tabla_percepcion, grafico_victimizacion_path,
+    grafico_no_denuncia_path, tabla_no_denuncia, motivo_principal, total_omitidas,
+    grafico_horarios_percepcion, grafico_armas_percepcion, tabla_horarios_percepcion,
+    tabla_armas, horario_mayor, metodo_mas_usado, omitidas_aportes,
+    grafico_servicio_policial, grafico_servicio_anual, grafico_conoce_policia,
+    grafico_atencion, tabla_servicio, tabla_servicio_anual, tabla_conoce,
+    tabla_atencion, omitidas_servicio, total_respuestas_servicio,
+    grafico_comercio_seguridad, grafico_comercio_programa, grafico_comercio_inscrito,
     grafico_comercio_contacto,
 ):
-
     buffer = BytesIO()
     styles = getSampleStyleSheet()
-    styles["Heading1"].textColor = colors.HexColor("#013051")
+    styles["Heading1"].textColor = COLOR_SECUNDARIO
+    
+    styles.add(ParagraphStyle(name="NormalJustificado", parent=styles["Normal"], alignment=TA_JUSTIFY, leading=14))
+    styles.add(ParagraphStyle(name="TituloGrande", fontName=FONT_NAME_REGULAR, fontSize=26, textColor=colors.white, leading=30, spaceAfter=2, alignment=TA_LEFT))
+    styles.add(ParagraphStyle(name="TituloDelta", fontName=FONT_NAME_BOLD, fontSize=45, textColor=COLOR_PRIMARIO, leading=40, spaceAfter=10, alignment=TA_LEFT))
+    styles.add(ParagraphStyle(name="TituloD2", fontName=FONT_NAME_BOLD, fontSize=60, textColor=colors.white, leading=60, spaceAfter=10, alignment=TA_LEFT))
 
-    styles.add(ParagraphStyle(
-        name="NormalJustificado",
-        parent=styles["Normal"],
-        alignment=TA_JUSTIFY
-    ))
-
-    styles.add(ParagraphStyle(
-        name="TituloGrande",
-        fontName="Helvetica",
-        fontSize=26,
-        textColor=colors.white,
-        leading=30,
-        spaceAfter=2,
-        alignment=TA_LEFT
-    ))
-
-    styles.add(ParagraphStyle(
-        name="TituloDelta",
-        fontName="Helvetica-Bold",
-        fontSize=45,
-        textColor=colors.HexColor("#30a907"),
-        leading=30,
-        spaceAfter=10,
-        alignment=TA_LEFT
-    ))
-
-    styles.add(ParagraphStyle(
-        name="TituloD2",
-        fontName="Helvetica-Bold",
-        fontSize=60,
-        textColor=colors.white,
-        leading=30,
-        spaceAfter=10,
-        alignment=TA_LEFT
-    ))
-
-    doc = SimpleDocTemplate(
-        buffer,
-        pagesize=A4,
-        leftMargin=40,
-        rightMargin=40,
-        topMargin=40,
-        bottomMargin=40
-    )
-
+    doc = SimpleDocTemplate(buffer, pagesize=A4, leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
     story = []
 
+    # -- PORTADA (Página 1) --
     story.append(PageBreak())
-    story.append(Spacer(1, 80))#________________________________________________________________________________________________titulo
+    story.append(Spacer(1, 80))
     story.append(Paragraph("DELEGACIÓN POLICIAL", styles["TituloGrande"]))
     story.append(Paragraph(delegacion, styles["TituloDelta"]))
     story.append(Paragraph(codigo, styles["TituloD2"]))
 
+    # -- PÁGINA 2 --
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Introducción", styles["Heading1"]))
     story.append(Spacer(1, 12))
-
     story.append(Paragraph(
         "Desde el año 2022, el Ministerio de Seguridad Pública ha implementado en todo el territorio nacional el Modelo Preventivo de Gestión Policial, una iniciativa estratégica destinada a fortalecer la seguridad pública a través de un enfoque proactivo y colaborativo. Una parte integral de este modelo es la Estrategia Integral de Prevención para la Seguridad Pública, conocida como Sembremos Seguridad, que se centra en la contextualización de las dinámicas delincuenciales y sociales que afectan a nuestras comunidades.",
         styles["NormalJustificado"]
     ))
-
     story.append(Spacer(1, 20))
-
     story.append(Paragraph(
-        "El presente informe, elaborado para el territorio que comprende la Delegación Policial de San Ramón, surge como una herramienta esencial para la toma efectiva de decisiones. Este informe se concibe como un instrumento dinámico y orientado hacia el futuro, diseñado para proporcionar información clave y un plan de trabajo estructurado que permita abordar las problemáticas prioritarias identificadas en el ámbito de la seguridad pública.",
+        "El presente informe, elaborado para el territorio asignado, surge como una herramienta esencial para la toma efectiva de decisiones. Este informe se concibe como un instrumento dinámico y orientado hacia el futuro, diseñado para proporcionar información clave y un plan de trabajo estructurado que permita abordar las problemáticas prioritarias identificadas en el ámbito de la seguridad pública.",
         styles["NormalJustificado"]
     ))
-
     story.append(Spacer(1, 40))
-    story.append(Image("assets/conformacion.png", width=600, height=400))
+    if os.path.exists("assets/conformacion.png"):
+        story.append(Image("assets/conformacion.png", width=500, height=333))
 
+    # -- PÁGINAS FIJAS 3-7 --
     story.append(PageBreak())
     story.append(PageBreak())
-
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
     story.append(Spacer(1, 20))
     story.append(Paragraph("Participación por Distrito", styles["Heading1"]))
     story.append(Spacer(1, 10))
-
-    tabla = Table(tabla_participacion, colWidths=[180, 180, 120])
-    tabla.setStyle(TableStyle([
-        ("GRID", (0, 0), (-1, -1), 1, colors.black),
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#013051")),
+    
+    tabla_part = Table(tabla_participacion, colWidths=[170, 170, 120])
+    tabla_part.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+        ("BACKGROUND", (0, 0), (-1, 0), COLOR_SECUNDARIO),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0,0), (-1,0), 14),
-        ("FONTSIZE", (0,1), (-1,-1), 12),
+        ("FONTNAME", (0, 0), (-1, 0), FONT_NAME_BOLD),
+        ("FONTSIZE", (0, 0), (-1, 0), 12),
+        ("FONTSIZE", (0, 1), (-1, -1), 11),
         ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
         ("BACKGROUND", (1, 1), (-1, -1), colors.HexColor("#E2FDD9"))
     ]))
-
-    story.append(tabla)
-
+    story.append(tabla_part)
     story.append(PageBreak())
     story.append(Spacer(1, 40))
     story.append(Paragraph("Datos de Participación", styles["Heading1"]))
-    story.append(Spacer(1, 200))
-    story.append(Paragraph("__________________________________________________________________________________________"))
-    story.append(Spacer(1, 210))
-    story.append(Paragraph("__________________________________________________________________________________________"))
-
+    story.append(Spacer(1, 410))
     story.append(PageBreak())
     story.append(PageBreak())
-
     story.append(Spacer(1, 40))
     story.append(Paragraph("Proceso Metodológico", styles["Heading1"]))
-    story.append(Paragraph(
-    "Información demográfica según zona asignada a la Delegación Policial",
-    styles["Normal"]
-    ))
-
-    story.append(Spacer(1, 190))    
-    story.append(Image("assets/netquest.png", width=550, height=125))
-
-    story.append(Spacer(1, 1))
-    story.append(Paragraph("__________________________________________________________________________________________"))
-    
+    story.append(Paragraph("Información demográfica según zona asignada a la Delegación Policial", styles["Normal"]))
+    story.append(Spacer(1, 190))
+    if os.path.exists("assets/netquest.png"):
+        story.append(Image("assets/netquest.png", width=550, height=125))
     story.append(PageBreak())
-
     story.append(Spacer(1, 40))
     story.append(Paragraph("Diagrama de Pareto", styles["Heading1"]))
-    story.append(Paragraph(
-    "(Aplicando el principio de 80/20 donde el 80% es lo trivial y el 20% es lo vital)",
-    styles["Normal"]
-    ))    
-    story.append(Spacer(1, 170))
-    story.append(Paragraph("__________________________________________________________________________________________"))
-
+    story.append(Paragraph("(Aplicando el principio de 80/20 donde el 80% es lo trivial y el 20% es lo vital)", styles["Normal"]))
     story.append(PageBreak())
-
     story.append(Spacer(1, 40))
     story.append(Paragraph("MICMAC", styles["Heading1"]))
-    story.append(Paragraph(
-    "((Matriz de Impactos Cruzado – Multiplicación Aplicada a un Clasificación))",
-    styles["Normal"]
-    ))   
-    story.append(Spacer(1, 390))
-    story.append(Paragraph("__________________________________________________________________________________________"))
-
+    story.append(Paragraph("(Matriz de Impactos Cruzado - Multiplicación Aplicada a un Clasificación)", styles["Normal"]))
     story.append(PageBreak())
-
     story.append(Spacer(1, 40))
-    story.append(Paragraph("Triangulo de las Violencias", styles["Heading1"]))
-    story.append(Spacer(1, 10))  
-    story.append(Paragraph(("Es una metodología también llamada “teoría de los conflictos” creada por el sociólogo y matemático Johan Galtung, que permite estudiar y transformar los conflictos mediante la identificación de variantes de la violencia, (Directa, cultural y estructural), visualizando las causas generadoras de las problemáticas. "),
-    styles["NormalJustificado"]
-    ))  
+    story.append(Paragraph("Triángulo de las Violencias", styles["Heading1"]))
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("Es una metodología también llamada 'teoría de los conflictos' creada por el sociólogo y matemático Johan Galtung, que permite estudiar y transformar los conflictos mediante la identificación de variantes de la violencia (Directa, cultural y estructural), visualizando las causas generadoras de las problemáticas.", styles["NormalJustificado"]))
     story.append(Spacer(1, 200))
-    story.append(Paragraph("__________________________________________________________________________________________"))
     story.append(Spacer(1, 20))
     story.append(Paragraph("Proceso Metodológico", styles["Heading1"]))
-    story.append(Paragraph("Lista de Instituciones participantes en calificacion de procesos: MIC-MAC y Triangulo de las Violencias", styles["Heading2"]))
-
+    story.append(Paragraph("Lista de Instituciones participantes en calificación de procesos: MIC-MAC y Triángulo de las Violencias", styles["Heading2"]))
+    
+    # -- PÁGINAS ESTADÍSTICAS --
     story.append(PageBreak())
     story.append(PageBreak())
-
     story.append(Spacer(1, 30))
     story.append(Paragraph("Denuncias por distrito", styles["Heading2"]))
     story.append(Spacer(1, 220))
-    story.append(Paragraph("__________________________________________________________________________________________"))
     story.append(Paragraph("Denuncias por rango horario", styles["Heading2"]))
-
-    story.append(PageBreak())   
+    story.append(PageBreak())
     story.append(Spacer(1, 30))
     story.append(Paragraph("Denuncias por Modalidad en el Cantón", styles["Heading2"]))
     story.append(Spacer(1, 280))
-    story.append(Paragraph("__________________________________________________________________________________________"))
-
-    story.append(PageBreak())   
+    story.append(PageBreak())
     story.append(Spacer(1, 30))
-    story.append(Paragraph("Denuncias por dias de la semana en el Cantón", styles["Heading2"]))
+    story.append(Paragraph("Denuncias por días de la semana en el Cantón", styles["Heading2"]))
     story.append(Spacer(1, 280))
-    story.append(Paragraph("__________________________________________________________________________________________"))
-
     story.append(PageBreak())
     story.append(PageBreak())
-
+    
+    # -- LÍNEAS DE ACCIÓN INTRO --
     story.append(Spacer(1, 40))
     story.append(Paragraph("Líneas de Acción", styles["Heading1"]))
     story.append(Spacer(1, 12))
-
     story.append(Paragraph(
         "El procedimiento de construcción de líneas de acción en la estrategia SEMBREMOS SEGURIDAD es esencial en el ámbito local. Este proceso comienza con la recolección y análisis de datos específicos del territorio, utilizando herramientas metodológicas científicas para identificar y contextualizar las problemáticas locales. Posteriormente, un grupo de expertos de diversas instituciones evalúa las causas subyacentes y propone soluciones viables. Estos pasos se consolidan en el siguiente apartado con la finalidad de plasmar de manera transparente cuáles serán las acciones específicas para la atención de las problemáticas priorizadas.",
         styles["NormalJustificado"]
     ))
-
     story.append(Spacer(1, 20))
     story.append(Paragraph(
         "Los coordinadores estratégicos que desempeñan un papel fundamental en este procedimiento, son el Gobierno Local por su rol de autoridad local y Fuerza Pública como ente competente para la prevención del delito. Estos son responsables de garantizar la trazabilidad y el cumplimiento de los indicadores previamente consensuados por los actores sociales.",
         styles["NormalJustificado"]
     ))
-
     story.append(Spacer(1, 20))
     story.append(Paragraph(
-    "Estos líderes estratégicos aseguran que cada etapa del plan se lleve a cabo de manera efectiva y que las intervenciones estén alineadas con los objetivos planteados. Su liderazgo y supervisión continua son cruciales para el éxito de la estrategia SEMBREMOS SEGURIDAD.",
-    styles["NormalJustificado"]
+        "Estos líderes estratégicos aseguran que cada etapa del plan se lleve a cabo de manera efectiva y que las intervenciones estén alineadas con los objetivos planteados. Su liderazgo y supervisión continua son cruciales para el éxito de la estrategia SEMBREMOS SEGURIDAD.",
+        styles["NormalJustificado"]
     ))
 
-   # =========================================
-    # CREAR PAGINAS DINAMICAS DE PORTADAS
-    # =========================================
-    
+    # Generador páginas dinámicas LA
     for i in range(total_lineas):
         story.append(PageBreak())
         story.append(Spacer(1, 1))
-    
         story.append(PageBreak())
         story.append(Spacer(1, 1))
-    
         story.append(PageBreak())
         story.append(Spacer(1, 1))
 
-    # ===== PORTADA PERCEPCION CIUDADANA =====
+    # Generador páginas Percepción
     for _ in range(6):
         story.append(PageBreak())
         story.append(Spacer(1, 1))
-
-    # ===== PORTADA FINAL =====
-    story.append(PageBreak())
-    story.append(Spacer(1,1))
     
-    ##----------------------------------Bloque de funciones 
-   
+    # Final
+    story.append(PageBreak())
+    story.append(Spacer(1, 1))
+
+    # ================= LOGICA ON LATER PAGES =================
     def first_page(canvas, doc):
         FullImage(portada_path)(canvas, doc)
 
     def later_pages(canvas, doc):
         if doc.page == 2:
-            FullImage("assets/intro.png")(canvas, doc)
+            if os.path.exists("assets/intro.png"): FullImage("assets/intro.png")(canvas, doc)
         elif doc.page == 3:
             header_footer(canvas, doc)
         elif doc.page == 4:
-
-            FullImage("assets/participacion.png")(canvas, doc)
-                    
+            if os.path.exists("assets/participacion.png"): FullImage("assets/participacion.png")(canvas, doc)
         elif doc.page == 5:
             header_footer(canvas, doc)
-
-            draw_grafico_relacion(
-                canvas,
-                grafico_relacion_path
-            )
+            draw_grafico_relacion(canvas, grafico_relacion_path)
         elif doc.page == 6:
             header_footer(canvas, doc)
             draw_grafico_edad(canvas, doc, grafico_edad_path)
@@ -2461,1623 +994,370 @@ def generar_pdf(
             draw_grafico_genero(canvas, grafico_genero_path)
             draw_tabla_genero(canvas, tabla_genero)
         elif doc.page == 7:
-            FullImage("assets/metodologico.png")(canvas, doc)
+            if os.path.exists("assets/metodologico.png"): FullImage("assets/metodologico.png")(canvas, doc)
         elif doc.page == 8:
             header_footer(canvas, doc)
-            
-            page_width, page_height = A4
-
-            # ================= TABLA 1 =================
-            draw_tabla_simple(
-                canvas=canvas,
-                data=tabla_encuesta_comunidad,
-                titulo="Encuesta a Comunidad",
-                x=90,                  # 👈 posición horizontal (editable)
-                y=page_height - 150,   # 👈 posición vertical (editable)
-                col_widths=[100, 100, 100, 100],  # 👈 ancho columnas
-                header_color=colors.HexColor("#4471C4")
-            )
-
-            # ================= TABLA 2 =================
-            draw_tabla_simple(
-                canvas=canvas,
-                data=tabla_otras_encuestas,
-                titulo="Otras encuestas",
-                x=90,                  # 👈 centrada respecto a la tabla 1
-                y=page_height - 230,   # 👈 distancia estética hacia abajo
-                col_widths=[100, 100, 100, 100],
-                header_color=colors.HexColor("#4471C4")
-            )
-
-            # ================= IMAGEN DATOS =================
-            img_x = 0            # posición horizontal (izquierda → derecha)
-            img_y = 20           # posición vertical (abajo → arriba)
-            img_width = 600       # ancho de la imagen
-            img_height = 400     # alto de la imagen
-
-            canvas.drawImage(
-                "assets/datos.png",
-                img_x,
-                img_y,
-                width=img_width,
-                height=img_height,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-
-            # ================= DATOS SOBRE LA IMAGEN =================
-            canvas.setFont("Helvetica-Bold", 22)
+            draw_tabla_simple(canvas, tabla_encuesta_comunidad, "Encuesta a Comunidad", 90, A4[1] - 150, [100, 100, 100, 100], COLOR_SECUNDARIO)
+            draw_tabla_simple(canvas, tabla_otras_encuestas, "Otras encuestas", 90, A4[1] - 250, [100, 100, 100, 100], COLOR_SECUNDARIO)
+            if os.path.exists("assets/datos.png"):
+                canvas.drawImage("assets/datos.png", 0, 20, width=600, height=400, preserveAspectRatio=True, mask="auto")
+            canvas.setFont(FONT_NAME_BOLD, 22)
             canvas.setFillColor(colors.white)
-
-            # ENCUESTA COMUNIDAD
-            canvas.drawString(110, 265, str(datos_pagina_8["encuesta_comunidad"]))
-            
-            # ENCUESTA comercio
-            canvas.drawString(80,140, str(datos_pagina_8["encuesta_policial"]))
-            
-            # ENCUESTA policial
-            canvas.drawString(400, 265, str(datos_pagina_8["encuesta_comercio"]))
-            
-            # ESTADÍSTICA REGISTRADA
-            canvas.drawString(430, 140, str(datos_pagina_8["estadistica"]))
-            
-            # TOTAL DE DATOS (más grande)
-            canvas.setFont("Helvetica-Bold", 28)
-            canvas.setFillColor(colors.HexColor("#FFFFFF"))
-            canvas.drawString(270, 140, str(datos_pagina_8["total_datos"]))
-            
+            canvas.drawString(110, 265, str(datos_pagina_8.get("encuesta_comunidad", "")))
+            canvas.drawString(80, 140, str(datos_pagina_8.get("encuesta_policial", "")))
+            canvas.drawString(400, 265, str(datos_pagina_8.get("encuesta_comercio", "")))
+            canvas.drawString(430, 140, str(datos_pagina_8.get("estadistica", "")))
+            canvas.setFont(FONT_NAME_BOLD, 28)
+            canvas.drawString(270, 140, str(datos_pagina_8.get("total_datos", "")))
         elif doc.page == 9:
             header_footer(canvas, doc)
-            img_width = 550     # ancho de la imagen
-            img_height = 300    # alto de la imagen
-
-            img_x = (A4[0] - img_width) / 2   # centrado horizontal
-            img_y = A4[1] - img_height - 70  # debajo del header
-
-            canvas.drawImage(
-                "assets/pareto.png",
-                img_x,
-                img_y,
-                width=img_width,
-                height=img_height,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-
-            #___datos pareto______
-            canvas.setFont("Helvetica-Bold", 22)
+            img_width, img_height = 550, 300
+            img_x, img_y = (A4[0] - img_width) / 2, A4[1] - img_height - 70
+            if os.path.exists("assets/pareto.png"):
+                canvas.drawImage("assets/pareto.png", img_x, img_y, width=img_width, height=img_height, preserveAspectRatio=True, mask="auto")
+            canvas.setFont(FONT_NAME_BOLD, 20)
             canvas.setFillColor(colors.white)
-
-            canvas.drawString(
-                img_x + 150,              # x (izquierda)
-                img_y + img_height - 155, # y (parte superior)
-                datos_pagina_9["lado_izquierdo"]
-            )
-
-            canvas.drawString(
-                img_x + img_width - 105, # x (derecha)
-                img_y + img_height - 115, # y (superior)arriba abajo
-                datos_pagina_9["derecha_superior"]
-            )
-
-            canvas.drawString(
-                img_x + img_width - 105, # x (derecha)
-                img_y + 105,              # y (inferior)
-                datos_pagina_9["derecha_inferior"]
-            )
-
-            #===========listas paretos
-            page_width, page_height = A4
-
-            x_izq = 60
-            x_der = page_width / 2 + 20
-            y_base = page_height - 380
-
-                       #=======DELITOS===
-            draw_porcentaje(
-                canvas,
-                porcentaje_delitos,
-                x_izq + 90,
-                y_base + 45
-            )
+            canvas.drawString(img_x + 150, img_y + img_height - 155, datos_pagina_9.get("lado_izquierdo", ""))
+            canvas.drawString(img_x + img_width - 120, img_y + img_height - 115, datos_pagina_9.get("derecha_superior", ""))
+            canvas.drawString(img_x + img_width - 120, img_y + 105, datos_pagina_9.get("derecha_inferior", ""))
             
-            color_titulo_riesgos = colors.HexColor("#FFFFFF")
-            fondo_titulo_riesgos = colors.HexColor("#30a907")
-            fondo_filas_riesgos  = colors.HexColor("#F2F2F2")
+            x_izq, x_der = 60, A4[0] / 2 + 20
+            y_base = A4[1] - 380
+            draw_porcentaje(canvas, porcentaje_delitos, x_izq + 90, y_base + 45)
+            draw_tabla_pareto(canvas, "Delitos", tabla_delitos, x_izq, y_base, header_color=COLOR_PRIMARIO)
+            draw_cantidad(canvas, f"Total: {cantidad_delitos}", x_izq + 90, y_base - 365)
             
-            draw_tabla_pareto(
-                canvas,
-                "Delitos",
-                tabla_delitos,
-                x_izq,
-                y_base,
-                text_color=color_titulo_riesgos,
-                header_color=fondo_titulo_riesgos,
-                body_color=fondo_filas_riesgos
-            )
+            draw_porcentaje(canvas, porcentaje_riesgos, x_der + 90, y_base + 45)
+            draw_tabla_pareto(canvas, "Riesgos Sociales", tabla_riesgos, x_der, y_base, header_color=COLOR_PRIMARIO)
+            draw_cantidad(canvas, f"Total: {cantidad_riesgos}", x_der + 90, y_base - 365)
             
-            draw_cantidad(
-                canvas,
-                f"Total: {cantidad_delitos}",
-                x_izq + 90,
-                y_base - 365
-            )
-            
-            #=======Riesgos============
-            draw_porcentaje(
-                canvas,
-                porcentaje_riesgos,
-                x_der + 90,
-                y_base + 45
-            )
-            
-            color_titulo_riesgos = colors.HexColor("#FFFFFF")
-            fondo_titulo_riesgos = colors.HexColor("#30a907")
-            fondo_filas_riesgos  = colors.HexColor("#F2F2F2")
-            
-            draw_tabla_pareto(
-                canvas,
-                "Riesgos Sociales",
-                tabla_riesgos,
-                x_der,
-                y_base,
-                text_color=color_titulo_riesgos,
-                header_color=fondo_titulo_riesgos,
-                body_color=fondo_filas_riesgos
-            )
-            
-            draw_cantidad(
-                canvas,
-                f"Total: {cantidad_riesgos}",
-                x_der + 90,
-                y_base - 365
-            )
-
         elif doc.page == 10:
             header_footer(canvas, doc)
-        
-            page_width, page_height = A4
-        
-            # ===== IMAGEN MICMAC =====
-            img_width = 650
-            img_height = 420
-            img_x = (page_width - img_width) / 2
-            img_y = page_height - img_height - 115
-        
-            canvas.drawImage(
-                "assets/micmac.png",
-                img_x,
-                img_y,
-                width=img_width,
-                height=img_height,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-
-            # ===== COORDENADAS DE CUADRANTES =====
-            quad_w = img_width / 2 - 80 #-- aqui puedo mover a la derecha los datos micmac
-            quad_h = img_height / 2 - 20
-        
-            x_left  = img_x + 90 #---- aqui los hago para el centro
-            x_right = img_x + img_width / 2 + 5
-        
-            y_top    = img_y + img_height - 70 #----- aqui para abajo entre mas grnade mas abajo
-            y_bottom = img_y + img_height / 2 - 20
-        
-            # ===== PODER =====
-            draw_micmac_lista(canvas, micmac_poder, x_left, y_top, quad_w)
-        
-            # ===== CONFLICTO =====
-            draw_micmac_lista(canvas, micmac_conflicto, x_right, y_top, quad_w)
-        
-            # ===== AUTÓNOMAS =====
-            draw_micmac_lista(canvas, micmac_autonomas, x_left, y_bottom, quad_w)
-        
-            # ===== RESULTADOS =====
-            draw_micmac_lista(canvas, micmac_resultados, x_right, y_bottom, quad_w)
-
-            #--------------------------micmac2-----------------------------------------
-
-            header_footer(canvas, doc)
-
-            page_width, page_height = A4
-
-            # ===== IMAGEN MICMAC2 =====
-            img_width = 520
-            img_height = 260
-            img_x = (page_width - img_width) / 2
-            img_y = 50   # respeta footer
-
-            canvas.drawImage(
-                "assets/micmac2.png",
-                img_x,
-                img_y,
-                width=img_width,
-                height=img_height,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-
-            # ===== VARIABLES DE POSICIÓN =====
-            tabla_width = 130
-            tabla_font = 8
-
-            x_tabla_riesgos = img_x + img_width * 0.55 - tabla_width / 2
-            x_tabla_delitos = img_x + img_width * 0.85 - tabla_width / 2
-            y_tablas = img_y + img_height - 80
-
-            draw_tabla_overlay(
-                canvas,
-                tabla_riesgos_micmac2,
-                x_tabla_riesgos,
-                y_tablas,
-                width=tabla_width,
-                font_size=tabla_font
-            )
-
-            draw_tabla_overlay(
-                canvas,
-                tabla_delitos_micmac2,
-                x_tabla_delitos,
-                y_tablas,
-                width=tabla_width,
-                font_size=tabla_font
-            )
-
-            # ===== DATOS SUELTOS =====
-            x_centro = img_x + img_width / 4
-            y_centro = img_y + img_height / 2
-
-            #____________P.Priorizadas
+            img_width, img_height = 650, 420
+            img_x, img_y = (A4[0] - img_width) / 2, A4[1] - img_height - 115
+            if os.path.exists("assets/micmac.png"):
+                canvas.drawImage("assets/micmac.png", img_x, img_y, width=img_width, height=img_height, preserveAspectRatio=True, mask="auto")
             
-            draw_texto_overlay(
-                canvas,
-                cantidad_problematicas,
-                x_centro - 30 ,
-                y_centro - 15,
-                size=30,
-                color=colors.white
-            )
-
-            #--------------R.sociales
-            draw_texto_overlay(
-                canvas,
-                riesgos_total,
-                x_centro + 155,
-                y_centro + 80,
-                size=18,
-                color=colors.white
-            )
-
-            #---------------delitos
-            draw_texto_overlay(
-                canvas,
-                delitos_total,
-                x_centro + 290,
-                y_centro + 80,
-                size=18,
-                color=colors.white
-            )
+            quad_w = img_width / 2 - 80
+            x_left, x_right = img_x + 90, img_x + img_width / 2 + 5
+            y_top, y_bottom = img_y + img_height - 70, img_y + img_height / 2 - 20
+            
+            draw_micmac_lista(canvas, micmac_poder, x_left, y_top, quad_w)
+            draw_micmac_lista(canvas, micmac_conflicto, x_right, y_top, quad_w)
+            draw_micmac_lista(canvas, micmac_autonomas, x_left, y_bottom, quad_w)
+            draw_micmac_lista(canvas, micmac_resultados, x_right, y_bottom, quad_w)
+            
+            # Parte 2 MICMAC
+            img_width2, img_height2 = 520, 260
+            img_x2, img_y2 = (A4[0] - img_width2) / 2, 50
+            if os.path.exists("assets/micmac2.png"):
+                canvas.drawImage("assets/micmac2.png", img_x2, img_y2, width=img_width2, height=img_height2, preserveAspectRatio=True, mask="auto")
+            
+            tabla_width, tabla_font = 130, 8
+            x_tabla_riesgos = img_x2 + img_width2 * 0.55 - tabla_width / 2
+            x_tabla_delitos = img_x2 + img_width2 * 0.85 - tabla_width / 2
+            y_tablas = img_y2 + img_height2 - 80
+            
+            draw_tabla_overlay(canvas, tabla_riesgos_micmac2, x_tabla_riesgos, y_tablas, width=tabla_width, font_size=tabla_font)
+            draw_tabla_overlay(canvas, tabla_delitos_micmac2, x_tabla_delitos, y_tablas, width=tabla_width, font_size=tabla_font)
+            
+            x_centro, y_centro = img_x2 + img_width2 / 4, img_y2 + img_height2 / 2
+            draw_texto_overlay(canvas, cantidad_problematicas, x_centro - 30, y_centro - 15, size=30)
+            draw_texto_overlay(canvas, riesgos_total, x_centro + 155, y_centro + 80, size=18)
+            draw_texto_overlay(canvas, delitos_total, x_centro + 290, y_centro + 80, size=18)
 
         elif doc.page == 11:
             header_footer(canvas, doc)
-            page_width, page_height = A4
-        
-            # ===== TEXTO IZQUIERDA =====
-            draw_texto_mixto(
-                canvas,
-                x=45,                                # ← mueve derecha/izquierda
-                y=page_height - 210,                # ← sube/baja
-                texto_antes="Frente a lo anterior, esta metodología permitió la identificación de",
-                valor_1=causas_identificadas,
-                texto_medio="causas, directamente relacionadas con los",
-                valor_2=factores_micmac,
-                texto_despues="factores priorizados en la Mic-Mac.",
-                width=260,
-                font_size=10,
-                valor_size=16
-            )
-        
-            # ===== IMAGEN TRIÁNGULO =====
-            img_width = 260
-            img_height = 260
-        
-            img_x = page_width / 2 + 10         # mueve derecha/izquierda
-            img_y = page_height - img_height - 130  # mueve arriba/abajo
-        
-            canvas.drawImage(
-                "assets/triangulo.png",
-                img_x,
-                img_y,
-                width=img_width,
-                height=img_height,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-        
-            canvas.setFont("Helvetica-Bold", 18)
+            draw_texto_mixto(canvas, 45, A4[1] - 210, "Frente a lo anterior, esta metodología permitió la identificación de", causas_identificadas, "causas, directamente relacionadas con los", factores_micmac, "factores priorizados en la Mic-Mac.")
+            
+            img_width, img_height = 260, 260
+            img_x, img_y = A4[0] / 2 + 10, A4[1] - img_height - 130
+            if os.path.exists("assets/triangulo.png"):
+                canvas.drawImage("assets/triangulo.png", img_x, img_y, width=img_width, height=img_height, preserveAspectRatio=True, mask="auto")
+            
+            canvas.setFont(FONT_NAME_BOLD, 18)
             canvas.setFillColor(colors.black)
-        
-            # DIRECTA (arriba)
-            canvas.drawCentredString(
-                img_x + img_width / 2,
-                img_y + img_height - 50,
-                str(triangulo_directa)
-            )
-        
-            # SOCIOCULTURAL (abajo izquierda)
-            canvas.drawCentredString(
-                img_x + 40,
-                img_y + 45,
-                str(triangulo_sociocultural)
-            )
-        
-            # ESTRUCTURAL (abajo derecha)
-            canvas.drawCentredString(
-                img_x + img_width - 40,
-                img_y + 45,
-                str(triangulo_estructural)
-            )
-
-            # ===== TABLA LISTA DE INSTITUCIONES =====
-            draw_tabla_instituciones(
-                canvas,
-                tabla_instituciones,
-                x=60,        # izquierda / derecha
-                y=360,       # mitad inferior de la página
-                table_width=480,
-                header_bg=colors.HexColor("#30a907"),
-                body_bg=colors.HexColor("#F2F2F2"),
-                font_header=13,
-                font_body=10
-            )
+            canvas.drawCentredString(img_x + img_width / 2, img_y + img_height - 50, str(triangulo_directa))
+            canvas.drawCentredString(img_x + 40, img_y + 45, str(triangulo_sociocultural))
+            canvas.drawCentredString(img_x + img_width - 40, img_y + 45, str(triangulo_estructural))
+            
+            draw_tabla_instituciones(canvas, tabla_instituciones, x=60, y=360, table_width=480, header_bg=COLOR_PRIMARIO)
 
         elif doc.page == 12:
-            FullImage("assets/estadistica.png")(canvas, doc)
+            if os.path.exists("assets/estadistica.png"): FullImage("assets/estadistica.png")(canvas, doc)
 
         elif doc.page == 13:
             header_footer(canvas, doc)
-            page_width, page_height = A4     
-
-            # ================== ICONO HORAS ==================
-            HORAS_X = 295
-            HORAS_Y = 410
-            HORAS_W = 70
-            HORAS_H = 70
+            canvas.drawImage(grafico_denuncias_path, x=(A4[0] - 550) / 2, y=A4[1] - 330, width=250, height=250, preserveAspectRatio=True, mask="auto")
+            draw_tabla_simple(canvas, tabla_denuncias, "Detalle de denuncias por distrito", 347, A4[1] - 80, [130], COLOR_SECUNDARIO)
             
-       
-            # ================== GRÁFICO CIRCULAR ==================
-            canvas.drawImage(
-                grafico_denuncias_path,
-                x=(page_width - 550)/ 2,
-                y=page_height - 330, #altura, a - mas altura
-                width=250,
-                height=250,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-        
-            # ================== TABLA ==================
-            draw_tabla_simple(
-                canvas=canvas,
-                data=tabla_denuncias,
-                titulo="Detalle de denuncias por distrito",
-                x=347,
-                y=page_height - 80,
-                col_widths=[100],
-                header_color=colors.HexColor("#4472C4"),
-                font_size_header=12,
-                font_size_body=10
-            )
-        
-            # ================== CUADRO TOTAL ==================
-            canvas.setFillColor(colors.HexColor("#013051"))
-            canvas.rect(
-                page_width / 2 - 75,
-                531,  #Altura + es mas
-                115,
-                50,
-                fill=1,
-                stroke=0
-            )
-        
+            canvas.setFillColor(COLOR_SECUNDARIO)
+            canvas.rect(A4[0] / 2 - 75, 510, 115, 50, fill=1, stroke=0)
             canvas.setFillColor(colors.white)
-            canvas.setFont("Helvetica-Bold", 12)
-            canvas.drawCentredString(
-                page_width / 2 - 20,
-                540,
-                "Total de denuncias"
-            )
-        
-            canvas.setFont("Helvetica-Bold", 22)
-            canvas.drawCentredString(
-                page_width / 2 - 20,
-                555, #todos estos los aumente de 675
-                str(total_denuncias)
-            )
-
-        ##______________________________GRAFICO CON HORARIOS Y TABLA_______________
-            # ===== GRAFICO HORARIO =====
-            canvas.drawImage(
-                grafico_horario_path,
-                x=(page_width - 550)/ 2,
-                y=page_height - 590, # altura a - mas
-                width=250,
-                height=250,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-
-           #tabla
-            draw_tabla_simple(
-                canvas=canvas,
-                data=tabla_horario,
-                titulo="Denuncias por horario",
-                x=420,
-                y=page_height - 350,
-                col_widths=[90, 40],
-                header_color=colors.HexColor("#4472C4"),
-                font_size_header=12,
-                font_size_body=10
-            ) 
-
-
-
-            # ===== CUADRO AM =====
-            canvas.setFillColor(colors.HexColor("#013051"))
+            canvas.setFont(FONT_NAME_BOLD, 11)
+            canvas.drawCentredString(A4[0] / 2 - 18, 540, "Total denuncias")
+            canvas.setFont(FONT_NAME_BOLD, 22)
+            canvas.drawCentredString(A4[0] / 2 - 18, 518, str(total_denuncias))
+            
+            canvas.drawImage(grafico_horario_path, x=(A4[0] - 550) / 2, y=A4[1] - 600, width=250, height=250, preserveAspectRatio=True, mask="auto")
+            draw_tabla_simple(canvas, tabla_horario, "Denuncias por horario", 420, A4[1] - 350, [90, 40], COLOR_SECUNDARIO)
+            
+            canvas.setFillColor(COLOR_SECUNDARIO)
             canvas.rect(280, 360, 100, 40, fill=1, stroke=0)
-            
             canvas.setFillColor(colors.white)
-            canvas.setFont("Helvetica-Bold", 12)
+            canvas.setFont(FONT_NAME_BOLD, 12)
             canvas.drawCentredString(330, 385, "AM")
-            
-            canvas.setFont("Helvetica-Bold", 18)
+            canvas.setFont(FONT_NAME_BOLD, 16)
             canvas.drawCentredString(330, 368, str(total_am))
             
-            
-            # ===== CUADRO PM =====
-            canvas.setFillColor(colors.HexColor("#013051"))
+            canvas.setFillColor(COLOR_SECUNDARIO)
             canvas.rect(280, 300, 100, 40, fill=1, stroke=0)
-            
             canvas.setFillColor(colors.white)
-            canvas.setFont("Helvetica-Bold", 12)
+            canvas.setFont(FONT_NAME_BOLD, 12)
             canvas.drawCentredString(330, 325, "PM")
-            
-            canvas.setFont("Helvetica-Bold", 18)
+            canvas.setFont(FONT_NAME_BOLD, 16)
             canvas.drawCentredString(330, 308, str(total_pm))
-
-            ##tabla grande
-            # ===== TABLA GRANDE REORDENADA =====
-            tabla_data = tabla_horario_distrito[1:]  # datos sin encabezado
-            encabezado_tabla = tabla_horario_distrito[0]
             
-            # Ajuste dinámico de ancho
-            total_columnas = len(encabezado_tabla)
-            ancho_total = page_width - 80
-            ancho_columna = ancho_total / total_columnas
+            total_columnas = len(tabla_horario_distrito[0])
+            draw_tabla_horario_distrito(canvas, tabla_horario_distrito, "DCLP según horario, por distrito", 40, 260, [(A4[0] - 80) / total_columnas] * total_columnas)
             
-            draw_tabla_horario_distrito(
-                canvas=canvas,
-                data=tabla_horario_distrito,
-                titulo="DCLP según horario, por distrito",
-                x=40,
-                y=275,
-                col_widths=[ancho_columna] * total_columnas
-            )
-
-
-            canvas.drawImage(
-                "assets/horas.png",
-                HORAS_X,
-                HORAS_Y,
-                HORAS_W,
-                HORAS_H
-            )
+            if os.path.exists("assets/horas.png"):
+                canvas.drawImage("assets/horas.png", 295, 410, 70, 70)
 
         elif doc.page == 14:
             header_footer(canvas, doc)
+            POS_X, POS_Y = (A4[0] - 500) / 2, A4[1] - 300 - 110
+            canvas.drawImage(grafico_p14_path, POS_X, POS_Y, width=500, height=300, preserveAspectRatio=True, mask="auto")
             
-            page_width, page_height = A4
-            
-            # ===== VARIABLES DE POSICION =====
-            IMG_WIDTH = 500
-            IMG_HEIGHT = 300
-            
-            POS_X = (page_width - IMG_WIDTH) / 2
-            POS_Y = page_height - IMG_HEIGHT - 110
-            # ================================
-            
-            canvas.drawImage(
-                grafico_p14_path,
-                POS_X,
-                POS_Y,
-                width=IMG_WIDTH,
-                height=IMG_HEIGHT,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-
-       # ===== TABLA MODALIDADES =====
-            TOTAL_COLUMNAS = len(tabla_p14[0])
-                
-            ANCHO_TOTAL = page_width - 60
-            ANCHO_COLUMNA = ANCHO_TOTAL / TOTAL_COLUMNAS
-                
-            draw_tabla_modalidades_p14(
-                canvas=canvas,
-                data=tabla_p14,
-                titulo="Frecuencia de modalidades por distrito",
-                x=30,
-                y=POS_Y - 40,   # 👈 Ajustable para subir/bajar
-                col_widths=[ANCHO_COLUMNA] * TOTAL_COLUMNAS
-            )
+            total_col = len(tabla_p14[0])
+            draw_tabla_modalidades_p14(canvas, tabla_p14, "Frecuencia de modalidades por distrito", 30, POS_Y - 30, [(A4[0] - 60) / total_col] * total_col)
 
         elif doc.page == 15:
-
             header_footer(canvas, doc)
-        
-            page_width, page_height = A4
-        
-            # ===== VARIABLES CONFIGURABLES =====
-            IMG_WIDTH = 450
-            IMG_HEIGHT = 300
-        
-            POS_X = (page_width - IMG_WIDTH) / 2
-            POS_Y = page_height - IMG_HEIGHT - 100
-            # ===================================
-        
-            canvas.drawImage(
-                grafico_p15_path,
-                POS_X,
-                POS_Y,
-                width=IMG_WIDTH,
-                height=IMG_HEIGHT,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-
-            #tabla
-        # ===== TABLA DIAS VS DISTRITOS =====
-
-            TOTAL_COLUMNAS = len(tabla_p15[0])
+            POS_X, POS_Y = (A4[0] - 450) / 2, A4[1] - 300 - 100
+            canvas.drawImage(grafico_p15_path, POS_X, POS_Y, width=450, height=300, preserveAspectRatio=True, mask="auto")
             
-            ANCHO_TOTAL = page_width - 60
-            ANCHO_COLUMNA = ANCHO_TOTAL / TOTAL_COLUMNAS
-            
-            draw_tabla_dias_distritos_p15(
-                canvas=canvas,
-                data=tabla_p15,
-                titulo="Frecuencia por distrito según día",
-                x=30,
-                y=POS_Y - 60,  # 👈 Ajustable
-                col_widths=[ANCHO_COLUMNA] * TOTAL_COLUMNAS
-            )
-            
+            total_col = len(tabla_p15[0])
+            draw_tabla_dias_distritos_p15(canvas, tabla_p15, "Frecuencia por distrito según día", 30, POS_Y - 50, [(A4[0] - 60) / total_col] * total_col)
 
         elif doc.page == 16:
-            FullImage("assets/lineas.png")(canvas, doc)  
+            if os.path.exists("assets/lineas.png"): FullImage("assets/lineas.png")(canvas, doc)
 
         elif doc.page == 17:
-
             header_footer(canvas, doc)
-        
-            page_width, page_height = A4
-        
-            # ================= VARIABLES CONFIGURABLES =================
-        
-            # Imagen base
-            IMG_PATH = "assets/lins.png"
-            IMG_WIDTH = 700
-            IMG_HEIGHT = 400
-            IMG_X = (page_width - IMG_WIDTH) / 2
-            IMG_Y = 100
-        
-            # TOTAL LINEAS
-            TOTAL_FONT = "Helvetica-Bold"
-            TOTAL_SIZE = 60
-            TOTAL_COLOR = colors.white
-            TOTAL_X = 130 #bien
-            TOTAL_Y = 185
-        
-            # Logo municipalidad
-            LOGO_WIDTH = 175
-            LOGO_HEIGHT = 175
-            LOGO_X = 400
-            LOGO_Y = 320 #355
-        
-            # Texto lineas municipales
-            TEXT_FONT = "Helvetica-Bold"
-            TEXT_SIZE = 40
+            if os.path.exists("assets/lins.png"):
+                canvas.drawImage("assets/lins.png", (A4[0] - 700) / 2, 100, width=700, height=400, preserveAspectRatio=True, mask="auto")
             
-            COLOR_MUNICIPAL = colors.HexColor("#30A907")  # Verde
-            COLOR_FP = colors.white                       # Blanco
-            COLOR_MIXTAS = colors.white     # blanco
-        
-            MUNICIPAL_X = 330 #380
-            MUNICIPAL_Y = 370
-            
-            FP_X = 330
-            FP_Y = 170 # bien
-            
-            MIXTAS_X = 375
-            MIXTAS_Y = 280 #280
-        
-            # ===========================================================
-        
-            # ===== DIBUJAR IMAGEN BASE =====
-            canvas.drawImage(
-                IMG_PATH,
-                IMG_X,
-                IMG_Y,
-                width=IMG_WIDTH,
-                height=IMG_HEIGHT,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-        
-            # ===== TOTAL LINEAS =====
-            canvas.setFont(TOTAL_FONT, TOTAL_SIZE)
+            canvas.setFont(FONT_NAME_BOLD, 60)
             canvas.setFillColor(colors.white)
-            canvas.drawCentredString(
-                TOTAL_X,
-                TOTAL_Y,
-                str(total_lineas)
-            )
-        
-            # ===== LOGO MUNICIPALIDAD =====
-            canvas.drawImage(
-                logo_muni_path,
-                LOGO_X,
-                LOGO_Y,
-                width=LOGO_WIDTH,
-                height=LOGO_HEIGHT,
-                preserveAspectRatio=True,
-                mask="auto"
-            )
-        
-            # ===== LINEAS MUNICIPALIDAD =====
-            canvas.setFont(TEXT_FONT, TEXT_SIZE)
-            canvas.setFillColor(COLOR_MUNICIPAL)
+            canvas.drawCentredString(130, 185, str(total_lineas))
             
-            canvas.drawString(
-                MUNICIPAL_X,
-                MUNICIPAL_Y,
-                f"{lineas_municipalidad}"
-            )
-        
-            # ===== LINEAS FP =====
-            canvas.drawString(
-                FP_X,
-                FP_Y,
-                f"{lineas_fp}"
-            )
-        
-            # ===== LINEAS MIXTAS (CONDICIONAL) =====
+            if os.path.exists(logo_muni_path):
+                canvas.drawImage(logo_muni_path, 400, 320, width=175, height=175, preserveAspectRatio=True, mask="auto")
+                
+            canvas.setFont(FONT_NAME_BOLD, 40)
+            canvas.setFillColor(COLOR_PRIMARIO)
+            canvas.drawString(330, 370, f"{lineas_municipalidad}")
+            canvas.setFillColor(colors.white)
+            canvas.drawString(330, 170, f"{lineas_fp}")
+            
             if lineas_mixtas is not None:
-                canvas.setFillColor(COLOR_MIXTAS)
-                canvas.drawString(
-                    MIXTAS_X,
-                    MIXTAS_Y,
-                    f"Mixtas: {lineas_mixtas}"
-                )
+                canvas.drawString(375, 280, f"Mixtas: {lineas_mixtas}")
 
-      
-        
-        
-        # =========================================================
-        # ===== BLOQUE LINEAS DE ACCION Y PERCEPCION ============
-        # =========================================================
+        else:
+            lineas_inicio = 18
+            percepcion_inicio = lineas_inicio + (len(lineas_accion_data) * 3)
             
-        lineas_inicio = 18
-        percepcion_inicio = lineas_inicio + (len(lineas_accion_data) * 3)
-            
-        # =========================
-        # LINEAS DE ACCION
-        # =========================
-        if lineas_inicio <= doc.page < percepcion_inicio:
-            
-            index = (doc.page - lineas_inicio) // 3
-            posicion = (doc.page - lineas_inicio) % 3
-            
-            if index < len(lineas_accion_data):
-            
-                linea = lineas_accion_data[index]
-            
-                if posicion == 0:
+            # Dinámicas L.A.
+            if lineas_inicio <= doc.page < percepcion_inicio:
+                index = (doc.page - lineas_inicio) // 3
+                posicion = (doc.page - lineas_inicio) % 3
+                if index < len(lineas_accion_data):
+                    linea = lineas_accion_data[index]
+                    
+                    if posicion == 0:
+                        if os.path.exists("assets/la.png"):
+                            canvas.drawImage("assets/la.png", 0, 0, width=A4[0], height=A4[1], preserveAspectRatio=True, mask="auto")
+                        cor = str(linea.get("corresponsable", "")).lower().strip()
+                        LOGO_Y = A4[1] - 700
+                        
+                        if "municipal" in cor and "mixta" not in cor:
+                            if os.path.exists(logo_muni_path):
+                                canvas.drawImage(logo_muni_path, A4[0] - 160 - 40, LOGO_Y, width=160, height=160, preserveAspectRatio=True, mask="auto")
+                        elif "fuerza" in cor and "mixta" not in cor:
+                            if os.path.exists("assets/fp.png"):
+                                canvas.drawImage("assets/fp.png", A4[0] - 160 - 40, LOGO_Y, width=160, height=160, preserveAspectRatio=True, mask="auto")
+                        elif "mixta" in cor:
+                            if os.path.exists(logo_muni_path):
+                                canvas.drawImage(logo_muni_path, A4[0] - 160 - 40, LOGO_Y, width=160, height=160, preserveAspectRatio=True, mask="auto")
+                            if os.path.exists("assets/fp.png"):
+                                canvas.drawImage("assets/fp.png", 40, LOGO_Y, width=160, height=160, preserveAspectRatio=True, mask="auto")
+                                
+                        canvas.setFont(FONT_NAME_BOLD, 150)
+                        canvas.setFillColor(colors.white)
+                        canvas.drawString(400, A4[1] - 300, f"{linea['numero']}")
+                        
+                        titulo_style = ParagraphStyle(name="TituloL", fontName=FONT_NAME_BOLD, fontSize=16, leading=20, textColor=colors.white, alignment=TA_CENTER)
+                        texto_titulo = "<br/>".join(linea["problematicas"])
+                        p = Paragraph(texto_titulo, titulo_style)
+                        w, h = p.wrap(A4[0] * 0.7, 500)
+                        p.drawOn(canvas, (A4[0] - (A4[0] * 0.7)) / 2, A4[1] - 760 - (h / 2))
+                        
+                    elif posicion == 1:
+                        header_footer(canvas, doc)
+                        draw_pagina_linea_accion(canvas, doc, linea)
+                    elif posicion == 2:
+                        header_footer(canvas, doc)
+                        draw_pagina_linea_accion_detalle(canvas, doc, linea)
 
-                    canvas.drawImage(
-                        "assets/la.png",
-                        0, 0,
-                        width=A4[0],
-                        height=A4[1],
-                        preserveAspectRatio=True,
-                        mask="auto"
-                    )
-
-                    # ================= LOGO RESPONSABLE =================
-
-                    LOGO_WIDTH = 160
-                    LOGO_HEIGHT = 160
-                    
-                    # 👇 posición vertical
-                    LOGO_Y = A4[1] - 700
-                    
-                    # 👇 posiciones horizontales
-                    LOGO_DERECHA_X = A4[0] - LOGO_WIDTH - 40
-                    LOGO_IZQUIERDA_X = 40
-                    
-                    # ================= LOGO RESPONSABLE =================
-                    
-                    cor = str(linea.get("corresponsable", "")).lower().strip()
-                    
-                    LOGO_WIDTH = 160
-                    LOGO_HEIGHT = 160
-                    LOGO_Y = A4[1] - 700
-                    
-                    LOGO_DERECHA_X = A4[0] - LOGO_WIDTH - 40
-                    LOGO_IZQUIERDA_X = 40
-                    
-                    # Solo Municipalidad
-                    if "municipal" in cor and "mixta" not in cor:
-                    
-                        canvas.drawImage(
-                            logo_muni_path,
-                            LOGO_DERECHA_X,
-                            LOGO_Y,
-                            width=LOGO_WIDTH,
-                            height=LOGO_HEIGHT,
-                            preserveAspectRatio=True,
-                            mask="auto"
-                        )
-                    
-                    # Solo Fuerza Pública
-                    elif "fuerza" in cor and "mixta" not in cor:
-                    
-                        canvas.drawImage(
-                            "assets/fp.png",
-                            LOGO_DERECHA_X,
-                            LOGO_Y,
-                            width=LOGO_WIDTH,
-                            height=LOGO_HEIGHT,
-                            preserveAspectRatio=True,
-                            mask="auto"
-                        )
-                    
-                    # Mixta = ambos
-                    elif "mixta" in cor:
-                    
-                        canvas.drawImage(
-                            logo_muni_path,
-                            LOGO_DERECHA_X,
-                            LOGO_Y,
-                            width=LOGO_WIDTH,
-                            height=LOGO_HEIGHT,
-                            preserveAspectRatio=True,
-                            mask="auto"
-                        )
-                    
-                        canvas.drawImage(
-                            "assets/fp.png",
-                            LOGO_IZQUIERDA_X,
-                            LOGO_Y,
-                            width=LOGO_WIDTH,
-                            height=LOGO_HEIGHT,
-                            preserveAspectRatio=True,
-                            mask="auto"
-                        )
+            # Percepción (6 páginas)
+            elif doc.page == percepcion_inicio:
+                if os.path.exists("assets/percepcion.png"): FullImage("assets/percepcion.png")(canvas, doc)
+            elif doc.page == percepcion_inicio + 1:
+                header_footer(canvas, doc)
+                draw_pagina_percepcion_1(canvas, doc, grafico_percepcion_actual_path, grafico_percepcion_comparacion_path, tabla_percepcion)
+            elif doc.page == percepcion_inicio + 2:
+                header_footer(canvas, doc)
+                draw_pagina_percepcion_2(canvas, doc, grafico_victimizacion_path, grafico_no_denuncia_path, tabla_no_denuncia, motivo_principal, total_omitidas)
+            elif doc.page == percepcion_inicio + 3:
+                header_footer(canvas, doc)
+                canvas.setFont(FONT_NAME_BOLD, 16)
+                canvas.setFillColor(COLOR_SECUNDARIO)
+                canvas.drawString(70, 730, "Información Relevante de la Comunidad")
                 
-                    # Numero grande
-                    canvas.setFont("Helvetica-Bold", 150)
-                    canvas.setFillColor(colors.white)
-                    canvas.drawString(400, A4[1] - 300, f"{linea['numero']}")
+                canvas.setFont(FONT_NAME_BOLD, 12)
+                canvas.drawString(70, 480 + 200 + 10, "Horario y método delictivo según percepción")
+                canvas.drawImage(grafico_horarios_percepcion, 70, 480, 200, 200)
                 
-                    # ===== TITULO PROBLEMATICAS =====
-                    titulo_style = ParagraphStyle(
-                        name="TituloLinea",
-                        fontName="Helvetica-Bold",
-                        fontSize=14,
-                        leading=28,
-                        textColor=colors.white,
-                        alignment=TA_CENTER
-                    )
-                    
-                    TITULO_WIDTH = A4[0] * 0.7
-                    TITULO_X = (A4[0] - TITULO_WIDTH) / 2
-                    TITULO_Y = A4[1] - 760
-                    
-                    texto_titulo = "<br/>".join(linea["problematicas"])
-                    
-                    p = Paragraph(texto_titulo, titulo_style)
-                    w, h = p.wrap(TITULO_WIDTH, 500)
-                    p.drawOn(canvas, TITULO_X, TITULO_Y - (h / 2))
-            
-                elif posicion == 1:
-                    header_footer(canvas, doc)
-                    draw_pagina_linea_accion(canvas, doc, linea)
-            
-                elif posicion == 2:
-                    header_footer(canvas, doc)
-                    draw_pagina_linea_accion_detalle(canvas, doc, linea)
-            
-        # =========================
-        # PERCEPCION (6 PAGINAS)
-        # =========================
-        elif doc.page == percepcion_inicio:
-            FullImage("assets/percepcion.png")(canvas, doc)
-            
-        elif doc.page == percepcion_inicio + 1:
-            header_footer(canvas, doc)
-            draw_pagina_percepcion_1(
-                canvas,
-                doc,
-                grafico_percepcion_actual_path,
-                grafico_percepcion_comparacion_path,
-                tabla_percepcion
-            )
-            
-        elif doc.page == percepcion_inicio + 2:
-            header_footer(canvas, doc)
-            draw_pagina_percepcion_2(
-                canvas,
-                doc,
-                grafico_victimizacion_path,
-                grafico_no_denuncia_path,
-                tabla_no_denuncia,
-                motivo_principal,
-                total_omitidas
-            )
-            
-        elif doc.page == percepcion_inicio + 3:
-            header_footer(canvas, doc)
-            canvas.setFont("Helvetica-Bold", 16)
-            canvas.drawString(P3_TITULO_X, P3_TITULO_Y, "Información Relevante de la Comunidad")
-        
-            canvas.setFont("Helvetica-Bold", 12)
-            canvas.setFillColor(colors.HexColor("#013051"))
-            
-            canvas.drawString(
-                P3_GRAFICO1_X,
-                P3_GRAFICO1_Y + P3_GRAFICO_SIZE + 10,
-                "Horario y método delictivo según la percepción ciudadana"
-            )
-           
-            
-            # ---------------- GRAFICO HORARIOS ----------------
-            canvas.drawImage(
-                grafico_horarios_percepcion,
-                P3_GRAFICO1_X,
-                P3_GRAFICO1_Y,
-                P3_GRAFICO_SIZE,
-                P3_GRAFICO_SIZE
-            )
-        
-        
-            # ---------------- TABLA HORARIOS ----------------
-            tabla1 = Table(tabla_horarios_percepcion)
-        
-            tabla1.setStyle(TableStyle([
-
-                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-                ("FONTSIZE",(0,0),(-1,-1),9),
-            
-                ("BACKGROUND",(0,0),(-1,-1),colors.white),
-            
-                ("GRID",(0,0),(-1,-1),0.5,colors.black),
-            
-                ("ALIGN",(1,0),(1,-1),"CENTER"),
-            
-            ]))
-        
-            tabla1.wrapOn(canvas,0,0)
-            tabla1.drawOn(canvas,P3_TABLA1_X,P3_TABLA1_Y)
-        
-        
-            # ---------------- TEXTO HORARIOS ----------------
-            texto1 = f"""
-            La mayor parte de las personas que fueron víctimas de algún delito,
-            consideran que las horas con mayor incidencia delincuencial se ubican
-            entre las {horario_mayor} horas.
-        
-            Total respuestas omitidas: {omitidas_aportes}.
-            """
-        
-            canvas.setFont("Helvetica",12)
-            estilo = ParagraphStyle(
-                name="texto",
-                fontName="Helvetica",
-                fontSize=10,
-                alignment=TA_JUSTIFY
-            )
-            
-            p = Paragraph(texto1, estilo)
-            p.wrapOn(canvas, 230, 200)
-            p.drawOn(canvas, P3_TEXTO1_X, P3_TEXTO1_Y)
-                  
-            canvas.setFont("Helvetica-Bold", 12)
-            canvas.setFillColor(colors.HexColor("#013051"))
-            
-            canvas.drawString(
-                P3_GRAFICO2_X,
-                P3_GRAFICO2_Y + P3_GRAFICO_SIZE + 10,
-                "Armas utilizadas en hechos delictivos"
-            )
-            
-            # ---------------- GRAFICO ARMAS ----------------
-            canvas.drawImage(
-                grafico_armas_percepcion,
-                P3_GRAFICO2_X,
-                P3_GRAFICO2_Y,
-                P3_GRAFICO_SIZE,
-                P3_GRAFICO_SIZE
-            )
-        
-        
-            # ---------------- TABLA ARMAS ----------------
-            tabla2 = Table(tabla_armas)
-        
-            tabla2.setStyle(TableStyle([
-
-                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-                ("FONTSIZE",(0,0),(-1,-1),9),
-            
-                ("BACKGROUND",(0,0),(-1,-1),colors.white),
-            
-                ("GRID",(0,0),(-1,-1),0.5,colors.black),
-            
-                ("ALIGN",(1,0),(1,-1),"CENTER"),
-            
-            ]))
-        
-            tabla2.wrapOn(canvas,0,0)
-            tabla2.drawOn(canvas,P3_TABLA2_X,P3_TABLA2_Y)
-        
-        
-            # ---------------- TEXTO ARMAS ----------------
-            texto2 = f"""
-            La mayor parte de las personas que fueron víctimas de algún delito
-            consideran que el método más utilizado para la ejecución de ilícitos
-            es el {metodo_mas_usado}.
-        
-            Total respuestas omitidas: {omitidas_aportes}.
-            """
-            
-            p = Paragraph(texto2, estilo)
-            p.wrapOn(canvas, 230, 200)
-            p.drawOn(canvas, P3_TEXTO2_X, P3_TEXTO2_Y)
-            
-        elif doc.page == percepcion_inicio + 4:
-
-            header_footer(canvas, doc)
-
-            page_width, page_height = A4
-
-            # =====================================================
-            # VARIABLES EDITABLES PAGINA
-            # =====================================================
-
-            TITULO_X = 60
-            TITULO_Y = 740
-            TITULO_SIZE = 18
-
-            TITULO_COLOR = colors.HexColor("#013051")
-
-            # =====================================================
-            # COLORES TABLAS
-            # =====================================================
-
-            TABLA_COLORES_SERVICIO = [
-                colors.HexColor("#5b9bd5"),
-                colors.HexColor("#a5a5a5"),
-                colors.HexColor("#4472c4"),
-                colors.HexColor("#255e91"),
-                colors.HexColor("#636363"),
-                colors.HexColor("#70ad47"),
-                colors.HexColor("#264478")
-            ]
-
-            # =====================================================
-            # POSICIONES GRAFICO PRINCIPAL
-            # =====================================================
-
-            GRAFICO_PRINCIPAL_X = 55 
-            GRAFICO_PRINCIPAL_Y = 515 #470
-
-            GRAFICO_PRINCIPAL_W = 360
-            GRAFICO_PRINCIPAL_H = 220
-
-            TABLA1_X = 430 #460
-            TABLA1_Y = 585
-
-            # =====================================================
-            # PIE CHARTS
-            # =====================================================
-
-            PIE_SIZE = 145
-
-            PIE1_X = 90
-            PIE1_Y = 330 #235
-
-            PIE2_X = 360
-            PIE2_Y = 330 #235
-
-            PIE_TITLE_SIZE = 10
-
-            TABLA2_X = 80
-            TABLA2_Y = 285 #205
-
-            TABLA3_X = 350
-            TABLA3_Y = 285 #205
-
-            # =====================================================
-            # NUEVO GRAFICO ATENCION
-            # =====================================================
-
-            ATENCION_X = 40
-            ATENCION_Y = 95
-            
-            ATENCION_W = 320
-            ATENCION_H = 150
-            
-            TABLA4_X = 380
-            TABLA4_Y = 115
-
-            # =====================================================
-            # RESPUESTAS OMITIDAS
-            # =====================================================
-
-            OMITIDAS_X = 470
-            OMITIDAS_Y = 60
-
-            # =====================================================
-            # TITULO
-            # =====================================================
-
-            canvas.setFont(
-                "Helvetica-Bold",
-                TITULO_SIZE
-            )
-
-            canvas.setFillColor(
-                TITULO_COLOR
-            )
-
-            canvas.drawString(
-                TITULO_X,
-                TITULO_Y,
-                "Percepción del Servicio Policial"
-            )
-
-            # =====================================================
-            # GRAFICO PRINCIPAL
-            # =====================================================
-
-            canvas.drawImage(
-                grafico_servicio_policial,
-                GRAFICO_PRINCIPAL_X,
-                GRAFICO_PRINCIPAL_Y,
-                width=GRAFICO_PRINCIPAL_W,
-                height=GRAFICO_PRINCIPAL_H,
-                preserveAspectRatio=True,
-                mask='auto'
-            )
-
-            # =====================================================
-            # TABLA PRINCIPAL
-            # =====================================================
-
-            tabla1 = Table(
-                tabla_servicio,
-                colWidths=[95,45]
-            )
-
-            estilo_tabla1 = [
-
-                ("GRID",(0,0),(-1,-1),0.5,colors.black),
-
-                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-
-                ("FONTSIZE",(0,0),(-1,-1),9),
-
-                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
-
-                ("LEFTPADDING",(0,0),(-1,-1),3),
-
-                ("RIGHTPADDING",(0,0),(-1,-1),3),
-
-                ("TOPPADDING",(0,0),(-1,-1),2),
-
-                ("BOTTOMPADDING",(0,0),(-1,-1),2),
-            ]
-
-            for i, color in enumerate(TABLA_COLORES_SERVICIO[:5]):
-
-                estilo_tabla1.append(
-                    ("BACKGROUND",(0,i),(-1,i),color)
-                )
-
-            tabla1.setStyle(
-                TableStyle(estilo_tabla1)
-            )
-
-            tabla1.wrapOn(canvas,0,0)
-
-            tabla1.drawOn(
-                canvas,
-                TABLA1_X,
-                TABLA1_Y
-            )
-
-            # =====================================================
-            # ESTILO TABLAS
-            # =====================================================
-
-            style_tabla = ParagraphStyle(
-                name="TablaServicio",
-                fontName="Helvetica",
-                fontSize=8,
-                leading=10,
-                textColor=colors.white,
-                wordWrap="CJK"
-            )
-
-            # =====================================================
-            # PIE 1
-            # =====================================================
-
-            canvas.setFont(
-                "Helvetica-Bold",
-                PIE_TITLE_SIZE
-            )
-
-            canvas.drawString(
-                PIE1_X,
-                PIE1_Y + PIE_SIZE + 18,
-                "Calificación del servicio policial"
-            )
-
-            canvas.drawString(
-                PIE1_X,
-                PIE1_Y + PIE_SIZE + 6,
-                "de los últimos dos años"
-            )
-
-            canvas.drawImage(
-                grafico_servicio_anual,
-                PIE1_X,
-                PIE1_Y,
-                width=PIE_SIZE,
-                height=PIE_SIZE,
-                preserveAspectRatio=True,
-                mask='auto'
-            )
-
-            tabla2_data = []
-
-            for row in tabla_servicio_anual:
-
-                nueva = []
-
-                for cell in row:
-
-                    nueva.append(
-                        Paragraph(str(cell), style_tabla)
-                    )
-
-                tabla2_data.append(nueva)
-
-            tabla2 = Table(
-                tabla2_data,
-                colWidths=[70,35]
-            )
-
-            estilo_tabla2 = [
-
-                ("GRID",(0,0),(-1,-1),0.5,colors.black),
-
-                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-
-                ("FONTSIZE",(0,0),(-1,-1),8),
-
-                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
-
-                ("LEFTPADDING",(0,0),(-1,-1),3),
-
-                ("RIGHTPADDING",(0,0),(-1,-1),3),
-
-                ("TOPPADDING",(0,0),(-1,-1),2),
-
-                ("BOTTOMPADDING",(0,0),(-1,-1),2),
-            ]
-
-            for i, color in enumerate(TABLA_COLORES_SERVICIO[:3]):
-
-                estilo_tabla2.append(
-                    ("BACKGROUND",(0,i),(-1,i),color)
-                )
-
-            tabla2.setStyle(
-                TableStyle(estilo_tabla2)
-            )
-
-            tabla2.wrapOn(canvas,0,0)
-
-            tabla2.drawOn(
-                canvas,
-                TABLA2_X,
-                TABLA2_Y
-            )
-
-            # =====================================================
-            # PIE 2
-            # =====================================================
-
-            canvas.setFont(
-                "Helvetica-Bold",
-                PIE_TITLE_SIZE
-            )
-
-            canvas.drawString(
-                PIE2_X,
-                PIE2_Y + PIE_SIZE + 18,
-                "¿Conoce usted a los policías"
-            )
-
-            canvas.drawString(
-                PIE2_X,
-                PIE2_Y + PIE_SIZE + 6,
-                "de la Fuerza Pública de su comunidad?"
-            )
-
-            canvas.drawImage(
-                grafico_conoce_policia,
-                PIE2_X,
-                PIE2_Y,
-                width=PIE_SIZE,
-                height=PIE_SIZE,
-                preserveAspectRatio=True,
-                mask='auto'
-            )
-
-            tabla3_data = []
-
-            for row in tabla_conoce:
-
-                nueva = []
-
-                for cell in row:
-
-                    nueva.append(
-                        Paragraph(str(cell), style_tabla)
-                    )
-
-                tabla3_data.append(nueva)
-
-            tabla3 = Table(
-                tabla3_data,
-                colWidths=[70,35]
-            )
-
-            estilo_tabla3 = [
-
-                ("GRID",(0,0),(-1,-1),0.5,colors.black),
-
-                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-
-                ("FONTSIZE",(0,0),(-1,-1),8),
-
-                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
-
-                ("LEFTPADDING",(0,0),(-1,-1),3),
-
-                ("RIGHTPADDING",(0,0),(-1,-1),3),
-
-                ("TOPPADDING",(0,0),(-1,-1),2),
-
-                ("BOTTOMPADDING",(0,0),(-1,-1),2),
-            ]
-
-            for i, color in enumerate(TABLA_COLORES_SERVICIO[:3]):
-
-                estilo_tabla3.append(
-                    ("BACKGROUND",(0,i),(-1,i),color)
-                )
-
-            tabla3.setStyle(
-                TableStyle(estilo_tabla3)
-            )
-
-            tabla3.wrapOn(canvas,0,0)
-
-            tabla3.drawOn(
-                canvas,
-                TABLA3_X,
-                TABLA3_Y
-            )
-
-            # =====================================================
-            # NUEVO GRAFICO ATENCION
-            # =====================================================
-
-            canvas.setFont(
-                "Helvetica-Bold",
-                11
-            )
-
-            canvas.drawString(
-                ATENCION_X,
-                ATENCION_Y + ATENCION_H + 12,
-                "Qué tipo de atención ha recibido"
-            )
-
-            canvas.drawImage(
-                grafico_atencion,
-                ATENCION_X,
-                ATENCION_Y,
-                width=ATENCION_W,
-                height=ATENCION_H,
-                preserveAspectRatio=True,
-                mask='auto'
-            )
-
-            # =====================================================
-            # TABLA ATENCION
-            # =====================================================
-
-            tabla4_data = []
-
-            for row in tabla_atencion:
-
-                nueva = []
-
-                for cell in row:
-
-                    nueva.append(
-                        Paragraph(str(cell), style_tabla)
-                    )
-
-                tabla4_data.append(nueva)
-
-            tabla4 = Table(
-                tabla4_data,
-                colWidths=[155,50]
-            )
-
-            estilo_tabla4 = [
-
-                ("GRID",(0,0),(-1,-1),0.5,colors.black),
-
-                ("FONTNAME",(0,0),(-1,-1),"Helvetica"),
-
-                ("FONTSIZE",(0,0),(-1,-1),8),
-
-                ("TEXTCOLOR",(0,0),(-1,-1),colors.white),
-
-                ("LEFTPADDING",(0,0),(-1,-1),3),
-
-                ("RIGHTPADDING",(0,0),(-1,-1),3),
-
-                ("TOPPADDING",(0,0),(-1,-1),2),
-
-                ("BOTTOMPADDING",(0,0),(-1,-1),2),
-            ]
-
-            for i, color in enumerate(TABLA_COLORES_SERVICIO):
-
-                estilo_tabla4.append(
-                    ("BACKGROUND",(0,i),(-1,i),color)
-                )
-
-            tabla4.setStyle(
-                TableStyle(estilo_tabla4)
-            )
-
-            tabla4.wrapOn(canvas,0,0)
-
-            tabla4.drawOn(
-                canvas,
-                TABLA4_X,
-                TABLA4_Y
-            )
-
-            # =====================================================
-            # RESPUESTAS OMITIDAS
-            # =====================================================
-
-            canvas.setFont(
-                "Helvetica-Bold",
-                11
-            )
-
-            canvas.setFillColor(
-                colors.black
-            )
-
-            canvas.drawString(
-                OMITIDAS_X,
-                OMITIDAS_Y + 18,
-                "Respuestas omitidas"
-            )
-
-            canvas.setFont(
-                "Helvetica",
-                11
-            )
-
-            canvas.drawString(
-                OMITIDAS_X,
-                OMITIDAS_Y,
-                str(omitidas_servicio)
-            )
-            
-        elif doc.page == percepcion_inicio + 5:
-        
-            header_footer(canvas, doc)
-        
-            page_width, page_height = A4
-        
-            # ======================================================
-            # VARIABLES EDITABLES PAGINA
-            # ======================================================
-        
-            TITULO_X = 60
-            TITULO_Y = 740
-            TITULO_SIZE = 18
-            TITULO_COLOR = colors.HexColor("#013051")
-        
-            # POSICIONES GRAFICOS
-            GRAFICO_SIZE = 200
-        
-            GRAFICO1_X = 70
-            GRAFICO1_Y = 470
-        
-            GRAFICO2_X = 330
-            GRAFICO2_Y = 470
-        
-            GRAFICO3_X = 70
-            GRAFICO3_Y = 130
-        
-            GRAFICO4_X = 330
-            GRAFICO4_Y = 130
-        
-            # TITULOS
-            TITULO_GRAFICO_SIZE = 12
-            TITULO_COLOR = colors.HexColor("#013051")
-        
-            OFFSET_TITULO = 15
-        
-            # ======================================================
-        
-            canvas.setFont("Helvetica-Bold", TITULO_SIZE)
-            canvas.setFillColor(TITULO_COLOR)
-        
-            canvas.drawString(
-                TITULO_X,
-                TITULO_Y,
-                "Percepción Sector Comercial"
-            )
-        
-            canvas.setFont("Helvetica-Bold", TITULO_GRAFICO_SIZE)
-
-            COMER_X = 258
-            COMER_Y = 381
-            COMER_W = 80
-            COMER_H = 80
-            
-            canvas.drawImage(
-                "assets/comer.png",
-                COMER_X,
-                COMER_Y,
-                COMER_W,
-                COMER_H
-            )
-            
-            # ======================================================
-            # GRAFICO 1
-            # ======================================================
-        
-            canvas.drawString(
-                GRAFICO1_X,
-                GRAFICO1_Y + GRAFICO_SIZE + OFFSET_TITULO + 12,
-                "¿Se siente seguro en"
-            )
-
-            canvas.drawString(
-                GRAFICO1_X,
-                GRAFICO1_Y + GRAFICO_SIZE + OFFSET_TITULO,
-                "su establecimiento comercial?"
-            )
-        
-            canvas.drawImage(
-                grafico_comercio_seguridad,
-                GRAFICO1_X,
-                GRAFICO1_Y,
-                GRAFICO_SIZE,
-                GRAFICO_SIZE
-            )
-        
-            # ======================================================
-            # GRAFICO 2
-            # ======================================================
-        
-            canvas.drawString(
-                GRAFICO2_X,
-                GRAFICO2_Y + GRAFICO_SIZE + OFFSET_TITULO + 12,
-                "¿Conoce el programa de Seguridad Comercial"
-            )
-
-            canvas.drawString(
-                GRAFICO2_X,
-                GRAFICO2_Y + GRAFICO_SIZE + OFFSET_TITULO,
-                "que imparte Fuerza Pública?"
-            )
-        
-            canvas.drawImage(
-                grafico_comercio_programa,
-                GRAFICO2_X,
-                GRAFICO2_Y,
-                GRAFICO_SIZE,
-                GRAFICO_SIZE
-            )
-        
-            # ======================================================
-            # GRAFICO 3
-            # ======================================================
-        
-            canvas.drawString(
-                GRAFICO3_X,
-                GRAFICO3_Y + GRAFICO_SIZE + OFFSET_TITULO + 12,
-                "¿Está inscrito en el programa"
-            )
-
-            canvas.drawString(
-                GRAFICO3_X,
-                GRAFICO3_Y + GRAFICO_SIZE + OFFSET_TITULO,
-                "de Seguridad Comercial?"
-            )
-        
-            canvas.drawImage(
-                grafico_comercio_inscrito,
-                GRAFICO3_X,
-                GRAFICO3_Y,
-                GRAFICO_SIZE,
-                GRAFICO_SIZE
-            )
-        
-            # ======================================================
-            # GRAFICO 4
-            # ======================================================
-        
-            canvas.drawString(
-                GRAFICO4_X,
-                GRAFICO4_Y + GRAFICO_SIZE + OFFSET_TITULO + 12,
-                "¿Le gustaría que se le contacte"
-            )
-
-            canvas.drawString(
-                GRAFICO4_X,
-                GRAFICO4_Y + GRAFICO_SIZE + OFFSET_TITULO,
-                "para formar parte del programa?"
-            )
-        
-            canvas.drawImage(
-                grafico_comercio_contacto,
-                GRAFICO4_X,
-                GRAFICO4_Y,
-                GRAFICO_SIZE,
-                GRAFICO_SIZE
-            )
-
-        elif doc.page == percepcion_inicio + 6:
-            FullImage("assets/final.png")(canvas, doc)
-
-
-        return
+                tabla1 = Table(tabla_horarios_percepcion)
+                tabla1.setStyle(TableStyle([
+                    ("FONTNAME", (0, 0), (-1, -1), FONT_NAME_REGULAR),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+                    ("ALIGN", (1, 0), (1, -1), "CENTER"),
+                    ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ]))
+                tabla1.wrapOn(canvas, 0, 0)
+                tabla1.drawOn(canvas, 430, 490)
+                
+                texto1 = f"La mayor parte de las personas que fueron víctimas de algún delito, consideran que las horas con mayor incidencia delincuencial se ubican entre las {horario_mayor} horas.<br/><br/>Total respuestas omitidas: {omitidas_aportes}."
+                p1 = Paragraph(texto1, ParagraphStyle("texto", fontName=FONT_NAME_REGULAR, fontSize=11, leading=14, alignment=TA_JUSTIFY))
+                p1.wrapOn(canvas, 230, 200)
+                p1.drawOn(canvas, 330, 410)
+                
+                canvas.setFont(FONT_NAME_BOLD, 12)
+                canvas.setFillColor(COLOR_SECUNDARIO)
+                canvas.drawString(340, 150 + 200 + 10, "Armas utilizadas en hechos delictivos")
+                canvas.drawImage(grafico_armas_percepcion, 340, 150, 200, 200)
+                
+                tabla2 = Table(tabla_armas)
+                tabla2.setStyle(TableStyle([
+                    ("FONTNAME", (0, 0), (-1, -1), FONT_NAME_REGULAR),
+                    ("FONTSIZE", (0, 0), (-1, -1), 10),
+                    ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+                    ("ALIGN", (1, 0), (1, -1), "CENTER"),
+                    ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ]))
+                tabla2.wrapOn(canvas, 0, 0)
+                tabla2.drawOn(canvas, 65, 180)
+                
+                texto2 = f"La mayor parte de las personas que fueron víctimas de algún delito consideran que el método más utilizado para la ejecución de ilícitos es el {metodo_mas_usado}.<br/><br/>Total respuestas omitidas: {omitidas_aportes}."
+                p2 = Paragraph(texto2, ParagraphStyle("texto", fontName=FONT_NAME_REGULAR, fontSize=11, leading=14, alignment=TA_JUSTIFY))
+                p2.wrapOn(canvas, 230, 200)
+                p2.drawOn(canvas, 65, 90)
+
+            elif doc.page == percepcion_inicio + 4:
+                header_footer(canvas, doc)
+                canvas.setFont(FONT_NAME_BOLD, 18)
+                canvas.setFillColor(COLOR_SECUNDARIO)
+                canvas.drawString(60, 740, "Percepción del Servicio Policial")
+                
+                canvas.drawImage(grafico_servicio_policial, 55, 515, width=360, height=220, preserveAspectRatio=True, mask='auto')
+                
+                # Tablas con estilo estandarizado
+                def draw_mini_table(canvas, data, x, y, col_widths, num_colores):
+                    tabla = Table(data, colWidths=col_widths)
+                    estilo = [
+                        ("GRID", (0, 0), (-1, -1), 0.5, COLOR_BORDE),
+                        ("FONTNAME", (0, 0), (-1, -1), FONT_NAME_REGULAR),
+                        ("FONTSIZE", (0, 0), (-1, -1), 9),
+                        ("TEXTCOLOR", (0, 0), (-1, -1), colors.white),
+                        ("ALIGN", (1, 0), (1, -1), "CENTER"),
+                        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                        ("TOPPADDING", (0, 0), (-1, -1), 4),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                    ]
+                    for i, color in enumerate(P3_PALETA_GRAFICO[:num_colores]):
+                        estilo.append(("BACKGROUND", (0, i), (-1, i), colors.HexColor(color)))
+                    tabla.setStyle(TableStyle(estilo))
+                    tabla.wrapOn(canvas, 0, 0)
+                    tabla.drawOn(canvas, x, y)
+                
+                draw_mini_table(canvas, tabla_servicio, 420, 585, [110, 45], 5)
+                
+                # Gráficos e Info Inferior
+                PIE_SIZE = 145
+                canvas.setFont(FONT_NAME_BOLD, 10)
+                canvas.setFillColor(COLOR_SECUNDARIO)
+                canvas.drawString(90, 330 + PIE_SIZE + 18, "Calificación del servicio policial")
+                canvas.drawString(90, 330 + PIE_SIZE + 6, "de los últimos dos años")
+                canvas.drawImage(grafico_servicio_anual, 90, 330, width=PIE_SIZE, height=PIE_SIZE, preserveAspectRatio=True, mask='auto')
+                draw_mini_table(canvas, [[Paragraph(str(c), ParagraphStyle("s", fontName=FONT_NAME_REGULAR, fontSize=9, textColor=colors.white))] for c in [r[0] for r in tabla_servicio_anual]], 80, 275, [90], 3)
+                
+                canvas.setFont(FONT_NAME_BOLD, 10)
+                canvas.setFillColor(COLOR_SECUNDARIO)
+                canvas.drawString(360, 330 + PIE_SIZE + 18, "¿Conoce usted a los policías?")
+                canvas.drawImage(grafico_conoce_policia, 360, 330, width=PIE_SIZE, height=PIE_SIZE, preserveAspectRatio=True, mask='auto')
+                draw_mini_table(canvas, [[Paragraph(str(c), ParagraphStyle("s", fontName=FONT_NAME_REGULAR, fontSize=9, textColor=colors.white))] for c in [r[0] for r in tabla_conoce]], 350, 275, [90], 3)
+                
+                canvas.setFont(FONT_NAME_BOLD, 11)
+                canvas.drawString(40, 95 + 150 + 12, "Qué tipo de atención ha recibido")
+                canvas.drawImage(grafico_atencion, 40, 95, width=320, height=150, preserveAspectRatio=True, mask='auto')
+                draw_mini_table(canvas, [[Paragraph(str(c), ParagraphStyle("s", fontName=FONT_NAME_REGULAR, fontSize=9, textColor=colors.white))] for c in [r[0] for r in tabla_atencion]], 380, 115, [130], len(tabla_atencion))
+                
+                canvas.setFont(FONT_NAME_BOLD, 11)
+                canvas.setFillColor(colors.black)
+                canvas.drawString(470, 60 + 18, "Respuestas omitidas")
+                canvas.setFont(FONT_NAME_REGULAR, 11)
+                canvas.drawString(470, 60, str(omitidas_servicio))
+
+            elif doc.page == percepcion_inicio + 5:
+                header_footer(canvas, doc)
+                canvas.setFont(FONT_NAME_BOLD, 18)
+                canvas.setFillColor(COLOR_SECUNDARIO)
+                canvas.drawString(60, 740, "Percepción Sector Comercial")
+                
+                if os.path.exists("assets/comer.png"):
+                    canvas.drawImage("assets/comer.png", 258, 381, 80, 80)
+                
+                canvas.setFont(FONT_NAME_BOLD, 11)
+                canvas.drawString(70, 470 + 200 + 15 + 12, "¿Se siente seguro en")
+                canvas.drawString(70, 470 + 200 + 15, "su establecimiento comercial?")
+                canvas.drawImage(grafico_comercio_seguridad, 70, 470, 200, 200)
+                
+                canvas.drawString(330, 470 + 200 + 15 + 12, "¿Conoce el programa de Seguridad Comercial")
+                canvas.drawString(330, 470 + 200 + 15, "que imparte Fuerza Pública?")
+                canvas.drawImage(grafico_comercio_programa, 330, 470, 200, 200)
+                
+                canvas.drawString(70, 130 + 200 + 15 + 12, "¿Está inscrito en el programa")
+                canvas.drawString(70, 130 + 200 + 15, "de Seguridad Comercial?")
+                canvas.drawImage(grafico_comercio_inscrito, 70, 130, 200, 200)
+                
+                canvas.drawString(330, 130 + 200 + 15 + 12, "¿Le gustaría que se le contacte")
+                canvas.drawString(330, 130 + 200 + 15, "para formar parte del programa?")
+                canvas.drawImage(grafico_comercio_contacto, 330, 130, 200, 200)
+                
+            elif doc.page == percepcion_inicio + 6:
+                if os.path.exists("assets/final.png"): FullImage("assets/final.png")(canvas, doc)
 
     doc.build(
         story,
         onFirstPage=first_page,
         onLaterPages=later_pages
     )
-
     buffer.seek(0)
     return buffer
