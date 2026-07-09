@@ -184,7 +184,7 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
     
     # Parámetros de posición
     pos_x = (page_width / 2) + 10
-    pos_y = page_height - 140  # Ajustado para alinear con el gráfico de edad
+    pos_y = page_height - 180  # Ajustado para alinear con el gráfico de edad
     
     generar_tabla_estilizada(canvas, tabla_edad, "Participación por Edad", pos_x, pos_y, 185, colores)
 
@@ -194,8 +194,8 @@ def draw_tabla_escolaridad(canvas, tabla_escolaridad):
     colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4", "#255E91", "#B7B7B7", "#9DC3E6", "#8FAADC", "#424e69"]]
     
     # Parámetros de posición
-    pos_x = 10
-    pos_y = page_height - 320  # Ajustado para alinear con el gráfico de escolaridad
+    pos_x = 30
+    pos_y = page_height - 340  # Ajustado para alinear con el gráfico de escolaridad
     
     generar_tabla_estilizada(canvas, tabla_escolaridad, "Participación por Escolaridad", pos_x, pos_y, 185, colores)
 
@@ -206,7 +206,7 @@ def draw_tabla_genero(canvas, tabla_genero):
     
     # Parámetros de posición
     pos_x = (page_width / 2) + 10
-    pos_y = page_height - 580  # Ajustado para alinear con el gráfico de género
+    pos_y = page_height - 600  # Ajustado para alinear con el gráfico de género
     
     generar_tabla_estilizada(canvas, tabla_genero, "Participación por Género", pos_x, pos_y, 185, colores)
 
