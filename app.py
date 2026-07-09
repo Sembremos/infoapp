@@ -171,7 +171,7 @@ if archivo:
         ax.tick_params(left=False, bottom=False)
 
         # Fondo transparente (clave para PDF)
-        ax.set_facecolor("none")
+        aplicar_estilo(ax)
         fig.patch.set_alpha(0)
 
         for i in range(len(rel_percent_labels)):
@@ -251,7 +251,7 @@ if archivo:
             autotext.set_fontsize(25)
 
         # Fondo transparente
-        ax_edad.set_facecolor("none")
+        aplicar_estilo(ax_edad)
         fig_edad.patch.set_alpha(0)
 
         buf_edad = BytesIO()
@@ -327,7 +327,7 @@ if archivo:
             autotext.set_fontsize(25)
 
         # Fondo transparente
-        ax_esco.set_facecolor("none")
+        aplicar_estilo(ax_esco)
         fig_esco.patch.set_alpha(0)
 
     
@@ -400,7 +400,7 @@ if archivo:
         for autotext in autotexts:
             autotext.set_fontsize(25)
 
-        ax_gen.set_facecolor("none")
+        aplicar_estilo(ax_gen)
         fig_gen.patch.set_alpha(0)
 
         buf_gen = BytesIO()
