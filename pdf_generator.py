@@ -123,7 +123,7 @@ def draw_grafico_genero(canvas, grafico_path):
 
 def draw_grafico_relacion(canvas, grafico_path):
     TITULO_X = 40
-    TITULO_Y = 360
+    TITULO_Y = 350
     CAJA_X = 35
     CAJA_Y = 80
     CAJA_WIDTH = 520
@@ -175,20 +175,38 @@ def generar_tabla_estilizada(canvas, data, titulo, x, y, table_width, colores_fi
     table.wrapOn(canvas, table_width, 200)
     table.drawOn(canvas, x, y - table._height)
 
+# ================= TABLA EDAD =================
 def draw_tabla_edad(canvas, doc, tabla_edad):
     page_width, page_height = A4
     colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4", "#255E91", "#B7B7B7"]]
-    generar_tabla_estilizada(canvas, tabla_edad, "Participación por Edad", page_width / 2 + 10, page_height - 60 - 200, 220, colores)
+    
+    # Parámetros de posición
+    pos_x = (page_width / 2) + 10
+    pos_y = page_height - 120  # Ajustado para alinear con el gráfico de edad
+    
+    generar_tabla_estilizada(canvas, tabla_edad, "Participación por Edad", pos_x, pos_y, 220, colores)
 
+# ================= TABLA ESCOLARIDAD =================
 def draw_tabla_escolaridad(canvas, tabla_escolaridad):
     page_width, page_height = A4
     colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4", "#255E91", "#B7B7B7", "#9DC3E6", "#8FAADC", "#D9E1F2"]]
-    generar_tabla_estilizada(canvas, tabla_escolaridad, "Participación por Escolaridad", 20, page_height - 320 - 200, 220, colores)
+    
+    # Parámetros de posición
+    pos_x = 20
+    pos_y = page_height - 320  # Ajustado para alinear con el gráfico de escolaridad
+    
+    generar_tabla_estilizada(canvas, tabla_escolaridad, "Participación por Escolaridad", pos_x, pos_y, 220, colores)
 
+# ================= TABLA GENERO =================
 def draw_tabla_genero(canvas, tabla_genero):
     page_width, page_height = A4
     colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4"]]
-    generar_tabla_estilizada(canvas, tabla_genero, "Participación por Género", page_width / 2 + 10, page_height - 510 - 200, 220, colores)
+    
+    # Parámetros de posición
+    pos_x = (page_width / 2) + 10
+    pos_y = page_height - 540  # Ajustado para alinear con el gráfico de género
+    
+    generar_tabla_estilizada(canvas, tabla_genero, "Participación por Género", pos_x, pos_y, 220, colores)
 
 
 def draw_tabla_simple(canvas, data, titulo, x, y, col_widths, header_color=COLOR_SECUNDARIO, font_size_header=11, font_size_body=10):
