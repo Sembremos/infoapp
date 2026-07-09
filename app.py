@@ -1116,8 +1116,8 @@ if archivo:
         # ===== GRAFICO PASTEL =====
         def generar_grafico_percepcion_actual(df):
         
-            FIG_WIDTH = 5
-            FIG_HEIGHT = 5
+            FIG_WIDTH = 11
+            FIG_HEIGHT = 11
             DPI = 300
         
             fig, ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT))
@@ -1147,7 +1147,7 @@ if archivo:
                 pctdistance=0.62,
             
                 textprops={
-                    "fontsize": FONT_PORCENTAJES,
+                    "fontsize": 11,
                     "fontweight": "bold"
                 }
             )
