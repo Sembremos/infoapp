@@ -144,8 +144,9 @@ def draw_grafico_relacion(canvas, grafico_path):
 
 # ================= FUNCIONES DE TABLAS ESTANDARIZADAS =================
 def generar_tabla_estilizada(canvas, data, titulo, x, y, table_width, colores_filas):
-    font_size_header = 11
-    font_size_body = 10
+    # --- 1. REDUCIMOS EL TAMAÑO DE LETRA (Antes estaban en 11 y 10) ---
+    font_size_header = 10
+    font_size_body = 9
     
     table_data = [[titulo, ""]]
     table_data.extend(data)
@@ -162,8 +163,9 @@ def generar_tabla_estilizada(canvas, data, titulo, x, y, table_width, colores_fi
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("FONTSIZE", (0, 1), (-1, -1), font_size_body),
         ("GRID", (0, 1), (-1, -1), 0.5, colors.white),
-        ("TOPPADDING", (0, 0), (-1, -1), 5),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+        # --- 2. REDUCIMOS EL ESPACIO INTERNO (Antes estaba en 5) ---
+        ("TOPPADDING", (0, 0), (-1, -1), 3),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
     ])
     
     for i, color in enumerate(colores_filas, start=1):
@@ -184,18 +186,18 @@ def draw_tabla_edad(canvas, doc, tabla_edad):
     pos_x = (page_width / 2) + 10
     pos_y = page_height - 140  # Ajustado para alinear con el gráfico de edad
     
-    generar_tabla_estilizada(canvas, tabla_edad, "Participación por Edad", pos_x, pos_y, 220, colores)
+    generar_tabla_estilizada(canvas, tabla_edad, "Participación por Edad", pos_x, pos_y, 185, colores)
 
 # ================= TABLA ESCOLARIDAD =================
 def draw_tabla_escolaridad(canvas, tabla_escolaridad):
     page_width, page_height = A4
-    colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4", "#255E91", "#B7B7B7", "#9DC3E6", "#8FAADC", "#D9E1F2"]]
+    colores = [colors.HexColor(c) for c in ["#5B9BD5", "#A5A5A5", "#4472C4", "#255E91", "#B7B7B7", "#9DC3E6", "#8FAADC", "#424e69"]]
     
     # Parámetros de posición
-    pos_x = 20
+    pos_x = 10
     pos_y = page_height - 320  # Ajustado para alinear con el gráfico de escolaridad
     
-    generar_tabla_estilizada(canvas, tabla_escolaridad, "Participación por Escolaridad", pos_x, pos_y, 220, colores)
+    generar_tabla_estilizada(canvas, tabla_escolaridad, "Participación por Escolaridad", pos_x, pos_y, 185, colores)
 
 # ================= TABLA GENERO =================
 def draw_tabla_genero(canvas, tabla_genero):
@@ -206,7 +208,7 @@ def draw_tabla_genero(canvas, tabla_genero):
     pos_x = (page_width / 2) + 10
     pos_y = page_height - 580  # Ajustado para alinear con el gráfico de género
     
-    generar_tabla_estilizada(canvas, tabla_genero, "Participación por Género", pos_x, pos_y, 220, colores)
+    generar_tabla_estilizada(canvas, tabla_genero, "Participación por Género", pos_x, pos_y, 185, colores)
 
 
 def draw_tabla_simple(canvas, data, titulo, x, y, col_widths, header_color=COLOR_SECUNDARIO, font_size_header=11, font_size_body=10):
