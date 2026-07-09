@@ -1088,7 +1088,7 @@ def generar_pdf(
 
         elif doc.page == 11:
             header_footer(canvas, doc)
-            draw_texto_mixto(canvas, 45, A4[1] - 350, "Frente a lo anterior, esta metodología permitió la identificación de", causas_identificadas, "causas, directamente relacionadas con los", factores_micmac, "factores priorizados en la Mic-Mac.")
+            draw_texto_mixto(canvas, 45, A4[1] - 320, "Frente a lo anterior, esta metodología permitió la identificación de", causas_identificadas, "causas, directamente relacionadas con los", factores_micmac, "factores priorizados en la Mic-Mac.")
             
             img_width, img_height = 260, 260
             img_x, img_y = A4[0] / 2 + 10, A4[1] - img_height - 130
