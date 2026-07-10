@@ -848,7 +848,7 @@ def generar_pdf(
     styles = getSampleStyleSheet()
     styles["Heading1"].textColor = COLOR_SECUNDARIO
     
-    styles.add(ParagraphStyle(name="NormalJustificado", parent=styles["Normal"], alignment=TA_JUSTIFY, leading=14))
+    styles.add(ParagraphStyle(name="NormalJustificado", parent=styles["Normal"], alignment=TA_JUSTIFY, leading=15))
     styles.add(ParagraphStyle(name="TituloGrande", fontName=FONT_NAME_REGULAR, fontSize=26, textColor=colors.white, leading=30, spaceAfter=2, alignment=TA_LEFT))
     styles.add(ParagraphStyle(name="TituloDelta", fontName=FONT_NAME_BOLD, fontSize=45, textColor=COLOR_PRIMARIO, leading=40, spaceAfter=10, alignment=TA_LEFT))
     styles.add(ParagraphStyle(name="TituloD2", fontName=FONT_NAME_BOLD, fontSize=60, textColor=colors.white, leading=60, spaceAfter=10, alignment=TA_LEFT))
@@ -1113,41 +1113,53 @@ def generar_pdf(
 
         elif doc.page == 13:
             header_footer(canvas, doc)
-            canvas.drawImage(grafico_denuncias_path, x=(A4[0] - 550) / 2, y=A4[1] - 330, width=250, height=250, preserveAspectRatio=True, mask="auto")
-            draw_tabla_simple(canvas, tabla_denuncias, "Detalle de denuncias por distrito", 347, A4[1] - 80, [130], COLOR_SECUNDARIO)
+            
+            # --- 1. SECCIÓN DENUNCIAS POR DISTRITO ---
+            canvas.drawImage(grafico_denuncias_path, x=40, y=page_height - 300, width=220, height=220, preserveAspectRatio=True, mask="auto")
+            
+            draw_tabla_simple(canvas, tabla_denuncias, "Denuncias por distrito", x=280, y=page_height - 80, col_widths=[110, 40], header_color=COLOR_SECUNDARIO, font_size_header=10, font_size_body=8)
+            
+            # Total denuncias (más compacto)
+            canvas.setFillColor(COLOR_SECUNDARIO)
+            canvas.rect(280, page_height - 300, 150, 50, fill=1, stroke=0)
+            canvas.setFillColor(colors.white)
+            canvas.setFont(FONT_NAME_BOLD, 10)
+            canvas.drawCentredString(355, page_height - 270, "Total denuncias")
+            canvas.setFont(FONT_NAME_BOLD, 18)
+            canvas.drawCentredString(355, page_height - 290, str(total_denuncias))
+
+            # --- 2. SECCIÓN DENUNCIAS POR HORARIO ---
+            canvas.drawImage(grafico_horario_path, x=40, y=page_height - 560, width=220, height=220, preserveAspectRatio=True, mask="auto")
+            draw_tabla_simple(canvas, tabla_horario, "Denuncias por horario", x=280, y=page_height - 340, col_widths=[90, 40], header_color=COLOR_SECUNDARIO, font_size_header=10, font_size_body=8)
+            
+            # Cuadros AM/PM compactos
+            canvas.setFillColor(COLOR_SECUNDARIO)
+            canvas.rect(280, page_height - 430, 70, 35, fill=1, stroke=0)
+            canvas.setFillColor(colors.white)
+            canvas.setFont(FONT_NAME_BOLD, 10)
+            canvas.drawCentredString(315, page_height - 410, "AM")
+            canvas.setFont(FONT_NAME_BOLD, 14)
+            canvas.drawCentredString(315, page_height - 425, str(total_am))
             
             canvas.setFillColor(COLOR_SECUNDARIO)
-            canvas.rect(A4[0] / 2 - 75, 510, 115, 50, fill=1, stroke=0)
+            canvas.rect(360, page_height - 430, 70, 35, fill=1, stroke=0)
             canvas.setFillColor(colors.white)
-            canvas.setFont(FONT_NAME_BOLD, 11)
-            canvas.drawCentredString(A4[0] / 2 - 18, 540, "Total denuncias")
-            canvas.setFont(FONT_NAME_BOLD, 22)
-            canvas.drawCentredString(A4[0] / 2 - 18, 518, str(total_denuncias))
-            
-            canvas.drawImage(grafico_horario_path, x=(A4[0] - 550) / 2, y=A4[1] - 600, width=250, height=250, preserveAspectRatio=True, mask="auto")
-            draw_tabla_simple(canvas, tabla_horario, "Denuncias por horario", 420, A4[1] - 350, [90, 40], COLOR_SECUNDARIO)
-            
-            canvas.setFillColor(COLOR_SECUNDARIO)
-            canvas.rect(280, 360, 100, 40, fill=1, stroke=0)
-            canvas.setFillColor(colors.white)
-            canvas.setFont(FONT_NAME_BOLD, 12)
-            canvas.drawCentredString(330, 385, "AM")
-            canvas.setFont(FONT_NAME_BOLD, 16)
-            canvas.drawCentredString(330, 368, str(total_am))
-            
-            canvas.setFillColor(COLOR_SECUNDARIO)
-            canvas.rect(280, 300, 100, 40, fill=1, stroke=0)
-            canvas.setFillColor(colors.white)
-            canvas.setFont(FONT_NAME_BOLD, 12)
-            canvas.drawCentredString(330, 325, "PM")
-            canvas.setFont(FONT_NAME_BOLD, 16)
-            canvas.drawCentredString(330, 308, str(total_pm))
-            
-            total_columnas = len(tabla_horario_distrito[0])
-            draw_tabla_horario_distrito(canvas, tabla_horario_distrito, "DCLP según horario, por distrito", 40, 260, [(A4[0] - 80) / total_columnas] * total_columnas)
-            
-            if os.path.exists("assets/horas.png"):
-                canvas.drawImage("assets/horas.png", 295, 410, 70, 70)
+            canvas.setFont(FONT_NAME_BOLD, 10)
+            canvas.drawCentredString(395, page_height - 410, "PM")
+            canvas.setFont(FONT_NAME_BOLD, 14)
+            canvas.drawCentredString(395, page_height - 425, str(total_pm))
+
+            # --- 3. TABLA GRANDE (DCLP) ---
+            # Ajuste crítico: reduje el ancho disponible y la fuente para que quepa
+            ancho_tabla_grande = page_width - 80
+            draw_tabla_horario_distrito(
+                canvas=canvas,
+                data=tabla_horario_distrito,
+                titulo="DCLP según horario, por distrito",
+                x=40,
+                y=230,
+                col_widths=[(ancho_tabla_grande / len(tabla_horario_distrito[0]))] * len(tabla_horario_distrito[0])
+            )
 
         elif doc.page == 14:
             header_footer(canvas, doc)
