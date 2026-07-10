@@ -1111,55 +1111,32 @@ def generar_pdf(
         elif doc.page == 12:
             if os.path.exists("assets/estadistica.png"): FullImage("assets/estadistica.png")(canvas, doc)
 
-        elif doc.page == 13:
+       elif doc.page == 13:
             header_footer(canvas, doc)
             
-            # --- 1. SECCIÓN DENUNCIAS POR DISTRITO ---
-            canvas.drawImage(grafico_denuncias_path, x=40, y=page_height - 300, width=220, height=220, preserveAspectRatio=True, mask="auto")
+            # Dibujar solo si el archivo existe
+            if os.path.exists(grafico_denuncias_path):
+                canvas.drawImage(grafico_denuncias_path, x=40, y=page_height - 300, width=220, height=220, preserveAspectRatio=True, mask="auto")
             
             draw_tabla_simple(canvas, tabla_denuncias, "Denuncias por distrito", x=280, y=page_height - 80, col_widths=[110, 40], header_color=COLOR_SECUNDARIO, font_size_header=10, font_size_body=8)
             
-            # Total denuncias (más compacto)
-            canvas.setFillColor(COLOR_SECUNDARIO)
-            canvas.rect(280, page_height - 300, 150, 50, fill=1, stroke=0)
-            canvas.setFillColor(colors.white)
-            canvas.setFont(FONT_NAME_BOLD, 10)
-            canvas.drawCentredString(355, page_height - 270, "Total denuncias")
-            canvas.setFont(FONT_NAME_BOLD, 18)
-            canvas.drawCentredString(355, page_height - 290, str(total_denuncias))
-
-            # --- 2. SECCIÓN DENUNCIAS POR HORARIO ---
-            canvas.drawImage(grafico_horario_path, x=40, y=page_height - 560, width=220, height=220, preserveAspectRatio=True, mask="auto")
-            draw_tabla_simple(canvas, tabla_horario, "Denuncias por horario", x=280, y=page_height - 340, col_widths=[90, 40], header_color=COLOR_SECUNDARIO, font_size_header=10, font_size_body=8)
+            # ... (resto de elementos)
             
-            # Cuadros AM/PM compactos
-            canvas.setFillColor(COLOR_SECUNDARIO)
-            canvas.rect(280, page_height - 430, 70, 35, fill=1, stroke=0)
-            canvas.setFillColor(colors.white)
-            canvas.setFont(FONT_NAME_BOLD, 10)
-            canvas.drawCentredString(315, page_height - 410, "AM")
-            canvas.setFont(FONT_NAME_BOLD, 14)
-            canvas.drawCentredString(315, page_height - 425, str(total_am))
-            
-            canvas.setFillColor(COLOR_SECUNDARIO)
-            canvas.rect(360, page_height - 430, 70, 35, fill=1, stroke=0)
-            canvas.setFillColor(colors.white)
-            canvas.setFont(FONT_NAME_BOLD, 10)
-            canvas.drawCentredString(395, page_height - 410, "PM")
-            canvas.setFont(FONT_NAME_BOLD, 14)
-            canvas.drawCentredString(395, page_height - 425, str(total_pm))
+            # Ejemplo de validación para el icono final
+            if os.path.exists("assets/horas.png"):
+                canvas.drawImage("assets/horas.png", 295, 410, 70, 70)
 
-            # --- 3. TABLA GRANDE (DCLP) ---
-            # Ajuste crítico: reduje el ancho disponible y la fuente para que quepa
-            ancho_tabla_grande = page_width - 80
-            draw_tabla_horario_distrito(
-                canvas=canvas,
-                data=tabla_horario_distrito,
-                titulo="DCLP según horario, por distrito",
-                x=40,
-                y=230,
-                col_widths=[(ancho_tabla_grande / len(tabla_horario_distrito[0]))] * len(tabla_horario_distrito[0])
-            )
+            if tabla_horario_distrito and len(tabla_horario_distrito) > 0:
+                total_columnas = len(tabla_horario_distrito[0])
+                if total_columnas > 0:
+                    draw_tabla_horario_distrito(
+                        canvas=canvas,
+                        data=tabla_horario_distrito,
+                        titulo="DCLP según horario, por distrito",
+                        x=40,
+                        y=230,
+                        col_widths=[(ancho_tabla_grande / total_columnas)] * total_columnas
+                    )
 
         elif doc.page == 14:
             header_footer(canvas, doc)
