@@ -1,5 +1,11 @@
 import streamlit as st
 import pandas as pd
+import matplotlib
+# FUERZA EL BACKEND 'Agg' PARA EVITAR EL SEGFAULT EN STREAMLIT CLOUD
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import streamlit as st
+# ... el resto de tus importaciones
 import matplotlib.pyplot as plt
 from io import BytesIO
 from pathlib import Path
