@@ -1274,6 +1274,13 @@ if archivo:
                 grafico_comercio_inscrito=grafico_comercio_inscrito,
                 grafico_comercio_contacto=grafico_comercio_contacto,
             )
+
+            import gc # Añadir al inicio del archivo
+
+            # ... luego de generar el pdf:
+            pdf_bytes = pdf_buffer.getvalue()
+            pdf_buffer.close()
+            gc.collect() # Fuerza la recolección de basura
             
             pdf_bytes = pdf_buffer.getvalue()
             st.subheader("Informe generado correctamente")
