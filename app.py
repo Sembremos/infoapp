@@ -7,7 +7,6 @@ import base64
 from openpyxl import load_workbook
 import numpy as np
 import textwrap
-
 from pdf_generator import P3_PALETA_GRAFICO
 from pdf_generator import generar_pdf
 
