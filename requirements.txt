@@ -1,3 +1,6 @@
-# Solo las librerías externas que NO vienen por defecto
+streamlit==1.39.0
+pandas==2.2.2
+matplotlib==3.9.2
 reportlab==4.2.2
 openpyxl==3.1.5
+numpy==1.26.4
