@@ -1086,15 +1086,14 @@ def generar_pdf(
             draw_texto_overlay(canvas, riesgos_total, x_centro + 155, y_centro + 80, size=18)
             draw_texto_overlay(canvas, delitos_total, x_centro + 290, y_centro + 80, size=18)
 
+        # ... (Mantén tus importaciones y configuraciones iniciales intactas)
+
         elif doc.page == 11:
             header_footer(canvas, doc)
-            draw_texto_mixto(canvas, 45, A4[1] - 250, "Frente a lo anterior, esta metodología permitió la identificación de", causas_identificadas, "causas, directamente relacionadas con los", factores_micmac, "factores priorizados en la Mic-Mac.")
+            # Ajuste de posición para el texto mixto
+            draw_texto_mixto(canvas, 45, A4[1] - 300, "Frente a lo anterior, esta metodología permitió la identificación de", causas_identificadas, "causas, directamente relacionadas con los", factores_micmac, "factores priorizados en la Mic-Mac.")
             
-            img_width, img_height = 260, 260
-            img_x, img_y = A4[0] / 2 + 10, A4[1] - img_height - 130
-            if os.path.exists("assets/triangulo.png"):
-                canvas.drawImage("assets/triangulo.png", img_x, img_y, width=img_width, height=img_height, preserveAspectRatio=True, mask="auto")
-            
+            # Dibujo único del triángulo
             img_width, img_height = 260, 260
             img_x, img_y = A4[0] / 2 + 10, A4[1] - img_height - 130
             if os.path.exists("assets/triangulo.png"):
@@ -1111,32 +1110,29 @@ def generar_pdf(
         elif doc.page == 12:
             if os.path.exists("assets/estadistica.png"): FullImage("assets/estadistica.png")(canvas, doc)
 
-       elif doc.page == 13:
+        elif doc.page == 13:
             header_footer(canvas, doc)
             
-            # Dibujar solo si el archivo existe
+            # 1. Denuncias por distrito
             if os.path.exists(grafico_denuncias_path):
                 canvas.drawImage(grafico_denuncias_path, x=40, y=page_height - 300, width=220, height=220, preserveAspectRatio=True, mask="auto")
             
             draw_tabla_simple(canvas, tabla_denuncias, "Denuncias por distrito", x=280, y=page_height - 80, col_widths=[110, 40], header_color=COLOR_SECUNDARIO, font_size_header=10, font_size_body=8)
             
-            # ... (resto de elementos)
+            # 2. Denuncias por horario
+            if os.path.exists(grafico_horario_path):
+                canvas.drawImage(grafico_horario_path, x=40, y=page_height - 560, width=220, height=220, preserveAspectRatio=True, mask="auto")
             
-            # Ejemplo de validación para el icono final
+            draw_tabla_simple(canvas, tabla_horario, "Denuncias por horario", x=280, y=page_height - 340, col_widths=[90, 40], header_color=COLOR_SECUNDARIO, font_size_header=10, font_size_body=8)
+            
+            # 3. Tabla DCLP (Calculando ancho aquí para evitar error de scope)
+            ancho_tabla_grande = A4[0] - 80 
+            if tabla_horario_distrito and len(tabla_horario_distrito) > 0:
+                total_cols = len(tabla_horario_distrito[0])
+                draw_tabla_horario_distrito(canvas, tabla_horario_distrito, "DCLP según horario, por distrito", 40, 230, [(ancho_tabla_grande / total_cols)] * total_cols)
+
             if os.path.exists("assets/horas.png"):
                 canvas.drawImage("assets/horas.png", 295, 410, 70, 70)
-
-            if tabla_horario_distrito and len(tabla_horario_distrito) > 0:
-                total_columnas = len(tabla_horario_distrito[0])
-                if total_columnas > 0:
-                    draw_tabla_horario_distrito(
-                        canvas=canvas,
-                        data=tabla_horario_distrito,
-                        titulo="DCLP según horario, por distrito",
-                        x=40,
-                        y=230,
-                        col_widths=[(ancho_tabla_grande / total_columnas)] * total_columnas
-                    )
 
         elif doc.page == 14:
             header_footer(canvas, doc)
