@@ -7,8 +7,7 @@ import base64
 from openpyxl import load_workbook
 import numpy as np
 import textwrap
-from pdf_generator import P3_PALETA_GRAFICO
-from pdf_generator import generar_pdf
+from pdf_generator import P3_PALETA_GRAFICO, generar_pdf
 
 # =====================================================================
 # CONFIGURACIÓN GLOBAL (ESTILOS, COLORES, FUENTES Y TAMAÑOS)
