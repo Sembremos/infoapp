@@ -848,7 +848,7 @@ def generar_pdf(
     styles = getSampleStyleSheet()
     styles["Heading1"].textColor = COLOR_SECUNDARIO
     
-    styles.add(ParagraphStyle(name="NormalJustificado", parent=styles["Normal"], alignment=TA_JUSTIFY, leading=15))
+    styles.add(ParagraphStyle(name="NormalJustificado", parent=styles["Normal"], alignment=TA_JUSTIFY, leading=14))
     styles.add(ParagraphStyle(name="TituloGrande", fontName=FONT_NAME_REGULAR, fontSize=26, textColor=colors.white, leading=30, spaceAfter=2, alignment=TA_LEFT))
     styles.add(ParagraphStyle(name="TituloDelta", fontName=FONT_NAME_BOLD, fontSize=45, textColor=COLOR_PRIMARIO, leading=40, spaceAfter=10, alignment=TA_LEFT))
     styles.add(ParagraphStyle(name="TituloD2", fontName=FONT_NAME_BOLD, fontSize=60, textColor=colors.white, leading=60, spaceAfter=10, alignment=TA_LEFT))
@@ -1086,14 +1086,15 @@ def generar_pdf(
             draw_texto_overlay(canvas, riesgos_total, x_centro + 155, y_centro + 80, size=18)
             draw_texto_overlay(canvas, delitos_total, x_centro + 290, y_centro + 80, size=18)
 
-        # ... (Mantén tus importaciones y configuraciones iniciales intactas)
-
         elif doc.page == 11:
             header_footer(canvas, doc)
-            # Ajuste de posición para el texto mixto
-            draw_texto_mixto(canvas, 45, A4[1] - 300, "Frente a lo anterior, esta metodología permitió la identificación de", causas_identificadas, "causas, directamente relacionadas con los", factores_micmac, "factores priorizados en la Mic-Mac.")
+            draw_texto_mixto(canvas, 45, A4[1] - 250, "Frente a lo anterior, esta metodología permitió la identificación de", causas_identificadas, "causas, directamente relacionadas con los", factores_micmac, "factores priorizados en la Mic-Mac.")
             
-            # Dibujo único del triángulo
+            img_width, img_height = 260, 260
+            img_x, img_y = A4[0] / 2 + 10, A4[1] - img_height - 130
+            if os.path.exists("assets/triangulo.png"):
+                canvas.drawImage("assets/triangulo.png", img_x, img_y, width=img_width, height=img_height, preserveAspectRatio=True, mask="auto")
+            
             img_width, img_height = 260, 260
             img_x, img_y = A4[0] / 2 + 10, A4[1] - img_height - 130
             if os.path.exists("assets/triangulo.png"):
